@@ -1,0 +1,301 @@
+{
+  "mod_elements": [
+    {
+      "name": "PreviewGUI",
+      "type": "gui",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "preview_gui",
+      "metadata": {
+        "files": [
+          "src/main/java/net/luderspieler/dnd/client/gui/PreviewGUIScreen.java",
+          "src/main/java/net/luderspieler/dnd/world/inventory/PreviewGUIMenu.java"
+        ]
+      },
+      "path": "~/Class_Species_System"
+    },
+    {
+      "name": "Stirge",
+      "type": "livingentity",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "stirge",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/dnd/models/item/stirge_spawn_egg.json",
+          "src/main/resources/assets/dnd/items/stirge_spawn_egg.json",
+          "src/main/java/net/luderspieler/dnd/entity/StirgeEntity.java",
+          "src/main/java/net/luderspieler/dnd/client/renderer/StirgeRenderer.java",
+          "src/main/resources/data/dnd/neoforge/biome_modifier/stirge_biome_modifier.json"
+        ]
+      },
+      "path": "~/Monsters"
+    },
+    {
+      "name": "StirgeIdleCooldown",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "stirge_idle_cooldown",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/StirgeIdleCooldownProcedure.java"
+        ]
+      },
+      "path": "~/Monsters/AnimSync"
+    },
+    {
+      "name": "StirgeAnimSync",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "stirge_anim_sync",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "damagesource",
+            "type": "damagesource"
+          },
+          {
+            "name": "entity",
+            "type": "entity"
+          },
+          {
+            "name": "immediatesourceentity",
+            "type": "entity"
+          },
+          {
+            "name": "amount",
+            "type": "number"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/StirgeAnimSyncProcedure.java"
+        ]
+      },
+      "path": "~/Monsters/AnimSync"
+    },
+    {
+      "name": "StirgeAttackPlaybackCondition",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "stirge_attack_playback_condition",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "return_type": "logic",
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/StirgeAttackPlaybackConditionProcedure.java"
+        ]
+      },
+      "path": "~/Monsters/AnimSync"
+    }
+  ],
+  "variable_elements": [
+    {
+      "name": "PlayerClass",
+      "type": "string",
+      "scope": "player_persistent",
+      "value": "\"\""
+    },
+    {
+      "name": "PlayerLevel",
+      "type": "number",
+      "scope": "player_persistent",
+      "value": "0"
+    },
+    {
+      "name": "Spellslots",
+      "type": "string",
+      "scope": "player_persistent",
+      "value": "\"\""
+    },
+    {
+      "name": "PlayerSubrace",
+      "type": "string",
+      "scope": "player_persistent",
+      "value": "\"\""
+    },
+    {
+      "name": "PlayerName",
+      "type": "string",
+      "scope": "player_persistent",
+      "value": "\"\""
+    },
+    {
+      "name": "PlayerStory",
+      "type": "string",
+      "scope": "player_persistent",
+      "value": "\"\""
+    },
+    {
+      "name": "PlayerPersonality",
+      "type": "string",
+      "scope": "player_persistent",
+      "value": "\"\""
+    },
+    {
+      "name": "FinishedCharacterCreation",
+      "type": "logic",
+      "scope": "player_lifetime",
+      "value": "false"
+    },
+    {
+      "name": "PlayerRace",
+      "type": "string",
+      "scope": "player_persistent",
+      "value": "\"\""
+    },
+    {
+      "name": "PlayerSubclass",
+      "type": "string",
+      "scope": "player_persistent",
+      "value": "\"\""
+    },
+    {
+      "name": "PlayerXP",
+      "type": "number",
+      "scope": "player_persistent",
+      "value": "0"
+    },
+    {
+      "name": "Proficiencys",
+      "type": "string",
+      "scope": "player_persistent",
+      "value": "\"\""
+    }
+  ],
+  "sound_elements": [],
+  "tag_elements": {
+    "ITEMS:mod:light_armor": [
+      "Items.IRON_HELMET",
+      "Items.IRON_CHESTPLATE",
+      "Items.IRON_LEGGINGS",
+      "Items.IRON_BOOTS",
+      "Items.GOLDEN_HELMET",
+      "Items.GOLDEN_CHESTPLATE",
+      "Items.GOLDEN_LEGGINGS",
+      "Items.GOLDEN_BOOTS"
+    ],
+    "ITEMS:mod:medium_armor": [
+      "Items.NETHERITE_HELMET",
+      "Items.NETHERITE_CHESTPLATE",
+      "Items.NETHERITE_LEGGINGS",
+      "Items.NETHERITE_BOOTS",
+      "Items.DIAMOND_HELMET",
+      "Items.DIAMOND_CHESTPLATE",
+      "Items.DIAMOND_LEGGINGS",
+      "Items.DIAMOND_BOOTS"
+    ],
+    "ITEMS:mo:heavy_armor": [
+      "Items.LEATHER_HELMET",
+      "Items.LEATHER_CHESTPLATE",
+      "Items.LEATHER_LEGGINGS",
+      "Items.LEATHER_BOOTS",
+      "Items.CHAINMAIL_HELMET",
+      "Items.CHAINMAIL_CHESTPLATE",
+      "Items.CHAINMAIL_LEGGINGS",
+      "Items.CHAINMAIL_BOOTS"
+    ]
+  },
+  "tab_element_order": {},
+  "language_map": {
+    "en_us": {
+      "gui.dnd.preview_gui.label_fahigkeit8": "fähigkeit",
+      "gui.dnd.preview_gui.label_fahigkeit9": "fähigkeit",
+      "gui.dnd.preview_gui.label_fahigkeit4": "fähigkeit",
+      "gui.dnd.preview_gui.label_fahigkeit5": "fähigkeit",
+      "gui.dnd.preview_gui.label_fahigkeit6": "fähigkeit",
+      "gui.dnd.preview_gui.label_attribute": "Attribute:",
+      "gui.dnd.preview_gui.label_fahigkeit7": "fähigkeit",
+      "gui.dnd.preview_gui.label_attribute2": "Attribute:",
+      "gui.dnd.preview_gui.label_classname": "ClassName",
+      "gui.dnd.preview_gui.label_attribute3": "Attribute:",
+      "gui.dnd.preview_gui.label_fahigkeit": "fähigkeit",
+      "gui.dnd.preview_gui.label_attribute1": "Attribute:",
+      "gui.dnd.preview_gui.label_attribute6": "attribute",
+      "gui.dnd.preview_gui.label_attribute7": "attribute",
+      "gui.dnd.preview_gui.label_attribute4": "Attribute:",
+      "gui.dnd.preview_gui.label_attribute5": "attribute",
+      "gui.dnd.preview_gui.label_fahigkeit1": "fähigkeit",
+      "gui.dnd.preview_gui.label_fahigkeit2": "fähigkeit",
+      "gui.dnd.preview_gui.label_attribute8": "attribute",
+      "gui.dnd.preview_gui.label_fahigkeit3": "fähigkeit",
+      "gui.dnd.preview_gui.label_attribute9": "attribute",
+      "entity.dnd.stirge": "Stirge",
+      "item.dnd.stirge_spawn_egg": "Stirge Spawn Egg",
+      "gui.dnd.preview_gui.button_subclass1": "Subclass1"
+    }
+  },
+  "metadata": {
+    "files": [
+      "src/main/java/net/luderspieler/dnd/init/DndModMenus.java",
+      "src/main/java/net/luderspieler/dnd/network/MenuStateUpdateMessage.java",
+      "src/main/java/net/luderspieler/dnd/init/DndModScreens.java",
+      "src/main/java/net/luderspieler/dnd/init/DndModItems.java",
+      "src/main/java/net/luderspieler/dnd/init/DndModEntities.java",
+      "src/main/java/net/luderspieler/dnd/init/DndModEntityRenderers.java",
+      "src/main/java/net/luderspieler/dnd/DndMod.java",
+      "src/main/java/net/luderspieler/dnd/network/DndModVariables.java",
+      "src/main/resources/META-INF/neoforge.mods.toml",
+      "src/main/java/net/luderspieler/dnd/init/DndModTabs.java",
+      "src/main/resources/pack.mcmeta",
+      "src/main/java/net/luderspieler/dnd/init/DndModModels.java"
+    ]
+  },
+  "foldersRoot": {
+    "name": "~",
+    "children": [
+      {
+        "name": "Weapons",
+        "children": []
+      },
+      {
+        "name": "Class_Species_System",
+        "children": []
+      },
+      {
+        "name": "Monsters",
+        "children": [
+          {
+            "name": "AnimSync",
+            "children": []
+          }
+        ]
+      }
+    ]
+  },
+  "workspaceSettings": {
+    "modid": "dnd",
+    "modName": "D\u0026D",
+    "version": "1.0.0",
+    "description": "D\u0026D in minecraft.",
+    "author": "Luderspieler, Miherrma",
+    "websiteURL": "https://mcreator.net",
+    "license": "All Rights Reserved",
+    "serverSideOnly": false,
+    "requiredMods": [],
+    "dependencies": [],
+    "dependants": [],
+    "mcreatorDependencies": [],
+    "currentGenerator": "neoforge-1.21.8",
+    "credits": "Made using Skill.",
+    "modElementsPackage": "net.luderspieler.dnd"
+  },
+  "mcreatorVersion": 202600114619
+}

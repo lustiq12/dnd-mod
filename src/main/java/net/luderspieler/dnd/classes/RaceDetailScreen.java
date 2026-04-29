@@ -19,7 +19,7 @@ public class RaceDetailScreen extends Screen {
 
     private static final int SUBRACE_BTN_W   = 160;
     private static final int SUBRACE_BTN_H   = 20;
-    private static final int SUBRACE_GAP     = 6;
+    private static final int SUBRACE_GAP     = 4;
 
     private final RaceDefinition race;
     private final boolean isNewCharacter;
