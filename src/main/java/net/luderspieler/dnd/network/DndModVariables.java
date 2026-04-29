@@ -79,6 +79,7 @@ public class DndModVariables {
 		clone.PlayerRace = original.PlayerRace;
 		clone.PlayerSubclass = original.PlayerSubclass;
 		clone.PlayerXP = original.PlayerXP;
+		clone.Proficiencys = original.Proficiencys;
 		if (!event.isWasDeath()) {
 			clone.FinishedCharacterCreation = original.FinishedCharacterCreation;
 		}
@@ -98,6 +99,7 @@ public class DndModVariables {
 		public String PlayerRace = "\"\"";
 		public String PlayerSubclass = "\"\"";
 		public double PlayerXP = 0;
+		public String Proficiencys = "\"\"";
 
 		@Override
 		public void serialize(ValueOutput output) {
@@ -112,6 +114,7 @@ public class DndModVariables {
 			output.putString("PlayerRace", PlayerRace);
 			output.putString("PlayerSubclass", PlayerSubclass);
 			output.putDouble("PlayerXP", PlayerXP);
+			output.putString("Proficiencys", Proficiencys);
 		}
 
 		@Override
@@ -127,6 +130,7 @@ public class DndModVariables {
 			PlayerRace = input.getStringOr("PlayerRace", "");
 			PlayerSubclass = input.getStringOr("PlayerSubclass", "");
 			PlayerXP = input.getDoubleOr("PlayerXP", 0);
+			Proficiencys = input.getStringOr("Proficiencys", "");
 		}
 
 		public void markSyncDirty() {

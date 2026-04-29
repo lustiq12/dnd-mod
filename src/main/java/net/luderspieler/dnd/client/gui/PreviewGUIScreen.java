@@ -7,6 +7,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.chat.Component;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.GuiGraphics;
 
 import net.luderspieler.dnd.world.inventory.PreviewGUIMenu;
@@ -17,6 +18,7 @@ public class PreviewGUIScreen extends AbstractContainerScreen<PreviewGUIMenu> im
 	private final int x, y, z;
 	private final Player entity;
 	private boolean menuStateUpdateActive = false;
+	private Button button_subclass1;
 	private static final ResourceLocation BACKGROUND = ResourceLocation.parse("dnd:textures/screens/preview_gui.png");
 	private static final ResourceLocation IMAGE_0 = ResourceLocation.parse("dnd:textures/screens/classiconplaceholder.png");
 
@@ -61,16 +63,16 @@ public class PreviewGUIScreen extends AbstractContainerScreen<PreviewGUIMenu> im
 	@Override
 	protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
 		guiGraphics.drawString(this.font, Component.translatable("gui.dnd.preview_gui.label_classname"), 172, 12, -1, false);
-		guiGraphics.drawString(this.font, Component.translatable("gui.dnd.preview_gui.label_fahigkeit"), 199, 30, -1, false);
-		guiGraphics.drawString(this.font, Component.translatable("gui.dnd.preview_gui.label_fahigkeit1"), 199, 48, -1, false);
-		guiGraphics.drawString(this.font, Component.translatable("gui.dnd.preview_gui.label_fahigkeit2"), 199, 66, -1, false);
-		guiGraphics.drawString(this.font, Component.translatable("gui.dnd.preview_gui.label_fahigkeit3"), 199, 84, -1, false);
-		guiGraphics.drawString(this.font, Component.translatable("gui.dnd.preview_gui.label_fahigkeit4"), 199, 102, -1, false);
-		guiGraphics.drawString(this.font, Component.translatable("gui.dnd.preview_gui.label_fahigkeit5"), 199, 120, -1, false);
-		guiGraphics.drawString(this.font, Component.translatable("gui.dnd.preview_gui.label_fahigkeit6"), 199, 138, -1, false);
-		guiGraphics.drawString(this.font, Component.translatable("gui.dnd.preview_gui.label_fahigkeit7"), 199, 156, -1, false);
-		guiGraphics.drawString(this.font, Component.translatable("gui.dnd.preview_gui.label_fahigkeit8"), 199, 174, -1, false);
-		guiGraphics.drawString(this.font, Component.translatable("gui.dnd.preview_gui.label_fahigkeit9"), 199, 192, -1, false);
+		guiGraphics.drawString(this.font, Component.translatable("gui.dnd.preview_gui.label_fahigkeit"), 154, 30, -1, false);
+		guiGraphics.drawString(this.font, Component.translatable("gui.dnd.preview_gui.label_fahigkeit1"), 154, 48, -1, false);
+		guiGraphics.drawString(this.font, Component.translatable("gui.dnd.preview_gui.label_fahigkeit2"), 154, 66, -1, false);
+		guiGraphics.drawString(this.font, Component.translatable("gui.dnd.preview_gui.label_fahigkeit3"), 154, 84, -1, false);
+		guiGraphics.drawString(this.font, Component.translatable("gui.dnd.preview_gui.label_fahigkeit4"), 154, 102, -1, false);
+		guiGraphics.drawString(this.font, Component.translatable("gui.dnd.preview_gui.label_fahigkeit5"), 154, 120, -1, false);
+		guiGraphics.drawString(this.font, Component.translatable("gui.dnd.preview_gui.label_fahigkeit6"), 154, 138, -1, false);
+		guiGraphics.drawString(this.font, Component.translatable("gui.dnd.preview_gui.label_fahigkeit7"), 154, 156, -1, false);
+		guiGraphics.drawString(this.font, Component.translatable("gui.dnd.preview_gui.label_fahigkeit8"), 154, 174, -1, false);
+		guiGraphics.drawString(this.font, Component.translatable("gui.dnd.preview_gui.label_fahigkeit9"), 154, 192, -1, false);
 		guiGraphics.drawString(this.font, Component.translatable("gui.dnd.preview_gui.label_attribute"), 10, 39, -1, false);
 		guiGraphics.drawString(this.font, Component.translatable("gui.dnd.preview_gui.label_attribute1"), 10, 57, -1, false);
 		guiGraphics.drawString(this.font, Component.translatable("gui.dnd.preview_gui.label_attribute2"), 10, 75, -1, false);
@@ -86,5 +88,8 @@ public class PreviewGUIScreen extends AbstractContainerScreen<PreviewGUIMenu> im
 	@Override
 	public void init() {
 		super.init();
+		button_subclass1 = Button.builder(Component.translatable("gui.dnd.preview_gui.button_subclass1"), e -> {
+		}).bounds(this.leftPos + 289, this.topPos + 30, 70, 20).build();
+		this.addRenderableWidget(button_subclass1);
 	}
 }

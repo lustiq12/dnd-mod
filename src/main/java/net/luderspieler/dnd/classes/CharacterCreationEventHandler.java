@@ -27,7 +27,7 @@ public class CharacterCreationEventHandler {
     public void onPlayerDeath(LivingDeathEvent event) {
         if (!(event.getEntity() instanceof ServerPlayer player)) return;
 
-        player.sendSystemMessage(Component.literal("Message"));
+        //player.sendSystemMessage(Component.literal("Message"));
 
 
         DndModVariables.PlayerVariables vars = player.getData(DndModVariables.PLAYER_VARIABLES);
@@ -42,7 +42,7 @@ public class CharacterCreationEventHandler {
     public void onPlayerJoin(PlayerEvent.PlayerLoggedInEvent event) {
         if (!(event.getEntity() instanceof ServerPlayer player)) return;
 
-        player.sendSystemMessage(Component.literal("Message"));
+        //player.sendSystemMessage(Component.literal("Message"));
 
 
         DndModVariables.PlayerVariables vars = player.getData(DndModVariables.PLAYER_VARIABLES);
