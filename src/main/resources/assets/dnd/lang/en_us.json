@@ -21,5 +21,6 @@
   "gui.dnd.preview_gui.label_fahigkeit3": "fähigkeit",
   "gui.dnd.preview_gui.label_attribute9": "attribute",
   "entity.dnd.stirge": "Stirge",
-  "item.dnd.stirge_spawn_egg": "Stirge Spawn Egg"
+  "item.dnd.stirge_spawn_egg": "Stirge Spawn Egg",
+  "gui.dnd.preview_gui.button_subclass1": "Subclass1"
 }

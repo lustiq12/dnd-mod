@@ -12,7 +12,7 @@ public class SubraceDetailScreen extends Screen {
     private static final ResourceLocation BACKGROUND = ResourceLocation.parse("dnd:textures/screens/preview_gui.png");
     private static final int ICON_SIZE = 32;
     private final int imageWidth = 400;
-    private final int imageHeight = 212;
+    private final int imageHeight = 230;
     private final int COL_WIDTH = 180; // Breite für die Textspalten innerhalb des GUIs
 
     private final RaceDefinition race;
