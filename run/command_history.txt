@@ -1,0 +1,4 @@
+/effect give Dev minecraft:resistance infinite 10 true
+/kill
+/attribute Dev minecraft:max_health get
+/kill

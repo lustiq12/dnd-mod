@@ -1,0 +1,120 @@
+---- Minecraft Crash Report ----
+// My bad.
+
+Time: 2026-04-29 15:08:41
+Description: Mod loading failures have occurred; consult the issue messages for more details
+
+net.neoforged.neoforge.logging.CrashReportExtender$ModLoadingCrashException: Mod loading has failed
+
+
+A detailed walkthrough of the error, its code path and all known details is as follows:
+---------------------------------------------------------------------------------------
+
+-- Head --
+Thread: Render thread
+Stacktrace:
+	at MC-BOOTSTRAP/fml_loader@9.0.16/net.neoforged.fml.javafmlmod.AutomaticEventSubscriber.lambda$inject$4(AutomaticEventSubscriber.java:63) ~[loader-9.0.16.jar%23167!/:9.0] {}
+-- Mod loading issue for: dnd --
+Details:
+	Caused by 0: java.lang.RuntimeException: java.lang.IllegalArgumentException: Method public void net.luderspieler.dnd.classes.CharacterCreationEventHandler.onPlayerDeath(net.neoforged.neoforge.event.entity.living.LivingDeathEvent) annotated with @SubscribeEvent is not static
+		at MC-BOOTSTRAP/fml_loader@9.0.16/net.neoforged.fml.javafmlmod.AutomaticEventSubscriber.lambda$inject$4(AutomaticEventSubscriber.java:87) ~[loader-9.0.16.jar%23167!/:9.0] {}
+		at java.base/java.util.ArrayList.forEach(ArrayList.java:1596) ~[?:?] {}
+		at MC-BOOTSTRAP/fml_loader@9.0.16/net.neoforged.fml.javafmlmod.AutomaticEventSubscriber.inject(AutomaticEventSubscriber.java:48) ~[loader-9.0.16.jar%23167!/:9.0] {}
+		at MC-BOOTSTRAP/fml_loader@9.0.16/net.neoforged.fml.javafmlmod.FMLModContainer.constructMod(FMLModContainer.java:129) ~[loader-9.0.16.jar%23167!/:9.0] {}
+		at MC-BOOTSTRAP/fml_loader@9.0.16/net.neoforged.fml.ModLoader.lambda$constructMods$3(ModLoader.java:151) ~[loader-9.0.16.jar%23167!/:9.0] {}
+		at MC-BOOTSTRAP/fml_loader@9.0.16/net.neoforged.fml.ModLoader.lambda$dispatchParallelTask$7(ModLoader.java:229) ~[loader-9.0.16.jar%23167!/:9.0] {}
+		at java.base/java.util.concurrent.CompletableFuture.uniHandle(CompletableFuture.java:934) ~[?:?] {}
+		at java.base/java.util.concurrent.CompletableFuture$UniHandle.tryFire(CompletableFuture.java:911) ~[?:?] {}
+		at java.base/java.util.concurrent.CompletableFuture$Completion.exec(CompletableFuture.java:483) ~[?:?] {}
+		at java.base/java.util.concurrent.ForkJoinTask.doExec(ForkJoinTask.java:387) ~[?:?] {}
+		at java.base/java.util.concurrent.ForkJoinPool$WorkQueue.topLevelExec(ForkJoinPool.java:1312) ~[?:?] {}
+		at java.base/java.util.concurrent.ForkJoinPool.scan(ForkJoinPool.java:1843) ~[?:?] {}
+		at java.base/java.util.concurrent.ForkJoinPool.runWorker(ForkJoinPool.java:1808) ~[?:?] {}
+		at java.base/java.util.concurrent.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:188) ~[?:?] {}
+
+	Mod file: /C:/Users/julia/MCreatorWorkspaces/dungerramityd/build/classes/java/main/
+	Failure message: D&D (dnd) has failed to load correctly
+		java.lang.RuntimeException: java.lang.IllegalArgumentException: Method public void net.luderspieler.dnd.classes.CharacterCreationEventHandler.onPlayerDeath(net.neoforged.neoforge.event.entity.living.LivingDeathEvent) annotated with @SubscribeEvent is not static
+	Mod version: 1.0.0
+	Mod issues URL: <No issues URL found>
+	Exception message: java.lang.IllegalArgumentException: Method public void net.luderspieler.dnd.classes.CharacterCreationEventHandler.onPlayerDeath(net.neoforged.neoforge.event.entity.living.LivingDeathEvent) annotated with @SubscribeEvent is not static
+Stacktrace:
+	at MC-BOOTSTRAP/fml_loader@9.0.16/net.neoforged.fml.javafmlmod.AutomaticEventSubscriber.lambda$inject$4(AutomaticEventSubscriber.java:63) ~[loader-9.0.16.jar%23167!/:9.0] {}
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596) ~[?:?] {}
+	at MC-BOOTSTRAP/fml_loader@9.0.16/net.neoforged.fml.javafmlmod.AutomaticEventSubscriber.inject(AutomaticEventSubscriber.java:48) ~[loader-9.0.16.jar%23167!/:9.0] {}
+	at MC-BOOTSTRAP/fml_loader@9.0.16/net.neoforged.fml.javafmlmod.FMLModContainer.constructMod(FMLModContainer.java:129) ~[loader-9.0.16.jar%23167!/:9.0] {}
+	at MC-BOOTSTRAP/fml_loader@9.0.16/net.neoforged.fml.ModLoader.lambda$constructMods$3(ModLoader.java:151) ~[loader-9.0.16.jar%23167!/:9.0] {}
+	at MC-BOOTSTRAP/fml_loader@9.0.16/net.neoforged.fml.ModLoader.lambda$dispatchParallelTask$7(ModLoader.java:229) ~[loader-9.0.16.jar%23167!/:9.0] {}
+	at java.base/java.util.concurrent.CompletableFuture.uniHandle(CompletableFuture.java:934) ~[?:?] {}
+	at java.base/java.util.concurrent.CompletableFuture$UniHandle.tryFire(CompletableFuture.java:911) ~[?:?] {}
+	at java.base/java.util.concurrent.CompletableFuture$Completion.exec(CompletableFuture.java:483) ~[?:?] {}
+	at java.base/java.util.concurrent.ForkJoinTask.doExec(ForkJoinTask.java:387) ~[?:?] {}
+	at java.base/java.util.concurrent.ForkJoinPool$WorkQueue.topLevelExec(ForkJoinPool.java:1312) ~[?:?] {}
+	at java.base/java.util.concurrent.ForkJoinPool.scan(ForkJoinPool.java:1843) ~[?:?] {}
+	at java.base/java.util.concurrent.ForkJoinPool.runWorker(ForkJoinPool.java:1808) ~[?:?] {}
+	at java.base/java.util.concurrent.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:188) ~[?:?] {}
+
+
+-- System Details --
+Details:
+	Minecraft Version: 1.21.8
+	Minecraft Version ID: 1.21.8
+	Operating System: Windows 11 (amd64) version 10.0
+	Java Version: 21.0.7, Eclipse Adoptium
+	Java VM Version: OpenJDK 64-Bit Server VM (mixed mode, sharing), Eclipse Adoptium
+	Memory: 105346024 bytes (100 MiB) / 469762048 bytes (448 MiB) up to 4236247040 bytes (4040 MiB)
+	CPUs: 16
+	Processor Vendor: GenuineIntel
+	Processor Name: 12th Gen Intel(R) Core(TM) i7-12650H
+	Identifier: Intel64 Family 6 Model 154 Stepping 3
+	Microarchitecture: Alder Lake
+	Frequency (GHz): 2.69
+	Number of physical packages: 1
+	Number of physical CPUs: 10
+	Number of logical CPUs: 16
+	Graphics card #0 name: NVIDIA GeForce RTX 4070 Laptop GPU
+	Graphics card #0 vendor: NVIDIA
+	Graphics card #0 VRAM (MiB): 8188.00
+	Graphics card #0 deviceId: VideoController1
+	Graphics card #0 versionInfo: 32.0.15.9597
+	Graphics card #1 name: Intel(R) UHD Graphics
+	Graphics card #1 vendor: Intel Corporation
+	Graphics card #1 VRAM (MiB): 1024.00
+	Graphics card #1 deviceId: VideoController2
+	Graphics card #1 versionInfo: 31.0.101.4255
+	Memory slot #0 capacity (MiB): 8192.00
+	Memory slot #0 clockSpeed (GHz): 4.80
+	Memory slot #0 type: DDR5
+	Memory slot #1 capacity (MiB): 8192.00
+	Memory slot #1 clockSpeed (GHz): 4.80
+	Memory slot #1 type: DDR5
+	Virtual memory max (MiB): 21324.20
+	Virtual memory used (MiB): 18854.93
+	Swap memory total (MiB): 5171.07
+	Swap memory used (MiB): 687.53
+	Space in storage for jna.tmpdir (MiB): <path not set>
+	Space in storage for org.lwjgl.system.SharedLibraryExtractPath (MiB): <path not set>
+	Space in storage for io.netty.native.workdir (MiB): <path not set>
+	Space in storage for java.io.tmpdir (MiB): available: 46071.73, total: 462863.00
+	Space in storage for workdir (MiB): available: 46071.73, total: 462863.00
+	JVM Flags: 0 total; 
+	ModLauncher: 9.0
+	ModLauncher launch target: neoforgeclientdev
+	ModLauncher services: 
+		sponge-mixin-0.15.2+mixin.0.8.7.jar mixin PLUGINSERVICE 
+		loader-9.0.16.jar neoforgedevdistcleaner PLUGINSERVICE 
+		loader-9.0.16.jar slf4jfixer PLUGINSERVICE 
+		loader-9.0.16.jar runtime_enum_extender PLUGINSERVICE 
+		loader-9.0.16.jar accesstransformer PLUGINSERVICE 
+		loader-9.0.16.jar mixin TRANSFORMATIONSERVICE 
+		loader-9.0.16.jar fml TRANSFORMATIONSERVICE 
+	FML Language Providers: 
+		javafml@9.0
+		minecraft@9.0
+	Mod List: 
+		main                                              |D&D                           |dnd                           |1.0.0               |Manifest: NOSIGNATURE
+		neoforge-21.8.31-merged.jar                       |Minecraft                     |minecraft                     |1.21.8              |Manifest: NOSIGNATURE
+		neoforge-21.8.31-merged.jar                       |NeoForge                      |neoforge                      |21.8.31             |Manifest: NOSIGNATURE
+	Crash Report UUID: bcee741d-ea2a-4a4e-9a4c-a7457db8a6f9
+	FML: 9.0.16
+	NeoForge: 21.8.31
