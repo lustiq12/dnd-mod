@@ -64,7 +64,7 @@ public class ClassDetailScreen extends Screen {
         );
 
         // ── NAME ──
-        g.drawString(this.font, cls.getDisplayName(), LEFT_MARGIN + ICON_SIZE + 8, 22, 0xFFFFFF);
+        g.drawString(this.font, cls.getDisplayName(), LEFT_MARGIN + ICON_SIZE + 8, 22, -1);
 
         // ── DESCRIPTION ──
         g.drawWordWrap(this.font,
@@ -76,22 +76,22 @@ public class ClassDetailScreen extends Screen {
         Map<String, Double> combined = combinedAttrs(race, cls);
 
         int attrY = 80;
-        g.drawString(this.font, "Total Stats (Race + Class):", LEFT_MARGIN, attrY, 0xFFD700);
+        g.drawString(this.font, "Total Stats (Race + Class):", LEFT_MARGIN, attrY, -1);
         attrY += 12;
         for (Map.Entry<String, Double> e : combined.entrySet()) {
             if (e.getValue() == 0) continue;
             String sign = e.getValue() > 0 ? "+" : "";
             String line = e.getKey() + ": " + sign + formatVal(e.getKey(), e.getValue());
-            g.drawString(this.font, line, LEFT_MARGIN, attrY, 0xFFFFFF);
+            g.drawString(this.font, line, LEFT_MARGIN, attrY, -1);
             attrY += 10;
         }
 
         // ── CLASS ABILITIES (right column) ──
         int abY = 30;
-        g.drawString(this.font, "Class Features:", RIGHT_X, abY, 0xFFD700);
+        g.drawString(this.font, "Class Features:", RIGHT_X, abY, -1);
         abY += 14;
         for (String line : cls.getAbilityLines()) {
-            g.drawWordWrap(this.font, Component.literal("• " + line), RIGHT_X, abY, COL_WIDTH, 0xCCCCCC);
+            g.drawWordWrap(this.font, Component.literal("• " + line), RIGHT_X, abY, COL_WIDTH, -1);
             abY += 20;
         }
     }

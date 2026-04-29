@@ -94,16 +94,16 @@ public class CharacterFinalizationScreen extends Screen {
 
         super.render(g, mouseX, mouseY, partial);
 
-        g.drawCenteredString(this.font, this.title, this.width / 2, 14, 0xFFFFFF);
+        g.drawCenteredString(this.font, this.title, this.width / 2, 14, -1);
 
         int centerX = (this.width - BOX_WIDTH) / 2;
-        g.drawString(this.font, "Character Name:", centerX, 38, 0xFFD700);
-        g.drawString(this.font, "Backstory:", centerX, 88, 0xFFD700);
-        g.drawString(this.font, "Personality:", centerX, 138, 0xFFD700);
+        g.drawString(this.font, "Character Name:", centerX, 38, -1);
+        g.drawString(this.font, "Backstory:", centerX, 88, -1);
+        g.drawString(this.font, "Personality:", centerX, 138, -1);
 
         // Summary of selections
         int sy = 185;
-        g.drawString(this.font, "Summary:", centerX, sy, 0xFFD700);
+        g.drawString(this.font, "Summary:", centerX, sy, -1);
         g.drawString(this.font, "Species: " + CharacterCreationState.selectedRaceId + " / " + CharacterCreationState.selectedSubraceId, centerX, sy + 12, 0xAAAAAA);
         g.drawString(this.font, "Class: "   + CharacterCreationState.selectedClassId, centerX, sy + 22, 0xAAAAAA);
     }

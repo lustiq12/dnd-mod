@@ -60,27 +60,27 @@ public class PreviewGUIScreen extends AbstractContainerScreen<PreviewGUIMenu> im
 
 	@Override
 	protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-		guiGraphics.drawString(this.font, Component.translatable("gui.dnd.preview_gui.label_classname"), 172, 12, -12829636, false);
-		guiGraphics.drawString(this.font, Component.translatable("gui.dnd.preview_gui.label_fahigkeit"), 199, 30, -12829636, false);
-		guiGraphics.drawString(this.font, Component.translatable("gui.dnd.preview_gui.label_fahigkeit1"), 199, 48, -12829636, false);
-		guiGraphics.drawString(this.font, Component.translatable("gui.dnd.preview_gui.label_fahigkeit2"), 199, 66, -12829636, false);
-		guiGraphics.drawString(this.font, Component.translatable("gui.dnd.preview_gui.label_fahigkeit3"), 199, 84, -12829636, false);
-		guiGraphics.drawString(this.font, Component.translatable("gui.dnd.preview_gui.label_fahigkeit4"), 199, 102, -12829636, false);
-		guiGraphics.drawString(this.font, Component.translatable("gui.dnd.preview_gui.label_fahigkeit5"), 199, 120, -12829636, false);
-		guiGraphics.drawString(this.font, Component.translatable("gui.dnd.preview_gui.label_fahigkeit6"), 199, 138, -12829636, false);
-		guiGraphics.drawString(this.font, Component.translatable("gui.dnd.preview_gui.label_fahigkeit7"), 199, 156, -12829636, false);
-		guiGraphics.drawString(this.font, Component.translatable("gui.dnd.preview_gui.label_fahigkeit8"), 199, 174, -12829636, false);
-		guiGraphics.drawString(this.font, Component.translatable("gui.dnd.preview_gui.label_fahigkeit9"), 199, 192, -12829636, false);
-		guiGraphics.drawString(this.font, Component.translatable("gui.dnd.preview_gui.label_attribute"), 10, 39, -12829636, false);
-		guiGraphics.drawString(this.font, Component.translatable("gui.dnd.preview_gui.label_attribute1"), 10, 57, -12829636, false);
-		guiGraphics.drawString(this.font, Component.translatable("gui.dnd.preview_gui.label_attribute2"), 10, 75, -12829636, false);
-		guiGraphics.drawString(this.font, Component.translatable("gui.dnd.preview_gui.label_attribute3"), 10, 93, -12829636, false);
-		guiGraphics.drawString(this.font, Component.translatable("gui.dnd.preview_gui.label_attribute4"), 10, 111, -12829636, false);
-		guiGraphics.drawString(this.font, Component.translatable("gui.dnd.preview_gui.label_attribute5"), 73, 39, -12829636, false);
-		guiGraphics.drawString(this.font, Component.translatable("gui.dnd.preview_gui.label_attribute6"), 73, 57, -12829636, false);
-		guiGraphics.drawString(this.font, Component.translatable("gui.dnd.preview_gui.label_attribute7"), 73, 75, -12829636, false);
-		guiGraphics.drawString(this.font, Component.translatable("gui.dnd.preview_gui.label_attribute8"), 73, 93, -12829636, false);
-		guiGraphics.drawString(this.font, Component.translatable("gui.dnd.preview_gui.label_attribute9"), 73, 111, -12829636, false);
+		guiGraphics.drawString(this.font, Component.translatable("gui.dnd.preview_gui.label_classname"), 172, 12, -1, false);
+		guiGraphics.drawString(this.font, Component.translatable("gui.dnd.preview_gui.label_fahigkeit"), 199, 30, -1, false);
+		guiGraphics.drawString(this.font, Component.translatable("gui.dnd.preview_gui.label_fahigkeit1"), 199, 48, -1, false);
+		guiGraphics.drawString(this.font, Component.translatable("gui.dnd.preview_gui.label_fahigkeit2"), 199, 66, -1, false);
+		guiGraphics.drawString(this.font, Component.translatable("gui.dnd.preview_gui.label_fahigkeit3"), 199, 84, -1, false);
+		guiGraphics.drawString(this.font, Component.translatable("gui.dnd.preview_gui.label_fahigkeit4"), 199, 102, -1, false);
+		guiGraphics.drawString(this.font, Component.translatable("gui.dnd.preview_gui.label_fahigkeit5"), 199, 120, -1, false);
+		guiGraphics.drawString(this.font, Component.translatable("gui.dnd.preview_gui.label_fahigkeit6"), 199, 138, -1, false);
+		guiGraphics.drawString(this.font, Component.translatable("gui.dnd.preview_gui.label_fahigkeit7"), 199, 156, -1, false);
+		guiGraphics.drawString(this.font, Component.translatable("gui.dnd.preview_gui.label_fahigkeit8"), 199, 174, -1, false);
+		guiGraphics.drawString(this.font, Component.translatable("gui.dnd.preview_gui.label_fahigkeit9"), 199, 192, -1, false);
+		guiGraphics.drawString(this.font, Component.translatable("gui.dnd.preview_gui.label_attribute"), 10, 39, -1, false);
+		guiGraphics.drawString(this.font, Component.translatable("gui.dnd.preview_gui.label_attribute1"), 10, 57, -1, false);
+		guiGraphics.drawString(this.font, Component.translatable("gui.dnd.preview_gui.label_attribute2"), 10, 75, -1, false);
+		guiGraphics.drawString(this.font, Component.translatable("gui.dnd.preview_gui.label_attribute3"), 10, 93, -1, false);
+		guiGraphics.drawString(this.font, Component.translatable("gui.dnd.preview_gui.label_attribute4"), 10, 111, -1, false);
+		guiGraphics.drawString(this.font, Component.translatable("gui.dnd.preview_gui.label_attribute5"), 73, 39, -1, false);
+		guiGraphics.drawString(this.font, Component.translatable("gui.dnd.preview_gui.label_attribute6"), 73, 57, -1, false);
+		guiGraphics.drawString(this.font, Component.translatable("gui.dnd.preview_gui.label_attribute7"), 73, 75, -1, false);
+		guiGraphics.drawString(this.font, Component.translatable("gui.dnd.preview_gui.label_attribute8"), 73, 93, -1, false);
+		guiGraphics.drawString(this.font, Component.translatable("gui.dnd.preview_gui.label_attribute9"), 73, 111, -1, false);
 	}
 
 	@Override

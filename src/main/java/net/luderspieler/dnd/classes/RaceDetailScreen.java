@@ -72,7 +72,7 @@ public class RaceDetailScreen extends Screen {
         );
 
         // ── NAME ──
-        g.drawString(this.font, race.getDisplayName(), LEFT_MARGIN + ICON_SIZE + 8, 26, 0xFFFFFF);
+        g.drawString(this.font, race.getDisplayName(), LEFT_MARGIN + ICON_SIZE + 8, 26, -1);
 
         // ── DESCRIPTION ──
         g.drawWordWrap(this.font,
@@ -81,27 +81,27 @@ public class RaceDetailScreen extends Screen {
 
         // ── ATTRIBUTES ──
         int attrY = 110;
-        g.drawString(this.font, "Attributes:", LEFT_MARGIN, attrY, 0xFFD700);
+        g.drawString(this.font, "Attributes:", LEFT_MARGIN, attrY, -1);
         attrY += 12;
         for (Map.Entry<String, Double> e : race.getAttributeModifiers().entrySet()) {
             if (e.getValue() == 0) continue;
             String sign = e.getValue() > 0 ? "+" : "";
             String line = e.getKey() + ": " + sign + formatVal(e.getKey(), e.getValue());
-            g.drawString(this.font, line, LEFT_MARGIN, attrY, 0xFFFFFF);
+            g.drawString(this.font, line, LEFT_MARGIN, attrY, -1);
             attrY += 10;
         }
 
         // ── RACIAL ABILITIES (left side, below attrs) ──
         attrY += 6;
-        g.drawString(this.font, "Traits:", LEFT_MARGIN, attrY, 0xFFD700);
+        g.drawString(this.font, "Traits:", LEFT_MARGIN, attrY, -1);
         attrY += 12;
         for (String line : race.getAbilityLines()) {
-            g.drawWordWrap(this.font, Component.literal("• " + line), LEFT_MARGIN, attrY, 180, 0xCCCCCC);
+            g.drawWordWrap(this.font, Component.literal("• " + line), LEFT_MARGIN, attrY, 180, -1);
             attrY += 18;
         }
 
         // ── SUBRACE HEADER (right side) ──
-        g.drawString(this.font, "Choose a Subrace:", RIGHT_PANEL_X, 44, 0xFFD700);
+        g.drawString(this.font, "Choose a Subrace:", RIGHT_PANEL_X, 44, -1);
     }
 
     /** Format movement speed as percentage, others as plain number */

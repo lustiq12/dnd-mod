@@ -61,7 +61,7 @@ public class SubraceDetailScreen extends Screen {
         );
 
         // ── NAME ──
-        g.drawString(this.font, subrace.getDisplayName(), LEFT_MARGIN + ICON_SIZE + 8, 28, 0xFFFFFF);
+        g.drawString(this.font, subrace.getDisplayName(), LEFT_MARGIN + ICON_SIZE + 8, 28, -1);
 
         // ── PARENT RACE ──
         g.drawString(this.font, "(" + race.getDisplayName() + ")", LEFT_MARGIN + ICON_SIZE + 8, 40, 0x888888);
@@ -73,12 +73,12 @@ public class SubraceDetailScreen extends Screen {
 
         // ── ABILITIES ──
         int y = 92;
-        g.drawString(this.font, "Subrace Traits:", LEFT_MARGIN, y, 0xFFD700);
+        g.drawString(this.font, "Subrace Traits:", LEFT_MARGIN, y, -1);
         y += 14;
         for (String line : subrace.getAbilityLines()) {
             g.drawWordWrap(this.font,
                     Component.literal("• " + line),
-                    LEFT_MARGIN, y, this.width - LEFT_MARGIN * 2, 0xCCCCCC);
+                    LEFT_MARGIN, y, this.width - LEFT_MARGIN * 2, -1);
             y += 20;
         }
     }

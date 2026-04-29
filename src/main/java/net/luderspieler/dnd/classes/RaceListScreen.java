@@ -58,7 +58,7 @@ public class RaceListScreen extends Screen {
         g.fillGradient(0, 0, this.width, this.height, 0xD0101010, 0xE0101010);
 
         // Title
-        g.drawCenteredString(this.font, this.title, this.width / 2, 14, 0xFFFFFF);
+        g.drawCenteredString(this.font, this.title, this.width / 2, 14, -1);
 
         // Draw icons next to each button
         List<RaceDefinition> races = RaceRegistry.RACES;

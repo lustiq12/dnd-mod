@@ -69,7 +69,7 @@ public class ClassListScreen extends Screen {
     public void render(GuiGraphics g, int mouseX, int mouseY, float partial) {
         g.fillGradient(0, 0, this.width, this.height, 0xD0101010, 0xE0101010);
 
-        g.drawCenteredString(this.font, this.title, this.width / 2, 14, 0xFFFFFF);
+        g.drawCenteredString(this.font, this.title, this.width / 2, 14, -1);
 
         List<ClassDefinition> classes = ClassRegistry.CLASSES;
         int totalW = COLS * BUTTON_WIDTH + (COLS - 1) * H_GAP;

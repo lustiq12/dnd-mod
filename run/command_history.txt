@@ -2,3 +2,5 @@
 /kill
 /attribute Dev minecraft:max_health get
 /kill
+/attribute Dev minecraft:attack_damage get
+/kill

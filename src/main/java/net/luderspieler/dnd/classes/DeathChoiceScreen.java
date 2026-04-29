@@ -24,7 +24,7 @@ public class DeathChoiceScreen extends Screen {
         this.addRenderableWidget(Button.builder(
                 Component.literal("Create New Character"),
                 btn -> this.minecraft.setScreen(new RaceListScreen(true))
-        ).bounds(cx - 110, cy + 10, 100, 20).build());
+        ).bounds(cx - 170, cy + 10, 130, 20).build());
 
         // ── KEEP EXISTING CHARACTER ──
         this.addRenderableWidget(Button.builder(
@@ -34,7 +34,7 @@ public class DeathChoiceScreen extends Screen {
                     KeepCharacterPacket.send();
                     this.minecraft.player.closeContainer();
                 }
-        ).bounds(cx + 10, cy + 10, 100, 20).build());
+        ).bounds(cx + 40, cy + 10, 130, 20).build());
     }
 
     @Override
