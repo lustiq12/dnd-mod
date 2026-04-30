@@ -1,5 +1,6 @@
 package net.luderspieler.dnd;
 
+import net.luderspieler.dnd.classes.ProficiencyCheckProcedure;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -61,6 +62,7 @@ public class DndMod {
 		// Start of user code block mod init
 		DndModNetworkRegistry.register(modEventBus);
 		NeoForge.EVENT_BUS.register(new CharacterCreationEventHandler());
+		NeoForge.EVENT_BUS.register(new ProficiencyCheckProcedure());
 		// End of user code block mod init
 	}
 

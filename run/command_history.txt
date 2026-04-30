@@ -4,3 +4,4 @@
 /kill
 /attribute Dev minecraft:attack_damage get
 /kill
+/attribute Dev minecraft:movement_speed get

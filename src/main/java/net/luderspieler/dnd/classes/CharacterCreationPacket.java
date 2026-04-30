@@ -1,6 +1,5 @@
 package net.luderspieler.dnd.classes;
 
-import net.luderspieler.dnd.classes.RaceDefinition;
 import net.luderspieler.dnd.network.DndModVariables;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -12,17 +11,12 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
-import net.neoforged.neoforge.network.PacketDistributor;
 
-import java.util.Map;
+import java.util.*;
 
 public record CharacterCreationPacket(
-        String raceId,
-        String subraceId,
-        String classId,
-        String name,
-        String story,
-        String personality
+        String raceId, String subraceId, String classId,
+        String name, String story, String personality
 ) implements CustomPacketPayload {
 
     public static final Type<CharacterCreationPacket> TYPE =
@@ -42,71 +36,73 @@ public record CharacterCreationPacket(
     @Override
     public Type<? extends CustomPacketPayload> type() { return TYPE; }
 
-    // ── CLIENT-SIDE SEND ──
     public static void send(String raceId, String subraceId, String classId,
                             String name, String story, String personality) {
         ClientPacketDistributor.sendToServer(
-                new CharacterCreationPacket(raceId, subraceId, classId, name, story, personality)
-        );
+                new CharacterCreationPacket(raceId, subraceId, classId, name, story, personality));
     }
 
-    // ── SERVER-SIDE HANDLE ──
     public static void handle(CharacterCreationPacket pkt, IPayloadContext ctx) {
         ctx.enqueueWork(() -> {
             if (!(ctx.player() instanceof ServerPlayer player)) return;
 
-            RaceDefinition race    = RaceRegistry.getRace(pkt.raceId());
-            ClassDefinition cls     = ClassRegistry.getClass(pkt.classId());
+            RaceDefinition    race    = RaceRegistry.getRace(pkt.raceId());
+            SubraceDefinition subrace = RaceRegistry.getSubrace(pkt.subraceId());
+            ClassDefinition   cls     = ClassRegistry.getClass(pkt.classId());
 
             if (race == null || cls == null) return;
 
-            // ── 1. Set player variables ──
-            DndModVariables.PlayerVariables vars = player.getData(DndModVariables.PLAYER_VARIABLES);
-            vars.PlayerRace        = pkt.raceId();
-            vars.PlayerSubrace     = pkt.subraceId();
-            vars.PlayerClass       = pkt.classId();
-            vars.PlayerName        = pkt.name();
-            vars.PlayerStory       = pkt.story();
-            vars.PlayerPersonality = pkt.personality();
-            vars.PlayerLevel       = 1;
-            vars.Spellslots        = "000000000"; // 9 slot levels, all 0
-            vars.FinishedCharacterCreation = true;
-            vars.markSyncDirty();
+            // ── 1. Combine proficiencies from race + subrace + class ──
+            // Use a LinkedHashSet to deduplicate while preserving order
+            LinkedHashSet<String> profSet = new LinkedHashSet<>();
+            addProfs(profSet, race.getProficiencies());
+            if (subrace != null) addProfs(profSet, subrace.getProficiencies());
+            addProfs(profSet, cls.getProficiencies());
+            String combinedProfs = String.join(",", profSet);
 
-            // ── 2. Combine attrs: race + class ──
-            Map<String, Double> combined = new java.util.LinkedHashMap<>();
+            // ── 2. Combine attribute modifiers: race + class ──
+            Map<String, Double> combined = new LinkedHashMap<>();
             for (Map.Entry<String,Double> e : race.getAttributeModifiers().entrySet())
                 combined.merge(e.getKey(), e.getValue(), Double::sum);
             for (Map.Entry<String,Double> e : cls.getAttributeModifiers().entrySet())
                 combined.merge(e.getKey(), e.getValue(), Double::sum);
 
-            // ── 3. Apply attribute modifiers ──
+            // ── 3. Set player variables ──
+            DndModVariables.PlayerVariables vars = player.getData(DndModVariables.PLAYER_VARIABLES);
+            vars.PlayerRace                = pkt.raceId();
+            vars.PlayerSubrace             = pkt.subraceId();
+            vars.PlayerClass               = pkt.classId();
+            vars.PlayerName                = pkt.name();
+            vars.PlayerStory               = pkt.story();
+            vars.PlayerPersonality         = pkt.personality();
+            vars.PlayerLevel               = 1;
+            vars.Spellslots                = "000000000";
+            vars.Proficiencys              = combinedProfs;
+            vars.FinishedCharacterCreation = true;
+            vars.markSyncDirty();
+
+            // ── 4. Apply attribute modifiers ──
             applyAttrs(player, combined);
 
-            // ── 4. Give starter items (class items + race items) ──
+            // ── 5. Give starter items — CLASS ONLY (race items removed) ──
             for (ItemStack stack : cls.getStarterItems())
                 player.addItem(stack.copy());
-            for (ItemStack stack : race.getStarterItems())
-                player.addItem(stack.copy());
 
-            // ── 5. Heal to full after applying new max health ──
+            // ── 6. Heal to full ──
             player.setHealth(player.getMaxHealth());
         });
     }
 
-    // ─────────────────────────────────────────────────────────────
-    //  Attribute application
-    //  We use ADD_VALUE operation and a fixed UUID per stat so we
-    //  can remove/re-apply cleanly if the player recreates.
-    // ─────────────────────────────────────────────────────────────
+    /** Split comma-separated proficiency string and add non-empty entries to set */
+    private static void addProfs(LinkedHashSet<String> set, String profs) {
+        if (profs == null || profs.isBlank()) return;
+        for (String p : profs.split(",")) {
+            String trimmed = p.trim();
+            if (!trimmed.isEmpty()) set.add(trimmed);
+        }
+    }
 
-    private static final java.util.UUID UUID_HP    = java.util.UUID.fromString("a1b2c3d4-0001-0000-0000-000000000001");
-    private static final java.util.UUID UUID_DMG   = java.util.UUID.fromString("a1b2c3d4-0002-0000-0000-000000000002");
-    private static final java.util.UUID UUID_ARMOR = java.util.UUID.fromString("a1b2c3d4-0003-0000-0000-000000000003");
-    private static final java.util.UUID UUID_SPEED = java.util.UUID.fromString("a1b2c3d4-0004-0000-0000-000000000004");
-    private static final java.util.UUID UUID_ASPD  = java.util.UUID.fromString("a1b2c3d4-0005-0000-0000-000000000005");
-    private static final java.util.UUID UUID_LUCK  = java.util.UUID.fromString("a1b2c3d4-0006-0000-0000-000000000006");
-
+    // ── Attribute IDs ──
     private static final ResourceLocation ID_HP    = ResourceLocation.parse("dnd:class_max_health");
     private static final ResourceLocation ID_DMG   = ResourceLocation.parse("dnd:class_attack_damage");
     private static final ResourceLocation ID_ARMOR = ResourceLocation.parse("dnd:class_armor");
@@ -115,7 +111,6 @@ public record CharacterCreationPacket(
     private static final ResourceLocation ID_LUCK  = ResourceLocation.parse("dnd:class_luck");
 
     private static void applyAttrs(ServerPlayer player, Map<String, Double> attrs) {
-        // Remove old modifiers first (in case of recreation)
         removeIfPresent(player, Attributes.MAX_HEALTH,     ID_HP);
         removeIfPresent(player, Attributes.ATTACK_DAMAGE,  ID_DMG);
         removeIfPresent(player, Attributes.ARMOR,          ID_ARMOR);
@@ -126,29 +121,27 @@ public record CharacterCreationPacket(
         for (Map.Entry<String, Double> e : attrs.entrySet()) {
             if (e.getValue() == 0) continue;
             switch (e.getKey()) {
-                case "Max Health"     -> addMod(player, Attributes.MAX_HEALTH,     ID_HP,    e.getValue(), AttributeModifier.Operation.ADD_VALUE);
-                case "Attack Damage"  -> addMod(player, Attributes.ATTACK_DAMAGE,  ID_DMG,   e.getValue(), AttributeModifier.Operation.ADD_VALUE);
-                case "Armor"          -> addMod(player, Attributes.ARMOR,          ID_ARMOR, e.getValue(), AttributeModifier.Operation.ADD_VALUE);
-                case "Movement Speed" -> addMod(player, Attributes.MOVEMENT_SPEED, ID_SPEED, e.getValue(), AttributeModifier.Operation.ADD_VALUE);
-                case "Attack Speed"   -> addMod(player, Attributes.ATTACK_SPEED,   ID_ASPD,  e.getValue(), AttributeModifier.Operation.ADD_VALUE);
-                case "Luck"           -> addMod(player, Attributes.LUCK,           ID_LUCK,  e.getValue(), AttributeModifier.Operation.ADD_VALUE);
+                case "Max Health"     -> addMod(player, Attributes.MAX_HEALTH,     ID_HP,    e.getValue());
+                case "Attack Damage"  -> addMod(player, Attributes.ATTACK_DAMAGE,  ID_DMG,   e.getValue());
+                case "Armor"          -> addMod(player, Attributes.ARMOR,          ID_ARMOR, e.getValue());
+                case "Movement Speed" -> addMod(player, Attributes.MOVEMENT_SPEED, ID_SPEED, e.getValue());
+                case "Attack Speed"   -> addMod(player, Attributes.ATTACK_SPEED,   ID_ASPD,  e.getValue());
+                case "Luck"           -> addMod(player, Attributes.LUCK,           ID_LUCK,  e.getValue());
             }
         }
     }
 
     private static void addMod(ServerPlayer player,
                                net.minecraft.core.Holder<net.minecraft.world.entity.ai.attributes.Attribute> attr,
-                               ResourceLocation id, double value,
-                               AttributeModifier.Operation op) {
-        var instance = player.getAttribute(attr);
-        if (instance != null)
-            instance.addPermanentModifier(new AttributeModifier(id, value, op));
+                               ResourceLocation id, double value) {
+        var inst = player.getAttribute(attr);
+        if (inst != null) inst.addPermanentModifier(new AttributeModifier(id, value, AttributeModifier.Operation.ADD_VALUE));
     }
 
     private static void removeIfPresent(ServerPlayer player,
                                         net.minecraft.core.Holder<net.minecraft.world.entity.ai.attributes.Attribute> attr,
                                         ResourceLocation id) {
-        var instance = player.getAttribute(attr);
-        if (instance != null) instance.removeModifier(id);
+        var inst = player.getAttribute(attr);
+        if (inst != null) inst.removeModifier(id);
     }
 }
