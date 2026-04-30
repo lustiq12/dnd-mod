@@ -1,13 +1,13 @@
 {
   "replace": false,
   "values": [
-    "minecraft:netherite_boots",
-    "minecraft:diamond_leggings",
-    "minecraft:diamond_boots",
-    "minecraft:netherite_helmet",
-    "minecraft:netherite_chestplate",
-    "minecraft:diamond_helmet",
-    "minecraft:diamond_chestplate",
-    "minecraft:netherite_leggings"
+    "minecraft:golden_helmet",
+    "minecraft:iron_leggings",
+    "minecraft:golden_leggings",
+    "minecraft:iron_helmet",
+    "minecraft:golden_chestplate",
+    "minecraft:iron_chestplate",
+    "minecraft:golden_boots",
+    "minecraft:iron_boots"
   ]
 }

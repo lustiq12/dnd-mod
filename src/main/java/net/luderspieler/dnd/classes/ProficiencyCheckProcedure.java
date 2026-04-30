@@ -66,7 +66,6 @@ public class ProficiencyCheckProcedure {
         // ── CHECK ARMOR SLOTS ──
         for (int i = 36; i <= 39; i++) {
             ItemStack armor = player.getInventory().getItem(i);
-            player.displayClientMessage(Component.literal("test"), false);
             if (armor.isEmpty()) continue;
             if (isTagged(armor, TAG_LIGHT)  && !proficiencies.contains("light_armor"))  { lacksProf = true; break; }
             if (isTagged(armor, TAG_MEDIUM) && !proficiencies.contains("medium_armor")) { lacksProf = true; break; }

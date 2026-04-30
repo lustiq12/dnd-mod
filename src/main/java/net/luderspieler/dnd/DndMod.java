@@ -1,6 +1,5 @@
 package net.luderspieler.dnd;
 
-import net.luderspieler.dnd.classes.ProficiencyCheckProcedure;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -26,6 +25,7 @@ import net.luderspieler.dnd.init.DndModTabs;
 import net.luderspieler.dnd.init.DndModMenus;
 import net.luderspieler.dnd.init.DndModItems;
 import net.luderspieler.dnd.init.DndModEntities;
+import net.luderspieler.dnd.classes.ProficiencyCheckProcedure;
 import net.luderspieler.dnd.classes.CharacterCreationEventHandler;
 
 import javax.annotation.Nullable;

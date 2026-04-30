@@ -182,6 +182,16 @@
   "sound_elements": [],
   "tag_elements": {
     "ITEMS:mod:light_armor": [
+      "Items.LEATHER_HELMET",
+      "Items.LEATHER_CHESTPLATE",
+      "Items.LEATHER_LEGGINGS",
+      "Items.LEATHER_BOOTS",
+      "Items.CHAINMAIL_HELMET",
+      "Items.CHAINMAIL_CHESTPLATE",
+      "Items.CHAINMAIL_LEGGINGS",
+      "Items.CHAINMAIL_BOOTS"
+    ],
+    "ITEMS:mod:medium_armor": [
       "Items.IRON_HELMET",
       "Items.IRON_CHESTPLATE",
       "Items.IRON_LEGGINGS",
@@ -191,25 +201,32 @@
       "Items.GOLDEN_LEGGINGS",
       "Items.GOLDEN_BOOTS"
     ],
-    "ITEMS:mod:medium_armor": [
-      "Items.NETHERITE_HELMET",
-      "Items.NETHERITE_CHESTPLATE",
-      "Items.NETHERITE_LEGGINGS",
-      "Items.NETHERITE_BOOTS",
+    "ITEMS:mod:heavy_armor": [
       "Items.DIAMOND_HELMET",
       "Items.DIAMOND_CHESTPLATE",
       "Items.DIAMOND_LEGGINGS",
-      "Items.DIAMOND_BOOTS"
+      "Items.DIAMOND_BOOTS",
+      "Items.NETHERITE_HELMET",
+      "Items.NETHERITE_CHESTPLATE",
+      "Items.NETHERITE_LEGGINGS",
+      "Items.NETHERITE_BOOTS"
     ],
-    "ITEMS:mo:heavy_armor": [
-      "Items.LEATHER_HELMET",
-      "Items.LEATHER_CHESTPLATE",
-      "Items.LEATHER_LEGGINGS",
-      "Items.LEATHER_BOOTS",
-      "Items.CHAINMAIL_HELMET",
-      "Items.CHAINMAIL_CHESTPLATE",
-      "Items.CHAINMAIL_LEGGINGS",
-      "Items.CHAINMAIL_BOOTS"
+    "ITEMS:mod:simple_weapons": [
+      "Items.STONE_SWORD",
+      "Items.STONE_AXE",
+      "Items.GOLDEN_SWORD",
+      "Items.GOLDEN_AXE"
+    ],
+    "ITEMS:mod:war_weapons": [
+      "Items.SHIELD"
+    ],
+    "ITEMS:mod:shields": [
+      "Items.IRON_SWORD",
+      "Items.DIAMOND_SWORD",
+      "Items.NETHERITE_SWORD",
+      "Items.IRON_AXE",
+      "Items.DIAMOND_AXE",
+      "Items.NETHERITE_AXE"
     ]
   },
   "tab_element_order": {},
