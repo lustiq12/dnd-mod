@@ -1,6 +1,6 @@
 version:4440
 ao:true
-biomeBlendRadius:2
+biomeBlendRadius:3
 enableVsync:false
 entityDistanceScaling:1.0
 entityShadows:true
