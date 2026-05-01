@@ -98,7 +98,7 @@ public class RaceDetailScreen extends Screen {
         g.drawString(this.font, "Traits:", leftPos + 10, attrY, -1);
         attrY += 12;
         for (String line : race.getAbilityLines()) {
-            g.drawWordWrap(this.font, Component.literal("• " + line), leftPos + 10, attrY, 180, -1);
+            g.drawWordWrap(this.font, Component.literal("» " + line), leftPos + 10, attrY, 180, -1);
             attrY += 18;
         }
     }

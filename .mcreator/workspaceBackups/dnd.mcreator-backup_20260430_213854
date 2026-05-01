@@ -11,8 +11,7 @@
           "src/main/java/net/luderspieler/dnd/client/gui/PreviewGUIScreen.java",
           "src/main/java/net/luderspieler/dnd/world/inventory/PreviewGUIMenu.java"
         ]
-      },
-      "path": "~/Class_Species_System"
+      }
     },
     {
       "name": "Stirge",
@@ -29,7 +28,7 @@
           "src/main/resources/data/dnd/neoforge/biome_modifier/stirge_biome_modifier.json"
         ]
       },
-      "path": "~/Monsters"
+      "path": "~/Monsters/Stirge"
     },
     {
       "name": "StirgeIdleCooldown",
@@ -48,7 +47,7 @@
           "src/main/java/net/luderspieler/dnd/procedures/StirgeIdleCooldownProcedure.java"
         ]
       },
-      "path": "~/Monsters/AnimSync"
+      "path": "~/Monsters/Stirge"
     },
     {
       "name": "StirgeAnimSync",
@@ -83,7 +82,7 @@
           "src/main/java/net/luderspieler/dnd/procedures/StirgeAnimSyncProcedure.java"
         ]
       },
-      "path": "~/Monsters/AnimSync"
+      "path": "~/Monsters/Stirge"
     },
     {
       "name": "StirgeAttackPlaybackCondition",
@@ -103,7 +102,7 @@
           "src/main/java/net/luderspieler/dnd/procedures/StirgeAttackPlaybackConditionProcedure.java"
         ]
       },
-      "path": "~/Monsters/AnimSync"
+      "path": "~/Monsters/Stirge"
     }
   ],
   "variable_elements": [
@@ -172,10 +171,64 @@
       "type": "number",
       "scope": "player_persistent",
       "value": "0"
+    },
+    {
+      "name": "Proficiencys",
+      "type": "string",
+      "scope": "player_persistent",
+      "value": "\"\""
     }
   ],
   "sound_elements": [],
-  "tag_elements": {},
+  "tag_elements": {
+    "ITEMS:mod:light_armor": [
+      "Items.LEATHER_HELMET",
+      "Items.LEATHER_CHESTPLATE",
+      "Items.LEATHER_LEGGINGS",
+      "Items.LEATHER_BOOTS",
+      "Items.CHAINMAIL_HELMET",
+      "Items.CHAINMAIL_CHESTPLATE",
+      "Items.CHAINMAIL_LEGGINGS",
+      "Items.CHAINMAIL_BOOTS"
+    ],
+    "ITEMS:mod:medium_armor": [
+      "Items.IRON_HELMET",
+      "Items.IRON_CHESTPLATE",
+      "Items.IRON_LEGGINGS",
+      "Items.IRON_BOOTS",
+      "Items.GOLDEN_HELMET",
+      "Items.GOLDEN_CHESTPLATE",
+      "Items.GOLDEN_LEGGINGS",
+      "Items.GOLDEN_BOOTS"
+    ],
+    "ITEMS:mod:heavy_armor": [
+      "Items.DIAMOND_HELMET",
+      "Items.DIAMOND_CHESTPLATE",
+      "Items.DIAMOND_LEGGINGS",
+      "Items.DIAMOND_BOOTS",
+      "Items.NETHERITE_HELMET",
+      "Items.NETHERITE_CHESTPLATE",
+      "Items.NETHERITE_LEGGINGS",
+      "Items.NETHERITE_BOOTS"
+    ],
+    "ITEMS:mod:simple_weapons": [
+      "Items.STONE_SWORD",
+      "Items.STONE_AXE",
+      "Items.GOLDEN_SWORD",
+      "Items.GOLDEN_AXE"
+    ],
+    "ITEMS:mod:war_weapons": [
+      "Items.IRON_SWORD",
+      "Items.DIAMOND_SWORD",
+      "Items.NETHERITE_SWORD",
+      "Items.IRON_AXE",
+      "Items.DIAMOND_AXE",
+      "Items.NETHERITE_AXE"
+    ],
+    "ITEMS:mod:shields": [
+      "Items.SHIELD"
+    ]
+  },
   "tab_element_order": {},
   "language_map": {
     "en_us": {
@@ -201,7 +254,8 @@
       "gui.dnd.preview_gui.label_fahigkeit3": "fähigkeit",
       "gui.dnd.preview_gui.label_attribute9": "attribute",
       "entity.dnd.stirge": "Stirge",
-      "item.dnd.stirge_spawn_egg": "Stirge Spawn Egg"
+      "item.dnd.stirge_spawn_egg": "Stirge Spawn Egg",
+      "gui.dnd.preview_gui.button_subclass1": "Subclass1"
     }
   },
   "metadata": {
@@ -235,7 +289,7 @@
         "name": "Monsters",
         "children": [
           {
-            "name": "AnimSync",
+            "name": "Stirge",
             "children": []
           }
         ]

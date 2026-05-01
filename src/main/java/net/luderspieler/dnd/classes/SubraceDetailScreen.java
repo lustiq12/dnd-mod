@@ -92,7 +92,7 @@ public class SubraceDetailScreen extends Screen {
         y += 14;
         for (String line : subrace.getAbilityLines()) {
             g.drawWordWrap(this.font,
-                    Component.literal("• " + line),
+                    Component.literal("» " + line),
                     rightColX, y, COL_WIDTH, -1);
             y += 20;
         }

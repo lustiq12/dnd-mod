@@ -10,8 +10,7 @@
       "[, D\u0026D, Source (Gradle), C:\\Users\\julia\\MCreatorWorkspaces\\dungerramityd\\src\\main\\java\\net, C:\\Users\\julia\\MCreatorWorkspaces\\dungerramityd\\src\\main\\java\\net\\luderspieler]",
       "[, D\u0026D, Source (Gradle), C:\\Users\\julia\\MCreatorWorkspaces\\dungerramityd\\src\\main\\java\\net, C:\\Users\\julia\\MCreatorWorkspaces\\dungerramityd\\src\\main\\java\\net\\luderspieler, C:\\Users\\julia\\MCreatorWorkspaces\\dungerramityd\\src\\main\\java\\net\\luderspieler\\dnd]",
       "[, D\u0026D, Source (Gradle), C:\\Users\\julia\\MCreatorWorkspaces\\dungerramityd\\src\\main\\java\\net, C:\\Users\\julia\\MCreatorWorkspaces\\dungerramityd\\src\\main\\java\\net\\luderspieler, C:\\Users\\julia\\MCreatorWorkspaces\\dungerramityd\\src\\main\\java\\net\\luderspieler\\dnd, C:\\Users\\julia\\MCreatorWorkspaces\\dungerramityd\\src\\main\\java\\net\\luderspieler\\dnd\\network]",
-      "[, D\u0026D, Source (Gradle), C:\\Users\\julia\\MCreatorWorkspaces\\dungerramityd\\src\\main\\java\\net, C:\\Users\\julia\\MCreatorWorkspaces\\dungerramityd\\src\\main\\java\\net\\mcreator]",
-      "[, D\u0026D, Source (Gradle), C:\\Users\\julia\\MCreatorWorkspaces\\dungerramityd\\src\\main\\java\\net, C:\\Users\\julia\\MCreatorWorkspaces\\dungerramityd\\src\\main\\java\\net\\mcreator, C:\\Users\\julia\\MCreatorWorkspaces\\dungerramityd\\src\\main\\java\\net\\mcreator\\dnd]"
+      "[, D\u0026D, Source (Gradle), C:\\Users\\julia\\MCreatorWorkspaces\\dungerramityd\\src\\main\\java\\net, C:\\Users\\julia\\MCreatorWorkspaces\\dungerramityd\\src\\main\\java\\net\\mcreator]"
     ]
   },
   "leftDockState": {
@@ -21,10 +20,9 @@
     }
   },
   "bottomDockState": {
-    "expandedDock": "code_viewer",
     "dockSizes": {
       "console": 300,
-      "code_viewer": 228,
+      "code_viewer": 543,
       "debugger": 300
     }
   }

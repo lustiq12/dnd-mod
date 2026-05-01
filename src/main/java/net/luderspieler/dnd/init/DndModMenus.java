@@ -17,6 +17,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.client.Minecraft;
 
 import net.luderspieler.dnd.world.inventory.PreviewGUIMenu;
+import net.luderspieler.dnd.world.inventory.ClassGUIMenu;
 import net.luderspieler.dnd.network.MenuStateUpdateMessage;
 import net.luderspieler.dnd.DndMod;
 
@@ -25,6 +26,7 @@ import java.util.Map;
 public class DndModMenus {
 	public static final DeferredRegister<MenuType<?>> REGISTRY = DeferredRegister.create(Registries.MENU, DndMod.MODID);
 	public static final DeferredHolder<MenuType<?>, MenuType<PreviewGUIMenu>> PREVIEW_GUI = REGISTRY.register("preview_gui", () -> IMenuTypeExtension.create(PreviewGUIMenu::new));
+	public static final DeferredHolder<MenuType<?>, MenuType<ClassGUIMenu>> CLASS_GUI = REGISTRY.register("class_gui", () -> IMenuTypeExtension.create(ClassGUIMenu::new));
 
 	public interface MenuAccessor {
 		Map<String, Object> getMenuState();

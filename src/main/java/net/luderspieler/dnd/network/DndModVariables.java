@@ -80,6 +80,17 @@ public class DndModVariables {
 		clone.PlayerSubclass = original.PlayerSubclass;
 		clone.PlayerXP = original.PlayerXP;
 		clone.Proficiencys = original.Proficiencys;
+		clone.CanUseMagic = original.CanUseMagic;
+		clone.PreparedCantrips = original.PreparedCantrips;
+		clone.PreparedSpellsLVL1 = original.PreparedSpellsLVL1;
+		clone.PreparedSpellsLVL2 = original.PreparedSpellsLVL2;
+		clone.PreparedSpellsLVL3 = original.PreparedSpellsLVL3;
+		clone.PreparedSpellsLVL4 = original.PreparedSpellsLVL4;
+		clone.PreparedSpellsLVL5 = original.PreparedSpellsLVL5;
+		clone.PreparedSpellsLVL6 = original.PreparedSpellsLVL6;
+		clone.PreparedSpellsLVL7 = original.PreparedSpellsLVL7;
+		clone.PreparedSpellsLVL8 = original.PreparedSpellsLVL8;
+		clone.PreparedSpellsLVL9 = original.PreparedSpellsLVL9;
 		if (!event.isWasDeath()) {
 			clone.FinishedCharacterCreation = original.FinishedCharacterCreation;
 		}
@@ -100,6 +111,17 @@ public class DndModVariables {
 		public String PlayerSubclass = "\"\"";
 		public double PlayerXP = 0;
 		public String Proficiencys = "\"\"";
+		public boolean CanUseMagic = false;
+		public String PreparedCantrips = "\"\"";
+		public String PreparedSpellsLVL1 = "\"\"";
+		public String PreparedSpellsLVL2 = "\"\"";
+		public String PreparedSpellsLVL3 = "\"\"";
+		public String PreparedSpellsLVL4 = "\"\"";
+		public String PreparedSpellsLVL5 = "\"\"";
+		public String PreparedSpellsLVL6 = "\"\"";
+		public String PreparedSpellsLVL7 = "\"\"";
+		public String PreparedSpellsLVL8 = "\"\"";
+		public String PreparedSpellsLVL9 = "\"\"";
 
 		@Override
 		public void serialize(ValueOutput output) {
@@ -115,6 +137,17 @@ public class DndModVariables {
 			output.putString("PlayerSubclass", PlayerSubclass);
 			output.putDouble("PlayerXP", PlayerXP);
 			output.putString("Proficiencys", Proficiencys);
+			output.putBoolean("CanUseMagic", CanUseMagic);
+			output.putString("PreparedCantrips", PreparedCantrips);
+			output.putString("PreparedSpellsLVL1", PreparedSpellsLVL1);
+			output.putString("PreparedSpellsLVL2", PreparedSpellsLVL2);
+			output.putString("PreparedSpellsLVL3", PreparedSpellsLVL3);
+			output.putString("PreparedSpellsLVL4", PreparedSpellsLVL4);
+			output.putString("PreparedSpellsLVL5", PreparedSpellsLVL5);
+			output.putString("PreparedSpellsLVL6", PreparedSpellsLVL6);
+			output.putString("PreparedSpellsLVL7", PreparedSpellsLVL7);
+			output.putString("PreparedSpellsLVL8", PreparedSpellsLVL8);
+			output.putString("PreparedSpellsLVL9", PreparedSpellsLVL9);
 		}
 
 		@Override
@@ -131,6 +164,17 @@ public class DndModVariables {
 			PlayerSubclass = input.getStringOr("PlayerSubclass", "");
 			PlayerXP = input.getDoubleOr("PlayerXP", 0);
 			Proficiencys = input.getStringOr("Proficiencys", "");
+			CanUseMagic = input.getBooleanOr("CanUseMagic", false);
+			PreparedCantrips = input.getStringOr("PreparedCantrips", "");
+			PreparedSpellsLVL1 = input.getStringOr("PreparedSpellsLVL1", "");
+			PreparedSpellsLVL2 = input.getStringOr("PreparedSpellsLVL2", "");
+			PreparedSpellsLVL3 = input.getStringOr("PreparedSpellsLVL3", "");
+			PreparedSpellsLVL4 = input.getStringOr("PreparedSpellsLVL4", "");
+			PreparedSpellsLVL5 = input.getStringOr("PreparedSpellsLVL5", "");
+			PreparedSpellsLVL6 = input.getStringOr("PreparedSpellsLVL6", "");
+			PreparedSpellsLVL7 = input.getStringOr("PreparedSpellsLVL7", "");
+			PreparedSpellsLVL8 = input.getStringOr("PreparedSpellsLVL8", "");
+			PreparedSpellsLVL9 = input.getStringOr("PreparedSpellsLVL9", "");
 		}
 
 		public void markSyncDirty() {

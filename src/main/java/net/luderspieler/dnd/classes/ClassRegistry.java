@@ -62,18 +62,281 @@ public class ClassRegistry {
     private static final List<ItemStack> WIZARD_ITEMS    = List.of(new ItemStack(Items.STICK), new ItemStack(Items.ENCHANTED_BOOK), new ItemStack(Items.LAPIS_LAZULI, 10));
 
     // ── ABILITIES ──
-    private static final List<String> BARBARIAN_AB = List.of("Rage: Bonus damage while raging","Reckless Attack: Advantage on melee attacks","Danger Sense: Advantage on DEX saves vs traps","Fast Movement: +10ft speed without heavy armor","Feral Instinct: Advantage on initiative rolls");
-    private static final List<String> BARD_AB      = List.of("Bardic Inspiration: Grant allies a d6 bonus die","Jack of All Trades: Half proficiency to all skills","Song of Rest: Bonus healing during short rests","Expertise: Double proficiency in two chosen skills","Magical Secrets: Learn spells from any class list");
-    private static final List<String> CLERIC_AB    = List.of("Channel Divinity: Harness divine energy twice per rest","Turn Undead: Frighten nearby undead creatures","Destroy Undead: Instantly destroy weak undead","Divine Intervention: Call upon your deity for aid","Blessed Strikes: Bonus radiant damage on attacks");
-    private static final List<String> DRUID_AB     = List.of("Wild Shape: Transform into a beast form","Timeless Body: Age at one tenth the normal rate","Beast Spells: Cast spells while in Wild Shape","Archdruid: Unlimited Wild Shape uses");
-    private static final List<String> FIGHTER_AB   = List.of("Second Wind: Recover HP as a bonus action","Action Surge: Take one additional action per rest","Extra Attack: Attack up to four times per action","Indomitable: Reroll a failed saving throw");
-    private static final List<String> MONK_AB      = List.of("Flurry of Blows: Two extra unarmed strikes with ki","Patient Defense: Dodge as a bonus action","Step of the Wind: Dash or Disengage as bonus action","Stunning Strike: Spend ki to stun a creature on hit","Evasion: No damage on successful DEX saves");
-    private static final List<String> PALADIN_AB   = List.of("Lay on Hands: Pool of HP to distribute as healing","Divine Smite: Spend spell slot for radiant damage","Aura of Protection: Charisma modifier to all saves","Aura of Courage: Nearby allies immune to frightened","Cleansing Touch: Remove spells with a touch");
-    private static final List<String> RANGER_AB    = List.of("Favored Enemy: Bonus against a chosen creature type","Natural Explorer: Expertise navigating chosen terrain","Primeval Awareness: Sense creatures by type nearby","Hide in Plain Sight: +10 to hide when motionless","Vanish: Hide as bonus action, can't be tracked");
-    private static final List<String> ROGUE_AB     = List.of("Sneak Attack: Extra damage when you have advantage","Thieves' Cant: Secret language of the criminal world","Cunning Action: Dash, Hide, or Disengage as bonus","Uncanny Dodge: Halve damage from one attack per turn","Evasion: Avoid damage entirely on successful DEX saves");
-    private static final List<String> SORCERER_AB  = List.of("Sorcery Points: Fuel metamagic and spell conversion","Metamagic: Modify spells (Twinned, Quickened, etc.)","Font of Magic: Convert between points and spell slots","Innate Sorcery: Bonus to spell attack and save DC");
-    private static final List<String> WARLOCK_AB   = List.of("Eldritch Blast: Primary damage cantrip beam","Invocations: Customize abilities and spell access","Pact Boon: Choose weapon, tome, chain or talisman","Mystic Arcanum: Cast a high-level spell once per day","Eldritch Master: Recover all spell slots in one minute");
-    private static final List<String> WIZARD_AB    = List.of("Arcane Recovery: Recover spell slots on short rest","Spellbook: Learn and prepare spells from written sources","Spell Mastery: Cast two spells without using spell slots","Signature Spell: Cast two 3rd-level spells for free");
+    private static final List<String> BARBARIAN_AB = List.of(
+            "Lvl 1: Rage, Unarmored Defense, Weapon Mastery",
+            "Lvl 2: Danger Sense, Reckless Attack",
+            "Lvl 3: Barbarian Path (Subclass)",
+            "Lvl 4: Attribute Increase / Feat",
+            "Lvl 5: Extra Attack, Fast Movement",
+            "Lvl 6: Subclass Feature",
+            "Lvl 7: Instinctive Pounce, Feral Instinct",
+            "Lvl 8: Attribute Increase / Feat",
+            "Lvl 9: Brutal Strike",
+            "Lvl 10: Subclass Feature",
+            "Lvl 11: Relentless Rage",
+            "Lvl 12: Attribute Increase / Feat",
+            "Lvl 13: Brutal Strike (Improvement)",
+            "Lvl 14: Subclass Feature",
+            "Lvl 15: Persistent Rage",
+            "Lvl 16: Attribute Increase / Feat",
+            "Lvl 17: Brutal Strike (Improvement)",
+            "Lvl 18: Indomitable Might",
+            "Lvl 19: Attribute Increase / Feat",
+            "Lvl 20: Epic Boon, Primal Champion"
+    );
+
+    private static final List<String> BARD_AB = List.of(
+            "Lvl 1: Spellcasting, Bardic Inspiration, Weapon Mastery (2x Lvl 1 SSl)",
+            "Lvl 2: Jack of All Trades, Magical Counseling (+1x Lvl 1 SSl)",
+            "Lvl 3: Bard College (Subclass), Expertise (+1x Lvl 1, 2x Lvl 2 SSl)",
+            "Lvl 4: Attribute Increase / Feat (+1x Lvl 2 SSl)",
+            "Lvl 5: Font of Inspiration (+2x Lvl 3 SSl)",
+            "Lvl 6: Subclass Feature, Countercharm (+1x Lvl 3 SSl)",
+            "Lvl 7: Magical Counseling (Improvement) (+1x Lvl 4 SSl)",
+            "Lvl 8: Attribute Increase / Feat (+1x Lvl 4 SSl)",
+            "Lvl 9: Magical Secrets (+1x Lvl 4, 1x Lvl 5 SSl)",
+            "Lvl 10: Subclass Feature, Expertise (+1x Lvl 5 SSl)",
+            "Lvl 11: Higher Level Spell Slots (+1x Lvl 6 SSl)",
+            "Lvl 12: Attribute Increase / Feat",
+            "Lvl 13: Higher Level Spell Slots (+1x Lvl 7 SSl)",
+            "Lvl 14: Subclass Feature",
+            "Lvl 15: Higher Level Spell Slots (+1x Lvl 8 SSl)",
+            "Lvl 16: Attribute Increase / Feat",
+            "Lvl 17: Higher Level Spell Slots (+1x Lvl 9 SSl)",
+            "Lvl 18: Superior Inspiration (+1x Lvl 5 SSl)",
+            "Lvl 19: Attribute Increase / Feat (+1x Lvl 6 SSl)",
+            "Lvl 20: Epic Boon (+1x Lvl 7 SSl)"
+    );
+
+    private static final List<String> CLERIC_AB = List.of(
+            "Lvl 1: Spellcasting, Divine Order (2x Lvl 1 SSl)",
+            "Lvl 2: Channel Divinity (+1x Lvl 1 SSl)",
+            "Lvl 3: Cleric Domain (Subclass) (+1x Lvl 1, 2x Lvl 2 SSl)",
+            "Lvl 4: Attribute Increase / Feat (+1x Lvl 2 SSl)",
+            "Lvl 5: Destroy Undead, Blessed Strikes (+2x Lvl 3 SSl)",
+            "Lvl 6: Subclass Feature (+1x Lvl 3 SSl)",
+            "Lvl 7: Higher Level Spell Slots (+1x Lvl 4 SSl)",
+            "Lvl 8: Attribute Increase / Feat (+1x Lvl 4 SSl)",
+            "Lvl 9: Divine Intervention (+1x Lvl 4, 1x Lvl 5 SSl)",
+            "Lvl 10: Subclass Feature (+1x Lvl 5 SSl)",
+            "Lvl 11: Higher Level Spell Slots (+1x Lvl 6 SSl)",
+            "Lvl 12: Attribute Increase / Feat",
+            "Lvl 13: Higher Level Spell Slots (+1x Lvl 7 SSl)",
+            "Lvl 14: Improved Divine Intervention",
+            "Lvl 15: Higher Level Spell Slots (+1x Lvl 8 SSl)",
+            "Lvl 16: Attribute Increase / Feat",
+            "Lvl 17: Higher Level Spell Slots (+1x Lvl 9 SSl)",
+            "Lvl 18: Higher Level Spell Slots (+1x Lvl 5 SSl)",
+            "Lvl 19: Attribute Increase / Feat (+1x Lvl 6 SSl)",
+            "Lvl 20: Epic Boon, Greater Divine Intervention (+1x Lvl 7 SSl)"
+    );
+
+    private static final List<String> DRUID_AB = List.of(
+            "Lvl 1: Spellcasting, Primal Order, Wild Shape (2x Lvl 1 SSl)",
+            "Lvl 2: Wild Companion, Magical Counseling (+1x Lvl 1 SSl)",
+            "Lvl 3: Druid Circle (Subclass) (+1x Lvl 1, 2x Lvl 2 SSl)",
+            "Lvl 4: Attribute Increase / Feat (+1x Lvl 2 SSl)",
+            "Lvl 5: Wild Shape Improvement (+2x Lvl 3 SSl)",
+            "Lvl 6: Subclass Feature (+1x Lvl 3 SSl)",
+            "Lvl 7: Magical Counseling Improvement (+1x Lvl 4 SSl)",
+            "Lvl 8: Attribute Increase / Feat (+1x Lvl 4 SSl)",
+            "Lvl 9: Higher Level Spell Slots (+1x Lvl 4, 1x Lvl 5 SSl)",
+            "Lvl 10: Subclass Feature (+1x Lvl 5 SSl)",
+            "Lvl 11: Higher Level Spell Slots (+1x Lvl 6 SSl)",
+            "Lvl 12: Attribute Increase / Feat",
+            "Lvl 13: Higher Level Spell Slots (+1x Lvl 7 SSl)",
+            "Lvl 14: Subclass Feature",
+            "Lvl 15: Higher Level Spell Slots (+1x Lvl 8 SSl)",
+            "Lvl 16: Attribute Increase / Feat",
+            "Lvl 17: Higher Level Spell Slots (+1x Lvl 9 SSl)",
+            "Lvl 18: Beast Spells (+1x Lvl 5 SSl)",
+            "Lvl 19: Attribute Increase / Feat (+1x Lvl 6 SSl)",
+            "Lvl 20: Epic Boon, Archdruid (+1x Lvl 7 SSl)"
+    );
+
+    private static final List<String> FIGHTER_AB = List.of(
+            "Lvl 1: Fighting Style, Second Wind, Weapon Mastery",
+            "Lvl 2: Action Surge",
+            "Lvl 3: Fighter Archetype (Subclass)",
+            "Lvl 4: Attribute Increase / Feat",
+            "Lvl 5: Extra Attack",
+            "Lvl 6: Attribute Increase / Feat",
+            "Lvl 7: Tactical Mind",
+            "Lvl 8: Attribute Increase / Feat",
+            "Lvl 9: Indomitable",
+            "Lvl 10: Subclass Feature",
+            "Lvl 11: Extra Attack (2)",
+            "Lvl 12: Attribute Increase / Feat",
+            "Lvl 13: Tactical Shift",
+            "Lvl 14: Attribute Increase / Feat",
+            "Lvl 15: Subclass Feature",
+            "Lvl 16: Attribute Increase / Feat",
+            "Lvl 17: Action Surge (2), Indomitable (2)",
+            "Lvl 18: Subclass Feature",
+            "Lvl 19: Attribute Increase / Feat",
+            "Lvl 20: Epic Boon, Weapon Supreme"
+    );
+
+    private static final List<String> MONK_AB = List.of(
+            "Lvl 1: Martial Arts, Unarmored Defense",
+            "Lvl 2: Focus Points, Uncanny Metabolism, Unarmored Movement",
+            "Lvl 3: Monk Subclass, Deflect Attacks",
+            "Lvl 4: Attribute Increase / Feat, Slow Fall",
+            "Lvl 5: Extra Attack, Stunning Strike",
+            "Lvl 6: Subclass Feature, Empowered Strikes",
+            "Lvl 7: Evasion, Stillness of Mind",
+            "Lvl 8: Attribute Increase / Feat",
+            "Lvl 9: Unarmored Movement Improvement",
+            "Lvl 10: Subclass Feature, Heightened Focus",
+            "Lvl 11: Class Scaling (Martial Arts)",
+            "Lvl 12: Attribute Increase / Feat",
+            "Lvl 13: Deflect Energy",
+            "Lvl 14: Subclass Feature",
+            "Lvl 15: Perfect Focus",
+            "Lvl 16: Attribute Increase / Feat",
+            "Lvl 17: Class Scaling (Martial Arts)",
+            "Lvl 18: Self-Restoration",
+            "Lvl 19: Attribute Increase / Feat",
+            "Lvl 20: Epic Boon, Body and Mind"
+    );
+
+    private static final List<String> PALADIN_AB = List.of(
+            "Lvl 1: Lay on Hands, Spellcasting, Weapon Mastery (2x Lvl 1 SSl)",
+            "Lvl 2: Divine Smite, Fighting Style",
+            "Lvl 3: Paladin Oath (Subclass), Channel Divinity (+1x Lvl 1 SSl)",
+            "Lvl 4: Attribute Increase / Feat",
+            "Lvl 5: Extra Attack (+1x Lvl 1, 2x Lvl 2 SSl)",
+            "Lvl 6: Aura of Protection",
+            "Lvl 7: Subclass Feature (+1x Lvl 2 SSl)",
+            "Lvl 8: Attribute Increase / Feat",
+            "Lvl 9: Abjure Foes (+2x Lvl 3 SSl)",
+            "Lvl 10: Aura of Courage",
+            "Lvl 11: Radiant Smite (+1x Lvl 3 SSl)",
+            "Lvl 12: Attribute Increase / Feat",
+            "Lvl 13: Higher Level Spell Slots (+1x Lvl 4 SSl)",
+            "Lvl 14: Restoring Touch",
+            "Lvl 15: Higher Level Spell Slots (+1x Lvl 4 SSl)",
+            "Lvl 16: Attribute Increase / Feat",
+            "Lvl 17: Higher Level Spell Slots (+1x Lvl 4, 1x Lvl 5 SSl)",
+            "Lvl 18: Aura Wings",
+            "Lvl 19: Attribute Increase / Feat (+1x Lvl 5 SSl)",
+            "Lvl 20: Epic Boon, Oath Paragon"
+    );
+
+    private static final List<String> RANGER_AB = List.of(
+            "Lvl 1: Spellcasting, Favored Enemy, Weapon Mastery (2x Lvl 1 SSl)",
+            "Lvl 2: Fighting Style, Deft Explorer",
+            "Lvl 3: Ranger Archetype (Subclass) (+1x Lvl 1 SSl)",
+            "Lvl 4: Attribute Increase / Feat",
+            "Lvl 5: Extra Attack (+1x Lvl 1, 2x Lvl 2 SSl)",
+            "Lvl 6: Subclass Feature, Roving",
+            "Lvl 7: Higher Level Spell Slots (+1x Lvl 2 SSl)",
+            "Lvl 8: Attribute Increase / Feat",
+            "Lvl 9: Expertise (+2x Lvl 3 SSl)",
+            "Lvl 10: Subclass Feature, Tireless",
+            "Lvl 11: Higher Level Spell Slots (+1x Lvl 3 SSl)",
+            "Lvl 12: Attribute Increase / Feat",
+            "Lvl 13: Higher Level Spell Slots (+1x Lvl 4 SSl)",
+            "Lvl 14: Subclass Feature, Nature's Veil",
+            "Lvl 15: Higher Level Spell Slots (+1x Lvl 4 SSl)",
+            "Lvl 16: Attribute Increase / Feat",
+            "Lvl 17: Higher Level Spell Slots (+1x Lvl 4, 1x Lvl 5 SSl)",
+            "Lvl 18: Feral Senses",
+            "Lvl 19: Attribute Increase / Feat (+1x Lvl 5 SSl)",
+            "Lvl 20: Epic Boon, Foe Slayer"
+    );
+
+    private static final List<String> ROGUE_AB = List.of(
+            "Lvl 1: Sneak Attack, Thieves' Cant, Expertise",
+            "Lvl 2: Cunning Action",
+            "Lvl 3: Rogue Archetype (Subclass), Steady Aim",
+            "Lvl 4: Attribute Increase / Feat",
+            "Lvl 5: Uncanny Dodge",
+            "Lvl 6: Expertise",
+            "Lvl 7: Evasion",
+            "Lvl 8: Attribute Increase / Feat",
+            "Lvl 9: Subclass Feature",
+            "Lvl 10: Attribute Increase / Feat",
+            "Lvl 11: Reliable Talent",
+            "Lvl 12: Attribute Increase / Feat",
+            "Lvl 13: Subclass Feature",
+            "Lvl 14: Devious Strikes",
+            "Lvl 15: Slippery Mind",
+            "Lvl 16: Attribute Increase / Feat",
+            "Lvl 17: Subclass Feature",
+            "Lvl 18: Elusive",
+            "Lvl 19: Attribute Increase / Feat",
+            "Lvl 20: Epic Boon, Luck of the Draw"
+    );
+
+    private static final List<String> SORCERER_AB = List.of(
+            "Lvl 1: Spellcasting, Sorcery Points, Innate Sorcery (2x Lvl 1 SSl)",
+            "Lvl 2: Metamagic (+1x Lvl 1 SSl)",
+            "Lvl 3: Sorcerous Origin (Subclass) (+1x Lvl 1, 2x Lvl 2 SSl)",
+            "Lvl 4: Attribute Increase / Feat (+1x Lvl 2 SSl)",
+            "Lvl 5: Higher Level Spell Slots (+2x Lvl 3 SSl)",
+            "Lvl 6: Subclass Feature (+1x Lvl 3 SSl)",
+            "Lvl 7: Sorcerous Restoration (+1x Lvl 4 SSl)",
+            "Lvl 8: Attribute Increase / Feat (+1x Lvl 4 SSl)",
+            "Lvl 9: Sorcerous Vitality (+1x Lvl 4, 1x Lvl 5 SSl)",
+            "Lvl 10: Subclass Feature (+1x Lvl 5 SSl)",
+            "Lvl 11: Higher Level Spell Slots (+1x Lvl 6 SSl)",
+            "Lvl 12: Attribute Increase / Feat",
+            "Lvl 13: Higher Level Spell Slots (+1x Lvl 7 SSl)",
+            "Lvl 14: Subclass Feature",
+            "Lvl 15: Higher Level Spell Slots (+1x Lvl 8 SSl)",
+            "Lvl 16: Attribute Increase / Feat",
+            "Lvl 17: Higher Level Spell Slots (+1x Lvl 9 SSl)",
+            "Lvl 18: Arcane Apotheosis (+1x Lvl 5 SSl)",
+            "Lvl 19: Attribute Increase / Feat (+1x Lvl 6 SSl)",
+            "Lvl 20: Epic Boon, Sorcerous Eminence (+1x Lvl 7 SSl)"
+    );
+
+    private static final List<String> WARLOCK_AB = List.of(
+            "Lvl 1: Spellcasting, Pact Magic, Pact Boon (1x Lvl 1 SSl)",
+            "Lvl 2: Eldritch Invocations (+1x Lvl 1 SSl)",
+            "Lvl 3: Warlock Patron (Subclass) (2x Lvl 2 SSl)",
+            "Lvl 4: Attribute Increase / Feat",
+            "Lvl 5: Invocation Upgrade (2x Lvl 3 SSl)",
+            "Lvl 6: Subclass Feature",
+            "Lvl 7: Invocation Upgrade (2x Lvl 4 SSl)",
+            "Lvl 8: Attribute Increase / Feat",
+            "Lvl 9: Contact Patron (2x Lvl 5 SSl)",
+            "Lvl 10: Subclass Feature",
+            "Lvl 11: Mystic Arcanum (Level 6) (3x Lvl 5 SSl)",
+            "Lvl 12: Attribute Increase / Feat",
+            "Lvl 13: Mystic Arcanum (Level 7)",
+            "Lvl 14: Subclass Feature",
+            "Lvl 15: Mystic Arcanum (Level 8)",
+            "Lvl 16: Attribute Increase / Feat",
+            "Lvl 17: Mystic Arcanum (Level 9) (4x Lvl 5 SSl)",
+            "Lvl 18: Eldritch Master",
+            "Lvl 19: Attribute Increase / Feat",
+            "Lvl 20: Epic Boon"
+    );
+
+    private static final List<String> WIZARD_AB = List.of(
+            "Lvl 1: Spellcasting, Arcane Recovery, Scholar (2x Lvl 1 SSl)",
+            "Lvl 2: Magical Counseling (+1x Lvl 1 SSl)",
+            "Lvl 3: Wizard Subclass (+1x Lvl 1, 2x Lvl 2 SSl)",
+            "Lvl 4: Attribute Increase / Feat (+1x Lvl 2 SSl)",
+            "Lvl 5: Higher Level Spell Slots (+2x Lvl 3 SSl)",
+            "Lvl 6: Subclass Feature (+1x Lvl 3 SSl)",
+            "Lvl 7: Higher Level Spell Slots (+1x Lvl 4 SSl)",
+            "Lvl 8: Attribute Increase / Feat (+1x Lvl 4 SSl)",
+            "Lvl 9: Higher Level Spell Slots (+1x Lvl 4, 1x Lvl 5 SSl)",
+            "Lvl 10: Subclass Feature (+1x Lvl 5 SSl)",
+            "Lvl 11: Higher Level Spell Slots (+1x Lvl 6 SSl)",
+            "Lvl 12: Attribute Increase / Feat",
+            "Lvl 13: Higher Level Spell Slots (+1x Lvl 7 SSl)",
+            "Lvl 14: Subclass Feature",
+            "Lvl 15: Higher Level Spell Slots (+1x Lvl 8 SSl)",
+            "Lvl 16: Attribute Increase / Feat",
+            "Lvl 17: Higher Level Spell Slots (+1x Lvl 9 SSl)",
+            "Lvl 18: Spell Mastery (+1x Lvl 5 SSl)",
+            "Lvl 19: Attribute Increase / Feat (+1x Lvl 6 SSl)",
+            "Lvl 20: Epic Boon, Signature Spells (+1x Lvl 7 SSl)"
+    );
 
     private static final List<String> BERSERKER_AB       = List.of("Frenzy: Extra attack each turn while raging","Mindless Rage: Immune to charm and frightened","Intimidating Presence: Frighten a creature nearby","Retaliation: React to damage with a melee attack");
     private static final List<String> WILD_HEART_AB      = List.of("Bestial Soul: Choose a natural weapon type","Animal Speaker: Cast Beast Sense and Speak with Animals","Totemic Attunement: Gain a beast power while raging");

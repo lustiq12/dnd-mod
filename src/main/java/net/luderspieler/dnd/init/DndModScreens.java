@@ -9,12 +9,14 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.api.distmarker.Dist;
 
 import net.luderspieler.dnd.client.gui.PreviewGUIScreen;
+import net.luderspieler.dnd.client.gui.ClassGUIScreen;
 
 @EventBusSubscriber(Dist.CLIENT)
 public class DndModScreens {
 	@SubscribeEvent
 	public static void clientLoad(RegisterMenuScreensEvent event) {
 		event.register(DndModMenus.PREVIEW_GUI.get(), PreviewGUIScreen::new);
+		event.register(DndModMenus.CLASS_GUI.get(), ClassGUIScreen::new);
 	}
 
 	public interface ScreenAccessor {
