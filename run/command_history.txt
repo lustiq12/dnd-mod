@@ -5,3 +5,15 @@
 /attribute Dev minecraft:attack_damage get
 /kill
 /attribute Dev minecraft:movement_speed get
+/kill
+/data get entity
+/data get entity 3c80bb96-f6b6-43b1-a4ed-7aca2b39d62e
+/data modify entity 3c80bb96-f6b6-43b1-a4ed-7aca2b39d62e IsScreamingGoat set value 1b
+/data get entity 3c80bb96-f6b6-43b1-a4ed-7aca2b39d62e
+/tp 3c80bb96-f6b6-43b1-a4ed-7aca2b39d62e lustiq12
+/tp 3c80bb96-f6b6-43b1-a4ed-7aca2b39d62e ~ ~ ~
+/time set day
+/tp 3c80bb96-f6b6-43b1-a4ed-7aca2b39d62e ~ ~ ~
+/kill
+/setworldspawn
+/kill
