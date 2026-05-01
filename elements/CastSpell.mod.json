@@ -4,6 +4,9 @@
   "definition": {
     "triggerKey": "F",
     "keyBindingName": "Cast Spell",
-    "keyBindingCategoryKey": "gameplay"
+    "keyBindingCategoryKey": "gameplay",
+    "onKeyPressed": {
+      "name": "StirgeIdleCooldown"
+    }
   }
 }

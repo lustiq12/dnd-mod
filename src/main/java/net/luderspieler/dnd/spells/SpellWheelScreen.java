@@ -1,9 +1,11 @@
 package net.luderspieler.dnd.spells;
 
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.luderspieler.dnd.network.DndModVariables;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 
@@ -15,7 +17,6 @@ import java.util.List;
  *   Stage 1: outer ring with 10 segments (0=Cantrip, 1-9=Spell Level)
  *   Stage 2: inner ring populated from PreparedCantrips / PreparedSpellsLVL1..9
  *             segment count = number of prepared spells at chosen level
- *
  * Selecting a spell in stage 2 fires CastSpellProcedure.execute(player, spellId, level)
  */
 public class SpellWheelScreen extends Screen {
@@ -29,16 +30,23 @@ public class SpellWheelScreen extends Screen {
     private static final float HOVER_EXPAND = 6f;
 
     // ── Colors ──
-    private static final int COL_SEGMENT_IDLE    = 0xAA1A1A2E;
-    private static final int COL_SEGMENT_HOVER   = 0xBB16213E;
-    private static final int COL_SEGMENT_SEL     = 0xCC0F3460;
-    private static final int COL_OUTLINE         = 0xFF53D8FB;
-    private static final int COL_HUB             = 0xFF0F3460;
-    private static final int COL_TEXT            = 0xFFFFFFFF;
-    private static final int COL_TEXT_HOVER      = 0xFF53D8FB;
-    private static final int COL_TEXT_DIM        = 0xFF888888;
-    private static final int COL_CANTRIP         = 0xAAFF9F1C;
-    private static final int COL_CANTRIP_HOVER   = 0xCCFFB347;
+// Hintergrund-Segmente (Grautöne mit Transparenz)
+    private static final int COL_SEGMENT_IDLE    = -1440546270; // 0xAA222222
+    private static final int COL_SEGMENT_HOVER   = -869055693;  // 0xCC333333
+    private static final int COL_SEGMENT_SEL     = -297515964;  // 0xEE444444
+
+    // Konturen & Zentrum (Voll deckend / Opaque)
+    private static final int COL_OUTLINE         = -15658735;   // 0xFF111111
+    private static final int COL_HUB             = -14540254;   // 0xFF222222
+
+    // Texte & Highlights
+    private static final int COL_TEXT            = -1;          // 0xFFFFFFFF (Reinweiß)
+    private static final int COL_TEXT_HOVER      = -171;        // 0xFFFFFF55 (MC-Gelb)
+    private static final int COL_TEXT_DIM        = -5592406;    // 0xFFAAAAAA (Standard-Grau)
+
+    // Cantrips (Gold-Kontrast)
+    private static final int COL_CANTRIP         = -1426093568; // 0xAAFFAA00
+    private static final int COL_CANTRIP_HOVER   = -855610317;  // 0xCCFFCC33
 
     // ── State ──
     private enum Stage { LEVEL_SELECT, SPELL_SELECT }
@@ -104,9 +112,12 @@ public class SpellWheelScreen extends Screen {
             boolean hovered = i == hoveredSegment;
 
             int outerR = hovered ? OUTER_RADIUS + (int)HOVER_EXPAND : OUTER_RADIUS;
-            int color  = i == 0
-                    ? (hovered ? COL_CANTRIP_HOVER : COL_CANTRIP)
-                    : (hovered ? COL_SEGMENT_HOVER : COL_SEGMENT_IDLE);
+            int color;
+            if (i == 0) {
+                color = hovered ? COL_CANTRIP_HOVER : COL_CANTRIP;
+            } else {
+                color = hovered ? COL_SEGMENT_HOVER : COL_SEGMENT_IDLE;
+            }
 
             drawSegment(g, cx, cy, HUB_RADIUS, outerR, start, end, color, COL_OUTLINE);
 
@@ -114,7 +125,7 @@ public class SpellWheelScreen extends Screen {
             double mid   = (start + end) / 2;
             int lx = cx + (int)(LABEL_RADIUS_OUTER * Math.cos(mid));
             int ly = cy + (int)(LABEL_RADIUS_OUTER * Math.sin(mid));
-            String label = i == 0 ? "Cantrip" : "Lvl " + i;
+            String label = i == 0 ? "Cantrip" : "grade " + i;
             int textColor = hasSpellsAtLevel(i) ? (hovered ? COL_TEXT_HOVER : COL_TEXT) : COL_TEXT_DIM;
             drawCenteredShadow(g, label, lx, ly, textColor);
         }
@@ -163,7 +174,7 @@ public class SpellWheelScreen extends Screen {
 
         // Hub — back button
         drawCircle(g, cx, cy, HUB_RADIUS, COL_HUB, COL_OUTLINE);
-        String levelLabel = selectedLevel == 0 ? "Cantrip" : "Lvl " + selectedLevel;
+        String levelLabel = selectedLevel == 0 ? "Cantrip" : "grade " + selectedLevel;
         drawCenteredShadow(g, levelLabel, cx, cy - 4, COL_TEXT);
         drawCenteredShadow(g, "Back", cx, cy + 4, 0xFFAAAAAA);
     }
@@ -305,17 +316,18 @@ public class SpellWheelScreen extends Screen {
         int steps = 32;
         double range = endAngle - startAngle;
 
-        // Fill using pose matrix triangles
-        var matrix = g.pose().last().pose();
-        var buf = g.bufferSource().getBuffer(net.minecraft.client.renderer.RenderType.gui());
+        int a = (fillColor >> 24) & 0xFF;
+        int r = (fillColor >> 16) & 0xFF;
+        int gr = (fillColor >> 8) & 0xFF;
+        int b = fillColor & 0xFF;
 
-        float r = ((fillColor >> 16) & 0xFF) / 255f;
-        float gr = ((fillColor >> 8)  & 0xFF) / 255f;
-        float b = ( fillColor         & 0xFF) / 255f;
-        float a = ((fillColor >> 24)  & 0xFF) / 255f;
+        // Wir bleiben bei debugQuads, da dies bei dir erkannt wird
+        VertexConsumer buffer = net.minecraft.client.Minecraft.getInstance().renderBuffers().bufferSource().getBuffer(RenderType.debugQuads());
+
+        org.joml.Matrix3x2f matrix = g.pose();
 
         for (int i = 0; i < steps; i++) {
-            double a1 = startAngle + range * i       / steps;
+            double a1 = startAngle + range * i / steps;
             double a2 = startAngle + range * (i + 1) / steps;
 
             float ix1 = ox + (float)(innerR * Math.cos(a1));
@@ -327,24 +339,21 @@ public class SpellWheelScreen extends Screen {
             float ox2 = ox + (float)(outerR * Math.cos(a2));
             float oy2 = oy + (float)(outerR * Math.sin(a2));
 
-            buf.addVertex(matrix, ix1, iy1, 0).setColor(r, gr, b, a);
-            buf.addVertex(matrix, ox1, oy1, 0).setColor(r, gr, b, a);
-            buf.addVertex(matrix, ox2, oy2, 0).setColor(r, gr, b, a);
-            buf.addVertex(matrix, ix2, iy2, 0).setColor(r, gr, b, a);
+            addRawVertex(buffer, matrix, ix1, iy1, r, gr, b, a);
+            addRawVertex(buffer, matrix, ox1, oy1, r, gr, b, a);
+            addRawVertex(buffer, matrix, ox2, oy2, r, gr, b, a);
+            addRawVertex(buffer, matrix, ix2, iy2, r, gr, b, a);
         }
-        g.bufferSource().endBatch();
 
-        // Outline — outer arc
-        drawArc(g, ox, oy, outerR, startAngle, endAngle, outlineColor);
-        // Outline — inner arc
-        drawArc(g, ox, oy, innerR, startAngle, endAngle, outlineColor);
-        // Radial lines
-        drawLine(g,
-                ox + (int)(innerR * Math.cos(startAngle)),
-                oy + (int)(innerR * Math.sin(startAngle)),
-                ox + (int)(outerR * Math.cos(startAngle)),
-                oy + (int)(outerR * Math.sin(startAngle)),
-                outlineColor);
+        // Das hier ist der eigentliche "Hintergrund-Bringer":
+        net.minecraft.client.Minecraft.getInstance().renderBuffers().bufferSource().endBatch();
+    }
+
+    // Angepasste Hilfsmethode für Matrix3x2f (1.21 Standard)
+    private void addRawVertex(VertexConsumer buffer, org.joml.Matrix3x2f matrix, float x, float y, int r, int g, int b, int a) {
+        float tx = matrix.m00() * x + matrix.m10() * y + matrix.m20();
+        float ty = matrix.m01() * x + matrix.m11() * y + matrix.m21();
+        buffer.addVertex(tx, ty, 0.0f).setColor(r, g, b, a);
     }
 
     private void drawArc(GuiGraphics g, int ox, int oy, int r,

@@ -116,6 +116,18 @@
           "src/main/java/net/luderspieler/dnd/client/gui/ClassGUIScreen.java"
         ]
       }
+    },
+    {
+      "name": "CastSpell",
+      "type": "keybind",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "cast_spell",
+      "metadata": {
+        "files": [
+          "src/main/java/net/luderspieler/dnd/network/CastSpellMessage.java"
+        ]
+      }
     }
   ],
   "variable_elements": [
@@ -187,6 +199,72 @@
     },
     {
       "name": "Proficiencys",
+      "type": "string",
+      "scope": "player_persistent",
+      "value": "\"\""
+    },
+    {
+      "name": "CanUseMagic",
+      "type": "logic",
+      "scope": "player_persistent",
+      "value": "false"
+    },
+    {
+      "name": "PreparedCantrips",
+      "type": "string",
+      "scope": "player_persistent",
+      "value": "\"\""
+    },
+    {
+      "name": "PreparedSpellsLVL1",
+      "type": "string",
+      "scope": "player_persistent",
+      "value": "\"\""
+    },
+    {
+      "name": "PreparedSpellsLVL2",
+      "type": "string",
+      "scope": "player_persistent",
+      "value": "\"\""
+    },
+    {
+      "name": "PreparedSpellsLVL3",
+      "type": "string",
+      "scope": "player_persistent",
+      "value": "\"\""
+    },
+    {
+      "name": "PreparedSpellsLVL4",
+      "type": "string",
+      "scope": "player_persistent",
+      "value": "\"\""
+    },
+    {
+      "name": "PreparedSpellsLVL5",
+      "type": "string",
+      "scope": "player_persistent",
+      "value": "\"\""
+    },
+    {
+      "name": "PreparedSpellsLVL6",
+      "type": "string",
+      "scope": "player_persistent",
+      "value": "\"\""
+    },
+    {
+      "name": "PreparedSpellsLVL7",
+      "type": "string",
+      "scope": "player_persistent",
+      "value": "\"\""
+    },
+    {
+      "name": "PreparedSpellsLVL8",
+      "type": "string",
+      "scope": "player_persistent",
+      "value": "\"\""
+    },
+    {
+      "name": "PreparedSpellsLVL9",
       "type": "string",
       "scope": "player_persistent",
       "value": "\"\""
@@ -290,7 +368,8 @@
       "gui.dnd.class_gui.label_attribute5": "attribute",
       "gui.dnd.class_gui.label_attribute4": "Attribute:",
       "gui.dnd.class_gui.label_attribute7": "attribute",
-      "gui.dnd.class_gui.label_attribute6": "attribute"
+      "gui.dnd.class_gui.label_attribute6": "attribute",
+      "key.dnd.cast_spell": "Cast Spell"
     }
   },
   "metadata": {
@@ -298,6 +377,7 @@
       "src/main/java/net/luderspieler/dnd/init/DndModMenus.java",
       "src/main/java/net/luderspieler/dnd/network/MenuStateUpdateMessage.java",
       "src/main/java/net/luderspieler/dnd/init/DndModScreens.java",
+      "src/main/java/net/luderspieler/dnd/init/DndModKeyMappings.java",
       "src/main/java/net/luderspieler/dnd/init/DndModItems.java",
       "src/main/java/net/luderspieler/dnd/init/DndModEntities.java",
       "src/main/java/net/luderspieler/dnd/init/DndModEntityRenderers.java",
