@@ -288,8 +288,8 @@ public class SpellWheelScreen extends Screen {
     }
 
     private void castSpell(String spellId, int level) {
-        // Wir müssen die Namen benutzen, die oben in (String spellId, int level) stehen!
-        CastSpellPacket.send(spellId, level);
+        // Send packet to server — server calls CastSpellProcedure
+        //CastSpellPacket.send(spellId, level);
         this.onClose();
     }
 

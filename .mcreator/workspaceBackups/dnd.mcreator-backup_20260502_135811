@@ -116,6 +116,42 @@
           "src/main/java/net/luderspieler/dnd/client/gui/ClassGUIScreen.java"
         ]
       }
+    },
+    {
+      "name": "CastSpell",
+      "type": "keybind",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "cast_spell",
+      "metadata": {
+        "files": [
+          "src/main/java/net/luderspieler/dnd/network/CastSpellMessage.java"
+        ]
+      }
+    },
+    {
+      "name": "Dnd",
+      "type": "command",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "dnd",
+      "metadata": {
+        "files": [
+          "src/main/java/net/luderspieler/dnd/command/DndCommand.java"
+        ]
+      }
+    },
+    {
+      "name": "PrepareSpells",
+      "type": "keybind",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "prepare_spells",
+      "metadata": {
+        "files": [
+          "src/main/java/net/luderspieler/dnd/network/PrepareSpellsMessage.java"
+        ]
+      }
     }
   ],
   "variable_elements": [
@@ -196,6 +232,66 @@
       "type": "logic",
       "scope": "player_persistent",
       "value": "false"
+    },
+    {
+      "name": "PreparedCantrips",
+      "type": "string",
+      "scope": "player_persistent",
+      "value": "\"\""
+    },
+    {
+      "name": "PreparedSpellsLVL1",
+      "type": "string",
+      "scope": "player_persistent",
+      "value": "\"\""
+    },
+    {
+      "name": "PreparedSpellsLVL2",
+      "type": "string",
+      "scope": "player_persistent",
+      "value": "\"\""
+    },
+    {
+      "name": "PreparedSpellsLVL3",
+      "type": "string",
+      "scope": "player_persistent",
+      "value": "\"\""
+    },
+    {
+      "name": "PreparedSpellsLVL4",
+      "type": "string",
+      "scope": "player_persistent",
+      "value": "\"\""
+    },
+    {
+      "name": "PreparedSpellsLVL5",
+      "type": "string",
+      "scope": "player_persistent",
+      "value": "\"\""
+    },
+    {
+      "name": "PreparedSpellsLVL6",
+      "type": "string",
+      "scope": "player_persistent",
+      "value": "\"\""
+    },
+    {
+      "name": "PreparedSpellsLVL7",
+      "type": "string",
+      "scope": "player_persistent",
+      "value": "\"\""
+    },
+    {
+      "name": "PreparedSpellsLVL8",
+      "type": "string",
+      "scope": "player_persistent",
+      "value": "\"\""
+    },
+    {
+      "name": "PreparedSpellsLVL9",
+      "type": "string",
+      "scope": "player_persistent",
+      "value": "\"\""
     }
   ],
   "sound_elements": [],
@@ -296,7 +392,9 @@
       "gui.dnd.class_gui.label_attribute5": "attribute",
       "gui.dnd.class_gui.label_attribute4": "Attribute:",
       "gui.dnd.class_gui.label_attribute7": "attribute",
-      "gui.dnd.class_gui.label_attribute6": "attribute"
+      "gui.dnd.class_gui.label_attribute6": "attribute",
+      "key.dnd.cast_spell": "Cast Spell",
+      "key.dnd.prepare_spells": "Cast Spell"
     }
   },
   "metadata": {
@@ -304,6 +402,7 @@
       "src/main/java/net/luderspieler/dnd/init/DndModMenus.java",
       "src/main/java/net/luderspieler/dnd/network/MenuStateUpdateMessage.java",
       "src/main/java/net/luderspieler/dnd/init/DndModScreens.java",
+      "src/main/java/net/luderspieler/dnd/init/DndModKeyMappings.java",
       "src/main/java/net/luderspieler/dnd/init/DndModItems.java",
       "src/main/java/net/luderspieler/dnd/init/DndModEntities.java",
       "src/main/java/net/luderspieler/dnd/init/DndModEntityRenderers.java",

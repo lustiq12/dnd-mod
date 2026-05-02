@@ -128,6 +128,18 @@
           "src/main/java/net/luderspieler/dnd/network/CastSpellMessage.java"
         ]
       }
+    },
+    {
+      "name": "Dnd",
+      "type": "command",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "dnd",
+      "metadata": {
+        "files": [
+          "src/main/java/net/luderspieler/dnd/command/DndCommand.java"
+        ]
+      }
     }
   ],
   "variable_elements": [
@@ -210,7 +222,61 @@
       "value": "false"
     },
     {
-      "name": "PreparedSpells",
+      "name": "PreparedCantrips",
+      "type": "string",
+      "scope": "player_persistent",
+      "value": "\"\""
+    },
+    {
+      "name": "PreparedSpellsLVL1",
+      "type": "string",
+      "scope": "player_persistent",
+      "value": "\"\""
+    },
+    {
+      "name": "PreparedSpellsLVL2",
+      "type": "string",
+      "scope": "player_persistent",
+      "value": "\"\""
+    },
+    {
+      "name": "PreparedSpellsLVL3",
+      "type": "string",
+      "scope": "player_persistent",
+      "value": "\"\""
+    },
+    {
+      "name": "PreparedSpellsLVL4",
+      "type": "string",
+      "scope": "player_persistent",
+      "value": "\"\""
+    },
+    {
+      "name": "PreparedSpellsLVL5",
+      "type": "string",
+      "scope": "player_persistent",
+      "value": "\"\""
+    },
+    {
+      "name": "PreparedSpellsLVL6",
+      "type": "string",
+      "scope": "player_persistent",
+      "value": "\"\""
+    },
+    {
+      "name": "PreparedSpellsLVL7",
+      "type": "string",
+      "scope": "player_persistent",
+      "value": "\"\""
+    },
+    {
+      "name": "PreparedSpellsLVL8",
+      "type": "string",
+      "scope": "player_persistent",
+      "value": "\"\""
+    },
+    {
+      "name": "PreparedSpellsLVL9",
       "type": "string",
       "scope": "player_persistent",
       "value": "\"\""

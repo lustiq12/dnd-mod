@@ -1,0 +1,12 @@
+{
+  "_fv": 85,
+  "_type": "keybind",
+  "definition": {
+    "triggerKey": "G",
+    "keyBindingName": "Cast Spell",
+    "keyBindingCategoryKey": "gameplay",
+    "onKeyPressed": {
+      "name": "StirgeIdleCooldown"
+    }
+  }
+}

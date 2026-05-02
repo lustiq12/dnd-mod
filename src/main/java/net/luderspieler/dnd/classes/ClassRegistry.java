@@ -1,5 +1,6 @@
 package net.luderspieler.dnd.classes;
 
+import net.luderspieler.dnd.spells.Spells;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import java.util.*;
@@ -13,6 +14,164 @@ public class ClassRegistry {
         Map<String,Double> m=new LinkedHashMap<>();
         m.put("Max Health",hp);m.put("Attack Damage",dmg);m.put("Armor",armor);
         m.put("Movement Speed",spd);m.put("Attack Speed",aspd);m.put("Luck",luck);return m;}
+
+    // --- SPELL SLOT DATA ---
+    private static final int[][] WIZ_S = {{0,0,0,0,0,0,0,0,0,0},{3,2,0,0,0,0,0,0,0,0},{3,3,0,0,0,0,0,0,0,0},{3,4,2,0,0,0,0,0,0,0},{4,4,3,0,0,0,0,0,0,0},{4,4,3,2,0,0,0,0,0,0},{4,4,3,3,0,0,0,0,0,0},{4,4,3,3,1,0,0,0,0,0},{4,4,3,3,2,0,0,0,0,0},{4,4,3,3,3,1,0,0,0,0},{5,4,3,3,3,2,0,0,0,0},{5,4,3,3,3,2,1,0,0,0},{5,4,3,3,3,2,1,0,0,0},{5,4,3,3,3,2,1,1,0,0},{5,4,3,3,3,2,1,1,0,0},{5,4,3,3,3,2,1,1,1,0},{5,4,3,3,3,2,1,1,1,0},{5,4,3,3,3,2,1,1,1,1},{5,4,3,3,3,3,1,1,1,1},{5,4,3,3,3,3,2,1,1,1},{5,4,3,3,3,3,2,2,1,1}};
+    private static final int[][] CLE_S = {{0,0,0,0,0,0,0,0,0,0},{3,2,0,0,0,0,0,0,0,0},{3,3,0,0,0,0,0,0,0,0},{3,4,2,0,0,0,0,0,0,0},{4,4,3,0,0,0,0,0,0,0},{4,4,3,2,0,0,0,0,0,0},{4,4,3,3,0,0,0,0,0,0},{4,4,3,3,1,0,0,0,0,0},{4,4,3,3,2,0,0,0,0,0},{4,4,3,3,3,1,0,0,0,0},{5,4,3,3,3,2,0,0,0,0},{5,4,3,3,3,2,1,0,0,0},{5,4,3,3,3,2,1,0,0,0},{5,4,3,3,3,2,1,1,0,0},{5,4,3,3,3,2,1,1,0,0},{5,4,3,3,3,2,1,1,1,0},{5,4,3,3,3,2,1,1,1,0},{5,4,3,3,3,2,1,1,1,1},{5,4,3,3,3,3,1,1,1,1},{5,4,3,3,3,3,2,1,1,1},{5,4,3,3,3,3,2,2,1,1}};
+    private static final int[][] DRU_S = {{0,0,0,0,0,0,0,0,0,0},{2,2,0,0,0,0,0,0,0,0},{2,3,0,0,0,0,0,0,0,0},{2,4,2,0,0,0,0,0,0,0},{3,4,3,0,0,0,0,0,0,0},{3,4,3,2,0,0,0,0,0,0},{3,4,3,3,0,0,0,0,0,0},{3,4,3,3,1,0,0,0,0,0},{3,4,3,3,2,0,0,0,0,0},{3,4,3,3,3,1,0,0,0,0},{4,4,3,3,3,2,0,0,0,0},{4,4,3,3,3,2,1,0,0,0},{4,4,3,3,3,2,1,0,0,0},{4,4,3,3,3,2,1,1,0,0},{4,4,3,3,3,2,1,1,0,0},{4,4,3,3,3,2,1,1,1,0},{4,4,3,3,3,2,1,1,1,0},{4,4,3,3,3,2,1,1,1,1},{4,4,3,3,3,3,1,1,1,1},{4,4,3,3,3,3,2,1,1,1},{4,4,3,3,3,3,2,2,1,1}};
+    private static final int[][] BAR_S = {{0,0,0,0,0,0,0,0,0,0},{2,2,0,0,0,0,0,0,0,0},{2,3,0,0,0,0,0,0,0,0},{2,4,2,0,0,0,0,0,0,0},{3,4,3,0,0,0,0,0,0,0},{3,4,3,2,0,0,0,0,0,0},{3,4,3,3,0,0,0,0,0,0},{3,4,3,3,1,0,0,0,0,0},{3,4,3,3,2,0,0,0,0,0},{3,4,3,3,3,1,0,0,0,0},{4,4,3,3,3,2,0,0,0,0},{4,4,3,3,3,2,1,0,0,0},{4,4,3,3,3,2,1,0,0,0},{4,4,3,3,3,2,1,1,0,0},{4,4,3,3,3,2,1,1,0,0},{4,4,3,3,3,2,1,1,1,0},{4,4,3,3,3,2,1,1,1,0},{4,4,3,3,3,2,1,1,1,1},{4,4,3,3,3,3,1,1,1,1},{4,4,3,3,3,3,2,1,1,1},{4,4,3,3,3,3,2,2,1,1}};
+    private static final int[][] SOR_S = {{0,0,0,0,0,0,0,0,0,0},{4,2,0,0,0,0,0,0,0,0},{4,3,0,0,0,0,0,0,0,0},{4,4,2,0,0,0,0,0,0,0},{5,4,3,0,0,0,0,0,0,0},{5,4,3,2,0,0,0,0,0,0},{5,4,3,3,0,0,0,0,0,0},{5,4,3,3,1,0,0,0,0,0},{5,4,3,3,2,0,0,0,0,0},{5,4,3,3,3,1,0,0,0,0},{6,4,3,3,3,2,0,0,0,0},{6,4,3,3,3,2,1,0,0,0},{6,4,3,3,3,2,1,0,0,0},{6,4,3,3,3,2,1,1,0,0},{6,4,3,3,3,2,1,1,0,0},{6,4,3,3,3,2,1,1,1,0},{6,4,3,3,3,2,1,1,1,0},{6,4,3,3,3,2,1,1,1,1},{6,4,3,3,3,3,1,1,1,1},{6,4,3,3,3,3,2,1,1,1},{6,4,3,3,3,3,2,2,1,1}};
+    private static final int[][] PAL_S = {{0,0,0,0,0,0,0,0,0,0},{0,2,0,0,0,0,0,0,0,0},{0,2,0,0,0,0,0,0,0,0},{0,3,0,0,0,0,0,0,0,0},{0,3,0,0,0,0,0,0,0,0},{0,4,2,0,0,0,0,0,0,0},{0,4,2,0,0,0,0,0,0,0},{0,4,3,0,0,0,0,0,0,0},{0,4,3,0,0,0,0,0,0,0},{0,4,3,2,0,0,0,0,0,0},{0,4,3,2,0,0,0,0,0,0},{0,4,3,3,0,0,0,0,0,0},{0,4,3,3,0,0,0,0,0,0},{0,4,3,3,1,0,0,0,0,0},{0,4,3,3,1,0,0,0,0,0},{0,4,3,3,2,0,0,0,0,0},{0,4,3,3,2,0,0,0,0,0},{0,4,3,3,3,1,0,0,0,0},{0,4,3,3,3,1,0,0,0,0},{0,4,3,3,3,2,0,0,0,0},{0,4,3,3,3,2,0,0,0,0}};
+    private static final int[][] RAN_S = {{0,0,0,0,0,0,0,0,0,0},{0,2,0,0,0,0,0,0,0,0},{0,2,0,0,0,0,0,0,0,0},{0,3,0,0,0,0,0,0,0,0},{0,3,0,0,0,0,0,0,0,0},{0,4,2,0,0,0,0,0,0,0},{0,4,2,0,0,0,0,0,0,0},{0,4,3,0,0,0,0,0,0,0},{0,4,3,0,0,0,0,0,0,0},{0,4,3,2,0,0,0,0,0,0},{0,4,3,2,0,0,0,0,0,0},{0,4,3,3,0,0,0,0,0,0},{0,4,3,3,0,0,0,0,0,0},{0,4,3,3,1,0,0,0,0,0},{0,4,3,3,1,0,0,0,0,0},{0,4,3,3,2,0,0,0,0,0},{0,4,3,3,2,0,0,0,0,0},{0,4,3,3,3,1,0,0,0,0},{0,4,3,3,3,1,0,0,0,0},{0,4,3,3,3,2,0,0,0,0},{0,4,3,3,3,2,0,0,0,0}};
+    private static final int[][] WAR_S = {{0,0,0,0,0,0,0,0,0,0},{2,1,0,0,0,0,0,0,0,0},{2,2,0,0,0,0,0,0,0,0},{2,0,2,0,0,0,0,0,0,0},{3,0,2,0,0,0,0,0,0,0},{3,0,0,2,0,0,0,0,0,0},{3,0,0,2,0,0,0,0,0,0},{3,0,0,0,2,0,0,0,0,0},{3,0,0,0,2,0,0,0,0,0},{3,0,0,0,0,2,0,0,0,0},{4,0,0,0,0,2,0,0,0,0},{4,0,0,0,0,3,1,0,0,0},{4,0,0,0,0,3,1,0,0,0},{4,0,0,0,0,3,1,1,0,0},{4,0,0,0,0,3,1,1,0,0},{4,0,0,0,0,3,1,1,1,0},{4,0,0,0,0,3,1,1,1,0},{4,0,0,0,0,4,1,1,1,1},{4,0,0,0,0,4,1,1,1,1},{4,0,0,0,0,4,1,1,1,1},{4,0,0,0,0,4,1,1,1,1}};
+    private static final int[][] NONE_S = new int[21][10];
+
+    /// --- Hilfsvariable für Klassen ohne Magie ---
+    private static final int[][] NONE_P = new int[21][10];
+
+    // --- FULL CASTER (Wizard, Cleric, Druid, Bard, Sorcerer) ---
+
+    // Format pro Zeile: {Cantrip, Lvl1, Lvl2, Lvl3, Lvl4, Lvl5, Lvl6, Lvl7, Lvl8, Lvl9}
+    private static final int[][] FULL_CASTER_TABLE = {
+            {0,0,0,0,0,0,0,0,0,0}, // Lvl 0
+            {2,2,0,0,0,0,0,0,0,0}, {2,3,0,0,0,0,0,0,0,0}, {2,4,2,0,0,0,0,0,0,0}, {3,5,3,0,0,0,0,0,0,0}, // 1-4
+            {3,6,3,2,0,0,0,0,0,0}, {3,7,3,3,0,0,0,0,0,0}, {3,8,3,3,1,0,0,0,0,0}, {3,9,3,3,2,0,0,0,0,0}, // 5-8
+            {3,10,3,3,3,1,0,0,0,0}, {4,11,3,3,3,2,0,0,0,0}, {4,12,3,3,3,2,1,0,0,0}, {4,12,3,3,3,2,1,0,0,0}, // 9-12
+            {4,13,3,3,3,2,1,1,0,0}, {4,13,3,3,3,2,1,1,0,0}, {4,14,3,3,3,2,1,1,1,0}, {4,14,3,3,3,2,1,1,1,0}, // 13-16
+            {4,15,3,3,3,2,1,1,1,1}, {4,15,3,3,3,3,1,1,1,1}, {4,15,3,3,3,3,2,1,1,1}, {4,15,3,3,3,3,2,2,1,1}  // 17-20
+    };
+
+    // Zuweisung der Tabellen an deine Variablennamen
+    private static final int[][] WIZ_P = FULL_CASTER_TABLE;
+    private static final int[][] CLE_P = FULL_CASTER_TABLE;
+    private static final int[][] DRU_P = FULL_CASTER_TABLE;
+    private static final int[][] BAR_P = FULL_CASTER_TABLE;
+    private static final int[][] SOR_P = FULL_CASTER_TABLE;
+
+    // --- HALF CASTER (Paladin, Ranger) ---
+    private static final int[][] HALF_CASTER_TABLE = {
+            {0,0,0,0,0,0,0,0,0,0}, // Lvl 0
+            {0,2,0,0,0,0,0,0,0,0}, {0,2,0,0,0,0,0,0,0,0}, {0,3,0,0,0,0,0,0,0,0}, {0,3,0,0,0,0,0,0,0,0}, // 1-4
+            {0,4,2,0,0,0,0,0,0,0}, {0,4,2,0,0,0,0,0,0,0}, {0,4,3,0,0,0,0,0,0,0}, {0,4,3,0,0,0,0,0,0,0}, // 5-8
+            {0,4,3,2,0,0,0,0,0,0}, {0,4,3,2,0,0,0,0,0,0}, {0,4,3,3,0,0,0,0,0,0}, {0,4,3,3,0,0,0,0,0,0}, // 9-12
+            {0,4,3,3,1,0,0,0,0,0}, {0,4,3,3,1,0,0,0,0,0}, {0,4,3,3,2,0,0,0,0,0}, {0,4,3,3,2,0,0,0,0,0}, // 13-16
+            {0,4,3,3,3,1,0,0,0,0}, {0,4,3,3,3,1,0,0,0,0}, {0,4,3,3,3,2,0,0,0,0}, {0,4,3,3,3,2,0,0,0,0}  // 17-20
+    };
+
+    private static final int[][] PAL_P = HALF_CASTER_TABLE;
+    private static final int[][] RAN_P = HALF_CASTER_TABLE;
+
+    // --- WARLOCK (Sonderregeln) ---
+    private static final int[][] WAR_P = {
+            {0,0,0,0,0,0,0,0,0,0},
+            {2,2,0,0,0,0,0,0,0,0}, {2,3,0,0,0,0,0,0,0,0}, {2,0,4,0,0,0,0,0,0,0}, {3,0,5,0,0,0,0,0,0,0},
+            {3,0,0,6,0,0,0,0,0,0}, {3,0,0,7,0,0,0,0,0,0}, {3,0,0,0,8,0,0,0,0,0}, {3,0,0,0,9,0,0,0,0,0},
+            {3,0,0,0,0,10,0,0,0,0}, {4,0,0,0,0,10,0,0,0,0}, {4,0,0,0,0,11,1,0,0,0}, {4,0,0,0,0,11,1,0,0,0},
+            {4,0,0,0,0,12,1,1,0,0}, {4,0,0,0,0,12,1,1,0,0}, {4,0,0,0,0,13,1,1,1,0}, {4,0,0,0,0,13,1,1,1,0},
+            {4,0,0,0,0,14,1,1,1,1}, {4,0,0,0,0,14,1,1,1,1}, {4,0,0,0,0,15,1,1,1,1}, {4,0,0,0,0,15,1,1,1,1}
+    };
+
+
+
+
+    // ── SPELLS ──
+    private static final List<Enum<?>> EMPTY_L = List.of();
+
+    // Klassenlisten
+    private static final List<Enum<?>> WIZARD_L = List.of(
+            Spells.Cantrip.ACID_SPLASH, Spells.Cantrip.CHILL_TOUCH, Spells.Cantrip.DANCING_LIGHTS, Spells.Cantrip.ELEMENTALISM, Spells.Cantrip.FIRE_BOLT, Spells.Cantrip.LIGHT, Spells.Cantrip.MAGE_HAND, Spells.Cantrip.MENDING, Spells.Cantrip.MESSAGE, Spells.Cantrip.MINOR_ILLUSION, Spells.Cantrip.POISON_SPRAY, Spells.Cantrip.PRESTIDIGITATION, Spells.Cantrip.RAY_OF_FROST, Spells.Cantrip.SHOCKING_GRASP, Spells.Cantrip.TRUE_STRIKE,
+            Spells.Grade1.ALARM, Spells.Grade1.BURNING_HANDS, Spells.Grade1.CHARM_PERSON, Spells.Grade1.CHROMATIC_ORB, Spells.Grade1.COLOR_SPRAY, Spells.Grade1.COMPREHEND_LANGUAGES, Spells.Grade1.DETECT_MAGIC, Spells.Grade1.DISGUISE_SELF, Spells.Grade1.EXPEDITIOUS_RETREAT, Spells.Grade1.FALSE_LIFE, Spells.Grade1.FEATHER_FALL, Spells.Grade1.FIND_FAMILIAR, Spells.Grade1.FLOATING_DISK, Spells.Grade1.FOG_CLOUD, Spells.Grade1.GREASE, Spells.Grade1.HIDEOUS_LAUGHTER, Spells.Grade1.ICE_KNIFE, Spells.Grade1.IDENTIFY, Spells.Grade1.ILLUSORY_SCRIPT, Spells.Grade1.JUMP, Spells.Grade1.LONGSTRIDER, Spells.Grade1.MAGE_ARMOR, Spells.Grade1.MAGIC_MISSILE, Spells.Grade1.PROTECTION_FROM_EVIL_AND_GOOD, Spells.Grade1.RAY_OF_SICKNESS, Spells.Grade1.SHIELD, Spells.Grade1.SILENT_IMAGE, Spells.Grade1.SLEEP, Spells.Grade1.THUNDERWAVE, Spells.Grade1.UNSEEN_SERVANT,
+            Spells.Grade2.ACID_ARROW, Spells.Grade2.ALTER_SELF, Spells.Grade2.ARCANE_LOCK, Spells.Grade2.ARCANIST_S_MAGIC_AURA, Spells.Grade2.AUGURY, Spells.Grade2.BLUR, Spells.Grade2.CONTINUAL_FLAME, Spells.Grade2.DARKNESS, Spells.Grade2.DARKVISION, Spells.Grade2.DETECT_THOUGHTS, Spells.Grade2.DRAGON_S_BREATH, Spells.Grade2.ENHANCE_ABILITY, Spells.Grade2.ENLARGE_REDUCE, Spells.Grade2.FLAMING_SPHERE, Spells.Grade2.GENTLE_REPOSE, Spells.Grade2.GUST_OF_WIND, Spells.Grade2.HOLD_PERSON, Spells.Grade2.INVISIBILITY, Spells.Grade2.KNOCK, Spells.Grade2.LEVITATE, Spells.Grade2.LOCATE_OBJECT, Spells.Grade2.MAGIC_MOUTH, Spells.Grade2.MAGIC_WEAPON, Spells.Grade2.MIND_SPIKE, Spells.Grade2.MIRROR_IMAGE, Spells.Grade2.MISTY_STEP, Spells.Grade2.PHANTASMAL_FORCE, Spells.Grade2.RAY_OF_ENFEEBLEMENT, Spells.Grade2.ROPE_TRICK, Spells.Grade2.SCORCHING_RAY, Spells.Grade2.SEE_INVISIBILITY, Spells.Grade2.SHATTER, Spells.Grade2.SPIDER_CLIMB, Spells.Grade2.SUGGESTION, Spells.Grade2.WEB,
+            Spells.Grade3.ANIMATE_DEAD, Spells.Grade3.BESTOW_CURSE, Spells.Grade3.BLINK, Spells.Grade3.CLAIRVOYANCE, Spells.Grade3.COUNTERSPELL, Spells.Grade3.DISPEL_MAGIC, Spells.Grade3.FEAR, Spells.Grade3.FIREBALL, Spells.Grade3.FLY, Spells.Grade3.GASEOUS_FORM, Spells.Grade3.GLYPH_OF_WARDING, Spells.Grade3.HASTE, Spells.Grade3.HYPNOTIC_PATTERN, Spells.Grade3.LIGHTNING_BOLT, Spells.Grade3.MAGIC_CIRCLE, Spells.Grade3.MAJOR_IMAGE, Spells.Grade3.NONDETECTION, Spells.Grade3.PHANTOM_STEED, Spells.Grade3.PROTECTION_FROM_ENERGY, Spells.Grade3.REMOVE_CURSE, Spells.Grade3.SENDING, Spells.Grade3.SLEET_STORM, Spells.Grade3.SLOW, Spells.Grade3.SPEAK_WITH_DEAD, Spells.Grade3.STINKING_CLOUD, Spells.Grade3.TINY_HUT, Spells.Grade3.TONGUES, Spells.Grade3.VAMPIRIC_TOUCH, Spells.Grade3.WATER_BREATHING,
+            Spells.Grade4.ARCANE_EYE, Spells.Grade4.BANISHMENT, Spells.Grade4.BLACK_TENTACLES, Spells.Grade4.BLIGHT, Spells.Grade4.CHARM_MONSTER, Spells.Grade4.CONFUSION, Spells.Grade4.CONJURE_MINOR_ELEMENTALS, Spells.Grade4.CONTROL_WATER, Spells.Grade4.DIMENSION_DOOR, Spells.Grade4.DIVINATION, Spells.Grade4.FABRICATE, Spells.Grade4.FAITHFUL_HOUND, Spells.Grade4.FIRE_SHIELD, Spells.Grade4.GREATER_INVISIBILITY, Spells.Grade4.HALLUCINATORY_TERRAIN, Spells.Grade4.ICE_STORM, Spells.Grade4.LOCATE_CREATURE, Spells.Grade4.PHANTASMAL_KILLER, Spells.Grade4.POLYMORPH, Spells.Grade4.PRIVATE_SANCTUM, Spells.Grade4.RESILIENT_SPHERE, Spells.Grade4.SECRET_CHEST, Spells.Grade4.STONESKIN, Spells.Grade4.STONE_SHAPE, Spells.Grade4.VITRIOLIC_SPHERE, Spells.Grade4.WALL_OF_FIRE,
+            Spells.Grade5.ANIMATE_OBJECTS, Spells.Grade5.ARCANE_HAND, Spells.Grade5.CLOUDKILL, Spells.Grade5.CONE_OF_COLD, Spells.Grade5.CONJURE_ELEMENTAL, Spells.Grade5.CONTACT_OTHER_PLANE, Spells.Grade5.CREATION, Spells.Grade5.DOMINATE_PERSON, Spells.Grade5.DREAM, Spells.Grade5.GEAS, Spells.Grade5.HOLD_MONSTER, Spells.Grade5.LEGEND_LORE, Spells.Grade5.MISLEAD, Spells.Grade5.MODIFY_MEMORY, Spells.Grade5.PASSWALL, Spells.Grade5.PLANAR_BINDING, Spells.Grade5.SCRYING, Spells.Grade5.SEEMING, Spells.Grade5.SUMMON_DRAGON, Spells.Grade5.TELEKINESIS, Spells.Grade5.TELEPATHIC_BOND, Spells.Grade5.TELEPORTATION_CIRCLE, Spells.Grade5.WALL_OF_FORCE, Spells.Grade5.WALL_OF_STONE,
+            Spells.Grade6.CHAIN_LIGHTNING, Spells.Grade6.CIRCLE_OF_DEATH, Spells.Grade6.CONTINGENCY, Spells.Grade6.CREATE_UNDEAD, Spells.Grade6.DISINTEGRATE, Spells.Grade6.EYEBITE, Spells.Grade6.FLESH_TO_STONE, Spells.Grade6.FREEZING_SPHERE, Spells.Grade6.GLOBE_OF_INVULNERABILITY, Spells.Grade6.GUARDS_AND_WARDS, Spells.Grade6.INSTANT_SUMMONS, Spells.Grade6.IRRESISTIBLE_DANCE, Spells.Grade6.MAGIC_JAR, Spells.Grade6.MASS_SUGGESTION, Spells.Grade6.MOVE_EARTH, Spells.Grade6.PROGRAMMED_ILLUSION, Spells.Grade6.SUNBEAM, Spells.Grade6.TRUE_SEEING, Spells.Grade6.WALL_OF_ICE,
+            Spells.Grade7.ARCANE_SWORD, Spells.Grade7.DELAYED_BLAST_FIREBALL, Spells.Grade7.ETHEREALNESS, Spells.Grade7.FINGER_OF_DEATH, Spells.Grade7.FORCECAGE, Spells.Grade7.MAGNIFICENT_MANSION, Spells.Grade7.MIRAGE_ARCANE, Spells.Grade7.PLANE_SHIFT, Spells.Grade7.PRISMATIC_SPRAY, Spells.Grade7.PROJECT_IMAGE, Spells.Grade7.REVERSE_GRAVITY, Spells.Grade7.SEQUESTER, Spells.Grade7.SIMULACRUM, Spells.Grade7.SYMBOL, Spells.Grade7.TELEPORT,
+            Spells.Grade8.ANTIMAGIC_FIELD, Spells.Grade8.BEFUDDLEMENT, Spells.Grade8.CLONE, Spells.Grade8.CONTROL_WEATHER, Spells.Grade8.DEMIPLANE, Spells.Grade8.DOMINATE_MONSTER, Spells.Grade8.INCENDIARY_CLOUD, Spells.Grade8.MAZE, Spells.Grade8.MIND_BLANK, Spells.Grade8.POWER_WORD_STUN, Spells.Grade8.SUNBURST,
+            Spells.Grade9.ASTRAL_PROJECTION, Spells.Grade9.FORESIGHT, Spells.Grade9.GATE, Spells.Grade9.IMPRISONMENT, Spells.Grade9.METEOR_SWARM, Spells.Grade9.POWER_WORD_KILL, Spells.Grade9.PRISMATIC_WALL, Spells.Grade9.SHAPECHANGE, Spells.Grade9.TIME_STOP, Spells.Grade9.TRUE_POLYMORPH, Spells.Grade9.WEIRD, Spells.Grade9.WISH
+    );
+
+    private static final List<Enum<?>> CLERIC_L = List.of(
+            Spells.Cantrip.GUIDANCE, Spells.Cantrip.LIGHT, Spells.Cantrip.MENDING, Spells.Cantrip.RESISTANCE, Spells.Cantrip.SACRED_FLAME, Spells.Cantrip.SPARE_THE_DYING, Spells.Cantrip.THAUMATURGY,
+            Spells.Grade1.BANE, Spells.Grade1.BLESS, Spells.Grade1.COMMAND, Spells.Grade1.CREATE_OR_DESTROY_WATER, Spells.Grade1.CURE_WOUNDS, Spells.Grade1.DETECT_EVIL_AND_GOOD, Spells.Grade1.DETECT_MAGIC, Spells.Grade1.DETECT_POISON_AND_DISEASE, Spells.Grade1.GUIDING_BOLT, Spells.Grade1.HEALING_WORD, Spells.Grade1.INFLICT_WOUNDS, Spells.Grade1.PROTECTION_FROM_EVIL_AND_GOOD, Spells.Grade1.PURIFY_FOOD_AND_DRINK, Spells.Grade1.SANCTUARY, Spells.Grade1.SHIELD_OF_FAITH,
+            Spells.Grade2.AID, Spells.Grade2.AUGURY, Spells.Grade2.CALM_EMOTIONS, Spells.Grade2.CONTINUAL_FLAME, Spells.Grade2.ENHANCE_ABILITY, Spells.Grade2.FIND_TRAPS, Spells.Grade2.GENTLE_REPOSE, Spells.Grade2.HOLD_PERSON, Spells.Grade2.LESSER_RESTORATION, Spells.Grade2.LOCATE_OBJECT, Spells.Grade2.PRAYER_OF_HEALING, Spells.Grade2.PROTECTION_FROM_POISON, Spells.Grade2.SILENCE, Spells.Grade2.SPIRITUAL_WEAPON, Spells.Grade2.WARDING_BOND, Spells.Grade2.ZONE_OF_TRUTH,
+            Spells.Grade3.ANIMATE_DEAD, Spells.Grade3.BEACON_OF_HOPE, Spells.Grade3.BESTOW_CURSE, Spells.Grade3.CLAIRVOYANCE, Spells.Grade3.CREATE_FOOD_AND_WATER, Spells.Grade3.DAYLIGHT, Spells.Grade3.DISPEL_MAGIC, Spells.Grade3.GLYPH_OF_WARDING, Spells.Grade3.MAGIC_CIRCLE, Spells.Grade3.MASS_HEALING_WORD, Spells.Grade3.MELD_INTO_STONE, Spells.Grade3.PROTECTION_FROM_ENERGY, Spells.Grade3.REMOVE_CURSE, Spells.Grade3.REVIVIFY, Spells.Grade3.SENDING, Spells.Grade3.SPEAK_WITH_DEAD, Spells.Grade3.SPIRIT_GUARDIANS, Spells.Grade3.TONGUES, Spells.Grade3.WATER_WALK,
+            Spells.Grade4.AURA_OF_LIFE, Spells.Grade4.BANISHMENT, Spells.Grade4.CONTROL_WATER, Spells.Grade4.DEATH_WARD, Spells.Grade4.DIVINATION, Spells.Grade4.FREEDOM_OF_MOVEMENT, Spells.Grade4.GUARDIAN_OF_FAITH, Spells.Grade4.LOCATE_CREATURE, Spells.Grade4.STONE_SHAPE,
+            Spells.Grade5.COMMUNE, Spells.Grade5.CONTAGION, Spells.Grade5.DISPEL_EVIL_AND_GOOD, Spells.Grade5.FLAME_STRIKE, Spells.Grade5.GEAS, Spells.Grade5.GREATER_RESTORATION, Spells.Grade5.HALLOW, Spells.Grade5.INSECT_PLAGUE, Spells.Grade5.LEGEND_LORE, Spells.Grade5.MASS_CURE_WOUNDS, Spells.Grade5.PLANAR_BINDING, Spells.Grade5.RAISE_DEAD, Spells.Grade5.SCRYING,
+            Spells.Grade6.BLADE_BARRIER, Spells.Grade6.CREATE_UNDEAD, Spells.Grade6.FIND_THE_PATH, Spells.Grade6.FORBIDDANCE, Spells.Grade6.HARM, Spells.Grade6.HEAL, Spells.Grade6.HEROES_FEAST, Spells.Grade6.PLANAR_ALLY, Spells.Grade6.SUNBEAM, Spells.Grade6.TRUE_SEEING, Spells.Grade6.WORD_OF_RECALL,
+            Spells.Grade7.CONJURE_CELESTIAL, Spells.Grade7.DIVINE_WORD, Spells.Grade7.ETHEREALNESS, Spells.Grade7.FIRE_STORM, Spells.Grade7.PLANE_SHIFT, Spells.Grade7.REGENERATE, Spells.Grade7.RESURRECTION, Spells.Grade7.SYMBOL,
+            Spells.Grade8.ANTIMAGIC_FIELD, Spells.Grade8.CONTROL_WEATHER, Spells.Grade8.EARTHQUAKE, Spells.Grade8.HOLY_AURA, Spells.Grade8.SUNBURST,
+            Spells.Grade9.ASTRAL_PROJECTION, Spells.Grade9.GATE, Spells.Grade9.MASS_HEAL, Spells.Grade9.POWER_WORD_HEAL, Spells.Grade9.TRUE_RESURRECTION
+    );
+
+    private static final List<Enum<?>> SORCERER_L = List.of(
+            Spells.Cantrip.ACID_SPLASH, Spells.Cantrip.CHILL_TOUCH, Spells.Cantrip.DANCING_LIGHTS, Spells.Cantrip.ELEMENTALISM, Spells.Cantrip.FIRE_BOLT, Spells.Cantrip.LIGHT, Spells.Cantrip.MAGE_HAND, Spells.Cantrip.MENDING, Spells.Cantrip.MESSAGE, Spells.Cantrip.MINOR_ILLUSION, Spells.Cantrip.POISON_SPRAY, Spells.Cantrip.PRESTIDIGITATION, Spells.Cantrip.RAY_OF_FROST, Spells.Cantrip.SHOCKING_GRASP, Spells.Cantrip.SORCEROUS_BURST, Spells.Cantrip.TRUE_STRIKE,
+            Spells.Grade1.BURNING_HANDS, Spells.Grade1.CHARM_PERSON, Spells.Grade1.CHROMATIC_ORB, Spells.Grade1.COLOR_SPRAY, Spells.Grade1.COMPREHEND_LANGUAGES, Spells.Grade1.DETECT_MAGIC, Spells.Grade1.DISGUISE_SELF, Spells.Grade1.EXPEDITIOUS_RETREAT, Spells.Grade1.FALSE_LIFE, Spells.Grade1.FEATHER_FALL, Spells.Grade1.FOG_CLOUD, Spells.Grade1.GREASE, Spells.Grade1.ICE_KNIFE, Spells.Grade1.JUMP, Spells.Grade1.MAGE_ARMOR, Spells.Grade1.MAGIC_MISSILE, Spells.Grade1.RAY_OF_SICKNESS, Spells.Grade1.SHIELD, Spells.Grade1.SILENT_IMAGE, Spells.Grade1.SLEEP, Spells.Grade1.THUNDERWAVE,
+            Spells.Grade2.ALTER_SELF, Spells.Grade2.BLUR, Spells.Grade2.DARKNESS, Spells.Grade2.DARKVISION, Spells.Grade2.DETECT_THOUGHTS, Spells.Grade2.DRAGON_S_BREATH, Spells.Grade2.ENHANCE_ABILITY, Spells.Grade2.ENLARGE_REDUCE, Spells.Grade2.FLAME_BLADE, Spells.Grade2.FLAMING_SPHERE, Spells.Grade2.GUST_OF_WIND, Spells.Grade2.HOLD_PERSON, Spells.Grade2.INVISIBILITY, Spells.Grade2.KNOCK, Spells.Grade2.LEVITATE, Spells.Grade2.MAGIC_WEAPON, Spells.Grade2.MIND_SPIKE, Spells.Grade2.MIRROR_IMAGE, Spells.Grade2.MISTY_STEP, Spells.Grade2.PHANTASMAL_FORCE, Spells.Grade2.SCORCHING_RAY, Spells.Grade2.SEE_INVISIBILITY, Spells.Grade2.SHATTER, Spells.Grade2.SPIDER_CLIMB, Spells.Grade2.SUGGESTION, Spells.Grade2.WEB,
+            Spells.Grade3.BLINK, Spells.Grade3.CLAIRVOYANCE, Spells.Grade3.COUNTERSPELL, Spells.Grade3.DAYLIGHT, Spells.Grade3.DISPEL_MAGIC, Spells.Grade3.FEAR, Spells.Grade3.FIREBALL, Spells.Grade3.FLY, Spells.Grade3.GASEOUS_FORM, Spells.Grade3.HASTE, Spells.Grade3.HYPNOTIC_PATTERN, Spells.Grade3.LIGHTNING_BOLT, Spells.Grade3.MAJOR_IMAGE, Spells.Grade3.PROTECTION_FROM_ENERGY, Spells.Grade3.SLEET_STORM, Spells.Grade3.SLOW, Spells.Grade3.STINKING_CLOUD, Spells.Grade3.TONGUES, Spells.Grade3.VAMPIRIC_TOUCH, Spells.Grade3.WATER_BREATHING, Spells.Grade3.WATER_WALK,
+            Spells.Grade4.BANISHMENT, Spells.Grade4.BLIGHT, Spells.Grade4.CHARM_MONSTER, Spells.Grade4.CONFUSION, Spells.Grade4.DIMENSION_DOOR, Spells.Grade4.DOMINATE_BEAST, Spells.Grade4.FIRE_SHIELD, Spells.Grade4.GREATER_INVISIBILITY, Spells.Grade4.ICE_STORM, Spells.Grade4.POLYMORPH, Spells.Grade4.STONESKIN, Spells.Grade4.VITRIOLIC_SPHERE, Spells.Grade4.WALL_OF_FIRE,
+            Spells.Grade5.ANIMATE_OBJECTS, Spells.Grade5.ARCANE_HAND, Spells.Grade5.CLOUDKILL, Spells.Grade5.CONE_OF_COLD, Spells.Grade5.CREATION, Spells.Grade5.DOMINATE_PERSON, Spells.Grade5.HOLD_MONSTER, Spells.Grade5.INSECT_PLAGUE, Spells.Grade5.SEEMING, Spells.Grade5.TELEKINESIS, Spells.Grade5.TELEPORTATION_CIRCLE, Spells.Grade5.WALL_OF_STONE,
+            Spells.Grade6.CHAIN_LIGHTNING, Spells.Grade6.CIRCLE_OF_DEATH, Spells.Grade6.DISINTEGRATE, Spells.Grade6.EYEBITE, Spells.Grade6.FLESH_TO_STONE, Spells.Grade6.FREEZING_SPHERE, Spells.Grade6.GLOBE_OF_INVULNERABILITY, Spells.Grade6.MASS_SUGGESTION, Spells.Grade6.MOVE_EARTH, Spells.Grade6.SUNBEAM, Spells.Grade6.TRUE_SEEING,
+            Spells.Grade7.DELAYED_BLAST_FIREBALL, Spells.Grade7.ETHEREALNESS, Spells.Grade7.FINGER_OF_DEATH, Spells.Grade7.FIRE_STORM, Spells.Grade7.PLANE_SHIFT, Spells.Grade7.PRISMATIC_SPRAY, Spells.Grade7.REVERSE_GRAVITY, Spells.Grade7.TELEPORT,
+            Spells.Grade8.DEMIPLANE, Spells.Grade8.DOMINATE_MONSTER, Spells.Grade8.EARTHQUAKE, Spells.Grade8.INCENDIARY_CLOUD, Spells.Grade8.POWER_WORD_STUN, Spells.Grade8.SUNBURST,
+            Spells.Grade9.GATE, Spells.Grade9.METEOR_SWARM, Spells.Grade9.POWER_WORD_KILL, Spells.Grade9.TIME_STOP, Spells.Grade9.WISH
+    );
+
+    private static final List<Enum<?>> DRUID_L = List.of(
+            Spells.Cantrip.DRUIDCRAFT, Spells.Cantrip.ELEMENTALISM, Spells.Cantrip.GUIDANCE, Spells.Cantrip.MENDING, Spells.Cantrip.MESSAGE, Spells.Cantrip.POISON_SPRAY, Spells.Cantrip.PRODUCE_FLAME, Spells.Cantrip.RESISTANCE, Spells.Cantrip.SHILLELAGH, Spells.Cantrip.SPARE_THE_DYING, Spells.Cantrip.STARRY_WISP,
+            Spells.Grade1.ANIMAL_FRIENDSHIP, Spells.Grade1.CHARM_PERSON, Spells.Grade1.CREATE_OR_DESTROY_WATER, Spells.Grade1.CURE_WOUNDS, Spells.Grade1.DETECT_MAGIC, Spells.Grade1.DETECT_POISON_AND_DISEASE, Spells.Grade1.ENTANGLE, Spells.Grade1.FAERIE_FIRE, Spells.Grade1.FOG_CLOUD, Spells.Grade1.GOODBERRY, Spells.Grade1.HEALING_WORD, Spells.Grade1.ICE_KNIFE, Spells.Grade1.JUMP, Spells.Grade1.LONGSTRIDER, Spells.Grade1.PROTECTION_FROM_EVIL_AND_GOOD, Spells.Grade1.PURIFY_FOOD_AND_DRINK, Spells.Grade1.SPEAK_WITH_ANIMALS, Spells.Grade1.THUNDERWAVE,
+            Spells.Grade2.AID, Spells.Grade2.ANIMAL_MESSENGER, Spells.Grade2.AUGURY, Spells.Grade2.BARKSKIN, Spells.Grade2.CONTINUAL_FLAME, Spells.Grade2.DARKVISION, Spells.Grade2.ENHANCE_ABILITY, Spells.Grade2.ENLARGE_REDUCE, Spells.Grade2.FIND_TRAPS, Spells.Grade2.FLAME_BLADE, Spells.Grade2.FLAMING_SPHERE, Spells.Grade2.GUST_OF_WIND, Spells.Grade2.HEAT_METAL, Spells.Grade2.HOLD_PERSON, Spells.Grade2.LESSER_RESTORATION, Spells.Grade2.LOCATE_ANIMALS_OR_PLANTS, Spells.Grade2.LOCATE_OBJECT, Spells.Grade2.MOONBEAM, Spells.Grade2.PASS_WITHOUT_TRACE, Spells.Grade2.PROTECTION_FROM_POISON, Spells.Grade2.SPIKE_GROWTH,
+            Spells.Grade3.CALL_LIGHTNING, Spells.Grade3.CONJURE_ANIMALS, Spells.Grade3.DAYLIGHT, Spells.Grade3.DISPEL_MAGIC, Spells.Grade3.MELD_INTO_STONE, Spells.Grade3.PLANT_GROWTH, Spells.Grade3.PROTECTION_FROM_ENERGY, Spells.Grade3.REVIVIFY, Spells.Grade3.SLEET_STORM, Spells.Grade3.SPEAK_WITH_PLANTS, Spells.Grade3.WATER_BREATHING, Spells.Grade3.WATER_WALK, Spells.Grade3.WIND_WALL,
+            Spells.Grade4.BLIGHT, Spells.Grade4.CHARM_MONSTER, Spells.Grade4.CONFUSION, Spells.Grade4.CONJURE_MINOR_ELEMENTALS, Spells.Grade4.CONJURE_WOODLAND_BEINGS, Spells.Grade4.CONTROL_WATER, Spells.Grade4.DIVINATION, Spells.Grade4.DOMINATE_BEAST, Spells.Grade4.FIRE_SHIELD, Spells.Grade4.FREEDOM_OF_MOVEMENT, Spells.Grade4.GIANT_INSECT, Spells.Grade4.HALLUCINATORY_TERRAIN, Spells.Grade4.ICE_STORM, Spells.Grade4.LOCATE_CREATURE, Spells.Grade4.POLYMORPH, Spells.Grade4.STONESKIN, Spells.Grade4.STONE_SHAPE, Spells.Grade4.WALL_OF_FIRE,
+            Spells.Grade5.ANTILIFE_SHELL, Spells.Grade5.AWAKEN, Spells.Grade5.COMMUNE_WITH_NATURE, Spells.Grade5.CONE_OF_COLD, Spells.Grade5.CONJURE_ELEMENTAL, Spells.Grade5.CONTAGION, Spells.Grade5.GEAS, Spells.Grade5.GREATER_RESTORATION, Spells.Grade5.INSECT_PLAGUE, Spells.Grade5.MASS_CURE_WOUNDS, Spells.Grade5.PLANAR_BINDING, Spells.Grade5.REINCARNATE, Spells.Grade5.SCRYING, Spells.Grade5.TREE_STRIDE, Spells.Grade5.WALL_OF_STONE,
+            Spells.Grade6.CONJURE_FEY, Spells.Grade6.FIND_THE_PATH, Spells.Grade6.FLESH_TO_STONE, Spells.Grade6.HEAL, Spells.Grade6.HEROES_FEAST, Spells.Grade6.MOVE_EARTH, Spells.Grade6.SUNBEAM, Spells.Grade6.TRANSPORT_VIA_PLANTS, Spells.Grade6.WALL_OF_THORNS, Spells.Grade6.WIND_WALK,
+            Spells.Grade7.FIRE_STORM, Spells.Grade7.MIRAGE_ARCANE, Spells.Grade7.PLANE_SHIFT, Spells.Grade7.REGENERATE, Spells.Grade7.REVERSE_GRAVITY, Spells.Grade7.SYMBOL,
+            Spells.Grade8.ANIMAL_SHAPES, Spells.Grade8.BEFUDDLEMENT, Spells.Grade8.CONTROL_WEATHER, Spells.Grade8.EARTHQUAKE, Spells.Grade8.INCENDIARY_CLOUD, Spells.Grade8.SUNBURST, Spells.Grade8.TSUNAMI,
+            Spells.Grade9.FORESIGHT, Spells.Grade9.SHAPECHANGE, Spells.Grade9.STORM_OF_VENGEANCE, Spells.Grade9.TRUE_RESURRECTION
+    );
+
+    private static final List<Enum<?>> WARLOCK_L = List.of(
+            Spells.Cantrip.CHILL_TOUCH, Spells.Cantrip.ELDRITCH_BLAST, Spells.Cantrip.MAGE_HAND, Spells.Cantrip.MINOR_ILLUSION, Spells.Cantrip.POISON_SPRAY, Spells.Cantrip.PRESTIDIGITATION, Spells.Cantrip.TRUE_STRIKE,
+            Spells.Grade1.BANE, Spells.Grade1.CHARM_PERSON, Spells.Grade1.COMPREHEND_LANGUAGES, Spells.Grade1.DETECT_MAGIC, Spells.Grade1.EXPEDITIOUS_RETREAT, Spells.Grade1.HELLISH_REBUKE, Spells.Grade1.HEX, Spells.Grade1.HIDEOUS_LAUGHTER, Spells.Grade1.ILLUSORY_SCRIPT, Spells.Grade1.PROTECTION_FROM_EVIL_AND_GOOD, Spells.Grade1.SPEAK_WITH_ANIMALS, Spells.Grade1.UNSEEN_SERVANT,
+            Spells.Grade2.DARKNESS, Spells.Grade2.ENTHRALL, Spells.Grade2.HOLD_PERSON, Spells.Grade2.INVISIBILITY, Spells.Grade2.MIND_SPIKE, Spells.Grade2.MIRROR_IMAGE, Spells.Grade2.MISTY_STEP, Spells.Grade2.RAY_OF_ENFEEBLEMENT, Spells.Grade2.SPIDER_CLIMB, Spells.Grade2.SUGGESTION,
+            Spells.Grade3.COUNTERSPELL, Spells.Grade3.DISPEL_MAGIC, Spells.Grade3.FEAR, Spells.Grade3.FLY, Spells.Grade3.GASEOUS_FORM, Spells.Grade3.HYPNOTIC_PATTERN, Spells.Grade3.MAGIC_CIRCLE, Spells.Grade3.MAJOR_IMAGE, Spells.Grade3.REMOVE_CURSE, Spells.Grade3.TONGUES, Spells.Grade3.VAMPIRIC_TOUCH,
+            Spells.Grade4.BANISHMENT, Spells.Grade4.BLIGHT, Spells.Grade4.CHARM_MONSTER, Spells.Grade4.DIMENSION_DOOR, Spells.Grade4.HALLUCINATORY_TERRAIN,
+            Spells.Grade5.CONTACT_OTHER_PLANE, Spells.Grade5.DREAM, Spells.Grade5.HOLD_MONSTER, Spells.Grade5.MISLEAD, Spells.Grade5.PLANAR_BINDING, Spells.Grade5.SCRYING, Spells.Grade5.TELEPORTATION_CIRCLE,
+            Spells.Grade6.CIRCLE_OF_DEATH, Spells.Grade6.CREATE_UNDEAD, Spells.Grade6.EYEBITE, Spells.Grade6.TRUE_SEEING,
+            Spells.Grade7.ETHEREALNESS, Spells.Grade7.FINGER_OF_DEATH, Spells.Grade7.FORCECAGE, Spells.Grade7.PLANE_SHIFT,
+            Spells.Grade8.BEFUDDLEMENT, Spells.Grade8.DEMIPLANE, Spells.Grade8.DOMINATE_MONSTER, Spells.Grade8.GLIBNESS, Spells.Grade8.POWER_WORD_STUN,
+            Spells.Grade9.ASTRAL_PROJECTION, Spells.Grade9.FORESIGHT, Spells.Grade9.GATE, Spells.Grade9.IMPRISONMENT, Spells.Grade9.POWER_WORD_KILL, Spells.Grade9.TRUE_POLYMORPH, Spells.Grade9.WEIRD
+    );
+
+    private static final List<Enum<?>> BARD_L = List.of(
+            Spells.Cantrip.DANCING_LIGHTS, Spells.Cantrip.LIGHT, Spells.Cantrip.MAGE_HAND, Spells.Cantrip.MENDING, Spells.Cantrip.MESSAGE, Spells.Cantrip.MINOR_ILLUSION, Spells.Cantrip.PRESTIDIGITATION, Spells.Cantrip.STARRY_WISP, Spells.Cantrip.TRUE_STRIKE, Spells.Cantrip.VICIOUS_MOCKERY,
+            Spells.Grade1.ANIMAL_FRIENDSHIP, Spells.Grade1.BANE, Spells.Grade1.CHARM_PERSON, Spells.Grade1.COLOR_SPRAY, Spells.Grade1.COMMAND, Spells.Grade1.COMPREHEND_LANGUAGES, Spells.Grade1.CURE_WOUNDS, Spells.Grade1.DETECT_MAGIC, Spells.Grade1.DISGUISE_SELF, Spells.Grade1.DISSONANT_WHISPERS, Spells.Grade1.FAERIE_FIRE, Spells.Grade1.FEATHER_FALL, Spells.Grade1.HEALING_WORD, Spells.Grade1.HEROISM, Spells.Grade1.HIDEOUS_LAUGHTER, Spells.Grade1.IDENTIFY, Spells.Grade1.ILLUSORY_SCRIPT, Spells.Grade1.LONGSTRIDER, Spells.Grade1.SILENT_IMAGE, Spells.Grade1.SLEEP, Spells.Grade1.SPEAK_WITH_ANIMALS, Spells.Grade1.THUNDERWAVE, Spells.Grade1.UNSEEN_SERVANT,
+            Spells.Grade2.AID, Spells.Grade2.ANIMAL_MESSENGER, Spells.Grade2.CALM_EMOTIONS, Spells.Grade2.DETECT_THOUGHTS, Spells.Grade2.ENHANCE_ABILITY, Spells.Grade2.ENLARGE_REDUCE, Spells.Grade2.ENTHRALL, Spells.Grade2.HEAT_METAL, Spells.Grade2.HOLD_PERSON, Spells.Grade2.INVISIBILITY, Spells.Grade2.KNOCK, Spells.Grade2.LESSER_RESTORATION, Spells.Grade2.LOCATE_ANIMALS_OR_PLANTS, Spells.Grade2.LOCATE_OBJECT, Spells.Grade2.MAGIC_MOUTH, Spells.Grade2.MIRROR_IMAGE, Spells.Grade2.PHANTASMAL_FORCE, Spells.Grade2.SEE_INVISIBILITY, Spells.Grade2.SHATTER, Spells.Grade2.SILENCE, Spells.Grade2.SUGGESTION, Spells.Grade2.ZONE_OF_TRUTH,
+            Spells.Grade3.BESTOW_CURSE, Spells.Grade3.CLAIRVOYANCE, Spells.Grade3.DISPEL_MAGIC, Spells.Grade3.FEAR, Spells.Grade3.GLYPH_OF_WARDING, Spells.Grade3.HYPNOTIC_PATTERN, Spells.Grade3.MAJOR_IMAGE, Spells.Grade3.MASS_HEALING_WORD, Spells.Grade3.NONDETECTION, Spells.Grade3.PLANT_GROWTH, Spells.Grade3.SENDING, Spells.Grade3.SLOW, Spells.Grade3.SPEAK_WITH_DEAD, Spells.Grade3.SPEAK_WITH_PLANTS, Spells.Grade3.STINKING_CLOUD, Spells.Grade3.TINY_HUT, Spells.Grade3.TONGUES,
+            Spells.Grade4.CHARM_MONSTER, Spells.Grade4.COMPULSION, Spells.Grade4.CONFUSION, Spells.Grade4.DIMENSION_DOOR, Spells.Grade4.FREEDOM_OF_MOVEMENT, Spells.Grade4.GREATER_INVISIBILITY, Spells.Grade4.HALLUCINATORY_TERRAIN, Spells.Grade4.LOCATE_CREATURE, Spells.Grade4.PHANTASMAL_KILLER, Spells.Grade4.POLYMORPH,
+            Spells.Grade5.ANIMATE_OBJECTS, Spells.Grade5.AWAKEN, Spells.Grade5.DOMINATE_PERSON, Spells.Grade5.DREAM, Spells.Grade5.GEAS, Spells.Grade5.GREATER_RESTORATION, Spells.Grade5.HOLD_MONSTER, Spells.Grade5.LEGEND_LORE, Spells.Grade5.MASS_CURE_WOUNDS, Spells.Grade5.MISLEAD, Spells.Grade5.MODIFY_MEMORY, Spells.Grade5.PLANAR_BINDING, Spells.Grade5.RAISE_DEAD, Spells.Grade5.SCRYING, Spells.Grade5.SEEMING, Spells.Grade5.TELEPATHIC_BOND, Spells.Grade5.TELEPORTATION_CIRCLE,
+            Spells.Grade6.EYEBITE, Spells.Grade6.FIND_THE_PATH, Spells.Grade6.GUARDS_AND_WARDS, Spells.Grade6.HEROES_FEAST, Spells.Grade6.IRRESISTIBLE_DANCE, Spells.Grade6.MASS_SUGGESTION, Spells.Grade6.PROGRAMMED_ILLUSION, Spells.Grade6.TRUE_SEEING,
+            Spells.Grade7.ARCANE_SWORD, Spells.Grade7.ETHEREALNESS, Spells.Grade7.FORCECAGE, Spells.Grade7.MAGNIFICENT_MANSION, Spells.Grade7.MIRAGE_ARCANE, Spells.Grade7.PRISMATIC_SPRAY, Spells.Grade7.PROJECT_IMAGE, Spells.Grade7.REGENERATE, Spells.Grade7.RESURRECTION, Spells.Grade7.SYMBOL, Spells.Grade7.TELEPORT,
+            Spells.Grade8.BEFUDDLEMENT, Spells.Grade8.DOMINATE_MONSTER, Spells.Grade8.GLIBNESS, Spells.Grade8.MIND_BLANK, Spells.Grade8.POWER_WORD_STUN,
+            Spells.Grade9.FORESIGHT, Spells.Grade9.POWER_WORD_HEAL, Spells.Grade9.POWER_WORD_KILL, Spells.Grade9.PRISMATIC_WALL, Spells.Grade9.TRUE_POLYMORPH
+    );
+
+    private static final List<Enum<?>> PALADIN_L = List.of(
+            Spells.Grade1.BLESS, Spells.Grade1.COMMAND, Spells.Grade1.CURE_WOUNDS, Spells.Grade1.DETECT_EVIL_AND_GOOD, Spells.Grade1.DETECT_MAGIC, Spells.Grade1.DETECT_POISON_AND_DISEASE, Spells.Grade1.DIVINE_FAVOR, Spells.Grade1.DIVINE_SMITE, Spells.Grade1.HEROISM, Spells.Grade1.PROTECTION_FROM_EVIL_AND_GOOD, Spells.Grade1.PURIFY_FOOD_AND_DRINK, Spells.Grade1.SEARING_SMITE, Spells.Grade1.SHIELD_OF_FAITH,
+            Spells.Grade2.AID, Spells.Grade2.FIND_STEED, Spells.Grade2.GENTLE_REPOSE, Spells.Grade2.LESSER_RESTORATION, Spells.Grade2.LOCATE_OBJECT, Spells.Grade2.MAGIC_WEAPON, Spells.Grade2.PRAYER_OF_HEALING, Spells.Grade2.PROTECTION_FROM_POISON, Spells.Grade2.SHINING_SMITE, Spells.Grade2.WARDING_BOND, Spells.Grade2.ZONE_OF_TRUTH,
+            Spells.Grade3.CREATE_FOOD_AND_WATER, Spells.Grade3.DAYLIGHT, Spells.Grade3.DISPEL_MAGIC, Spells.Grade3.MAGIC_CIRCLE, Spells.Grade3.REMOVE_CURSE, Spells.Grade3.REVIVIFY,
+            Spells.Grade4.AURA_OF_LIFE, Spells.Grade4.BANISHMENT, Spells.Grade4.DEATH_WARD, Spells.Grade4.LOCATE_CREATURE,
+            Spells.Grade5.DISPEL_EVIL_AND_GOOD, Spells.Grade5.GEAS, Spells.Grade5.GREATER_RESTORATION, Spells.Grade5.RAISE_DEAD
+    );
+
+    private static final List<Enum<?>> RANGER_L = List.of(
+            Spells.Grade1.ALARM, Spells.Grade1.ANIMAL_FRIENDSHIP, Spells.Grade1.CURE_WOUNDS, Spells.Grade1.DETECT_MAGIC, Spells.Grade1.DETECT_POISON_AND_DISEASE, Spells.Grade1.ENSNARING_STRIKE, Spells.Grade1.ENTANGLE, Spells.Grade1.FOG_CLOUD, Spells.Grade1.GOODBERRY, Spells.Grade1.HUNTER_S_MARK, Spells.Grade1.JUMP, Spells.Grade1.LONGSTRIDER, Spells.Grade1.SPEAK_WITH_ANIMALS,
+            Spells.Grade2.AID, Spells.Grade2.ANIMAL_MESSENGER, Spells.Grade2.BARKSKIN, Spells.Grade2.DARKVISION, Spells.Grade2.ENHANCE_ABILITY, Spells.Grade2.FIND_TRAPS, Spells.Grade2.GUST_OF_WIND, Spells.Grade2.LESSER_RESTORATION, Spells.Grade2.LOCATE_ANIMALS_OR_PLANTS, Spells.Grade2.LOCATE_OBJECT, Spells.Grade2.MAGIC_WEAPON, Spells.Grade2.PASS_WITHOUT_TRACE, Spells.Grade2.PROTECTION_FROM_POISON, Spells.Grade2.SILENCE, Spells.Grade2.SPIKE_GROWTH,
+            Spells.Grade3.CONJURE_ANIMALS, Spells.Grade3.DAYLIGHT, Spells.Grade3.DISPEL_MAGIC, Spells.Grade3.MELD_INTO_STONE, Spells.Grade3.NONDETECTION, Spells.Grade3.PLANT_GROWTH, Spells.Grade3.PROTECTION_FROM_ENERGY, Spells.Grade3.REVIVIFY, Spells.Grade3.SPEAK_WITH_PLANTS, Spells.Grade3.WATER_BREATHING, Spells.Grade3.WATER_WALK, Spells.Grade3.WIND_WALL,
+            Spells.Grade4.CONJURE_WOODLAND_BEINGS, Spells.Grade4.DOMINATE_BEAST, Spells.Grade4.FREEDOM_OF_MOVEMENT, Spells.Grade4.LOCATE_CREATURE, Spells.Grade4.STONESKIN,
+            Spells.Grade5.COMMUNE_WITH_NATURE, Spells.Grade5.GREATER_RESTORATION, Spells.Grade5.TREE_STRIDE
+    );
+
 
     // ── ATTRS ──
     private static final Map<String,Double> BARBARIAN_ATTRS = attrs(+20,+6, +4, +0.02,+0.1, 0);
@@ -388,77 +547,89 @@ public class ClassRegistry {
     private static final List<String> ILLUSIONIST_AB     = List.of("Improved Illusions: Create sounds within illusion spells","Malleable Illusions: Change existing illusions as an action","Illusory Self: An illusory duplicate blocks one incoming attack","Illusory Reality: Make one component of your illusion real");
 
     static {
-        CLASSES.add(new ClassDefinition("barbarian","Barbarian","A fierce warrior driven by primal rage.",         BARBARIAN_ATTRS,BARBARIAN_AB,BARBARIAN_ITEMS,P_BARB));
-        SUBCLASSES.add(new SubclassDefinition("berserker",       "barbarian","Path of the Berserker",      "Channels rage into devastating attacks.",         BERSERKER_AB,   P_BARB));
-        SUBCLASSES.add(new SubclassDefinition("wild_heart",      "barbarian","Path of the Wild Heart",     "Draws on the spirits of beasts.",                 WILD_HEART_AB,  P_BARB));
-        SUBCLASSES.add(new SubclassDefinition("world_tree",      "barbarian","Path of the World Tree",     "Taps into the cosmic power of the World Tree.",   WORLD_TREE_AB,  P_BARB));
-        SUBCLASSES.add(new SubclassDefinition("zealot",          "barbarian","Path of the Zealot",         "Infuses rage with divine fury.",                  ZEALOT_AB,      P_BARB));
+        // BARBARIAN
+        CLASSES.add(new ClassDefinition("barbarian", "Barbarian", "A fierce warrior driven by primal rage.", BARBARIAN_ATTRS, BARBARIAN_AB, BARBARIAN_ITEMS, P_BARB, NONE_S, NONE_P, EMPTY_L));
+        SUBCLASSES.add(new SubclassDefinition("berserker", "barbarian", "Path of the Berserker", "Channels rage into devastating attacks.", BERSERKER_AB, P_BARB));
+        SUBCLASSES.add(new SubclassDefinition("wild_heart", "barbarian", "Path of the Wild Heart", "Draws on the spirits of beasts.", WILD_HEART_AB, P_BARB));
+        SUBCLASSES.add(new SubclassDefinition("world_tree", "barbarian", "Path of the World Tree", "Taps into the cosmic power of the World Tree.", WORLD_TREE_AB, P_BARB));
+        SUBCLASSES.add(new SubclassDefinition("zealot", "barbarian", "Path of the Zealot", "Infuses rage with divine fury.", ZEALOT_AB, P_BARB));
 
-        CLASSES.add(new ClassDefinition("bard",    "Bard",    "A master of music, magic, and inspiration.",      BARD_ATTRS,    BARD_AB,    BARD_ITEMS,    P_BARD));
-        SUBCLASSES.add(new SubclassDefinition("college_dance",   "bard","College of Dance",         "Uses movement as a spellcasting focus.",           COLLEGE_DANCE_AB,   P_BARD));
-        SUBCLASSES.add(new SubclassDefinition("college_glamour", "bard","College of Glamour",       "Weaves enchantments of fey-touched beauty.",       COLLEGE_GLAMOUR_AB, P_BARD));
-        SUBCLASSES.add(new SubclassDefinition("college_lore",    "bard","College of Lore",          "Collects knowledge from every discipline.",        COLLEGE_LORE_AB,    P_BARD));
-        SUBCLASSES.add(new SubclassDefinition("college_valor",   "bard","College of Valor",         "Combines combat with bardic inspiration.",         COLLEGE_VALOR_AB,   P_VALOR));
+        // BARD
+        CLASSES.add(new ClassDefinition("bard", "Bard", "A master of music, magic, and inspiration.", BARD_ATTRS, BARD_AB, BARD_ITEMS, P_BARD, BAR_S, BAR_P, BARD_L));
+        SUBCLASSES.add(new SubclassDefinition("college_dance", "bard", "College of Dance", "Uses movement as a spellcasting focus.", COLLEGE_DANCE_AB, P_BARD));
+        SUBCLASSES.add(new SubclassDefinition("college_glamour", "bard", "College of Glamour", "Weaves enchantments of fey-touched beauty.", COLLEGE_GLAMOUR_AB, P_BARD));
+        SUBCLASSES.add(new SubclassDefinition("college_lore", "bard", "College of Lore", "Collects knowledge from every discipline.", COLLEGE_LORE_AB, P_BARD));
+        SUBCLASSES.add(new SubclassDefinition("college_valor", "bard", "College of Valor", "Combines combat with bardic inspiration.", COLLEGE_VALOR_AB, P_VALOR));
 
-        CLASSES.add(new ClassDefinition("cleric",  "Cleric",  "A divine spellcaster empowered by their deity.",  CLERIC_ATTRS,  CLERIC_AB,  CLERIC_ITEMS,  P_CLER));
-        SUBCLASSES.add(new SubclassDefinition("life_domain",     "cleric","Life Domain",             "Devoted to preserving and restoring life.",        LIFE_DOMAIN_AB,     P_CLER));
-        SUBCLASSES.add(new SubclassDefinition("light_domain",    "cleric","Light Domain",            "Channels the power of fire and radiance.",         LIGHT_DOMAIN_AB,    P_CLER));
-        SUBCLASSES.add(new SubclassDefinition("trickery_domain", "cleric","Trickery Domain",         "A deity of deception blesses this cleric.",        TRICKERY_DOMAIN_AB, P_CLER));
-        SUBCLASSES.add(new SubclassDefinition("war_domain",      "cleric","War Domain",              "Blessed for combat by a god of war.",              WAR_DOMAIN_AB,      P_WAR_D));
+        // CLERIC
+        CLASSES.add(new ClassDefinition("cleric", "Cleric", "A divine spellcaster empowered by their deity.", CLERIC_ATTRS, CLERIC_AB, CLERIC_ITEMS, P_CLER, CLE_S, CLE_P, CLERIC_L));
+        SUBCLASSES.add(new SubclassDefinition("life_domain", "cleric", "Life Domain", "Devoted to preserving and restoring life.", LIFE_DOMAIN_AB, P_CLER));
+        SUBCLASSES.add(new SubclassDefinition("light_domain", "cleric", "Light Domain", "Channels the power of fire and radiance.", LIGHT_DOMAIN_AB, P_CLER));
+        SUBCLASSES.add(new SubclassDefinition("trickery_domain", "cleric", "Trickery Domain", "A deity of deception blesses this cleric.", TRICKERY_DOMAIN_AB, P_CLER));
+        SUBCLASSES.add(new SubclassDefinition("war_domain", "cleric", "War Domain", "Blessed for combat by a god of war.", WAR_DOMAIN_AB, P_WAR_D));
 
-        CLASSES.add(new ClassDefinition("druid",   "Druid",   "A guardian of nature and its cycles.",            DRUID_ATTRS,   DRUID_AB,   DRUID_ITEMS,   P_DRUI));
-        SUBCLASSES.add(new SubclassDefinition("circle_land",     "druid","Circle of the Land",       "Draws magical power from the terrain.",            CIRCLE_LAND_AB,     P_DRUI));
-        SUBCLASSES.add(new SubclassDefinition("circle_moon",     "druid","Circle of the Moon",       "Shapeshifts into powerful beasts.",                CIRCLE_MOON_AB,     P_DRUI));
-        SUBCLASSES.add(new SubclassDefinition("circle_sea",      "druid","Circle of the Sea",        "Commands the power of wind and wave.",             CIRCLE_SEA_AB,      P_DRUI));
-        SUBCLASSES.add(new SubclassDefinition("circle_stars",    "druid","Circle of the Stars",      "Reads power from the constellations.",             CIRCLE_STARS_AB,    P_DRUI));
+        // DRUID
+        CLASSES.add(new ClassDefinition("druid", "Druid", "A guardian of nature and its cycles.", DRUID_ATTRS, DRUID_AB, DRUID_ITEMS, P_DRUI, DRU_S, DRU_P, DRUID_L));
+        SUBCLASSES.add(new SubclassDefinition("circle_land", "druid", "Circle of the Land", "Draws magical power from the terrain.", CIRCLE_LAND_AB, P_DRUI));
+        SUBCLASSES.add(new SubclassDefinition("circle_moon", "druid", "Circle of the Moon", "Shapests into powerful beasts.", CIRCLE_MOON_AB, P_DRUI));
+        SUBCLASSES.add(new SubclassDefinition("circle_sea", "druid", "Circle of the Sea", "Commands the power of wind and wave.", CIRCLE_SEA_AB, P_DRUI));
+        SUBCLASSES.add(new SubclassDefinition("circle_stars", "druid", "Circle of the Stars", "Reads power from the constellations.", CIRCLE_STARS_AB, P_DRUI));
 
-        CLASSES.add(new ClassDefinition("fighter", "Fighter", "A versatile master of weaponry and armor.",       FIGHTER_ATTRS, FIGHTER_AB, FIGHTER_ITEMS, P_FIGH));
-        SUBCLASSES.add(new SubclassDefinition("battle_master",   "fighter","Battle Master",          "Uses cunning maneuvers to control the battlefield.",BATTLE_MASTER_AB,  P_FIGH));
-        SUBCLASSES.add(new SubclassDefinition("champion",        "fighter","Champion",               "An elite warrior of pure physical excellence.",    CHAMPION_AB,        P_FIGH));
-        SUBCLASSES.add(new SubclassDefinition("eldritch_knight", "fighter","Eldritch Knight",        "Combines martial training with arcane magic.",     ELDRITCH_KNIGHT_AB, P_ELDR));
-        SUBCLASSES.add(new SubclassDefinition("psi_warrior",     "fighter","Psi Warrior",            "Augments combat with psionic power.",              PSI_WARRIOR_AB,     P_FIGH));
+        // FIGHTER
+        CLASSES.add(new ClassDefinition("fighter", "Fighter", "A versatile master of weaponry and armor.", FIGHTER_ATTRS, FIGHTER_AB, FIGHTER_ITEMS, P_FIGH, NONE_S, NONE_P, EMPTY_L));
+        SUBCLASSES.add(new SubclassDefinition("battle_master", "fighter", "Battle Master", "Uses cunning maneuvers to control the battlefield.", BATTLE_MASTER_AB, P_FIGH));
+        SUBCLASSES.add(new SubclassDefinition("champion", "fighter", "Champion", "An elite warrior of pure physical excellence.", CHAMPION_AB, P_FIGH));
+        SUBCLASSES.add(new SubclassDefinition("eldritch_knight", "fighter", "Eldritch Knight", "Combines martial training with arcane magic.", ELDRITCH_KNIGHT_AB, P_ELDR));
+        SUBCLASSES.add(new SubclassDefinition("psi_warrior", "fighter", "Psi Warrior", "Augments combat with psionic power.", PSI_WARRIOR_AB, P_FIGH));
 
-        CLASSES.add(new ClassDefinition("monk",    "Monk",    "A master of martial arts and ki energy.",         MONK_ATTRS,    MONK_AB,    MONK_ITEMS,    P_MONK));
-        SUBCLASSES.add(new SubclassDefinition("warrior_mercy",   "monk","Warrior of Mercy",          "Heals allies and debilitates foes.",               WARRIOR_MERCY_AB,   P_MONK));
-        SUBCLASSES.add(new SubclassDefinition("warrior_shadow",  "monk","Warrior of Shadow",         "Blends combat and shadow magic.",                  WARRIOR_SHADOW_AB,  P_MONK));
-        SUBCLASSES.add(new SubclassDefinition("warrior_elements","monk","Warrior of the Elements",   "Channels elemental energy through strikes.",       WARRIOR_ELEMENTS_AB,P_MONK));
-        SUBCLASSES.add(new SubclassDefinition("warrior_open_hand","monk","Warrior of the Open Hand", "The purest expression of martial discipline.",     WARRIOR_OPEN_AB,    P_MONK));
+        // MONK
+        CLASSES.add(new ClassDefinition("monk", "Monk", "A master of martial arts and ki energy.", MONK_ATTRS, MONK_AB, MONK_ITEMS, P_MONK, NONE_S, NONE_P, EMPTY_L));
+        SUBCLASSES.add(new SubclassDefinition("warrior_mercy", "monk", "Warrior of Mercy", "Heals allies and debilitates foes.", WARRIOR_MERCY_AB, P_MONK));
+        SUBCLASSES.add(new SubclassDefinition("warrior_shadow", "monk", "Warrior of Shadow", "Blends combat and shadow magic.", WARRIOR_SHADOW_AB, P_MONK));
+        SUBCLASSES.add(new SubclassDefinition("warrior_elements", "monk", "Warrior of the Elements", "Channels elemental energy through strikes.", WARRIOR_ELEMENTS_AB, P_MONK));
+        SUBCLASSES.add(new SubclassDefinition("warrior_open_hand", "monk", "Warrior of the Open Hand", "The purest expression of martial discipline.", WARRIOR_OPEN_AB, P_MONK));
 
-        CLASSES.add(new ClassDefinition("paladin", "Paladin", "A holy warrior bound by a sacred oath.",          PALADIN_ATTRS, PALADIN_AB, PALADIN_ITEMS, P_PALA));
-        SUBCLASSES.add(new SubclassDefinition("oath_devotion",   "paladin","Oath of Devotion",       "Upholds the ideal of a shining knight.",           OATH_DEVOTION_AB,   P_PALA));
-        SUBCLASSES.add(new SubclassDefinition("oath_glory",      "paladin","Oath of Glory",          "Strives to reach the heights of heroic legend.",   OATH_GLORY_AB,      P_PALA));
-        SUBCLASSES.add(new SubclassDefinition("oath_ancients",   "paladin","Oath of the Ancients",   "Preserves the light of life against darkness.",    OATH_ANCIENTS_AB,   P_PALA));
-        SUBCLASSES.add(new SubclassDefinition("oath_vengeance",  "paladin","Oath of Vengeance",      "Pursues and punishes evildoers relentlessly.",     OATH_VENGEANCE_AB,  P_PALA));
+        // PALADIN
+        CLASSES.add(new ClassDefinition("paladin", "Paladin", "A holy warrior bound by a sacred oath.", PALADIN_ATTRS, PALADIN_AB, PALADIN_ITEMS, P_PALA, PAL_S, PAL_P, PALADIN_L));
+        SUBCLASSES.add(new SubclassDefinition("oath_devotion", "paladin", "Oath of Devotion", "Upholds the ideal of a shining knight.", OATH_DEVOTION_AB, P_PALA));
+        SUBCLASSES.add(new SubclassDefinition("oath_glory", "paladin", "Oath of Glory", "Strives to reach the heights of heroic legend.", OATH_GLORY_AB, P_PALA));
+        SUBCLASSES.add(new SubclassDefinition("oath_ancients", "paladin", "Oath of the Ancients", "Preserves the light of life against darkness.", OATH_ANCIENTS_AB, P_PALA));
+        SUBCLASSES.add(new SubclassDefinition("oath_vengeance", "paladin", "Oath of Vengeance", "Pursues and punishes evildoers relentlessly.", OATH_VENGEANCE_AB, P_PALA));
 
-        CLASSES.add(new ClassDefinition("ranger",  "Ranger",  "A skilled hunter of the wilderness.",             RANGER_ATTRS,  RANGER_AB,  RANGER_ITEMS,  P_RANG));
-        SUBCLASSES.add(new SubclassDefinition("beast_master",    "ranger","Beast Master",             "Forms a deep bond with an animal companion.",      BEAST_MASTER_AB,    P_RANG));
-        SUBCLASSES.add(new SubclassDefinition("fey_wanderer",    "ranger","Fey Wanderer",             "Channels the magic of the Feywild.",               FEY_WANDERER_AB,    P_RANG));
-        SUBCLASSES.add(new SubclassDefinition("gloom_stalker",   "ranger","Gloom Stalker",            "Thrives in the darkest places of the world.",      GLOOM_STALKER_AB,   P_RANG));
-        SUBCLASSES.add(new SubclassDefinition("hunter",          "ranger","Hunter",                   "Specializes in tracking and slaying prey.",        HUNTER_AB,          P_RANG));
+        // RANGER
+        CLASSES.add(new ClassDefinition("ranger", "Ranger", "A skilled hunter of the wilderness.", RANGER_ATTRS, RANGER_AB, RANGER_ITEMS, P_RANG, RAN_S, RAN_P, RANGER_L));
+        SUBCLASSES.add(new SubclassDefinition("beast_master", "ranger", "Beast Master", "Forms a deep bond with an animal companion.", BEAST_MASTER_AB, P_RANG));
+        SUBCLASSES.add(new SubclassDefinition("fey_wanderer", "ranger", "Fey Wanderer", "Channels the magic of the Feywild.", FEY_WANDERER_AB, P_RANG));
+        SUBCLASSES.add(new SubclassDefinition("gloom_stalker", "ranger", "Gloom Stalker", "Thrives in the darkest places of the world.", GLOOM_STALKER_AB, P_RANG));
+        SUBCLASSES.add(new SubclassDefinition("hunter", "ranger", "Hunter", "Specializes in tracking and slaying prey.", HUNTER_AB, P_RANG));
 
-        CLASSES.add(new ClassDefinition("rogue",   "Rogue",   "A cunning trickster who strikes from shadows.",   ROGUE_ATTRS,   ROGUE_AB,   ROGUE_ITEMS,   P_ROGU));
-        SUBCLASSES.add(new SubclassDefinition("arcane_trickster","rogue","Arcane Trickster",          "Enhances roguish talents with illusion magic.",    ARCANE_TRICKSTER_AB,P_ROGU));
-        SUBCLASSES.add(new SubclassDefinition("assassin",        "rogue","Assassin",                  "Trained to eliminate targets swiftly and silently.",ASSASSIN_AB,       P_ROGU));
-        SUBCLASSES.add(new SubclassDefinition("soulknife",       "rogue","Soulknife",                 "Focuses psionic energy into blade-like constructs.",SOULKNIFE_AB,      P_ROGU));
-        SUBCLASSES.add(new SubclassDefinition("thief",           "rogue","Thief",                     "Master of speed, stealth and sleight of hand.",    THIEF_AB,           P_ROGU));
+        // ROGUE
+        CLASSES.add(new ClassDefinition("rogue", "Rogue", "A cunning trickster who strikes from shadows.", ROGUE_ATTRS, ROGUE_AB, ROGUE_ITEMS, P_ROGU, NONE_S, NONE_P, EMPTY_L));
+        SUBCLASSES.add(new SubclassDefinition("arcane_trickster", "rogue", "Arcane Trickster", "Enhances roguish talents with illusion magic.", ARCANE_TRICKSTER_AB, P_ROGU));
+        SUBCLASSES.add(new SubclassDefinition("assassin", "rogue", "Assassin", "Trained to eliminate targets swiftly and silently.", ASSASSIN_AB, P_ROGU));
+        SUBCLASSES.add(new SubclassDefinition("soulknife", "rogue", "Soulknife", "Focuses psionic energy into blade-like constructs.", SOULKNIFE_AB, P_ROGU));
+        SUBCLASSES.add(new SubclassDefinition("thief", "rogue", "Thief", "Master of speed, stealth and sleight of hand.", THIEF_AB, P_ROGU));
 
-        CLASSES.add(new ClassDefinition("sorcerer","Sorcerer","Born with innate magical power.",                 SORCERER_ATTRS,SORCERER_AB,SORCERER_ITEMS,P_SORC));
-        SUBCLASSES.add(new SubclassDefinition("draconic_sorcery","sorcerer","Draconic Sorcery",       "Dragon blood fuels your raw magical might.",       DRACONIC_AB,        P_SORC));
-        SUBCLASSES.add(new SubclassDefinition("wild_magic",      "sorcerer","Wild Magic",             "Magic surges with chaotic unpredictable power.",   WILD_MAGIC_AB,      P_SORC));
-        SUBCLASSES.add(new SubclassDefinition("aberrant_sorcery","sorcerer","Aberrant Sorcery",       "Touched by alien forces from beyond reality.",     ABERRANT_AB,        P_SORC));
-        SUBCLASSES.add(new SubclassDefinition("clockwork_sorcery","sorcerer","Clockwork Sorcery",     "Channels the ordered magic of clockwork planes.",  CLOCKWORK_AB,       P_SORC));
+        // SORCERER
+        CLASSES.add(new ClassDefinition("sorcerer", "Sorcerer", "Born with innate magical power.", SORCERER_ATTRS, SORCERER_AB, SORCERER_ITEMS, P_SORC, SOR_S, SOR_P, SORCERER_L));
+        SUBCLASSES.add(new SubclassDefinition("draconic_sorcery", "sorcerer", "Draconic Sorcery", "Dragon blood fuels your raw magical might.", DRACONIC_AB, P_SORC));
+        SUBCLASSES.add(new SubclassDefinition("wild_magic", "sorcerer", "Wild Magic", "Magic surges with chaotic unpredictable power.", WILD_MAGIC_AB, P_SORC));
+        SUBCLASSES.add(new SubclassDefinition("aberrant_sorcery", "sorcerer", "Aberrant Sorcery", "Touched by alien forces from beyond reality.", ABERRANT_AB, P_SORC));
+        SUBCLASSES.add(new SubclassDefinition("clockwork_sorcery", "sorcerer", "Clockwork Sorcery", "Channels the ordered magic of clockwork planes.", CLOCKWORK_AB, P_SORC));
 
-        CLASSES.add(new ClassDefinition("warlock", "Warlock", "Gains power through a pact with a dark entity.",  WARLOCK_ATTRS, WARLOCK_AB, WARLOCK_ITEMS, P_WARL));
-        SUBCLASSES.add(new SubclassDefinition("archfey_patron",  "warlock","Archfey Patron",          "Pact with a powerful lord of the Feywild.",        ARCHFEY_AB,         P_WARL));
-        SUBCLASSES.add(new SubclassDefinition("fiend_patron",    "warlock","Fiend Patron",            "Pact made with a powerful devil for raw power.",   FIEND_AB,           P_WARL));
-        SUBCLASSES.add(new SubclassDefinition("great_old_one",   "warlock","Great Old One Patron",    "Bound to an unknowable cosmic entity.",            GREAT_OLD_ONE_AB,   P_WARL));
-        SUBCLASSES.add(new SubclassDefinition("celestial_patron","warlock","Celestial Patron",        "Pact with a being of the Upper Planes.",           CELESTIAL_AB,       P_WARL));
+        // WARLOCK
+        CLASSES.add(new ClassDefinition("warlock", "Warlock", "Gains power through a pact with a dark entity.", WARLOCK_ATTRS, WARLOCK_AB, WARLOCK_ITEMS, P_WARL, WAR_S, WAR_P, WARLOCK_L));
+        SUBCLASSES.add(new SubclassDefinition("archfey_patron", "warlock", "Archfey Patron", "Pact with a powerful lord of the Feywild.", ARCHFEY_AB, P_WARL));
+        SUBCLASSES.add(new SubclassDefinition("fiend_patron", "warlock", "Fiend Patron", "Pact made with a powerful devil for raw power.", FIEND_AB, P_WARL));
+        SUBCLASSES.add(new SubclassDefinition("great_old_one", "warlock", "Great Old One Patron", "Bound to an unknowable cosmic entity.", GREAT_OLD_ONE_AB, P_WARL));
+        SUBCLASSES.add(new SubclassDefinition("celestial_patron", "warlock", "Celestial Patron", "Pact with a being of the Upper Planes.", CELESTIAL_AB, P_WARL));
 
-        CLASSES.add(new ClassDefinition("wizard",  "Wizard",  "Master of studied spellcasting.",                 WIZARD_ATTRS,  WIZARD_AB,  WIZARD_ITEMS,  P_WIZA));
-        SUBCLASSES.add(new SubclassDefinition("abjurer",         "wizard","Abjurer",                  "Specializes in protective and warding magic.",     ABJURER_AB,         P_WIZA));
-        SUBCLASSES.add(new SubclassDefinition("diviner",         "wizard","Diviner",                  "Peers into the past, present and future.",         DIVINER_AB,         P_WIZA));
-        SUBCLASSES.add(new SubclassDefinition("evoker",          "wizard","Evoker",                   "Channels raw elemental forces into destruction.",  EVOKER_AB,          P_WIZA));
-        SUBCLASSES.add(new SubclassDefinition("illusionist",     "wizard","Illusionist",              "Bends reality through weaves of illusion.",        ILLUSIONIST_AB,     P_WIZA));
+        // WIZARD
+        CLASSES.add(new ClassDefinition("wizard", "Wizard", "Master of studied spellcasting.", WIZARD_ATTRS, WIZARD_AB, WIZARD_ITEMS, P_WIZA, WIZ_S, WIZ_P, WIZARD_L));
+        SUBCLASSES.add(new SubclassDefinition("abjurer", "wizard", "Abjurer", "Specializes in protective and warding magic.", ABJURER_AB, P_WIZA));
+        SUBCLASSES.add(new SubclassDefinition("diviner", "wizard", "Diviner", "Peers into the past, present and future.", DIVINER_AB, P_WIZA));
+        SUBCLASSES.add(new SubclassDefinition("evoker", "wizard", "Evoker", "Channels raw elemental forces into destruction.", EVOKER_AB, P_WIZA));
+        SUBCLASSES.add(new SubclassDefinition("illusionist", "wizard", "Illusionist", "Bends reality through weaves of illusion.", ILLUSIONIST_AB, P_WIZA));
     }
 
     public static List<SubclassDefinition> getSubclassesFor(String parentId) {
