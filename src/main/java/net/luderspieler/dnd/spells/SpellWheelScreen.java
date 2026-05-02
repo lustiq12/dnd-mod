@@ -141,12 +141,26 @@ public class SpellWheelScreen extends Screen {
 
     private void renderSpellWheel(GuiGraphics g, int mouseX, int mouseY) {
         int segments = currentSpells.isEmpty() ? 1 : currentSpells.size();
+
+        // Skalierung basierend auf Spell-Anzahl
+        float scale = 1.0f;
+        if (segments >= 12) {
+            scale = 3.0f;
+        } else if (segments >= 8) {
+            scale = 2.0f;
+        }
+
+        int currentOuterRadius = (int) (OUTER_RADIUS * scale);
+        int currentInnerRadius = (int) (INNER_RADIUS * scale);
+        int currentHubRadius = (int) (HUB_RADIUS * scale);
+        int currentLabelRadius = (int) (LABEL_RADIUS_INNER * scale);
+
         double mouseAngle = Math.atan2(mouseY - cy, mouseX - cx);
         double sliceAngle = (2 * Math.PI) / segments;
 
         hoveredSpell = -1;
         double dist = Math.sqrt((mouseX - cx) * (mouseX - cx) + (mouseY - cy) * (mouseY - cy));
-        if (!currentSpells.isEmpty() && dist > HUB_RADIUS && dist < OUTER_RADIUS + HOVER_EXPAND) {
+        if (!currentSpells.isEmpty() && dist > currentHubRadius && dist < currentOuterRadius + HOVER_EXPAND) {
             double angle = mouseAngle + Math.PI / 2;
             if (angle < 0) angle += 2 * Math.PI;
             hoveredSpell = (int) (angle / sliceAngle) % segments;
@@ -154,20 +168,20 @@ public class SpellWheelScreen extends Screen {
 
         if (currentSpells.isEmpty()) {
             // draw a single greyed segment
-            drawSegment(g, cx, cy, HUB_RADIUS, OUTER_RADIUS, -Math.PI / 2, Math.PI * 1.5, COL_SEGMENT_IDLE, COL_OUTLINE);
-            drawCenteredShadow(g, "No spells prepared", cx, cy, COL_TEXT_DIM);
+            drawSegment(g, cx, cy, currentHubRadius, currentOuterRadius, -Math.PI / 2, Math.PI * 1.5, COL_SEGMENT_IDLE, COL_OUTLINE);
+            drawCenteredShadow(g, "No spells prepared", cx, cy + 16, COL_TEXT_DIM);
         } else {
             for (int i = 0; i < segments; i++) {
                 double start = -Math.PI / 2 + i * sliceAngle;
                 double end = start + sliceAngle;
                 boolean hovered = i == hoveredSpell;
-                int outerR = hovered ? OUTER_RADIUS + (int) HOVER_EXPAND : OUTER_RADIUS;
+                int outerR = hovered ? currentOuterRadius + (int) HOVER_EXPAND : currentOuterRadius;
                 int color = hovered ? COL_SEGMENT_HOVER : COL_SEGMENT_IDLE;
-                drawSegment(g, cx, cy, HUB_RADIUS, outerR, start, end, color, COL_OUTLINE);
+                drawSegment(g, cx, cy, currentHubRadius, outerR, start, end, color, COL_OUTLINE);
 
                 double mid = (start + end) / 2;
-                int lx = cx + (int) (LABEL_RADIUS_INNER * Math.cos(mid));
-                int ly = cy + (int) (LABEL_RADIUS_INNER * Math.sin(mid));
+                int lx = cx + (int) (currentLabelRadius * Math.cos(mid));
+                int ly = cy + (int) (currentLabelRadius * Math.sin(mid));
                 String display = formatSpellId(currentSpells.get(i));
                 int textColor = hovered ? COL_TEXT_HOVER : COL_TEXT;
                 drawCenteredShadow(g, display, lx, ly, textColor);
@@ -175,7 +189,7 @@ public class SpellWheelScreen extends Screen {
         }
 
         // Hub — back button
-        drawCircle(g, cx, cy, HUB_RADIUS, COL_HUB, COL_OUTLINE);
+        drawCircle(g, cx, cy, currentHubRadius, COL_HUB, COL_OUTLINE);
         String levelLabel = selectedLevel == 0 ? "Cantrip" : "grade " + selectedLevel;
         drawCenteredShadow(g, levelLabel, cx, cy - 4, COL_TEXT);
         drawCenteredShadow(g, "Back", cx, cy + 4, -5592406);

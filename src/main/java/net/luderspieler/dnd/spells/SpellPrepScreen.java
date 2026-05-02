@@ -101,13 +101,13 @@ public class SpellPrepScreen extends Screen {
         this.addRenderableWidget(Button.builder(
                 Component.literal("Confirm"),
                 btn -> saveAndClose()
-        ).bounds(lx + PANEL_W / 2 - 30, ly + PANEL_H + 6, 60, 16).build());
+        ).bounds(lx + PANEL_W / 2 - 30, ly + PANEL_H + 16, 60, 16).build());
 
         // ── Close button ──
         this.addRenderableWidget(Button.builder(
                 Component.literal("Cancel"),
                 btn -> this.onClose()
-        ).bounds(rx + PANEL_W / 2 - 30, ly + PANEL_H + 6, 60, 16).build());
+        ).bounds(rx + PANEL_W / 2 - 30, ly + PANEL_H + 16, 60, 16).build());
     }
 
     private void loadData() {
@@ -211,7 +211,7 @@ public class SpellPrepScreen extends Screen {
                 String counter = used + " / " + max + " prepared";
                 g.drawString(this.font, counter,
                         rx + PANEL_W / 2 - this.font.width(counter) / 2,
-                        ry + PANEL_H + 6, used >= max ? 0xFFFF5555 : 0xFF55FF55, false);
+                        ry + PANEL_H + 2, used >= max ? 0xFFFF5555 : 0xFF55FF55, false);
             }
         }
 
