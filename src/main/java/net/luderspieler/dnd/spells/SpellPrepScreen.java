@@ -45,6 +45,7 @@ public class SpellPrepScreen extends Screen {
     private static final int COL_TEXT_HOV    = 0xFF53D8FB;
     private static final int COL_REMOVE      = 0xFFFF6666;
     private static final int COL_CANTRIP_TAB = 0xFFA06010;
+    private static final int COL_TEXT_WIP = 0xFFFFA500; // Orange für Work in Progress
 
     // ── State ────────────────────────────────────────────────────
     private int selectedGrade = 0;       // 0 = Cantrips, 1-9 = spell grades
@@ -155,16 +156,22 @@ public class SpellPrepScreen extends Screen {
         List<String> available = availableByGrade.get(selectedGrade);
         List<String> prepared  = preparedByGrade[selectedGrade];
 
-        // ── Left panel rows ──
+        // Farbe für unfertige Zauber (Orange)
+        int COL_TEXT_WIP = 0xFFFFA500;
+
+        // ── Left panel rows (Available) ──
         hoveredLeft = -1;
         g.enableScissor(lx + 1, ly + 10, lx + PANEL_W - 1, ly + PANEL_H - 1);
         int leftRows = (PANEL_H - 12) / ROW_H;
         for (int i = 0; i < leftRows; i++) {
             int idx = i + scrollLeft;
             if (idx >= available.size()) break;
-            String spell   = available.get(idx);
+
+            String spell = available.get(idx);
             boolean inPrep = prepared.contains(spell);
+            boolean isFinished = SpellCasters.FINISHED_SPELLS.contains(spell); // Check hier
             boolean canAdd = !inPrep && canPrepareMore(selectedGrade, prepared.size());
+
             int rowY = ly + 10 + i * ROW_H;
             boolean hov = mouseX >= lx + 2 && mouseX < lx + PANEL_W - 2
                     && mouseY >= rowY && mouseY < rowY + ROW_H;
@@ -173,29 +180,44 @@ public class SpellPrepScreen extends Screen {
             int rowBg = inPrep ? 0x33FFFFFF : (hov && canAdd ? COL_ROW_HOVER : (!canAdd && !inPrep ? COL_ROW_FULL : 0));
             if (rowBg != 0) g.fill(lx + 2, rowY, lx + PANEL_W - 2, rowY + ROW_H, rowBg);
 
-            int textCol = inPrep ? COL_TEXT_DIM : (hov ? COL_TEXT_HOV : COL_TEXT);
+            // Farblogik: Vorrang hat "bereits vorbereitet" (grau), dann "unfertig" (orange)
+            int textCol;
+            if (inPrep) {
+                textCol = COL_TEXT_DIM;
+            } else if (!isFinished) {
+                textCol = COL_TEXT_WIP;
+            } else {
+                textCol = hov ? COL_TEXT_HOV : COL_TEXT;
+            }
+
             g.drawString(this.font, formatId(spell), lx + 5, rowY + 2, textCol, false);
 
-            // mark if already prepared
             if (inPrep) g.drawString(this.font, "✓", lx + PANEL_W - 12, rowY + 2, 0xFF55FF55, false);
         }
         g.disableScissor();
 
-        // ── Right panel rows ──
+        // ── Right panel rows (Prepared) ──
         hoveredRight = -1;
         g.enableScissor(rx + 1, ry + 10, rx + PANEL_W - 1, ry + PANEL_H - 1);
         int rightRows = (PANEL_H - 12) / ROW_H;
         for (int i = 0; i < rightRows; i++) {
             int idx = i + scrollRight;
             if (idx >= prepared.size()) break;
+
             String spell = prepared.get(idx);
+            boolean isFinished = SpellCasters.FINISHED_SPELLS.contains(spell); // Check hier
+
             int rowY = ry + 10 + i * ROW_H;
             boolean hov = mouseX >= rx + 2 && mouseX < rx + PANEL_W - 2
                     && mouseY >= rowY && mouseY < rowY + ROW_H;
             if (hov) hoveredRight = idx;
 
             if (hov) g.fill(rx + 2, rowY, rx + PANEL_W - 2, rowY + ROW_H, 0x44FF4444);
-            g.drawString(this.font, formatId(spell), rx + 5, rowY + 2, COL_TEXT, false);
+
+            // Auch in der rechten Liste orange anzeigen, wenn nicht fertig
+            int textColR = isFinished ? COL_TEXT : COL_TEXT_WIP;
+
+            g.drawString(this.font, formatId(spell), rx + 5, rowY + 2, textColR, false);
             if (hov) g.drawString(this.font, "✗", rx + PANEL_W - 12, rowY + 2, COL_REMOVE, false);
         }
         g.disableScissor();

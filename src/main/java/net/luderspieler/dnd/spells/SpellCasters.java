@@ -1,16 +1,19 @@
 package net.luderspieler.dnd.spells;
 
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageTypes;
-import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+
+import java.util.Set;
 
 @SuppressWarnings("unused")
 public class SpellCasters {
+
+    public static final Set<String> FINISHED_SPELLS = Set.of(
+            "CURE_WOUNDS", "HEALING_WORD", "RESTORATION", "AID", "INFLICT_WOUNDS", "BLIGHT", "HOLD_PERSON", "BESTOW_CURSE","THUNDERWAVE"
+    );
     
     // --- Cantrips ---
     public static void castAcidSplash(ServerPlayer p) { /* Implement Logic */ }
@@ -109,7 +112,27 @@ public class SpellCasters {
     public static void castSilentImage(ServerPlayer p) { /* Implement Logic */ }
     public static void castSleep(ServerPlayer p) { /* Implement Logic */ }
     public static void castSpeakWithAnimals(ServerPlayer p) { /* Implement Logic */ }
-    public static void castThunderwave(ServerPlayer p) { /* Implement Logic */ }
+    public static void castThunderwave(ServerPlayer p) {
+        double radius = 5.0;
+        // Alle LivingEntities im Umkreis finden
+        var entities = p.level().getEntitiesOfClass(LivingEntity.class, p.getBoundingBox().inflate(radius));
+
+        for (LivingEntity target : entities) {
+            if (target != p) { // Den Zauberer selbst schützen
+                // Schaden: 1w6 + 2 ≈ 5.5 (Donner/Schall)
+                target.hurt(p.damageSources().source(net.minecraft.world.damagesource.DamageTypes.MAGIC), 5.5F);
+
+                // Ein bisschen visueller "Wumms" (Rauch/Wolken)
+                ((net.minecraft.server.level.ServerLevel)p.level()).sendParticles(
+                        net.minecraft.core.particles.ParticleTypes.CLOUD,
+                        target.getX(), target.getY() + 0.5, target.getZ(), 5, 0.2, 0.2, 0.2, 0.01);
+            }
+        }
+
+        // Der markante Sound: Blitzschlag ohne Feuer
+        p.level().playSound(null, p.getX(), p.getY(), p.getZ(),
+                net.minecraft.sounds.SoundEvents.LIGHTNING_BOLT_THUNDER, net.minecraft.sounds.SoundSource.PLAYERS, 1.0F, 1.5F);
+    }
     public static void castUnseenServant(ServerPlayer p) { /* Implement Logic */ }
 
     // --- Grade 2 ---
