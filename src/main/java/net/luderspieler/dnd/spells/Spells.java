@@ -2,7 +2,7 @@ package net.luderspieler.dnd.spells;
 
 import java.util.List;
 
-@SuppressWarnings("unused")
+//@SuppressWarnings("unused")
 public class Spells {
     public enum Cantrip {
         ACID_SPLASH,

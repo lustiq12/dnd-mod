@@ -62,6 +62,9 @@ public class DndMod {
 		// Start of user code block mod init
 		DndModNetworkRegistry.register(modEventBus);
 		NeoForge.EVENT_BUS.register(new CharacterCreationEventHandler());
+		//if (FMLEnvironment.dist == Dist.CLIENT) {
+		//	NeoForge.EVENT_BUS.register(new TargetingClientEvents());
+		//}
 		NeoForge.EVENT_BUS.register(new ProficiencyCheckProcedure());
 		// End of user code block mod init
 	}

@@ -121,11 +121,35 @@
       "name": "CastSpell",
       "type": "keybind",
       "compiles": true,
-      "locked_code": false,
+      "locked_code": true,
       "registry_name": "cast_spell",
       "metadata": {
         "files": [
           "src/main/java/net/luderspieler/dnd/network/CastSpellMessage.java"
+        ]
+      }
+    },
+    {
+      "name": "Dnd",
+      "type": "command",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "dnd",
+      "metadata": {
+        "files": [
+          "src/main/java/net/luderspieler/dnd/command/DndCommand.java"
+        ]
+      }
+    },
+    {
+      "name": "PrepareSpells",
+      "type": "keybind",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "prepare_spells",
+      "metadata": {
+        "files": [
+          "src/main/java/net/luderspieler/dnd/network/PrepareSpellsMessage.java"
         ]
       }
     }
@@ -268,6 +292,18 @@
       "type": "string",
       "scope": "player_persistent",
       "value": "\"\""
+    },
+    {
+      "name": "TargetingRange",
+      "type": "number",
+      "scope": "player_persistent",
+      "value": "0"
+    },
+    {
+      "name": "TargetingMode",
+      "type": "logic",
+      "scope": "map",
+      "value": "false"
     }
   ],
   "sound_elements": [],
@@ -369,7 +405,8 @@
       "gui.dnd.class_gui.label_attribute4": "Attribute:",
       "gui.dnd.class_gui.label_attribute7": "attribute",
       "gui.dnd.class_gui.label_attribute6": "attribute",
-      "key.dnd.cast_spell": "Cast Spell"
+      "key.dnd.cast_spell": "Cast Spell",
+      "key.dnd.prepare_spells": "Cast Spell"
     }
   },
   "metadata": {

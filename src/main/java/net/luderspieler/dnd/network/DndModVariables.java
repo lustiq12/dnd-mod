@@ -93,6 +93,11 @@ public class DndModVariables {
 		clone.PreparedSpellsLVL9 = original.PreparedSpellsLVL9;
 		if (!event.isWasDeath()) {
 			clone.FinishedCharacterCreation = original.FinishedCharacterCreation;
+			clone.TargetingRange = original.TargetingRange;
+			clone.TargetingMode = original.TargetingMode;
+			clone.TargetingAmount = original.TargetingAmount;
+			clone.TargetingSpell = original.TargetingSpell;
+			clone.targetUUIDS = original.targetUUIDS;
 		}
 		event.getEntity().setData(PLAYER_VARIABLES, clone);
 	}
@@ -122,6 +127,11 @@ public class DndModVariables {
 		public String PreparedSpellsLVL7 = "\"\"";
 		public String PreparedSpellsLVL8 = "\"\"";
 		public String PreparedSpellsLVL9 = "\"\"";
+		public double TargetingRange = 0;
+		public boolean TargetingMode = false;
+		public double TargetingAmount = 0;
+		public String TargetingSpell = "\"\"";
+		public String targetUUIDS = "\"\"";
 
 		@Override
 		public void serialize(ValueOutput output) {
@@ -148,6 +158,11 @@ public class DndModVariables {
 			output.putString("PreparedSpellsLVL7", PreparedSpellsLVL7);
 			output.putString("PreparedSpellsLVL8", PreparedSpellsLVL8);
 			output.putString("PreparedSpellsLVL9", PreparedSpellsLVL9);
+			output.putDouble("TargetingRange", TargetingRange);
+			output.putBoolean("TargetingMode", TargetingMode);
+			output.putDouble("TargetingAmount", TargetingAmount);
+			output.putString("TargetingSpell", TargetingSpell);
+			output.putString("targetUUIDS", targetUUIDS);
 		}
 
 		@Override
@@ -175,6 +190,11 @@ public class DndModVariables {
 			PreparedSpellsLVL7 = input.getStringOr("PreparedSpellsLVL7", "");
 			PreparedSpellsLVL8 = input.getStringOr("PreparedSpellsLVL8", "");
 			PreparedSpellsLVL9 = input.getStringOr("PreparedSpellsLVL9", "");
+			TargetingRange = input.getDoubleOr("TargetingRange", 0);
+			TargetingMode = input.getBooleanOr("TargetingMode", false);
+			TargetingAmount = input.getDoubleOr("TargetingAmount", 0);
+			TargetingSpell = input.getStringOr("TargetingSpell", "");
+			targetUUIDS = input.getStringOr("targetUUIDS", "");
 		}
 
 		public void markSyncDirty() {
