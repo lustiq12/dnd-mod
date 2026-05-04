@@ -43,22 +43,33 @@ public record CastSpellPacket(String spellId, int level) implements CustomPacket
             DndModVariables.PlayerVariables vars = player.getData(DndModVariables.PLAYER_VARIABLES);
             int level = pkt.level();
 
-            // Validate: spell is prepared
+            // 1. Validierung: Ist der Zauber vorbereitet?
             String prepared = level == 0 ? vars.PreparedCantrips : levelVar(vars, level);
             if (prepared == null || !prepared.contains(pkt.spellId())) return;
 
-            // Consume slot (cantrips are free)
-            if (level > 0) {
+            // 2. Slot-Management (Übersprungen im Kreativmodus oder bei Cantrips)
+            if (level > 0 && !player.isCreative()) {
                 String slots = vars.Spellslots;
+
+                // Prüfung: Hat der Spieler überhaupt Slots?
                 if (slots == null || slots.length() < level) return;
+
                 int slotCount = slots.charAt(level - 1) - '0';
-                if (slotCount <= 0) return;
+
+                // Prüfung: Ist noch ein Slot auf diesem Level frei?
+                if (slotCount <= 0) {
+                    // Optional: Nachricht an Spieler, dass keine Slots da sind
+                    return;
+                }
+
+                // Slot abziehen
                 char[] arr = slots.toCharArray();
                 arr[level - 1] = (char)('0' + (slotCount - 1));
                 vars.Spellslots = new String(arr);
                 vars.markSyncDirty();
             }
 
+            // 3. Ausführung
             CastSpellProcedure.execute(player, pkt.spellId(), level);
         });
     }

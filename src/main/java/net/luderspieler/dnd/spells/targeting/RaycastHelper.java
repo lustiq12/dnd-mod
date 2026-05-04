@@ -16,43 +16,85 @@ import java.util.function.Consumer;
 
 public class RaycastHelper {
 
-    public static void startTargeting(ServerPlayer player, double range, int amount, String spellName) {
-        DndModVariables.PlayerVariables vars = player.getData(DndModVariables.PLAYER_VARIABLES);
+    public static void loadSpellForTargeting(ServerPlayer player, String spellName, double range) {
+        var vars = player.getData(DndModVariables.PLAYER_VARIABLES);
         vars.TargetingMode = true;
+        vars.TargetingModeType = "FREE_AIM";
         vars.TargetingRange = range;
-        vars.TargetingAmount = (double) amount;
-        vars.TargetingSpell = spellName;
-        vars.targetUUIDS = ""; // Liste leeren beim Start
-        vars.markSyncDirty(); //
-        player.displayClientMessage(Component.literal("§d[System] Targeting mode active!"), true);
+        vars.TargetingSpell = spellName; // WICHTIG
+        vars.targetUUIDS = "";
+        vars.markSyncDirty();
     }
 
+    public static void startTargeting(ServerPlayer player, double range, int amount, String spellName) {
+        var vars = player.getData(DndModVariables.PLAYER_VARIABLES);
+        vars.TargetingMode = true;
+        vars.TargetingModeType = "ENTITY";
+        vars.TargetingRange = range;
+        vars.TargetingAmount = (double) amount;
+        vars.TargetingSpell = spellName; // WICHTIG: Hier muss der Name rein!
+        vars.targetUUIDS = "";
+        vars.markSyncDirty();
+    }
+
+    // Diese Methode brauchen wir für TargetingEvents
+    public static void forceCastExistingTargets(ServerPlayer caster, Consumer<List<LivingEntity>> onComplete) {
+        var vars = caster.getData(DndModVariables.PLAYER_VARIABLES);
+        List<String> uuidList = Arrays.stream(vars.targetUUIDS.split(","))
+                .filter(s -> !s.isEmpty())
+                .toList();
+
+        List<LivingEntity> targets = new ArrayList<>();
+        for (String s : uuidList) {
+            try {
+                var e = ((ServerLevel)caster.level()).getEntity(UUID.fromString(s));
+                if (e instanceof LivingEntity living) targets.add(living);
+            } catch (Exception ignored) {}
+        }
+        onComplete.accept(targets);
+    }
     public static void renderPreview(ServerPlayer caster, double range) {
-        HitResult hit = caster.pick(range, 0.0f, false);
-        drawVisualTrail(caster, hit.getLocation());
+        var vars = caster.getData(DndModVariables.PLAYER_VARIABLES);
+        Vec3 eyePos = caster.getEyePosition();
+        Vec3 lookVec = caster.getViewVector(1.0F);
 
-        LivingEntity hovered = getLookingAtEntity(caster, range);
-        if (hovered != null) {
-            var vars = caster.getData(DndModVariables.PLAYER_VARIABLES);
-            String uuid = hovered.getStringUUID();
+        // 1. Block-Raycast für Distanzbegrenzung
+        HitResult blockHit = caster.pick(range, 0.0f, false);
+        double maxDist = range;
+        Vec3 blockPos = null;
+        boolean hitBlock = false;
 
-            // Nur wenn das Ziel NOCH NICHT ausgewählt wurde, nutzen wir den Timer
-            if (!vars.targetUUIDS.contains(uuid)) {
-                sendGlowPacket(caster, hovered, true);
-                var server = caster.getServer();
-                if (server != null) {
-                    int targetTick = server.getTickCount() + 2;
-                    server.execute(new net.minecraft.server.TickTask(targetTick, () -> {
-                        // Nur ausschalten, wenn es zwischenzeitlich nicht angeklickt wurde
-                        if (hovered.isAlive() && !caster.getData(DndModVariables.PLAYER_VARIABLES).targetUUIDS.contains(uuid)) {
-                            sendGlowPacket(caster, hovered, false);
-                        }
-                    }));
-                }
-            } else {
-                // Falls es schon ausgewählt ist, einfach nur leuchten lassen (Sicherheit)
-                sendGlowPacket(caster, hovered, true);
+        if (blockHit.getType() == HitResult.Type.BLOCK) {
+            maxDist = eyePos.distanceTo(blockHit.getLocation());
+            blockPos = blockHit.getLocation();
+            hitBlock = true;
+        }
+
+        // 2. Entity-Raycast
+        Vec3 reachVec = eyePos.add(lookVec.scale(range));
+        AABB searchBox = caster.getBoundingBox().expandTowards(lookVec.scale(range)).inflate(1.0D);
+        EntityHitResult entityHit = ProjectileUtil.getEntityHitResult(
+                caster, eyePos, reachVec, searchBox, (e) -> e instanceof LivingEntity, maxDist * maxDist
+        );
+
+        Vec3 targetPos = null;
+
+        // 3. Modus-Logik für Partikel
+        if ("FREE_AIM".equals(vars.TargetingModeType)) {
+            if (entityHit != null) {
+                targetPos = entityHit.getLocation();
+            } else if (hitBlock) {
+                targetPos = blockPos;
             }
+        } else {
+            // Nur Partikel wenn Entity getroffen
+            if (entityHit != null) {
+                targetPos = entityHit.getLocation();
+            }
+        }
+
+        if (targetPos != null) {
+            drawVisualTrail(caster, targetPos);
         }
     }
 
@@ -70,13 +112,11 @@ public class RaycastHelper {
                 vars.targetUUIDS = String.join(",", uuidList);
                 vars.markSyncDirty();
 
-                // WICHTIG: Hier kein Timer! Das Ziel soll dauerhaft leuchten.
+                // JETZT GLOWEN: Erst beim Auswählen
                 sendGlowPacket(caster, target, true);
 
                 caster.displayClientMessage(Component.literal("§6Target chosen! (" + uuidList.size() + "/" + maxAmount + ")"), true);
             }
-        } else if (!uuidList.isEmpty()) {
-            executeFinalCast(caster, vars, uuidList, onComplete);
         }
 
         if (uuidList.size() >= maxAmount && maxAmount > 0) {
@@ -86,41 +126,33 @@ public class RaycastHelper {
 
     private static void executeFinalCast(ServerPlayer caster, DndModVariables.PlayerVariables vars, List<String> uuidStrings, Consumer<List<LivingEntity>> onComplete) {
         List<LivingEntity> targets = new ArrayList<>();
-        List<String> names = new ArrayList<>(); // Liste für die Namen
-
         for (String s : uuidStrings) {
             try {
                 Entity e = ((ServerLevel)caster.level()).getEntity(UUID.fromString(s));
                 if (e instanceof LivingEntity living) {
                     targets.add(living);
-                    names.add(living.getName().getString()); // Namen speichern
-                    sendGlowPacket(caster, living, false); // Glowing am Ende entfernen
+                    sendGlowPacket(caster, living, false);
                 }
             } catch (Exception ignored) {}
         }
-
-        // Nachricht mit allen Namen ausgeben
-        if (!names.isEmpty()) {
-            String allNames = String.join(", ", names);
-            caster.displayClientMessage(Component.literal("§aCast spell on: §f" + allNames), false);
-        }
-
         vars.targetUUIDS = "";
         vars.markSyncDirty();
         onComplete.accept(targets);
     }
 
-    // Hilfsmethoden
     private static LivingEntity getLookingAtEntity(ServerPlayer player, double range) {
         Vec3 eyePos = player.getEyePosition();
         Vec3 lookVec = player.getViewVector(1.0F);
+        HitResult blockHit = player.pick(range, 0.0f, false);
+        double maxDist = (blockHit.getType() == HitResult.Type.BLOCK) ? eyePos.distanceTo(blockHit.getLocation()) : range;
+
         Vec3 reachVec = eyePos.add(lookVec.scale(range));
         AABB searchBox = player.getBoundingBox().expandTowards(lookVec.scale(range)).inflate(1.0D);
-        var hit = ProjectileUtil.getEntityHitResult(player, eyePos, reachVec, searchBox, (e) -> e instanceof LivingEntity, range * range);
+        var hit = ProjectileUtil.getEntityHitResult(player, eyePos, reachVec, searchBox, (e) -> e instanceof LivingEntity, maxDist * maxDist);
         return (hit != null && hit.getEntity() instanceof LivingEntity living) ? living : null;
     }
 
-    private static void sendGlowPacket(ServerPlayer caster, net.minecraft.world.entity.Entity target, boolean active) {
+    public static void sendGlowPacket(ServerPlayer caster, Entity target, boolean active) {
         byte flags = target.getEntityData().get(net.minecraft.network.syncher.EntityDataSerializers.BYTE.createAccessor(0));
         byte newFlags = active ? (byte)(flags | 0x40) : (byte)(flags & ~0x40);
         List<SynchedEntityData.DataValue<?>> data = new ArrayList<>();
@@ -130,13 +162,7 @@ public class RaycastHelper {
 
     private static void drawVisualTrail(ServerPlayer caster, Vec3 targetPos) {
         if (caster.level() instanceof ServerLevel level) {
-            Vec3 start = caster.getEyePosition();
-            double dist = start.distanceTo(targetPos);
-            Vec3 dir = targetPos.subtract(start).normalize();
-            for (double d = 0; d < dist; d += 0.5) {
-                Vec3 p = start.add(dir.scale(d));
-                level.sendParticles(ParticleTypes.ENCHANTED_HIT, p.x, p.y, p.z, 1, 0, 0, 0, 0);
-            }
+            level.sendParticles(ParticleTypes.ENCHANTED_HIT, targetPos.x, targetPos.y, targetPos.z, 50, 0.2, 0.2, 0.2, 0.05);
         }
     }
 }

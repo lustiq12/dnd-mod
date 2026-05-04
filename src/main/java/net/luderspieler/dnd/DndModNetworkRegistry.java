@@ -4,6 +4,7 @@ import net.luderspieler.dnd.classes.CharacterCreationEventHandler;
 import net.luderspieler.dnd.classes.CharacterCreationPacket;
 import net.luderspieler.dnd.classes.KeepCharacterPacket;
 import net.luderspieler.dnd.classes.OpenCreationGuiPacket;
+import net.luderspieler.dnd.network.AirClickPacket;
 import net.luderspieler.dnd.spells.CastSpellPacket;
 import net.luderspieler.dnd.spells.PrepareSpellsPacket;
 import net.neoforged.bus.api.IEventBus;
@@ -52,6 +53,12 @@ public class DndModNetworkRegistry {
                 PrepareSpellsPacket.TYPE,
                 PrepareSpellsPacket.CODEC,
                 PrepareSpellsPacket::handle
+        );
+
+        reg.playToServer(
+                AirClickPacket.TYPE,
+                AirClickPacket.CODEC,
+                AirClickPacket::handle
         );
 
         // ── Server → Client ──────────────────────────────────────

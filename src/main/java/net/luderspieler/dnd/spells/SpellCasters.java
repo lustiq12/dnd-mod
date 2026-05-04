@@ -1,10 +1,16 @@
 package net.luderspieler.dnd.spells;
 
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.projectile.LargeFireball;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.Set;
 
@@ -12,7 +18,7 @@ import java.util.Set;
 public class SpellCasters {
 
     public static final Set<String> FINISHED_SPELLS = Set.of(
-            "CURE_WOUNDS", "HEALING_WORD", "RESTORATION", "AID", "INFLICT_WOUNDS", "BLIGHT", "HOLD_PERSON", "BESTOW_CURSE","THUNDERWAVE"
+            "CURE_WOUNDS", "HEALING_WORD", "RESTORATION", "AID", "INFLICT_WOUNDS", "BLIGHT", "HOLD_PERSON", "BESTOW_CURSE","THUNDERWAVE", "FIRE_BOLT"
     );
     
     // --- Cantrips ---
@@ -22,7 +28,34 @@ public class SpellCasters {
     public static void castDruidcraft(ServerPlayer p) { /* Implement Logic */ }
     public static void castEldritchBlast(ServerPlayer p) { /* Implement Logic */ }
     public static void castElementalism(ServerPlayer p) { /* Implement Logic */ }
-    public static void castFireBolt(ServerPlayer p) { /* Implement Logic */ }
+    public static void castFireBolt(ServerPlayer caster, double range) {
+        if (caster.level().isClientSide()) return;
+
+        Vec3 lookVec = caster.getViewVector(1.0F);
+        double speed = 5.0;
+        Vec3 velocity = lookVec.scale(speed);
+
+        double x = caster.getX() + lookVec.x;
+        double y = caster.getY() + caster.getEyeHeight() + lookVec.y * 0.5;
+        double z = caster.getZ() + lookVec.z;
+
+        LargeFireball fireball = new LargeFireball(caster.level(), caster, velocity, 1);
+        fireball.setPos(x, y, z);
+        fireball.setDeltaMovement(velocity);
+        fireball.hasImpulse = true;
+
+        // Store range data in NBT
+        CompoundTag nbt = fireball.getPersistentData();
+        nbt.putDouble("spell_max_range", range);
+        nbt.putDouble("spell_start_x", x);
+        nbt.putDouble("spell_start_y", y);
+        nbt.putDouble("spell_start_z", z);
+
+        caster.level().addFreshEntity(fireball);
+
+        caster.level().playSound(null, caster.getX(), caster.getY(), caster.getZ(),
+                SoundEvents.GHAST_SHOOT, SoundSource.PLAYERS, 1.0f, 1.0f);
+    }
     public static void castGuidance(ServerPlayer p) { /* Implement Logic */ }
     public static void castLight(ServerPlayer p) { /* Implement Logic */ }
     public static void castMageHand(ServerPlayer p) { /* Implement Logic */ }

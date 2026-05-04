@@ -22,7 +22,7 @@ public class CastSpellProcedure {
             case "DRUIDCRAFT" -> castDruidcraft(player);
             case "ELDRITCH_BLAST" -> castEldritchBlast(player);
             case "ELEMENTALISM" -> castElementalism(player);
-            case "FIRE_BOLT" -> castFireBolt(player);
+            case "FIRE_BOLT" -> RaycastHelper.loadSpellForTargeting(player, "FIRE_BOLT", 36.0);
             case "GUIDANCE" -> castGuidance(player);
             case "LIGHT" -> castLight(player);
             case "MAGE_HAND" -> castMageHand(player);
