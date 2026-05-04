@@ -70,6 +70,7 @@ public record CharacterCreationPacket(
             vars.PlayerStory               = pkt.story();
             vars.PlayerPersonality         = pkt.personality();
             vars.PlayerLevel               = 1;
+            vars.PlayerXP                  = 0; // hatte gefehlt
             vars.Spellslots                = "000000000";
             vars.Proficiencys              = combinedProfs;
             vars.FinishedCharacterCreation = true;
@@ -112,10 +113,11 @@ public record CharacterCreationPacket(
     private static final ResourceLocation ID_CLASS_ASPD  = ResourceLocation.parse("dnd:class_attack_speed");
     private static final ResourceLocation ID_CLASS_LUCK  = ResourceLocation.parse("dnd:class_luck");
 
-    private static void applyAttrs(ServerPlayer player, Map<String, Double> attrs, boolean isRace) {
+    public static void applyAttrs(ServerPlayer player, Map<String, Double> attrs, boolean isRace) {
         DndModVariables.PlayerVariables vars = player.getData(DndModVariables.PLAYER_VARIABLES);
         int PlayerLevel = (int)vars.PlayerLevel;
-        int HealthPerLevel = 10;
+        ClassDefinition cls = ClassRegistry.getClass(vars.PlayerClass);
+        int HealthPerLevel = (cls != null) ? cls.getClassHealth() : 0;
 
         for (Map.Entry<String, Double> e : attrs.entrySet()) {
             double value = e.getValue();
@@ -127,6 +129,10 @@ public record CharacterCreationPacket(
                 case "Max Health" -> {
                     attr = Attributes.MAX_HEALTH;
                     modifierId = isRace ? ID_RACE_HP : ID_CLASS_HP;
+                    // Die HP-Skalierung findet jetzt hier statt, wenn es sich um die Klasse handelt
+                    if (!isRace) {
+                        finalValue = value + (HealthPerLevel * PlayerLevel);
+                    }
                 }
                 case "Attack Damage" -> {
                     attr = Attributes.ATTACK_DAMAGE;
@@ -147,17 +153,26 @@ public record CharacterCreationPacket(
                 case "Luck" -> {
                     attr = Attributes.LUCK;
                     modifierId = isRace ? ID_RACE_LUCK : ID_CLASS_LUCK;
-                    if (!isRace) finalValue = value + (HealthPerLevel * PlayerLevel);
+                    // Luck nimmt jetzt nur noch den Basis-Wert 'value'
                 }
                 default -> { continue; }
             }
 
             removeIfPresent(player, attr, modifierId);
 
-            if (finalValue != 0 || e.getKey().equals("Luck")) {
+            // Wir fügen den Modifier hinzu, wenn der berechnete finalValue nicht 0 ist
+            if (finalValue != 0) {
                 var instance = player.getAttribute(attr);
                 if (instance != null) {
                     instance.addPermanentModifier(new AttributeModifier(modifierId, finalValue, AttributeModifier.Operation.ADD_VALUE));
+
+                    // Kleiner Fix: Wenn Max Health erhöht wird, sollte die aktuelle HP des Spielers
+                    // synchronisiert werden, damit die neuen Herzen nicht leer erscheinen.
+                    if (attr == Attributes.MAX_HEALTH) {
+                        removeIfPresent(player, attr, modifierId);
+                        // ... modifier hinzufügen ...
+                        player.setHealth(player.getMaxHealth()); // Macht die Leiste einfach voll
+                    }
                 }
             }
         }

@@ -1,5 +1,6 @@
 package net.luderspieler.dnd;
 
+import net.luderspieler.dnd.classes.LevelEvents;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -62,9 +63,7 @@ public class DndMod {
 		// Start of user code block mod init
 		DndModNetworkRegistry.register(modEventBus);
 		NeoForge.EVENT_BUS.register(new CharacterCreationEventHandler());
-		//if (FMLEnvironment.dist == Dist.CLIENT) {
-		//	NeoForge.EVENT_BUS.register(new TargetingClientEvents());
-		//}
+		NeoForge.EVENT_BUS.register(new LevelEvents());
 		NeoForge.EVENT_BUS.register(new ProficiencyCheckProcedure());
 		// End of user code block mod init
 	}
