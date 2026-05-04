@@ -99,9 +99,20 @@ public class ClassDetailScreen extends Screen {
             attrY += 12; // Dein Referenz-Abstand
         }
 
+        for (Map.Entry<String, Double> e : combined.entrySet()) {
+            if (e.getValue() == 0) continue;
+            String sign = e.getValue() > 0 ? "+" : "";
+            g.drawString(this.font, e.getKey() + ": " + sign + formatVal(e.getKey(), e.getValue()), leftPos + 20, attrY, -1, true);
+            attrY += 12;
+        }
+
+        // NEU: Abgegrenzte Zeile unter den Attributen
+        attrY += 2; // Kleiner extra Puffer zur optischen Abgrenzung
+        g.drawString(this.font, "Level up health increase: " + cls.getClassHealth(), leftPos + 20, attrY, -1, true);
+        attrY += 12;
+
         // ── DESCRIPTION ──
         g.drawWordWrap(this.font, Component.literal(cls.getDescription()), leftPos + 20, attrY + 15, 250, -1);
-
         // ── CLASS ABILITIES (Dynamisches Flow-Layout mit Smart-Split) ──
         int rightColumnStart = leftPos + 300;
         int columnWidth = 150;

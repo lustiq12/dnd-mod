@@ -151,6 +151,13 @@ public class CharacterFinalizationScreen extends Screen {
             currentRY += 10;
         }
 
+        // NEU: Abgegrenzte Zeile unter den Final Stats
+        currentRY += 2; // Kleiner Puffer
+        if (cls != null) {
+            g.drawString(this.font, "Level up health increase: " + cls.getClassHealth(), rightX, currentRY, -1, true);
+            currentRY += 10;
+        }
+
         // Proficiencies
         currentRY += 10;
         g.drawString(this.font, "Proficiencies:", rightX, currentRY, -1, true);

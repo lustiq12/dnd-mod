@@ -1,11 +1,13 @@
 package net.luderspieler.dnd.classes;
 
 import net.luderspieler.dnd.network.DndModVariables;
+import net.minecraft.core.Holder;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.ItemStack;
@@ -52,22 +54,14 @@ public record CharacterCreationPacket(
 
             if (race == null || cls == null) return;
 
-            // ── 1. Combine proficiencies from race + subrace + class ──
-            // Use a LinkedHashSet to deduplicate while preserving order
+            // 1. Combine proficiencies
             LinkedHashSet<String> profSet = new LinkedHashSet<>();
             addProfs(profSet, race.getProficiencies());
             if (subrace != null) addProfs(profSet, subrace.getProficiencies());
             addProfs(profSet, cls.getProficiencies());
             String combinedProfs = String.join(",", profSet);
 
-            // ── 2. Combine attribute modifiers: race + class ──
-            Map<String, Double> combined = new LinkedHashMap<>();
-            for (Map.Entry<String,Double> e : race.getAttributeModifiers().entrySet())
-                combined.merge(e.getKey(), e.getValue(), Double::sum);
-            for (Map.Entry<String,Double> e : cls.getAttributeModifiers().entrySet())
-                combined.merge(e.getKey(), e.getValue(), Double::sum);
-
-            // ── 3. Set player variables ──
+            // 2. Set player variables
             DndModVariables.PlayerVariables vars = player.getData(DndModVariables.PLAYER_VARIABLES);
             vars.PlayerRace                = pkt.raceId();
             vars.PlayerSubrace             = pkt.subraceId();
@@ -81,19 +75,19 @@ public record CharacterCreationPacket(
             vars.FinishedCharacterCreation = true;
             vars.markSyncDirty();
 
-            // ── 4. Apply attribute modifiers ──
-            applyAttrs(player, combined);
+            // 3. Apply attribute modifiers (Separated Species and Class)
+            applyAttrs(player, race.getAttributeModifiers(), true);
+            applyAttrs(player, cls.getAttributeModifiers(), false);
 
-            // ── 5. Give starter items — CLASS ONLY (race items removed) ──
+            // 4. Give starter items
             for (ItemStack stack : cls.getStarterItems())
                 player.addItem(stack.copy());
 
-            // ── 6. Heal to full ──
+            // 5. Heal to full
             player.setHealth(player.getMaxHealth());
         });
     }
 
-    /** Split comma-separated proficiency string and add non-empty entries to set */
     private static void addProfs(LinkedHashSet<String> set, String profs) {
         if (profs == null || profs.isBlank()) return;
         for (String p : profs.split(",")) {
@@ -102,45 +96,74 @@ public record CharacterCreationPacket(
         }
     }
 
-    // ── Attribute IDs ──
-    private static final ResourceLocation ID_HP    = ResourceLocation.parse("dnd:class_max_health");
-    private static final ResourceLocation ID_DMG   = ResourceLocation.parse("dnd:class_attack_damage");
-    private static final ResourceLocation ID_ARMOR = ResourceLocation.parse("dnd:class_armor");
-    private static final ResourceLocation ID_SPEED = ResourceLocation.parse("dnd:class_movement_speed");
-    private static final ResourceLocation ID_ASPD  = ResourceLocation.parse("dnd:class_attack_speed");
-    private static final ResourceLocation ID_LUCK  = ResourceLocation.parse("dnd:class_luck");
+    // ── Attribute IDs Species ──
+    private static final ResourceLocation ID_RACE_HP    = ResourceLocation.parse("dnd:species_max_health");
+    private static final ResourceLocation ID_RACE_DMG   = ResourceLocation.parse("dnd:species_attack_damage");
+    private static final ResourceLocation ID_RACE_ARMOR = ResourceLocation.parse("dnd:species_armor");
+    private static final ResourceLocation ID_RACE_SPEED = ResourceLocation.parse("dnd:species_movement_speed");
+    private static final ResourceLocation ID_RACE_ASPD  = ResourceLocation.parse("dnd:species_attack_speed");
+    private static final ResourceLocation ID_RACE_LUCK  = ResourceLocation.parse("dnd:species_luck");
 
-    private static void applyAttrs(ServerPlayer player, Map<String, Double> attrs) {
-        removeIfPresent(player, Attributes.MAX_HEALTH,     ID_HP);
-        removeIfPresent(player, Attributes.ATTACK_DAMAGE,  ID_DMG);
-        removeIfPresent(player, Attributes.ARMOR,          ID_ARMOR);
-        removeIfPresent(player, Attributes.MOVEMENT_SPEED, ID_SPEED);
-        removeIfPresent(player, Attributes.ATTACK_SPEED,   ID_ASPD);
-        removeIfPresent(player, Attributes.LUCK,           ID_LUCK);
+    // ── Attribute IDs Class ──
+    private static final ResourceLocation ID_CLASS_HP    = ResourceLocation.parse("dnd:class_max_health");
+    private static final ResourceLocation ID_CLASS_DMG   = ResourceLocation.parse("dnd:class_attack_damage");
+    private static final ResourceLocation ID_CLASS_ARMOR = ResourceLocation.parse("dnd:class_armor");
+    private static final ResourceLocation ID_CLASS_SPEED = ResourceLocation.parse("dnd:class_movement_speed");
+    private static final ResourceLocation ID_CLASS_ASPD  = ResourceLocation.parse("dnd:class_attack_speed");
+    private static final ResourceLocation ID_CLASS_LUCK  = ResourceLocation.parse("dnd:class_luck");
+
+    private static void applyAttrs(ServerPlayer player, Map<String, Double> attrs, boolean isRace) {
+        DndModVariables.PlayerVariables vars = player.getData(DndModVariables.PLAYER_VARIABLES);
+        int PlayerLevel = (int)vars.PlayerLevel;
+        int HealthPerLevel = 10;
 
         for (Map.Entry<String, Double> e : attrs.entrySet()) {
-            if (e.getValue() == 0) continue;
+            double value = e.getValue();
+            Holder<Attribute> attr;
+            ResourceLocation modifierId;
+            double finalValue = value;
+
             switch (e.getKey()) {
-                case "Max Health"     -> addMod(player, Attributes.MAX_HEALTH,     ID_HP,    e.getValue());
-                case "Attack Damage"  -> addMod(player, Attributes.ATTACK_DAMAGE,  ID_DMG,   e.getValue());
-                case "Armor"          -> addMod(player, Attributes.ARMOR,          ID_ARMOR, e.getValue());
-                case "Movement Speed" -> addMod(player, Attributes.MOVEMENT_SPEED, ID_SPEED, e.getValue());
-                case "Attack Speed"   -> addMod(player, Attributes.ATTACK_SPEED,   ID_ASPD,  e.getValue());
-                case "Luck"           -> addMod(player, Attributes.LUCK,           ID_LUCK,  e.getValue());
+                case "Max Health" -> {
+                    attr = Attributes.MAX_HEALTH;
+                    modifierId = isRace ? ID_RACE_HP : ID_CLASS_HP;
+                }
+                case "Attack Damage" -> {
+                    attr = Attributes.ATTACK_DAMAGE;
+                    modifierId = isRace ? ID_RACE_DMG : ID_CLASS_DMG;
+                }
+                case "Armor" -> {
+                    attr = Attributes.ARMOR;
+                    modifierId = isRace ? ID_RACE_ARMOR : ID_CLASS_ARMOR;
+                }
+                case "Movement Speed" -> {
+                    attr = Attributes.MOVEMENT_SPEED;
+                    modifierId = isRace ? ID_RACE_SPEED : ID_CLASS_SPEED;
+                }
+                case "Attack Speed" -> {
+                    attr = Attributes.ATTACK_SPEED;
+                    modifierId = isRace ? ID_RACE_ASPD : ID_CLASS_ASPD;
+                }
+                case "Luck" -> {
+                    attr = Attributes.LUCK;
+                    modifierId = isRace ? ID_RACE_LUCK : ID_CLASS_LUCK;
+                    if (!isRace) finalValue = value + (HealthPerLevel * PlayerLevel);
+                }
+                default -> { continue; }
+            }
+
+            removeIfPresent(player, attr, modifierId);
+
+            if (finalValue != 0 || e.getKey().equals("Luck")) {
+                var instance = player.getAttribute(attr);
+                if (instance != null) {
+                    instance.addPermanentModifier(new AttributeModifier(modifierId, finalValue, AttributeModifier.Operation.ADD_VALUE));
+                }
             }
         }
     }
 
-    private static void addMod(ServerPlayer player,
-                               net.minecraft.core.Holder<net.minecraft.world.entity.ai.attributes.Attribute> attr,
-                               ResourceLocation id, double value) {
-        var inst = player.getAttribute(attr);
-        if (inst != null) inst.addPermanentModifier(new AttributeModifier(id, value, AttributeModifier.Operation.ADD_VALUE));
-    }
-
-    private static void removeIfPresent(ServerPlayer player,
-                                        net.minecraft.core.Holder<net.minecraft.world.entity.ai.attributes.Attribute> attr,
-                                        ResourceLocation id) {
+    private static void removeIfPresent(ServerPlayer player, Holder<Attribute> attr, ResourceLocation id) {
         var inst = player.getAttribute(attr);
         if (inst != null) inst.removeModifier(id);
     }
