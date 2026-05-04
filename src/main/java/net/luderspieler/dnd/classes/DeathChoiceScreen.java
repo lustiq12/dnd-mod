@@ -43,10 +43,10 @@ public class DeathChoiceScreen extends Screen {
 
         super.render(g, mouseX, mouseY, partial);
 
-        g.drawCenteredString(this.font, this.title, this.width / 2, this.height / 2 - 20, 0xFF5555);
+        g.drawCenteredString(this.font, this.title, this.width / 2, this.height / 2 - 20, -1);
         g.drawCenteredString(this.font,
                 Component.literal("Do you wish to create a new character or continue as before?"),
-                this.width / 2, this.height / 2 - 6, 0xAAAAAA);
+                this.width / 2, this.height / 2 - 6, -1);
     }
 
     @Override

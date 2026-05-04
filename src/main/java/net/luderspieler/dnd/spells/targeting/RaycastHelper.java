@@ -24,7 +24,7 @@ public class RaycastHelper {
         vars.TargetingSpell = spellName;
         vars.targetUUIDS = ""; // Liste leeren beim Start
         vars.markSyncDirty(); //
-        player.displayClientMessage(Component.literal("§d[System] Zielmodus aktiv!"), true);
+        player.displayClientMessage(Component.literal("§d[System] Targeting mode active!"), true);
     }
 
     public static void renderPreview(ServerPlayer caster, double range) {
@@ -73,7 +73,7 @@ public class RaycastHelper {
                 // WICHTIG: Hier kein Timer! Das Ziel soll dauerhaft leuchten.
                 sendGlowPacket(caster, target, true);
 
-                caster.displayClientMessage(Component.literal("§6Ziel fixiert! (" + uuidList.size() + "/" + maxAmount + ")"), true);
+                caster.displayClientMessage(Component.literal("§6Target chosen! (" + uuidList.size() + "/" + maxAmount + ")"), true);
             }
         } else if (!uuidList.isEmpty()) {
             executeFinalCast(caster, vars, uuidList, onComplete);
@@ -102,7 +102,7 @@ public class RaycastHelper {
         // Nachricht mit allen Namen ausgeben
         if (!names.isEmpty()) {
             String allNames = String.join(", ", names);
-            caster.displayClientMessage(Component.literal("§aZauber gewirkt auf: §f" + allNames), false);
+            caster.displayClientMessage(Component.literal("§aCast spell on: §f" + allNames), false);
         }
 
         vars.targetUUIDS = "";

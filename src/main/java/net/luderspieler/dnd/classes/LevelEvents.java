@@ -38,7 +38,7 @@ public class LevelEvents {
 
         if (leveledUp) {
             vars.PlayerLevel = currentLevel;
-            player.displayClientMessage(Component.literal("§6§lLEVEL UP! §fDu bist jetzt Level " + currentLevel), false);
+            player.displayClientMessage(Component.literal("§6§lLEVEL UP! §fYou are now Level " + currentLevel), false);
 
             ClassDefinition cls = ClassRegistry.getClass(vars.PlayerClass);
             if (cls != null) {

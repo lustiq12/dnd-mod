@@ -60,7 +60,6 @@ public record CastSpellPacket(String spellId, int level) implements CustomPacket
             }
 
             CastSpellProcedure.execute(player, pkt.spellId(), level);
-            player.displayClientMessage(Component.literal("packet empfangen und wird gehandelt"), false);
         });
     }
 

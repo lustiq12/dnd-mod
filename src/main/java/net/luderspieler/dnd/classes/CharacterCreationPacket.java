@@ -129,7 +129,6 @@ public record CharacterCreationPacket(
                 case "Max Health" -> {
                     attr = Attributes.MAX_HEALTH;
                     modifierId = isRace ? ID_RACE_HP : ID_CLASS_HP;
-                    // Die HP-Skalierung findet jetzt hier statt, wenn es sich um die Klasse handelt
                     if (!isRace) {
                         finalValue = value + (HealthPerLevel * PlayerLevel);
                     }
@@ -153,25 +152,23 @@ public record CharacterCreationPacket(
                 case "Luck" -> {
                     attr = Attributes.LUCK;
                     modifierId = isRace ? ID_RACE_LUCK : ID_CLASS_LUCK;
-                    // Luck nimmt jetzt nur noch den Basis-Wert 'value'
                 }
                 default -> { continue; }
             }
 
+            // 1. Alten Modifier IMMER zuerst entfernen
             removeIfPresent(player, attr, modifierId);
 
-            // Wir fügen den Modifier hinzu, wenn der berechnete finalValue nicht 0 ist
+            // 2. Neuen Modifier hinzufügen, wenn finalValue != 0
             if (finalValue != 0) {
                 var instance = player.getAttribute(attr);
                 if (instance != null) {
                     instance.addPermanentModifier(new AttributeModifier(modifierId, finalValue, AttributeModifier.Operation.ADD_VALUE));
 
-                    // Kleiner Fix: Wenn Max Health erhöht wird, sollte die aktuelle HP des Spielers
-                    // synchronisiert werden, damit die neuen Herzen nicht leer erscheinen.
+                    // 3. Nur heilen, wenn es MAX_HEALTH war und der Modifier gesetzt wurde
                     if (attr == Attributes.MAX_HEALTH) {
-                        removeIfPresent(player, attr, modifierId);
-                        // ... modifier hinzufügen ...
-                        player.setHealth(player.getMaxHealth()); // Macht die Leiste einfach voll
+                        // Wir setzen die Health auf Max, damit die neuen Herzen gefüllt sind
+                        player.setHealth(player.getMaxHealth());
                     }
                 }
             }
