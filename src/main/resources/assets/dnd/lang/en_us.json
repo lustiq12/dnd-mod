@@ -46,5 +46,7 @@
   "gui.dnd.class_gui.label_attribute7": "attribute",
   "gui.dnd.class_gui.label_attribute6": "attribute",
   "key.dnd.cast_spell": "Cast Spell",
-  "key.dnd.prepare_spells": "Cast Spell"
+  "key.dnd.prepare_spells": "Cast Spell",
+  "entity.dnd.scarecrow": "Scarecrow",
+  "item.dnd.scarecrow_spawn_egg": "Scarecrow Spawn Egg"
 }

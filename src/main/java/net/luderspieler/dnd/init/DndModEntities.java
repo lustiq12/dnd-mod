@@ -18,6 +18,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.core.registries.Registries;
 
 import net.luderspieler.dnd.entity.StirgeEntity;
+import net.luderspieler.dnd.entity.ScarecrowEntity;
 import net.luderspieler.dnd.DndMod;
 
 @EventBusSubscriber
@@ -27,6 +28,10 @@ public class DndModEntities {
 			EntityType.Builder.<StirgeEntity>of(StirgeEntity::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3)
 
 					.sized(0.6f, 0.5f));
+	public static final DeferredHolder<EntityType<?>, EntityType<ScarecrowEntity>> SCARECROW = register("scarecrow",
+			EntityType.Builder.<ScarecrowEntity>of(ScarecrowEntity::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3)
+
+					.sized(0.6f, 1.8f));
 
 	// Start of user code block custom entities
 	// End of user code block custom entities
@@ -37,10 +42,12 @@ public class DndModEntities {
 	@SubscribeEvent
 	public static void init(RegisterSpawnPlacementsEvent event) {
 		StirgeEntity.init(event);
+		ScarecrowEntity.init(event);
 	}
 
 	@SubscribeEvent
 	public static void registerAttributes(EntityAttributeCreationEvent event) {
 		event.put(STIRGE.get(), StirgeEntity.createAttributes().build());
+		event.put(SCARECROW.get(), ScarecrowEntity.createAttributes().build());
 	}
 }

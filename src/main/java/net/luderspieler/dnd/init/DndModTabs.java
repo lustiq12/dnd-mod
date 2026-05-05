@@ -22,6 +22,7 @@ public class DndModTabs {
 	public static void buildTabContentsVanilla(BuildCreativeModeTabContentsEvent tabData) {
 		if (tabData.getTabKey() == CreativeModeTabs.SPAWN_EGGS) {
 			tabData.accept(DndModItems.STIRGE_SPAWN_EGG.get());
+			tabData.accept(DndModItems.SCARECROW_SPAWN_EGG.get());
 		}
 	}
 }

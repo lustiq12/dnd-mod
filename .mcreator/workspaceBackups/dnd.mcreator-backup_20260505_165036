@@ -296,14 +296,38 @@
     {
       "name": "TargetingRange",
       "type": "number",
-      "scope": "player_persistent",
+      "scope": "player_lifetime",
       "value": "0"
     },
     {
       "name": "TargetingMode",
       "type": "logic",
-      "scope": "map",
+      "scope": "player_lifetime",
       "value": "false"
+    },
+    {
+      "name": "TargetingAmount",
+      "type": "number",
+      "scope": "player_lifetime",
+      "value": "0"
+    },
+    {
+      "name": "TargetingSpell",
+      "type": "string",
+      "scope": "player_lifetime",
+      "value": "\"\""
+    },
+    {
+      "name": "targetUUIDS",
+      "type": "string",
+      "scope": "player_lifetime",
+      "value": "\"\""
+    },
+    {
+      "name": "TargetingModeType",
+      "type": "string",
+      "scope": "player_lifetime",
+      "value": "\"\""
     }
   ],
   "sound_elements": [],

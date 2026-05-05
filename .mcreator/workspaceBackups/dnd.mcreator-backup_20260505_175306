@@ -152,6 +152,137 @@
           "src/main/java/net/luderspieler/dnd/network/PrepareSpellsMessage.java"
         ]
       }
+    },
+    {
+      "name": "ScareCrowIdleCooldown",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "scare_crow_idle_cooldown",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/ScareCrowIdleCooldownProcedure.java"
+        ]
+      },
+      "path": "~/Monsters/Scarecrow"
+    },
+    {
+      "name": "ScareCrowAnimSync",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "scare_crow_anim_sync",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "damagesource",
+            "type": "damagesource"
+          },
+          {
+            "name": "entity",
+            "type": "entity"
+          },
+          {
+            "name": "immediatesourceentity",
+            "type": "entity"
+          },
+          {
+            "name": "amount",
+            "type": "number"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/ScareCrowAnimSyncProcedure.java"
+        ]
+      },
+      "path": "~/Monsters/Scarecrow"
+    },
+    {
+      "name": "ScareCrowAttackPlaybackCondition",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "scare_crow_attack_playback_condition",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "return_type": "logic",
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/ScareCrowAttackPlaybackConditionProcedure.java"
+        ]
+      },
+      "path": "~/Monsters/Scarecrow"
+    },
+    {
+      "name": "Scarecrow",
+      "type": "livingentity",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "scarecrow",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/dnd/neoforge/biome_modifier/scarecrow_biome_modifier.json",
+          "src/main/resources/assets/dnd/items/scarecrow_spawn_egg.json",
+          "src/main/java/net/luderspieler/dnd/entity/ScarecrowEntity.java",
+          "src/main/java/net/luderspieler/dnd/client/renderer/ScarecrowRenderer.java",
+          "src/main/resources/assets/dnd/models/item/scarecrow_spawn_egg.json"
+        ]
+      },
+      "path": "~/Monsters/Scarecrow"
+    },
+    {
+      "name": "ScareCrowIdlePlaybackCondition",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "scare_crow_idle_playback_condition",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "return_type": "logic",
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/ScareCrowIdlePlaybackConditionProcedure.java"
+        ]
+      },
+      "path": "~/Monsters/Scarecrow"
+    },
+    {
+      "name": "ScareCrowAttackCondition",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "scare_crow_attack_condition",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "return_type": "logic",
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/ScareCrowAttackConditionProcedure.java"
+        ]
+      },
+      "path": "~/Monsters/Scarecrow"
     }
   ],
   "variable_elements": [
@@ -322,6 +453,12 @@
       "type": "string",
       "scope": "player_lifetime",
       "value": "\"\""
+    },
+    {
+      "name": "TargetingModeType",
+      "type": "string",
+      "scope": "player_lifetime",
+      "value": "\"\""
     }
   ],
   "sound_elements": [],
@@ -424,7 +561,9 @@
       "gui.dnd.class_gui.label_attribute7": "attribute",
       "gui.dnd.class_gui.label_attribute6": "attribute",
       "key.dnd.cast_spell": "Cast Spell",
-      "key.dnd.prepare_spells": "Cast Spell"
+      "key.dnd.prepare_spells": "Cast Spell",
+      "entity.dnd.scarecrow": "Scarecrow",
+      "item.dnd.scarecrow_spawn_egg": "Scarecrow Spawn Egg"
     }
   },
   "metadata": {
@@ -460,6 +599,10 @@
         "children": [
           {
             "name": "Stirge",
+            "children": []
+          },
+          {
+            "name": "Scarecrow",
             "children": []
           }
         ]
