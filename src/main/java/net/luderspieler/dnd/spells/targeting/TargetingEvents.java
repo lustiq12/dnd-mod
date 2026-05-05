@@ -49,7 +49,7 @@ public class TargetingEvents {
         if (event.getEntity() instanceof ServerPlayer player) {
             var vars = player.getData(DndModVariables.PLAYER_VARIABLES);
             if (vars.TargetingMode) {
-                RaycastHelper.renderPreview(player, vars.TargetingRange);
+                SpellCasterHelper.renderPreview(player, vars.TargetingRange);
             }
         }
     }
@@ -85,7 +85,7 @@ public class TargetingEvents {
                 resetTargeting(vars);
             } else {
                 // Entity-Mode
-                RaycastHelper.tryPickTarget(player, vars.TargetingRange, (int) vars.TargetingAmount, (targets) -> {
+                SpellCasterHelper.tryPickTarget(player, vars.TargetingRange, (int) vars.TargetingAmount, (targets) -> {
                     // Falls wir Ziele zurückbekommen (Limit erreicht oder Ziel ausgewählt)
                     if (!targets.isEmpty()) {
                         for (LivingEntity target : targets) {
@@ -103,7 +103,7 @@ public class TargetingEvents {
 
     private static void confirmAndCast(ServerPlayer player, DndModVariables.PlayerVariables vars) {
         // Wir holen die Ziele, die wir bisher gesammelt haben
-        RaycastHelper.forceCastExistingTargets(player, (targets) -> {
+        SpellCasterHelper.forceCastExistingTargets(player, (targets) -> {
             if (!targets.isEmpty()) {
                 for (LivingEntity target : targets) {
                     castSelectedSpell(player, vars, target);

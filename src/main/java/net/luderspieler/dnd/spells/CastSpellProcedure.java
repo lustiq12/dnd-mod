@@ -1,6 +1,6 @@
 package net.luderspieler.dnd.spells;
 
-import net.luderspieler.dnd.spells.targeting.RaycastHelper;
+import net.luderspieler.dnd.spells.targeting.SpellCasterHelper;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.network.chat.Component;
 import static net.luderspieler.dnd.spells.SpellCasters.*;
@@ -22,7 +22,7 @@ public class CastSpellProcedure {
             case "DRUIDCRAFT" -> castDruidcraft(player);
             case "ELDRITCH_BLAST" -> castEldritchBlast(player);
             case "ELEMENTALISM" -> castElementalism(player);
-            case "FIRE_BOLT" -> RaycastHelper.loadSpellForTargeting(player, "FIRE_BOLT", 36.0);
+            case "FIRE_BOLT" -> SpellCasterHelper.loadSpellForTargeting(player, "FIRE_BOLT", 36.0);
             case "GUIDANCE" -> castGuidance(player);
             case "LIGHT" -> castLight(player);
             case "MAGE_HAND" -> castMageHand(player);
@@ -56,7 +56,7 @@ public class CastSpellProcedure {
             case "COMMAND" -> castCommand(player);
             case "COMPREHEND_LANGUAGES" -> castComprehendLanguages(player);
             case "CREATE_OR_DESTROY_WATER" -> castCreateOrDestroyWater(player);
-            case "CURE_WOUNDS" -> RaycastHelper.startTargeting(player, 2.0, 1, "CURE_WOUNDS");
+            case "CURE_WOUNDS" -> SpellCasterHelper.startTargeting(player, 2.0, 1, "CURE_WOUNDS");
             case "DETECT_EVIL_AND_GOOD" -> castDetectEvilAndGood(player);
             case "DETECT_MAGIC" -> castDetectMagic(player);
             case "DETECT_POISON_AND_DISEASE" -> castDetectPoisonAndDisease(player);
@@ -77,7 +77,7 @@ public class CastSpellProcedure {
             case "GREASE" -> castGrease(player);
             case "GUIDING_BOLT" -> castGuidingBolt(player);
             case "HEALING_WORD" ->
-                    RaycastHelper.startTargeting(player, 18.0, 1, "HEALING_WORD");
+                    SpellCasterHelper.startTargeting(player, 18.0, 1, "HEALING_WORD");
             case "HELLISH_REBUKE" -> castHellishRebuke(player);
             case "HEROISM" -> castHeroism(player);
             case "HEX" -> castHex(player);
@@ -87,7 +87,7 @@ public class CastSpellProcedure {
             case "IDENTIFY" -> castIdentify(player);
             case "ILLUSORY_SCRIPT" -> castIllusoryScript(player);
             case "INFLICT_WOUNDS" ->
-                    RaycastHelper.startTargeting(player, 2.0, 1, "INFLICT_WOUNDS");
+                    SpellCasterHelper.startTargeting(player, 2.0, 1, "INFLICT_WOUNDS");
             case "JUMP" -> castJump(player);
             case "LONGSTRIDER" -> castLongstrider(player);
             case "MAGE_ARMOR" -> castMageArmor(player);
@@ -108,7 +108,7 @@ public class CastSpellProcedure {
             // ── Grade 2 ─────────────────────────────────────────
             case "ACID_ARROW" -> castAcidArrow(player);
             case "AID" ->
-                    RaycastHelper.startTargeting(player, 9.0, 3, "AID");
+                    SpellCasterHelper.startTargeting(player, 9.0, 3, "AID");
             case "ALTER_SELF" -> castAlterSelf(player);
             case "ANIMAL_MESSENGER" -> castAnimalMessenger(player);
             case "ARCANE_LOCK" -> castArcaneLock(player);
@@ -134,11 +134,11 @@ public class CastSpellProcedure {
             case "GUST_OF_WIND" -> castGustOfWind(player);
             case "HEAT_METAL" -> castHeatMetal(player);
             case "HOLD_PERSON" ->
-                    RaycastHelper.startTargeting(player, 18.0, 1, "HOLD_PERSON");
+                    SpellCasterHelper.startTargeting(player, 18.0, 1, "HOLD_PERSON");
             case "INVISIBILITY" -> castInvisibility(player);
             case "KNOCK" -> castKnock(player);
             case "RESTORATION" ->
-                    RaycastHelper.startTargeting(player, 2.0, 1, "RESTORATION");
+                    SpellCasterHelper.startTargeting(player, 2.0, 1, "RESTORATION");
             case "LEVITATE" -> castLevitate(player);
             case "LOCATE_ANIMALS_OR_PLANTS" -> castLocateAnimalsOrPlants(player);
             case "LOCATE_OBJECT" -> castLocateObject(player);
@@ -171,7 +171,7 @@ public class CastSpellProcedure {
             case "ANIMATE_DEAD" -> castAnimateDead(player);
             case "BEACON_OF_HOPE" -> castBeaconOfHope(player);
             case "BESTOW_CURSE" ->
-                    RaycastHelper.startTargeting(player, 2.0, 1, "BESTOW_CURSE");
+                    SpellCasterHelper.startTargeting(player, 2.0, 1, "BESTOW_CURSE");
             case "BLINK" -> castBlink(player);
             case "CALL_LIGHTNING" -> castCallLightning(player);
             case "CLAIRVOYANCE" -> castClairvoyance(player);
@@ -218,7 +218,7 @@ public class CastSpellProcedure {
             case "BANISHMENT" -> castBanishment(player);
             case "BLACK_TENTACLES" -> castBlackTentacles(player);
             case "BLIGHT" ->
-                    RaycastHelper.startTargeting(player, 18.0, 1, "BLIGHT");
+                    SpellCasterHelper.startTargeting(player, 9.0, 1, "BLIGHT");
             case "CHARM_MONSTER" -> castCharmMonster(player);
             case "COMPULSION" -> castCompulsion(player);
             case "CONFUSION" -> castConfusion(player);

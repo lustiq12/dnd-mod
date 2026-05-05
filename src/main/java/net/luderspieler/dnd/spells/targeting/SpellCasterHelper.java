@@ -14,7 +14,7 @@ import net.luderspieler.dnd.network.DndModVariables;
 import java.util.*;
 import java.util.function.Consumer;
 
-public class RaycastHelper {
+public class SpellCasterHelper {
 
     public static void loadSpellForTargeting(ServerPlayer player, String spellName, double range) {
         var vars = player.getData(DndModVariables.PLAYER_VARIABLES);
