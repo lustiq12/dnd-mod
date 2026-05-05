@@ -7,17 +7,23 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.LargeFireball;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
+import net.neoforged.neoforge.event.entity.ProjectileImpactEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
+import java.util.Comparator;
 import java.util.List;
 
 @EventBusSubscriber
@@ -38,6 +44,59 @@ public class TargetingEvents {
                 Vec3 startPos = new Vec3(startX, startY, startZ);
 
                 if (fireball.position().distanceTo(startPos) >= maxRange) {
+                    fireball.discard();
+                }
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onFireballHit(net.neoforged.neoforge.event.entity.ProjectileImpactEvent event) {
+        if (event.getEntity() instanceof LargeFireball fireball) {
+            CompoundTag nbt = fireball.getPersistentData();
+            net.minecraft.world.level.Level world = fireball.level();
+
+            // Wir prüfen auf "spell_max_range", da deine SpellCasters dies setzen
+            // Falls du explizit "spell_name" nutzen willst, stelle sicher, dass du es in SpellCasters.java hinzufügst.
+            if (nbt.contains("spell_max_range")) {
+                // Den Namen ziehen wir aus der NBT-Logik (Standardwert "" falls nicht vorhanden)
+                String spellName = nbt.getString("spell_name").orElse("");
+
+                // Wichtig: Wir nutzen den Namen "FIREBALL", da du dies so vereinheitlichen wolltest.
+                if ("FIREBALL".equals(spellName)) {
+                    // 1. Standard-Explosion abbrechen
+                    event.setCanceled(true);
+
+                    Vec3 hitPos = event.getRayTraceResult().getLocation();
+                    double radius = 6.0; // Der Radius für die Fireball-Explosion
+
+                    // 2. Alle LivingEntities im Umkreis finden
+                    List<LivingEntity> targets = world.getEntitiesOfClass(LivingEntity.class,
+                            new AABB(hitPos.x - radius, hitPos.y - radius, hitPos.z - radius,
+                                    hitPos.x + radius, hitPos.y + radius, hitPos.z + radius));
+
+                    for (LivingEntity target : targets) {
+                        // 3. Schadensberechnung
+                        // wir nutzen die DamageSource des Projektils oder des Schützen.
+                        Entity owner = fireball.getOwner();
+
+                        // Schaden: 30 (entspricht ca. 8d6 im Durchschnitt, hier fixiert auf 15 Herzen)
+                        target.hurt(world.damageSources().fireball(fireball, owner), 30.0F);
+
+                        // Optional: Ziel in Brand setzen
+                        target.setRemainingFireTicks(100);
+                    }
+
+                    // 4. Visuelle Effekte (Explosion ohne Blockschaden)
+                    if (world instanceof net.minecraft.server.level.ServerLevel serverLevel) {
+                        serverLevel.sendParticles(net.minecraft.core.particles.ParticleTypes.EXPLOSION_EMITTER,
+                                hitPos.x, hitPos.y, hitPos.z, 1, 0, 0, 0, 0);
+                        world.playSound(null, hitPos.x, hitPos.y, hitPos.z,
+                                net.minecraft.sounds.SoundEvents.GENERIC_EXPLODE,
+                                net.minecraft.sounds.SoundSource.PLAYERS, 4.0F, (1.0F + (world.random.nextFloat() - world.random.nextFloat()) * 0.2F) * 0.7F);
+                    }
+
+                    // 5. Projektil entfernen
                     fireball.discard();
                 }
             }
@@ -115,7 +174,7 @@ public class TargetingEvents {
 
     private static void castSelectedSpell(ServerPlayer player, DndModVariables.PlayerVariables vars, LivingEntity target) {
         switch (vars.TargetingSpell) {
-            case "FIREBALL" -> SpellCasters.castFireball(player);
+            case "FIREBALL" -> SpellCasters.castFireball(player, vars.TargetingRange);
             case "FIRE_BOLT" -> SpellCasters.castFireBolt(player, vars.TargetingRange);
             case "CURE_WOUNDS" -> SpellCasters.castCureWounds(player, target);
             case "HEALING_WORD" -> SpellCasters.castHealingWord(player, target);

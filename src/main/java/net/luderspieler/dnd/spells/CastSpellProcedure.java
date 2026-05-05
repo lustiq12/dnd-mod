@@ -181,7 +181,7 @@ public class CastSpellProcedure {
             case "DAYLIGHT" -> castDaylight(player);
             case "DISPEL_MAGIC" -> castDispelMagic(player);
             case "FEAR" -> castFear(player);
-            case "FIREBALL" -> castFireball(player);
+            case "FIREBALL" -> SpellCasterHelper.loadSpellForTargeting(player, "FIREBALL", 45.0);
             case "FLY" -> castFly(player);
             case "GASEOUS_FORM" -> castGaseousForm(player);
             case "GLYPH_OF_WARDING" -> castGlyphOfWarding(player);

@@ -18,7 +18,7 @@ import java.util.Set;
 public class SpellCasters {
 
     public static final Set<String> FINISHED_SPELLS = Set.of(
-            "CURE_WOUNDS", "HEALING_WORD", "RESTORATION", "AID", "INFLICT_WOUNDS", "BLIGHT", "HOLD_PERSON", "BESTOW_CURSE","THUNDERWAVE", "FIRE_BOLT"
+            "CURE_WOUNDS", "HEALING_WORD", "RESTORATION", "AID", "INFLICT_WOUNDS", "BLIGHT", "HOLD_PERSON", "BESTOW_CURSE","THUNDERWAVE", "FIRE_BOLT", "FIRE_BALL"
     );
     
     // --- Cantrips ---
@@ -39,7 +39,7 @@ public class SpellCasters {
         double y = caster.getY() + caster.getEyeHeight() + lookVec.y * 0.5;
         double z = caster.getZ() + lookVec.z;
 
-        LargeFireball fireball = new LargeFireball(caster.level(), caster, velocity, 1);
+        LargeFireball fireball = new LargeFireball(caster.level(), caster, velocity, 0);
         fireball.setPos(x, y, z);
         fireball.setDeltaMovement(velocity);
         fireball.hasImpulse = true;
@@ -254,7 +254,35 @@ public class SpellCasters {
     public static void castDaylight(ServerPlayer p) { /* Logic */ }
     public static void castDispelMagic(ServerPlayer p) { /* Logic */ }
     public static void castFear(ServerPlayer p) { /* Logic */ }
-    public static void castFireball(ServerPlayer p) { /* Logic */ }
+    public static void castFireball(ServerPlayer caster, double range) {
+        if (caster.level().isClientSide()) return;
+
+        Vec3 lookVec = caster.getViewVector(1.0F);
+        double speed = 5.0;
+        Vec3 velocity = lookVec.scale(speed);
+
+        double x = caster.getX() + lookVec.x;
+        double y = caster.getY() + caster.getEyeHeight() + lookVec.y * 0.5;
+        double z = caster.getZ() + lookVec.z;
+
+        LargeFireball fireball = new LargeFireball(caster.level(), caster, velocity, 4);
+        fireball.setPos(x, y, z);
+        fireball.setDeltaMovement(velocity);
+        fireball.hasImpulse = true;
+
+        // Store range data in NBT
+        CompoundTag nbt = fireball.getPersistentData();
+        nbt.putDouble("spell_max_range", range);
+        nbt.putDouble("spell_start_x", x);
+        nbt.putDouble("spell_start_y", y);
+        nbt.putDouble("spell_start_z", z);
+        nbt.putString("spell_name", "FIREBALL");
+
+        caster.level().addFreshEntity(fireball);
+
+        caster.level().playSound(null, caster.getX(), caster.getY(), caster.getZ(),
+                SoundEvents.GHAST_SHOOT, SoundSource.PLAYERS, 2.0f, 0.8f);
+    }
     public static void castFly(ServerPlayer p) { /* Logic */ }
     public static void castGaseousForm(ServerPlayer p) { /* Logic */ }
     public static void castGlyphOfWarding(ServerPlayer p) { /* Logic */ }
