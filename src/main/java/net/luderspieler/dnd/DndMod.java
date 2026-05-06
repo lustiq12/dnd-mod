@@ -1,5 +1,6 @@
 package net.luderspieler.dnd;
 
+import net.luderspieler.dnd.classes.abilitys.AbilityPassiveTriggers;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -65,6 +66,7 @@ public class DndMod {
 		NeoForge.EVENT_BUS.register(new CharacterCreationEventHandler());
 		NeoForge.EVENT_BUS.register(new LevelEvents());
 		NeoForge.EVENT_BUS.register(new ProficiencyCheckProcedure());
+		NeoForge.EVENT_BUS.register(new AbilityPassiveTriggers());
 		// End of user code block mod init
 	}
 

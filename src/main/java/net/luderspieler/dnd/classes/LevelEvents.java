@@ -13,7 +13,6 @@ public class LevelEvents {
     public void onXpChange(PlayerXpEvent.XpChange event) {
         Player player = event.getEntity();
         if (!(player instanceof ServerPlayer serverPlayer)) return;
-
         // Wir holen die Menge, die Minecraft hinzufügen will
         int amount = event.getAmount();
 

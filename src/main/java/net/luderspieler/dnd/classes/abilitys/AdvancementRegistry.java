@@ -1,4 +1,7 @@
-package net.luderspieler.dnd.classes;
+package net.luderspieler.dnd.classes.abilitys;
+
+import net.luderspieler.dnd.network.DndModVariables;
+import net.minecraft.world.entity.player.Player;
 
 import java.util.*;
 
@@ -286,5 +289,31 @@ public class AdvancementRegistry {
     public static List<Ability> getAbilities(String classId, int level) {
         return REGISTRY.getOrDefault(classId.toLowerCase(), Collections.emptyMap())
                 .getOrDefault(level, Collections.emptyList());
+    }
+
+    public static boolean playerHasAbility(Player player, Ability ability) {
+        // 1. Variablen vom Spieler holen
+        DndModVariables.PlayerVariables vars = player.getData(DndModVariables.PLAYER_VARIABLES);
+
+        String playerClass = vars.PlayerClass; // Deine Variable für die Klasse
+        int playerLevel = (int) vars.PlayerLevel; // Deine Variable für das Level (falls double/float -> casten)
+
+        // Validierung: Hat der Spieler überhaupt eine Klasse?
+        if (playerClass == null || playerClass.isEmpty()) {
+            return false;
+        }
+
+        // 2. Nutze die bereits bestehende Logik, um alle Level bis zum aktuellen zu prüfen
+        Map<Integer, List<Ability>> classMap = REGISTRY.get(playerClass.toLowerCase());
+        if (classMap == null) return false;
+
+        for (int lvl = 1; lvl <= playerLevel; lvl++) {
+            List<Ability> abilities = classMap.get(lvl);
+            if (abilities != null && abilities.contains(ability)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

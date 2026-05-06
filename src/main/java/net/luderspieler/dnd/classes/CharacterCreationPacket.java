@@ -130,7 +130,7 @@ public record CharacterCreationPacket(
                     attr = Attributes.MAX_HEALTH;
                     modifierId = isRace ? ID_RACE_HP : ID_CLASS_HP;
                     if (!isRace) {
-                        finalValue = value + (HealthPerLevel * PlayerLevel);
+                        finalValue = value + (HealthPerLevel * (PlayerLevel - 1));
                     }
                 }
                 case "Attack Damage" -> {

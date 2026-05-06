@@ -1,4 +1,4 @@
-package net.luderspieler.dnd.classes;
+package net.luderspieler.dnd.classes.abilitys;
 
 
 public enum Ability {
