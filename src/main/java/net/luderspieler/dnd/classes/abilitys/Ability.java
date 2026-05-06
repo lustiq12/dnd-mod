@@ -1,6 +1,12 @@
 package net.luderspieler.dnd.classes.abilitys;
 
 
+/**
+ *-- ALL ABILITIES CLASSES/SPECIES GRANT YOU --
+ *FINISHED ABILITIES:
+ * UNARMORED_BONUS
+ **/
+
 public enum Ability {
     // --- GEMEINSAME / BASIS ---
     ATTRIBUTE_INCREASE, SUBCLASS_FEATURE, EXTRA_ATTACK, WEAPON_MASTERY,

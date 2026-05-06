@@ -23,6 +23,7 @@ public class DndModTabs {
 		if (tabData.getTabKey() == CreativeModeTabs.SPAWN_EGGS) {
 			tabData.accept(DndModItems.STIRGE_SPAWN_EGG.get());
 			tabData.accept(DndModItems.SCARECROW_SPAWN_EGG.get());
+			tabData.accept(DndModItems.HARPY_SPAWN_EGG.get());
 		}
 	}
 }

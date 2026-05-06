@@ -1,6 +1,5 @@
 package net.luderspieler.dnd;
 
-import net.luderspieler.dnd.classes.abilitys.AbilityPassiveTriggers;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -21,11 +20,10 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.FriendlyByteBuf;
 
+import net.luderspieler.dnd.rests.SleepingIntereferer;
 import net.luderspieler.dnd.network.DndModVariables;
-import net.luderspieler.dnd.init.DndModTabs;
-import net.luderspieler.dnd.init.DndModMenus;
-import net.luderspieler.dnd.init.DndModItems;
-import net.luderspieler.dnd.init.DndModEntities;
+import net.luderspieler.dnd.init.*;
+import net.luderspieler.dnd.classes.abilitys.AbilityPassiveTriggers;
 import net.luderspieler.dnd.classes.ProficiencyCheckProcedure;
 import net.luderspieler.dnd.classes.LevelEvents;
 import net.luderspieler.dnd.classes.CharacterCreationEventHandler;
@@ -56,10 +54,12 @@ public class DndMod {
 		// End of user code block mod constructor
 		NeoForge.EVENT_BUS.register(this);
 		modEventBus.addListener(this::registerNetworking);
+		DndModSounds.REGISTRY.register(modEventBus);
 		DndModItems.REGISTRY.register(modEventBus);
 		DndModEntities.REGISTRY.register(modEventBus);
 		DndModTabs.REGISTRY.register(modEventBus);
 		DndModVariables.ATTACHMENT_TYPES.register(modEventBus);
+		DndModMobEffects.REGISTRY.register(modEventBus);
 		DndModMenus.REGISTRY.register(modEventBus);
 		// Start of user code block mod init
 		DndModNetworkRegistry.register(modEventBus);
@@ -67,6 +67,7 @@ public class DndMod {
 		NeoForge.EVENT_BUS.register(new LevelEvents());
 		NeoForge.EVENT_BUS.register(new ProficiencyCheckProcedure());
 		NeoForge.EVENT_BUS.register(new AbilityPassiveTriggers());
+		NeoForge.EVENT_BUS.register(new SleepingIntereferer());
 		// End of user code block mod init
 	}
 

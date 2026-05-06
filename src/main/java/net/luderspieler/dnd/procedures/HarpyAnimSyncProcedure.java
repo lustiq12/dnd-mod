@@ -6,17 +6,19 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.bus.api.ICancellableEvent;
 import net.neoforged.bus.api.Event;
 
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.commands.arguments.EntityAnchorArgument;
 
-import net.luderspieler.dnd.entity.ScarecrowEntity;
+import net.luderspieler.dnd.entity.HarpyEntity;
 import net.luderspieler.dnd.DndMod;
 
 import javax.annotation.Nullable;
 
 @EventBusSubscriber
-public class ScareCrowAnimSyncProcedure {
+public class HarpyAnimSyncProcedure {
 	@SubscribeEvent
 	public static void onEntityAttacked(LivingIncomingDamageEvent event) {
 		if (event.getEntity() != null) {
@@ -31,17 +33,21 @@ public class ScareCrowAnimSyncProcedure {
 	private static void execute(@Nullable Event event, LevelAccessor world, DamageSource damagesource, Entity entity, Entity immediatesourceentity, double amount) {
 		if (damagesource == null || entity == null || immediatesourceentity == null)
 			return;
-		if (immediatesourceentity instanceof ScarecrowEntity && amount == 100) {
+		if (immediatesourceentity instanceof HarpyEntity && amount == 100) {
 			if (event instanceof ICancellableEvent _cancellable) {
 				_cancellable.setCanceled(true);
 			}
-			if (immediatesourceentity instanceof ScarecrowEntity _datEntSetI)
-				_datEntSetI.getEntityData().set(ScarecrowEntity.DATA_cd, 10);
-			if (immediatesourceentity instanceof ScarecrowEntity _datEntSetS)
-				_datEntSetS.getEntityData().set(ScarecrowEntity.DATA_anim, "attack");
-			DndMod.queueServerWork(6, () -> {
-				entity.hurt(damagesource, 6);
-			});
+			if (!((entity instanceof HarpyEntity _datEntS ? _datEntS.getEntityData().get(HarpyEntity.DATA_anim) : "").equals("rizz"))) {
+				if (immediatesourceentity instanceof HarpyEntity _datEntSetI)
+					_datEntSetI.getEntityData().set(HarpyEntity.DATA_cooldown, 10);
+				if (immediatesourceentity instanceof HarpyEntity _datEntSetS)
+					_datEntSetS.getEntityData().set(HarpyEntity.DATA_anim, "attack");
+				immediatesourceentity.lookAt(EntityAnchorArgument.Anchor.EYES, new Vec3((entity.getX()), (entity.getY()), (entity.getZ())));
+				immediatesourceentity.setDeltaMovement(new Vec3((immediatesourceentity.getLookAngle().x), (immediatesourceentity.getLookAngle().y), (immediatesourceentity.getLookAngle().z)));
+				DndMod.queueServerWork(8, () -> {
+					entity.hurt(damagesource, 6);
+				});
+			}
 		}
 	}
 }

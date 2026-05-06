@@ -1,0 +1,10 @@
+{
+  "harpy_rizz": {
+    "sounds": [
+      {
+        "name": "dnd:harpy_rizz",
+        "stream": false
+      }
+    ]
+  }
+}

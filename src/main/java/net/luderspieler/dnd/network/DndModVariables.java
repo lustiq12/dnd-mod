@@ -99,6 +99,8 @@ public class DndModVariables {
 			clone.TargetingSpell = original.TargetingSpell;
 			clone.targetUUIDS = original.targetUUIDS;
 			clone.TargetingModeType = original.TargetingModeType;
+			clone.AbilityData = original.AbilityData;
+			clone.Charmer = original.Charmer;
 		}
 		event.getEntity().setData(PLAYER_VARIABLES, clone);
 	}
@@ -134,6 +136,8 @@ public class DndModVariables {
 		public String TargetingSpell = "\"\"";
 		public String targetUUIDS = "\"\"";
 		public String TargetingModeType = "\"\"";
+		public String AbilityData = "\"\"";
+		public String Charmer = "\"\"";
 
 		@Override
 		public void serialize(ValueOutput output) {
@@ -166,6 +170,8 @@ public class DndModVariables {
 			output.putString("TargetingSpell", TargetingSpell);
 			output.putString("targetUUIDS", targetUUIDS);
 			output.putString("TargetingModeType", TargetingModeType);
+			output.putString("AbilityData", AbilityData);
+			output.putString("Charmer", Charmer);
 		}
 
 		@Override
@@ -199,6 +205,8 @@ public class DndModVariables {
 			TargetingSpell = input.getStringOr("TargetingSpell", "");
 			targetUUIDS = input.getStringOr("targetUUIDS", "");
 			TargetingModeType = input.getStringOr("TargetingModeType", "");
+			AbilityData = input.getStringOr("AbilityData", "");
+			Charmer = input.getStringOr("Charmer", "");
 		}
 
 		public void markSyncDirty() {

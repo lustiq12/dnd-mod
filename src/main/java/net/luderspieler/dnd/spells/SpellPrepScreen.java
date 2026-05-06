@@ -47,6 +47,10 @@ public class SpellPrepScreen extends Screen {
     private static final int COL_CANTRIP_TAB = 0xFFA06010;
     private static final int COL_TEXT_WIP = 0xFFFFA500; // Orange für Work in Progress
 
+
+    private final Screen parent;
+
+
     // ── State ────────────────────────────────────────────────────
     private int selectedGrade = 0;       // 0 = Cantrips, 1-9 = spell grades
     private int scrollLeft    = 0;
@@ -63,8 +67,10 @@ public class SpellPrepScreen extends Screen {
     private int lx, ly, rx, ry; // panel top-left coords
 
     @SuppressWarnings("unchecked")
-    public SpellPrepScreen() {
+    public SpellPrepScreen(Screen parent) {
         super(Component.literal("Prepare Spells"));
+        this.parent = parent; // Das hier ist wichtig!
+
         preparedByGrade = new ArrayList[10];
         for (int i = 0; i < 10; i++) preparedByGrade[i] = new ArrayList<>();
         for (int i = 0; i < 10; i++) availableByGrade.add(new ArrayList<>());
@@ -308,21 +314,39 @@ public class SpellPrepScreen extends Screen {
         return super.keyPressed(key, b, c);
     }
 
+    @Override
+    public void onClose() {
+        // Wenn ein Parent existiert, dahin zurück; sonst ganz schließen
+        if (this.minecraft != null) {
+            if (this.parent != null) {
+                this.minecraft.setScreen(this.parent);
+            } else {
+                // Dies nutzt die Screen-Standard-Schließen-Logik
+                this.minecraft.setScreen(null);
+            }
+        }
+    }
+
     // ════════════════════════════════════════════════════════════
     //  SAVE / CLOSE
     // ════════════════════════════════════════════════════════════
 
     private void saveAndClose() {
-        // Build the 10 CSV strings from local prepared lists
         String[] csvs = new String[10];
         for (int i = 0; i < 10; i++) csvs[i] = toCSV(preparedByGrade[i]);
 
-        // Send to server
+        // Sendet die Daten an den Server
         PrepareSpellsPacket.send(new PrepareSpellsPacket(
                 csvs[0], csvs[1], csvs[2], csvs[3], csvs[4],
                 csvs[5], csvs[6], csvs[7], csvs[8], csvs[9]
         ));
-        this.onClose();
+
+        // Kehrt zum LongRestScreen zurück
+        if (this.minecraft != null && this.parent != null) {
+            this.minecraft.setScreen(this.parent);
+        } else {
+            this.onClose();
+        }
     }
 
     // ════════════════════════════════════════════════════════════

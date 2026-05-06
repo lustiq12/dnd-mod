@@ -1,0 +1,60 @@
+package net.luderspieler.dnd.rests;
+
+import net.luderspieler.dnd.spells.SpellPrepScreen;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
+
+public class LongRestScreen extends Screen {
+
+    public LongRestScreen() {
+        super(Component.literal("Long Rest Preparation"));
+    }
+
+    @Override
+    protected void init() {
+        super.init();
+
+        int cx = this.width / 2;
+        int cy = this.height / 2;
+
+        // ── CHANGE SPELLS (Öffnet jetzt korrekt das Untermenü) ──
+        this.addRenderableWidget(Button.builder(
+                Component.literal("Change Spells"),
+                btn -> {
+                    // Öffnet den SpellPrepScreen und übergibt 'this' als Parent
+                    this.minecraft.setScreen(new net.luderspieler.dnd.spells.SpellPrepScreen(this));
+                }
+        ).bounds(cx - 75, cy - 10, 150, 20).build());
+
+        // ── FINISH / SLEEP (Schließt den Screen komplett) ──
+        this.addRenderableWidget(Button.builder(
+                Component.literal("Finish & Sleep"),
+                btn -> {
+                    // Nutzt super.onClose(), um das GUI-System komplett zu verlassen
+                    super.onClose();
+                }
+        ).bounds(cx - 75, this.height - 40, 150, 20).build());
+    }
+
+    @Override
+    public void render(GuiGraphics g, int mouseX, int mouseY, float partial) {
+        // Dunkler Hintergrund
+        g.fillGradient(0, 0, this.width, this.height, 0xD0101010, 0xE0101010);
+
+        super.render(g, mouseX, mouseY, partial);
+
+        // Titel zentriert über dem mittleren Button
+        g.drawCenteredString(this.font, this.title, this.width / 2, this.height / 2 - 40, 0xFFAA00);
+
+        g.drawCenteredString(this.font,
+                Component.literal("Manage what you did over the long rest you just finished"),
+                this.width / 2, this.height / 2 - 26, -1);
+    }
+
+    @Override
+    public boolean shouldCloseOnEsc() {
+        return false;
+    }
+}

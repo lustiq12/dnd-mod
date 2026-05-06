@@ -28,7 +28,7 @@
           "src/main/resources/data/dnd/neoforge/biome_modifier/stirge_biome_modifier.json"
         ]
       },
-      "path": "~/Monsters/Stirge"
+      "path": "~/Monsters"
     },
     {
       "name": "StirgeIdleCooldown",
@@ -242,7 +242,7 @@
           "src/main/resources/assets/dnd/models/item/scarecrow_spawn_egg.json"
         ]
       },
-      "path": "~/Monsters/Scarecrow"
+      "path": "~/Monsters"
     },
     {
       "name": "ScareCrowIdlePlaybackCondition",
@@ -283,6 +283,153 @@
         ]
       },
       "path": "~/Monsters/Scarecrow"
+    },
+    {
+      "name": "Harpy",
+      "type": "livingentity",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "harpy",
+      "metadata": {
+        "files": [
+          "src/main/java/net/luderspieler/dnd/entity/HarpyEntity.java",
+          "src/main/resources/data/dnd/neoforge/biome_modifier/harpy_biome_modifier.json",
+          "src/main/resources/assets/dnd/models/item/harpy_spawn_egg.json",
+          "src/main/java/net/luderspieler/dnd/client/renderer/HarpyRenderer.java",
+          "src/main/resources/assets/dnd/items/harpy_spawn_egg.json"
+        ]
+      },
+      "path": "~/Monsters"
+    },
+    {
+      "name": "HarpyIdleCooldown",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "harpy_idle_cooldown",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          },
+          {
+            "name": "x",
+            "type": "number"
+          },
+          {
+            "name": "y",
+            "type": "number"
+          },
+          {
+            "name": "z",
+            "type": "number"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/HarpyIdleCooldownProcedure.java"
+        ]
+      },
+      "path": "~/Monsters/Harpy"
+    },
+    {
+      "name": "HarpyAnimSync",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "harpy_anim_sync",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "damagesource",
+            "type": "damagesource"
+          },
+          {
+            "name": "entity",
+            "type": "entity"
+          },
+          {
+            "name": "immediatesourceentity",
+            "type": "entity"
+          },
+          {
+            "name": "amount",
+            "type": "number"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/HarpyAnimSyncProcedure.java"
+        ]
+      },
+      "path": "~/Monsters/Harpy"
+    },
+    {
+      "name": "HarpyAttackPlaybackCondition",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "harpy_attack_playback_condition",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "return_type": "logic",
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/HarpyAttackPlaybackConditionProcedure.java"
+        ]
+      },
+      "path": "~/Monsters/Harpy"
+    },
+    {
+      "name": "HarpyIdlePlaybackCondition",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "harpy_idle_playback_condition",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "return_type": "logic",
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/HarpyIdlePlaybackConditionProcedure.java"
+        ]
+      },
+      "path": "~/Monsters/Harpy"
+    },
+    {
+      "name": "HarpyRizzPlaybackCondition",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "harpy_rizz_playback_condition",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "return_type": "logic",
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/HarpyRizzPlaybackConditionProcedure.java"
+        ]
+      },
+      "path": "~/Monsters/Harpy"
     }
   ],
   "variable_elements": [
@@ -459,9 +606,30 @@
       "type": "string",
       "scope": "player_lifetime",
       "value": "\"\""
+    },
+    {
+      "name": "AbilityData",
+      "type": "string",
+      "scope": "player_lifetime",
+      "value": "\"\""
+    },
+    {
+      "name": "Charmer",
+      "type": "string",
+      "scope": "player_lifetime",
+      "value": "\"\""
     }
   ],
-  "sound_elements": [],
+  "sound_elements": [
+    {
+      "name": "harpy_rizz",
+      "files": [
+        "harpy_rizz"
+      ],
+      "category": "hostile",
+      "subtitle": ""
+    }
+  ],
   "tag_elements": {
     "ITEMS:mod:light_armor": [
       "Items.LEATHER_HELMET",
@@ -563,7 +731,10 @@
       "key.dnd.cast_spell": "Cast Spell",
       "key.dnd.prepare_spells": "Cast Spell",
       "entity.dnd.scarecrow": "Scarecrow",
-      "item.dnd.scarecrow_spawn_egg": "Scarecrow Spawn Egg"
+      "item.dnd.scarecrow_spawn_egg": "Scarecrow Spawn Egg",
+      "item.dnd.harpy_spawn_egg": "Harpy Spawn Egg",
+      "entity.dnd.harpy": "Harpy",
+      "subtitles.harpy_rizz": ""
     }
   },
   "metadata": {
@@ -576,8 +747,10 @@
       "src/main/java/net/luderspieler/dnd/init/DndModEntities.java",
       "src/main/java/net/luderspieler/dnd/init/DndModEntityRenderers.java",
       "src/main/java/net/luderspieler/dnd/DndMod.java",
+      "src/main/resources/assets/dnd/sounds.json",
       "src/main/java/net/luderspieler/dnd/network/DndModVariables.java",
       "src/main/resources/META-INF/neoforge.mods.toml",
+      "src/main/java/net/luderspieler/dnd/init/DndModSounds.java",
       "src/main/java/net/luderspieler/dnd/init/DndModTabs.java",
       "src/main/resources/pack.mcmeta",
       "src/main/java/net/luderspieler/dnd/init/DndModModels.java"
@@ -604,8 +777,16 @@
           {
             "name": "Scarecrow",
             "children": []
+          },
+          {
+            "name": "Harpy",
+            "children": []
           }
         ]
+      },
+      {
+        "name": "Potions",
+        "children": []
       }
     ]
   },

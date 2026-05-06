@@ -54,7 +54,7 @@ public record PrepareSpellsMessage(int eventType, int pressedms) implements Cust
 			return;
 		if (type == 0) {
 			var mc = net.minecraft.client.Minecraft.getInstance();
-			mc.setScreen(new SpellPrepScreen());
+			mc.setScreen(new SpellPrepScreen(null));
 
 		}
 	}
