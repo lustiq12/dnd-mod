@@ -172,7 +172,7 @@ public class SpellCasters {
     public static void castAcidArrow(ServerPlayer p) { /* Logic */ }
     public static void castAid(ServerPlayer caster, LivingEntity target) {
         target.addEffect(new MobEffectInstance(MobEffects.HEALTH_BOOST, 1200, 1, false, true));
-        target.heal(4.0F); // Sofortige Heilung der neuen HP
+        target.heal(8.0F); // Sofortige Heilung der neuen HP
     }
     public static void castAlterSelf(ServerPlayer p) { /* Logic */ }
     public static void castAnimalMessenger(ServerPlayer p) { /* Logic */ }
