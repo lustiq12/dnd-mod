@@ -8,6 +8,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.api.distmarker.Dist;
 
+import net.luderspieler.dnd.client.model.Modelnothic;
 import net.luderspieler.dnd.client.model.ModelStirge;
 import net.luderspieler.dnd.client.model.ModelHarpy;
 import net.luderspieler.dnd.client.model.ModelCustomModel;
@@ -19,5 +20,6 @@ public class DndModModels {
 		event.registerLayerDefinition(ModelCustomModel.LAYER_LOCATION, ModelCustomModel::createBodyLayer);
 		event.registerLayerDefinition(ModelStirge.LAYER_LOCATION, ModelStirge::createBodyLayer);
 		event.registerLayerDefinition(ModelHarpy.LAYER_LOCATION, ModelHarpy::createBodyLayer);
+		event.registerLayerDefinition(Modelnothic.LAYER_LOCATION, Modelnothic::createBodyLayer);
 	}
 }

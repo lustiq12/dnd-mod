@@ -28,7 +28,7 @@
           "src/main/resources/data/dnd/neoforge/biome_modifier/stirge_biome_modifier.json"
         ]
       },
-      "path": "~/Monsters"
+      "path": "~/Potions/Monsters"
     },
     {
       "name": "StirgeIdleCooldown",
@@ -47,7 +47,7 @@
           "src/main/java/net/luderspieler/dnd/procedures/StirgeIdleCooldownProcedure.java"
         ]
       },
-      "path": "~/Monsters/Stirge"
+      "path": "~/Potions/Monsters/Stirge"
     },
     {
       "name": "StirgeAnimSync",
@@ -82,7 +82,7 @@
           "src/main/java/net/luderspieler/dnd/procedures/StirgeAnimSyncProcedure.java"
         ]
       },
-      "path": "~/Monsters/Stirge"
+      "path": "~/Potions/Monsters/Stirge"
     },
     {
       "name": "StirgeAttackPlaybackCondition",
@@ -102,7 +102,7 @@
           "src/main/java/net/luderspieler/dnd/procedures/StirgeAttackPlaybackConditionProcedure.java"
         ]
       },
-      "path": "~/Monsters/Stirge"
+      "path": "~/Potions/Monsters/Stirge"
     },
     {
       "name": "ClassGUI",
@@ -170,7 +170,7 @@
           "src/main/java/net/luderspieler/dnd/procedures/ScareCrowIdleCooldownProcedure.java"
         ]
       },
-      "path": "~/Monsters/Scarecrow"
+      "path": "~/Potions/Monsters/Scarecrow"
     },
     {
       "name": "ScareCrowAnimSync",
@@ -205,7 +205,7 @@
           "src/main/java/net/luderspieler/dnd/procedures/ScareCrowAnimSyncProcedure.java"
         ]
       },
-      "path": "~/Monsters/Scarecrow"
+      "path": "~/Potions/Monsters/Scarecrow"
     },
     {
       "name": "ScareCrowAttackPlaybackCondition",
@@ -225,7 +225,7 @@
           "src/main/java/net/luderspieler/dnd/procedures/ScareCrowAttackPlaybackConditionProcedure.java"
         ]
       },
-      "path": "~/Monsters/Scarecrow"
+      "path": "~/Potions/Monsters/Scarecrow"
     },
     {
       "name": "Scarecrow",
@@ -242,7 +242,7 @@
           "src/main/resources/assets/dnd/models/item/scarecrow_spawn_egg.json"
         ]
       },
-      "path": "~/Monsters"
+      "path": "~/Potions/Monsters"
     },
     {
       "name": "ScareCrowIdlePlaybackCondition",
@@ -262,7 +262,7 @@
           "src/main/java/net/luderspieler/dnd/procedures/ScareCrowIdlePlaybackConditionProcedure.java"
         ]
       },
-      "path": "~/Monsters/Scarecrow"
+      "path": "~/Potions/Monsters/Scarecrow"
     },
     {
       "name": "ScareCrowAttackCondition",
@@ -282,7 +282,7 @@
           "src/main/java/net/luderspieler/dnd/procedures/ScareCrowAttackConditionProcedure.java"
         ]
       },
-      "path": "~/Monsters/Scarecrow"
+      "path": "~/Potions/Monsters/Scarecrow"
     },
     {
       "name": "Harpy",
@@ -299,7 +299,7 @@
           "src/main/resources/assets/dnd/items/harpy_spawn_egg.json"
         ]
       },
-      "path": "~/Monsters"
+      "path": "~/Potions/Monsters"
     },
     {
       "name": "HarpyIdleCooldown",
@@ -334,7 +334,7 @@
           "src/main/java/net/luderspieler/dnd/procedures/HarpyIdleCooldownProcedure.java"
         ]
       },
-      "path": "~/Monsters/Harpy"
+      "path": "~/Potions/Monsters/Harpy"
     },
     {
       "name": "HarpyAnimSync",
@@ -369,7 +369,7 @@
           "src/main/java/net/luderspieler/dnd/procedures/HarpyAnimSyncProcedure.java"
         ]
       },
-      "path": "~/Monsters/Harpy"
+      "path": "~/Potions/Monsters/Harpy"
     },
     {
       "name": "HarpyAttackPlaybackCondition",
@@ -389,7 +389,7 @@
           "src/main/java/net/luderspieler/dnd/procedures/HarpyAttackPlaybackConditionProcedure.java"
         ]
       },
-      "path": "~/Monsters/Harpy"
+      "path": "~/Potions/Monsters/Harpy"
     },
     {
       "name": "HarpyIdlePlaybackCondition",
@@ -409,7 +409,7 @@
           "src/main/java/net/luderspieler/dnd/procedures/HarpyIdlePlaybackConditionProcedure.java"
         ]
       },
-      "path": "~/Monsters/Harpy"
+      "path": "~/Potions/Monsters/Harpy"
     },
     {
       "name": "HarpyRizzPlaybackCondition",
@@ -429,7 +429,142 @@
           "src/main/java/net/luderspieler/dnd/procedures/HarpyRizzPlaybackConditionProcedure.java"
         ]
       },
-      "path": "~/Monsters/Harpy"
+      "path": "~/Potions/Monsters/Harpy"
+    },
+    {
+      "name": "Charmed",
+      "type": "potioneffect",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "charmed",
+      "metadata": {
+        "files": [
+          "src/main/java/net/luderspieler/dnd/potion/CharmedMobEffect.java"
+        ]
+      },
+      "path": "~/Potions"
+    },
+    {
+      "name": "CharmedOnEffectActiveTick",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "charmed_on_effect_active_tick",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          },
+          {
+            "name": "x",
+            "type": "number"
+          },
+          {
+            "name": "y",
+            "type": "number"
+          },
+          {
+            "name": "z",
+            "type": "number"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/CharmedOnEffectActiveTickProcedure.java"
+        ]
+      },
+      "path": "~/Potions"
+    },
+    {
+      "name": "Nothic",
+      "type": "livingentity",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "nothic",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/dnd/items/nothic_spawn_egg.json",
+          "src/main/resources/assets/dnd/models/item/nothic_spawn_egg.json",
+          "src/main/java/net/luderspieler/dnd/client/renderer/NothicRenderer.java",
+          "src/main/resources/data/dnd/neoforge/biome_modifier/nothic_biome_modifier.json",
+          "src/main/java/net/luderspieler/dnd/entity/NothicEntity.java"
+        ]
+      },
+      "path": "~/Potions/Monsters"
+    },
+    {
+      "name": "NothicIdleCooldown",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "nothic_idle_cooldown",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/NothicIdleCooldownProcedure.java"
+        ]
+      },
+      "path": "~/Potions/Monsters/Nothic"
+    },
+    {
+      "name": "NothicAnimSync",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "nothic_anim_sync",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "damagesource",
+            "type": "damagesource"
+          },
+          {
+            "name": "entity",
+            "type": "entity"
+          },
+          {
+            "name": "immediatesourceentity",
+            "type": "entity"
+          },
+          {
+            "name": "amount",
+            "type": "number"
+          }
+        ],
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/NothicAnimSyncProcedure.java"
+        ]
+      },
+      "path": "~/Potions/Monsters/Nothic"
+    },
+    {
+      "name": "NothicIdlePlaybackCondition",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "nothic_idle_playback_condition",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "return_type": "logic",
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/NothicIdlePlaybackConditionProcedure.java"
+        ]
+      },
+      "path": "~/Potions/Monsters/Nothic"
     }
   ],
   "variable_elements": [
@@ -734,7 +869,10 @@
       "item.dnd.scarecrow_spawn_egg": "Scarecrow Spawn Egg",
       "item.dnd.harpy_spawn_egg": "Harpy Spawn Egg",
       "entity.dnd.harpy": "Harpy",
-      "subtitles.harpy_rizz": ""
+      "subtitles.harpy_rizz": "",
+      "effect.dnd.charmed": "Charmed",
+      "item.dnd.nothic_spawn_egg": "Nothic Spawn Egg",
+      "entity.dnd.nothic": "Nothic"
     }
   },
   "metadata": {
@@ -743,6 +881,7 @@
       "src/main/java/net/luderspieler/dnd/network/MenuStateUpdateMessage.java",
       "src/main/java/net/luderspieler/dnd/init/DndModScreens.java",
       "src/main/java/net/luderspieler/dnd/init/DndModKeyMappings.java",
+      "src/main/java/net/luderspieler/dnd/init/DndModMobEffects.java",
       "src/main/java/net/luderspieler/dnd/init/DndModItems.java",
       "src/main/java/net/luderspieler/dnd/init/DndModEntities.java",
       "src/main/java/net/luderspieler/dnd/init/DndModEntityRenderers.java",
@@ -764,29 +903,34 @@
         "children": []
       },
       {
-        "name": "Class_Species_System",
-        "children": []
-      },
-      {
-        "name": "Monsters",
+        "name": "Potions",
         "children": [
           {
-            "name": "Stirge",
+            "name": "Class_Species_System",
             "children": []
           },
           {
-            "name": "Scarecrow",
-            "children": []
-          },
-          {
-            "name": "Harpy",
-            "children": []
+            "name": "Monsters",
+            "children": [
+              {
+                "name": "Stirge",
+                "children": []
+              },
+              {
+                "name": "Scarecrow",
+                "children": []
+              },
+              {
+                "name": "Harpy",
+                "children": []
+              },
+              {
+                "name": "Nothic",
+                "children": []
+              }
+            ]
           }
         ]
-      },
-      {
-        "name": "Potions",
-        "children": []
       }
     ]
   },

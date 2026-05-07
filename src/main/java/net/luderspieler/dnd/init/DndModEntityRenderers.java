@@ -10,6 +10,7 @@ import net.neoforged.api.distmarker.Dist;
 
 import net.luderspieler.dnd.client.renderer.StirgeRenderer;
 import net.luderspieler.dnd.client.renderer.ScarecrowRenderer;
+import net.luderspieler.dnd.client.renderer.NothicRenderer;
 import net.luderspieler.dnd.client.renderer.HarpyRenderer;
 
 @EventBusSubscriber(Dist.CLIENT)
@@ -19,5 +20,6 @@ public class DndModEntityRenderers {
 		event.registerEntityRenderer(DndModEntities.STIRGE.get(), StirgeRenderer::new);
 		event.registerEntityRenderer(DndModEntities.SCARECROW.get(), ScarecrowRenderer::new);
 		event.registerEntityRenderer(DndModEntities.HARPY.get(), HarpyRenderer::new);
+		event.registerEntityRenderer(DndModEntities.NOTHIC.get(), NothicRenderer::new);
 	}
 }

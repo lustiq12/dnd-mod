@@ -53,8 +53,13 @@ public record CastSpellMessage(int eventType, int pressedms) implements CustomPa
 		if (!world.getChunkSource().hasChunk(SectionPos.blockToSectionCoord(x), SectionPos.blockToSectionCoord(z)))
 			return;
 		if (type == 0) {
-			var mc = net.minecraft.client.Minecraft.getInstance();
-			mc.setScreen(new SpellWheelScreen());
+			if (entity instanceof Player player) {
+				DndModVariables.PlayerVariables vars = player.getData(DndModVariables.PLAYER_VARIABLES);
+				if (vars.CanUseMagic) {
+					var mc = net.minecraft.client.Minecraft.getInstance();
+					mc.setScreen(new SpellWheelScreen());
+				}
+			}
 		}
 	}
 

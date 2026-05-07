@@ -477,7 +477,78 @@
           "src/main/java/net/luderspieler/dnd/procedures/CharmedOnEffectActiveTickProcedure.java"
         ]
       },
-      "path": "~/Monsters/Harpy"
+      "path": "~/Potions"
+    },
+    {
+      "name": "Nothic",
+      "type": "livingentity",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "nothic",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/dnd/items/nothic_spawn_egg.json",
+          "src/main/resources/assets/dnd/models/item/nothic_spawn_egg.json",
+          "src/main/java/net/luderspieler/dnd/client/renderer/NothicRenderer.java",
+          "src/main/resources/data/dnd/neoforge/biome_modifier/nothic_biome_modifier.json",
+          "src/main/java/net/luderspieler/dnd/entity/NothicEntity.java"
+        ]
+      },
+      "path": "~/Monsters"
+    },
+    {
+      "name": "NothicIdleCooldown",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "nothic_idle_cooldown",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/NothicIdleCooldownProcedure.java"
+        ]
+      },
+      "path": "~/Monsters/Stirge"
+    },
+    {
+      "name": "NothicAnimSync",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "nothic_anim_sync",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "damagesource",
+            "type": "damagesource"
+          },
+          {
+            "name": "entity",
+            "type": "entity"
+          },
+          {
+            "name": "immediatesourceentity",
+            "type": "entity"
+          },
+          {
+            "name": "amount",
+            "type": "number"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/NothicAnimSyncProcedure.java"
+        ]
+      },
+      "path": "~/Monsters/Stirge"
     }
   ],
   "variable_elements": [
@@ -783,7 +854,9 @@
       "item.dnd.harpy_spawn_egg": "Harpy Spawn Egg",
       "entity.dnd.harpy": "Harpy",
       "subtitles.harpy_rizz": "",
-      "effect.dnd.charmed": "Charmed"
+      "effect.dnd.charmed": "Charmed",
+      "item.dnd.nothic_spawn_egg": "Nothic Spawn Egg",
+      "entity.dnd.nothic": "Nothic"
     }
   },
   "metadata": {
@@ -830,6 +903,10 @@
           },
           {
             "name": "Harpy",
+            "children": []
+          },
+          {
+            "name": "Nothic",
             "children": []
           }
         ]

@@ -52,5 +52,7 @@
   "item.dnd.harpy_spawn_egg": "Harpy Spawn Egg",
   "entity.dnd.harpy": "Harpy",
   "subtitles.harpy_rizz": "",
-  "effect.dnd.charmed": "Charmed"
+  "effect.dnd.charmed": "Charmed",
+  "item.dnd.nothic_spawn_egg": "Nothic Spawn Egg",
+  "entity.dnd.nothic": "Nothic"
 }

@@ -430,6 +430,54 @@
         ]
       },
       "path": "~/Monsters/Harpy"
+    },
+    {
+      "name": "Charmed",
+      "type": "potioneffect",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "charmed",
+      "metadata": {
+        "files": [
+          "src/main/java/net/luderspieler/dnd/potion/CharmedMobEffect.java"
+        ]
+      },
+      "path": "~/Potions"
+    },
+    {
+      "name": "CharmedOnEffectActiveTick",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "charmed_on_effect_active_tick",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          },
+          {
+            "name": "x",
+            "type": "number"
+          },
+          {
+            "name": "y",
+            "type": "number"
+          },
+          {
+            "name": "z",
+            "type": "number"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/CharmedOnEffectActiveTickProcedure.java"
+        ]
+      },
+      "path": "~/Potions"
     }
   ],
   "variable_elements": [
@@ -612,6 +660,12 @@
       "type": "string",
       "scope": "player_lifetime",
       "value": "\"\""
+    },
+    {
+      "name": "Charmer",
+      "type": "string",
+      "scope": "player_lifetime",
+      "value": "\"\""
     }
   ],
   "sound_elements": [
@@ -728,7 +782,8 @@
       "item.dnd.scarecrow_spawn_egg": "Scarecrow Spawn Egg",
       "item.dnd.harpy_spawn_egg": "Harpy Spawn Egg",
       "entity.dnd.harpy": "Harpy",
-      "subtitles.harpy_rizz": ""
+      "subtitles.harpy_rizz": "",
+      "effect.dnd.charmed": "Charmed"
     }
   },
   "metadata": {
@@ -737,6 +792,7 @@
       "src/main/java/net/luderspieler/dnd/network/MenuStateUpdateMessage.java",
       "src/main/java/net/luderspieler/dnd/init/DndModScreens.java",
       "src/main/java/net/luderspieler/dnd/init/DndModKeyMappings.java",
+      "src/main/java/net/luderspieler/dnd/init/DndModMobEffects.java",
       "src/main/java/net/luderspieler/dnd/init/DndModItems.java",
       "src/main/java/net/luderspieler/dnd/init/DndModEntities.java",
       "src/main/java/net/luderspieler/dnd/init/DndModEntityRenderers.java",
@@ -775,8 +831,16 @@
           {
             "name": "Harpy",
             "children": []
+          },
+          {
+            "name": "Nothic",
+            "children": []
           }
         ]
+      },
+      {
+        "name": "Potions",
+        "children": []
       }
     ]
   },
