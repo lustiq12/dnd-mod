@@ -1,6 +1,5 @@
 package net.luderspieler.dnd.network;
 
-import net.luderspieler.dnd.classes.DeathChoiceScreen;
 import net.luderspieler.dnd.spells.SpellWheelScreen;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;

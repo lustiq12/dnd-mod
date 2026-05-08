@@ -30,7 +30,7 @@ public class LongRestScreen extends Screen {
                 this.addRenderableWidget(Button.builder(
                         Component.literal("Change Spells"),
                         btn -> {
-                            this.minecraft.setScreen(new net.luderspieler.dnd.spells.SpellPrepScreen(this));
+                            this.minecraft.setScreen(new SpellPrepScreen(this));
                         }
                 ).bounds(cx - 75, cy - 10, 150, 20).build());
             }
