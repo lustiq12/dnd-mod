@@ -24,11 +24,13 @@ public class ClassDefinition {
     private final int[][] spellSlots;
     private final int[][] preparedAmount;
     private final List<Enum<?>> spellList;
+    private final boolean canUseMagic; // HINZUGEFÜGT
 
     public ClassDefinition(String id, String displayName, String description, int classHealth,
                            Map<String, Double> attributeModifiers, List<String> abilityLines,
                            List<ItemStack> starterItems, String proficiencies,
-                           int[][] spellSlots, int[][] preparedAmount, List<Enum<?>> spellList) {
+                           int[][] spellSlots, int[][] preparedAmount, List<Enum<?>> spellList,
+                           boolean canUseMagic) { // HINZUGEFÜGT
         this.id = id;
         this.displayName = displayName;
         this.description = description;
@@ -40,6 +42,7 @@ public class ClassDefinition {
         this.spellSlots = spellSlots;
         this.preparedAmount = preparedAmount;
         this.spellList = spellList;
+        this.canUseMagic = canUseMagic; // HINZUGEFÜGT
         this.icon = ResourceLocation.fromNamespaceAndPath("dnd", "textures/screens/classiconplaceholder.png");
     }
 
@@ -118,4 +121,5 @@ public class ClassDefinition {
     public int[][] getSpellSlots() { return spellSlots; }
     public int[][] getPreparedAmount() { return preparedAmount; }
     public List<Enum<?>> getSpellList() { return spellList; }
+    public boolean canUseMagic() { return canUseMagic; } // HINZUGEFÜGT
 }

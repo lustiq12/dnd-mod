@@ -18,7 +18,7 @@ import java.util.Set;
 public class SpellCasters {
 
     public static final Set<String> FINISHED_SPELLS = Set.of(
-            "CURE_WOUNDS", "HEALING_WORD", "RESTORATION", "AID", "INFLICT_WOUNDS", "BLIGHT", "HOLD_PERSON", "BESTOW_CURSE","THUNDERWAVE", "FIRE_BOLT", "FIRE_BALL"
+            "CURE_WOUNDS", "HEALING_WORD", "RESTORATION", "AID", "INFLICT_WOUNDS", "BLIGHT", "HOLD_PERSON", "BESTOW_CURSE","THUNDERWAVE", "FIRE_BOLT", "FIREBALL"
     );
     
     // --- Cantrips ---

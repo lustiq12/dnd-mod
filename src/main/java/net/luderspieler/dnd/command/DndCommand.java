@@ -24,21 +24,19 @@ public class DndCommand {
 
     @SubscribeEvent
     public static void registerCommand(RegisterCommandsEvent event) {
-        // --- BASIS-KNOTEN FÜR "VARIABLE" ---
         LiteralArgumentBuilder<CommandSourceStack> variableNode = Commands.literal("variable");
         setupVariableNode(variableNode);
 
-        // --- BASIS-KNOTEN FÜR "SPELLS" ---
         LiteralArgumentBuilder<CommandSourceStack> spellsNode = Commands.literal("spells");
 
-        // 1. LEARN (Mit Limit-Check & Spelllist-Validierung)
+        // 1. LEARN
         spellsNode.then(Commands.literal("learn")
                 .then(Commands.argument("target", EntityArgument.player())
                         .then(Commands.argument("spellname", StringArgumentType.string())
                                 .executes(c -> handleSpellAction(c.getSource(), EntityArgument.getPlayer(c, "target"),
                                         StringArgumentType.getString(c, "spellname"), "learn")))));
 
-        // 2. FORCELEARN (Ignoriert Klassen-Spelllist und Limits)
+        // 2. FORCELEARN
         spellsNode.then(Commands.literal("forceLearn")
                 .then(Commands.argument("target", EntityArgument.player())
                         .then(Commands.argument("spellname", StringArgumentType.string())
@@ -52,7 +50,7 @@ public class DndCommand {
                                 .executes(c -> handleSpellAction(c.getSource(), EntityArgument.getPlayer(c, "target"),
                                         StringArgumentType.getString(c, "spellname"), "unlearn")))));
 
-        // 4. CLEAR (Struktur: /dnd spells clear <target> <all/Cantrip/Grade_X>)
+        // 4. CLEAR
         var targetArg = Commands.argument("target", EntityArgument.player())
                 .then(Commands.literal("all").executes(c -> clearSpells(c.getSource(), EntityArgument.getPlayer(c, "target"), "all")))
                 .then(Commands.literal("Cantrip").executes(c -> clearSpells(c.getSource(), EntityArgument.getPlayer(c, "target"), "0")));
@@ -64,7 +62,6 @@ public class DndCommand {
         }
         spellsNode.then(Commands.literal("clear").then(targetArg));
 
-        // REGISTRIERUNG
         event.getDispatcher().register(Commands.literal("dnd")
                 .requires(s -> s.hasPermission(2))
                 .then(variableNode)
@@ -78,23 +75,22 @@ public class DndCommand {
         ClassDefinition classDef = ClassRegistry.getClass(vars.PlayerClass);
 
         if (classDef == null) {
-            source.sendFailure(Component.literal("§cKlasse '" + vars.PlayerClass + "' nicht gefunden!"));
+            source.sendFailure(Component.literal("§cClass '" + vars.PlayerClass + "' not found!"));
             return 0;
         }
 
         int grade = classDef.getGradeOfSpell(finalSpellName);
         if (grade == -1) {
-            source.sendFailure(Component.literal("§cZauber '" + finalSpellName + "' existiert nicht im System!"));
+            source.sendFailure(Component.literal("§cSpell '" + finalSpellName + "' does not exist in the system!"));
             return 0;
         }
 
-        // VALIDIERUNG: Gehört der Zauber zur Klasse? (Nur bei 'learn')
         if (action.equals("learn")) {
             boolean isInSpellList = classDef.getSpellList().stream()
                     .anyMatch(e -> e.name().equalsIgnoreCase(finalSpellName));
 
             if (!isInSpellList) {
-                source.sendFailure(Component.literal("§cDieser Zauber gehört nicht zur Spelllist der Klasse " + vars.PlayerClass + "!"));
+                source.sendFailure(Component.literal("§cThis spell is not part of the " + vars.PlayerClass + " spell list!"));
                 return 0;
             }
         }
@@ -102,10 +98,9 @@ public class DndCommand {
         String currentList = getListByGrade(vars, grade);
         boolean isKnown = Arrays.asList(currentList.split(",")).contains(finalSpellName);
 
-        // --- AKTION: UNLEARN ---
         if (action.equals("unlearn")) {
             if (!isKnown) {
-                source.sendFailure(Component.literal("§cSpieler kennt diesen Zauber nicht!"));
+                source.sendFailure(Component.literal("§cPlayer does not know this spell!"));
                 return 0;
             }
             String newList = Arrays.stream(currentList.split(","))
@@ -113,27 +108,25 @@ public class DndCommand {
                     .collect(Collectors.joining(","));
             setListByGrade(vars, grade, newList);
             vars.markSyncDirty();
-            source.sendSuccess(() -> Component.literal("§aZauber '" + finalSpellName + "' entfernt."), true);
+            source.sendSuccess(() -> Component.literal("§aSpell '" + finalSpellName + "' removed."), true);
             return 1;
         }
 
-        // --- AKTION: LEARN / FORCELEARN ---
         if (isKnown) {
-            source.sendFailure(Component.literal("§cZauber bereits bekannt!"));
+            source.sendFailure(Component.literal("§cSpell already known!"));
             return 0;
         }
 
-        // Limit-Check (nur bei 'learn')
         if (action.equals("learn") && !classDef.canPrepareMore(currentList, (int) vars.PlayerLevel, grade)) {
             int max = classDef.getMaxPreparedForGrade((int) vars.PlayerLevel, grade);
-            source.sendFailure(Component.literal("§cVorbereitungs-Limit für Grad " + grade + " erreicht (" + max + ")!"));
+            source.sendFailure(Component.literal("§cPreparation limit for Grade " + grade + " reached (" + max + ")!"));
             return 0;
         }
 
         String updatedList = (currentList.isEmpty() || currentList.equals("\"\"")) ? finalSpellName : currentList + "," + finalSpellName;
         setListByGrade(vars, grade, updatedList);
         vars.markSyncDirty();
-        source.sendSuccess(() -> Component.literal("§aZauber '" + finalSpellName + "' gelernt (Grad " + grade + ")"), true);
+        source.sendSuccess(() -> Component.literal("§aSpell '" + finalSpellName + "' learned (Grade " + grade + ")"), true);
         return 1;
     }
 
@@ -149,7 +142,7 @@ public class DndCommand {
             }
         }
         vars.markSyncDirty();
-        source.sendSuccess(() -> Component.literal("§aZauberliste geleert."), true);
+        source.sendSuccess(() -> Component.literal("§aSpell list cleared."), true);
         return 1;
     }
 

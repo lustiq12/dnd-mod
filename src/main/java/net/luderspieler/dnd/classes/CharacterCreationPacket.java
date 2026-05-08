@@ -70,13 +70,20 @@ public record CharacterCreationPacket(
             vars.PlayerStory               = pkt.story();
             vars.PlayerPersonality         = pkt.personality();
             vars.PlayerLevel               = 1;
-            vars.PlayerXP                  = 0; // hatte gefehlt
+            vars.PlayerXP                  = 0;
             vars.Spellslots                = "000000000";
             vars.Proficiencys              = combinedProfs;
             vars.FinishedCharacterCreation = true;
+
+            // NEU: Magie-Fähigkeit setzen
+            vars.CanUseMagic               = cls.canUseMagic();
+
+            // NEU: Alle Zauberlisten leeren (Cantrips bis Grad 9)
+            clearAllSpellLists(vars);
+
             vars.markSyncDirty();
 
-            // 3. Apply attribute modifiers (Separated Species and Class)
+            // 3. Apply attribute modifiers
             applyAttrs(player, race.getAttributeModifiers(), true);
             applyAttrs(player, cls.getAttributeModifiers(), false);
 
@@ -87,6 +94,20 @@ public record CharacterCreationPacket(
             // 5. Heal to full
             player.setHealth(player.getMaxHealth());
         });
+    }
+
+    // Helper Methode zum Leeren der Listen
+    private static void clearAllSpellLists(DndModVariables.PlayerVariables v) {
+        v.PreparedCantrips = "";
+        v.PreparedSpellsLVL1 = "";
+        v.PreparedSpellsLVL2 = "";
+        v.PreparedSpellsLVL3 = "";
+        v.PreparedSpellsLVL4 = "";
+        v.PreparedSpellsLVL5 = "";
+        v.PreparedSpellsLVL6 = "";
+        v.PreparedSpellsLVL7 = "";
+        v.PreparedSpellsLVL8 = "";
+        v.PreparedSpellsLVL9 = "";
     }
 
     private static void addProfs(LinkedHashSet<String> set, String profs) {
