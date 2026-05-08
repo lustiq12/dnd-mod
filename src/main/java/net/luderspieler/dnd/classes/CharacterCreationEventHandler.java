@@ -66,7 +66,7 @@ public class CharacterCreationEventHandler {
 
     /** Player has an existing character if race and class are set */
     private boolean hasExistingCharacter(DndModVariables.PlayerVariables vars) {
-        return vars.PlayerRace  != null && !vars.PlayerRace.isEmpty()
-                && vars.PlayerClass != null && !vars.PlayerClass.isEmpty();
+        return vars.PlayerRace != null && !vars.PlayerRace.isEmpty() && !vars.PlayerRace.equals("\"\"")
+                && vars.PlayerClass != null && !vars.PlayerClass.isEmpty() && !vars.PlayerClass.equals("\"\"");
     }
 }
