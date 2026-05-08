@@ -1,5 +1,6 @@
 package net.luderspieler.dnd.rests;
 
+import net.luderspieler.dnd.network.DndModVariables;
 import net.luderspieler.dnd.spells.SpellPrepScreen;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -19,20 +20,26 @@ public class LongRestScreen extends Screen {
         int cx = this.width / 2;
         int cy = this.height / 2;
 
-        // ── CHANGE SPELLS (Öffnet jetzt korrekt das Untermenü) ──
-        this.addRenderableWidget(Button.builder(
-                Component.literal("Change Spells"),
-                btn -> {
-                    // Öffnet den SpellPrepScreen und übergibt 'this' als Parent
-                    this.minecraft.setScreen(new net.luderspieler.dnd.spells.SpellPrepScreen(this));
-                }
-        ).bounds(cx - 75, cy - 10, 150, 20).build());
+        // 1. Variablen vom Spieler abrufen
+        if (this.minecraft.player != null) {
+            var vars = this.minecraft.player.getData(DndModVariables.PLAYER_VARIABLES);
 
-        // ── FINISH / SLEEP (Schließt den Screen komplett) ──
+            // 2. Nur hinzufügen, wenn CanUseMagic wahr ist
+            if (vars.CanUseMagic) {
+                // ── CHANGE SPELLS ──
+                this.addRenderableWidget(Button.builder(
+                        Component.literal("Change Spells"),
+                        btn -> {
+                            this.minecraft.setScreen(new net.luderspieler.dnd.spells.SpellPrepScreen(this));
+                        }
+                ).bounds(cx - 75, cy - 10, 150, 20).build());
+            }
+        }
+
+        // ── FINISH / SLEEP (Immer da) ──
         this.addRenderableWidget(Button.builder(
                 Component.literal("Finish & Sleep"),
                 btn -> {
-                    // Nutzt super.onClose(), um das GUI-System komplett zu verlassen
                     super.onClose();
                 }
         ).bounds(cx - 75, this.height - 40, 150, 20).build());
