@@ -53,7 +53,7 @@ public class LongRestScreen extends Screen {
         super.render(g, mouseX, mouseY, partial);
 
         // Titel zentriert über dem mittleren Button
-        g.drawCenteredString(this.font, this.title, this.width / 2, this.height / 2 - 40, 0xFFAA00);
+        g.drawCenteredString(this.font, this.title, this.width / 2, this.height / 2 - 40, -1);
 
         g.drawCenteredString(this.font,
                 Component.literal("Manage what you did over the long rest you just finished"),

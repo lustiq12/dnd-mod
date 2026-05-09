@@ -17,7 +17,7 @@ import java.util.Set;
 public class SpellCasters {
 
     public static final Set<String> FINISHED_SPELLS = Set.of(
-            "CURE_WOUNDS", "HEALING_WORD", "RESTORATION", "AID", "INFLICT_WOUNDS", "BLIGHT", "HOLD_PERSON", "BESTOW_CURSE","THUNDERWAVE", "FIRE_BOLT", "FIREBALL"
+            "CURE_WOUNDS", "HEALING_WORD", "RESTORATION", "AID", "INFLICT_WOUNDS", "BLIGHT", "HOLD_PERSON", "BESTOW_CURSE","THUNDERWAVE", "FIRE_BOLT", "FIREBALL", "FALSE_LIFE", "FEATHER_FALL", "MAGER_ARMOR"
     );
     
     // --- Cantrips ---
@@ -102,8 +102,12 @@ public class SpellCasters {
     public static void castEntangle(ServerPlayer p) { /* Implement Logic */ }
     public static void castExpeditiousRetreat(ServerPlayer p) { /* Implement Logic */ }
     public static void castFaerieFire(ServerPlayer p) { /* Implement Logic */ }
-    public static void castFalseLife(ServerPlayer p) { /* Implement Logic */ }
-    public static void castFeatherFall(ServerPlayer p) { /* Implement Logic */ }
+    public static void castFalseLife(ServerPlayer p) {
+        p.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, 1000, 2));
+    }
+    public static void castFeatherFall(ServerPlayer p, LivingEntity target) {
+        target.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, 1000, 2));
+    }
     public static void castFindFamiliar(ServerPlayer p) { /* Implement Logic */ }
     public static void castFloatingDisk(ServerPlayer p) { /* Implement Logic */ }
     public static void castFogCloud(ServerPlayer p) { /* Implement Logic */ }
@@ -132,7 +136,9 @@ public class SpellCasters {
     }
     public static void castJump(ServerPlayer p) { /* Implement Logic */ }
     public static void castLongstrider(ServerPlayer p) { /* Implement Logic */ }
-    public static void castMageArmor(ServerPlayer p) { /* Implement Logic */ }
+    public static void castMageArmor(ServerPlayer p) {
+        p.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, 8000, 1));
+    }
     public static void castMagicMissile(ServerPlayer p) { /* Implement Logic */ }
     public static void castProtectionFromEvilAndGood(ServerPlayer p) { /* Implement Logic */ }
     public static void castPurifyFoodAndDrink(ServerPlayer p) { /* Implement Logic */ }

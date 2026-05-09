@@ -69,7 +69,7 @@ public class CastSpellProcedure {
             case "EXPEDITIOUS_RETREAT" -> castExpeditiousRetreat(player);
             case "FAERIE_FIRE" -> castFaerieFire(player);
             case "FALSE_LIFE" -> castFalseLife(player);
-            case "FEATHER_FALL" -> castFeatherFall(player);
+            case "FEATHER_FALL" -> SpellCasterHelper.startTargeting(player, 18.0, 5, "FEATHER_FALL");
             case "FIND_FAMILIAR" -> castFindFamiliar(player);
             case "FLOATING_DISK" -> castFloatingDisk(player);
             case "FOG_CLOUD" -> castFogCloud(player);
