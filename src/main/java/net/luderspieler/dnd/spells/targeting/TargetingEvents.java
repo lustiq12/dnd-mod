@@ -132,6 +132,7 @@ public class TargetingEvents {
             case "HOLD_PERSON" -> SpellCasters.castHoldPerson(player, target);
             case "BESTOW_CURSE" -> SpellCasters.castBestowCurse(player, target);
             case "FEATHER_FALL" -> SpellCasters.castFeatherFall(player, target);
+            case "MIND_SPIKE" -> SpellCasters.castMindSpike(player, target);
         }
     }
 

@@ -144,7 +144,7 @@ public class CastSpellProcedure {
             case "LOCATE_OBJECT" -> castLocateObject(player);
             case "MAGIC_MOUTH" -> castMagicMouth(player);
             case "MAGIC_WEAPON" -> castMagicWeapon(player);
-            case "MIND_SPIKE" -> castMindSpike(player);
+            case "MIND_SPIKE" -> SpellCasterHelper.loadSpellForTargeting(player, "MIND_SPIKE", 36.0);
             case "MIRROR_IMAGE" -> castMirrorImage(player);
             case "MISTY_STEP" -> castMistyStep(player);
             case "MOONBEAM" -> castMoonbeam(player);

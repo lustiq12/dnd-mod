@@ -220,7 +220,9 @@ public class SpellCasters {
     public static void castLocateObject(ServerPlayer p) { /* Logic */ }
     public static void castMagicMouth(ServerPlayer p) { /* Logic */ }
     public static void castMagicWeapon(ServerPlayer p) { /* Logic */ }
-    public static void castMindSpike(ServerPlayer p) { /* Logic */ }
+    public static void castMindSpike(ServerPlayer caster, LivingEntity target) {
+        target.hurt(caster.damageSources().source(DamageTypes.MAGIC), 16.0F);
+    }
     public static void castMirrorImage(ServerPlayer p) { /* Logic */ }
     public static void castMistyStep(ServerPlayer p) { /* Logic */ }
     public static void castMoonbeam(ServerPlayer p) { /* Logic */ }
