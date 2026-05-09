@@ -17,7 +17,7 @@ import java.util.Set;
 public class SpellCasters {
 
     public static final Set<String> FINISHED_SPELLS = Set.of(
-            "CURE_WOUNDS", "HEALING_WORD", "RESTORATION", "AID", "INFLICT_WOUNDS", "BLIGHT", "HOLD_PERSON", "BESTOW_CURSE","THUNDERWAVE", "FIRE_BOLT", "FIREBALL", "FALSE_LIFE", "FEATHER_FALL", "MAGER_ARMOR"
+            "CURE_WOUNDS", "HEALING_WORD", "RESTORATION", "AID", "INFLICT_WOUNDS", "BLIGHT", "HOLD_PERSON", "BESTOW_CURSE","THUNDERWAVE", "FIRE_BOLT", "FIREBALL", "FALSE_LIFE", "FEATHER_FALL", "MAGE_ARMOR", "MIND_SPIKE"
     );
     
     // --- Cantrips ---
@@ -137,7 +137,7 @@ public class SpellCasters {
     public static void castJump(ServerPlayer p) { /* Implement Logic */ }
     public static void castLongstrider(ServerPlayer p) { /* Implement Logic */ }
     public static void castMageArmor(ServerPlayer p) {
-        p.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, 8000, 1));
+        p.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, 8000, 0));
     }
     public static void castMagicMissile(ServerPlayer p) { /* Implement Logic */ }
     public static void castProtectionFromEvilAndGood(ServerPlayer p) { /* Implement Logic */ }
