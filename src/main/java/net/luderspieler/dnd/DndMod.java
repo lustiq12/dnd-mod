@@ -1,6 +1,5 @@
 package net.luderspieler.dnd;
 
-import net.luderspieler.dnd.spells.SpellEvents;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -21,6 +20,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.FriendlyByteBuf;
 
+import net.luderspieler.dnd.spells.SpellEvents;
 import net.luderspieler.dnd.rests.SleepingIntereferer;
 import net.luderspieler.dnd.network.DndModVariables;
 import net.luderspieler.dnd.init.*;
