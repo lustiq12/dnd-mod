@@ -193,7 +193,8 @@ public class SpellWheelScreen extends Screen {
 
         // Label im Hub mit Slots
         String levelLabel = (selectedLevel == 0) ? "Cantrip" : "Grade " + selectedLevel + getSlotInfo(selectedLevel);
-        drawCenteredShadow(g, levelLabel, cx, cy - 8, COL_TEXT);
+        drawCenteredShadow(g, levelLabel, cx, cy - 8
+                , COL_TEXT);
         drawCenteredShadow(g, "Back", cx, cy + 8, -1);
     }
 
