@@ -1,7 +1,6 @@
 package net.luderspieler.dnd.spells;
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.luderspieler.dnd.classes.ClassDefinition;
 import net.luderspieler.dnd.classes.ClassRegistry;
 import net.luderspieler.dnd.network.DndModVariables;
 import net.minecraft.client.Minecraft;
