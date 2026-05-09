@@ -17,7 +17,7 @@ public class CastSpellProcedure {
         switch (spellId) {
             // ── CANTRIPS (level 0) ──────────────────────────────
             case "ACID_SPLASH" -> castAcidSplash(player);
-            case "CHILL_TOUCH" -> castChillTouch(player);
+            case "CHILL_TOUCH" -> SpellCasterHelper.startTargeting(player, 2.0, 1, "CHILL_TOUCH");
             case "DANCING_LIGHTS" -> castDancingLights(player);
             case "DRUIDCRAFT" -> castDruidcraft(player);
             case "ELDRITCH_BLAST" -> castEldritchBlast(player);
