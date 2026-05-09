@@ -9,6 +9,8 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.LargeFireball;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.Set;
@@ -58,7 +60,13 @@ public class SpellCasters {
     public static void castGuidance(ServerPlayer p) { /* Implement Logic */ }
     public static void castLight(ServerPlayer p) { /* Implement Logic */ }
     public static void castMageHand(ServerPlayer p) { /* Implement Logic */ }
-    public static void castMending(ServerPlayer p) { /* Implement Logic */ }
+    public static void castMending(ServerPlayer p) {
+        ItemStack item = p.getMainHandItem();
+
+         if (item.isDamaged()){
+             item.setDamageValue(0);
+         }
+    }
     public static void castMessage(ServerPlayer p) { /* Implement Logic */ }
     public static void castMinorIllusion(ServerPlayer p) { /* Implement Logic */ }
     public static void castPoisonSpray(ServerPlayer p) { /* Implement Logic */ }
