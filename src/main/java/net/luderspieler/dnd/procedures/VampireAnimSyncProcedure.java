@@ -50,9 +50,7 @@ public class VampireAnimSyncProcedure {
 			}
 			DndMod.queueServerWork(15, () -> {
 				if (entity instanceof LivingEntity _entity && !_entity.level().isClientSide())
-					_entity.addEffect(new MobEffectInstance(DndModMobEffects.GRABBED, 60, 1, false, false));
-				if (entity instanceof LivingEntity _entity && !_entity.level().isClientSide())
-					_entity.addEffect(new MobEffectInstance(DndModMobEffects.STUNNED, 60, 1, false, false));
+					_entity.addEffect(new MobEffectInstance(DndModMobEffects.GRABBED, 60, 0, false, false));
 				{
 					DndModVariables.PlayerVariables _vars = entity.getData(DndModVariables.PLAYER_VARIABLES);
 					_vars.Charmer = immediatesourceentity.getStringUUID();

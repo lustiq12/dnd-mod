@@ -16,7 +16,16 @@
     "renderStatusInInventory": true,
     "renderStatusInHUD": true,
     "isCuredbyHoney": true,
-    "modifiers": [],
+    "modifiers": [
+      {
+        "equipmentSlot": "any",
+        "attribute": {
+          "value": "JUMP_STRENGTH"
+        },
+        "amount": -1.0,
+        "operation": "ADD_MULTIPLIED_TOTAL"
+      }
+    ],
     "onActiveTick": {
       "name": "GrabbedOnEffectActiveTick"
     }
