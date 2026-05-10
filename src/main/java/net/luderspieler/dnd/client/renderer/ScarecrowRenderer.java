@@ -11,16 +11,16 @@ import net.minecraft.client.animation.AnimationDefinition;
 import net.luderspieler.dnd.entity.ScarecrowEntity;
 import net.luderspieler.dnd.client.model.animations.scarecrowAnimation;
 import net.luderspieler.dnd.client.model.animations.StirgeAnimation;
-import net.luderspieler.dnd.client.model.ModelCustomModel;
+import net.luderspieler.dnd.client.model.Modelscarecrow;
 
 import java.util.Map;
 
-public class ScarecrowRenderer extends MobRenderer<ScarecrowEntity, LivingEntityRenderState, ModelCustomModel> {
+public class ScarecrowRenderer extends MobRenderer<ScarecrowEntity, LivingEntityRenderState, Modelscarecrow> {
 	private ScarecrowEntity entity = null;
 	private final ResourceLocation entityTexture = ResourceLocation.parse("dnd:textures/entities/scarecrow.png");
 
 	public ScarecrowRenderer(EntityRendererProvider.Context context) {
-		super(context, new AnimatedModel(context.bakeLayer(ModelCustomModel.LAYER_LOCATION)), 0.5f);
+		super(context, new AnimatedModel(context.bakeLayer(Modelscarecrow.LAYER_LOCATION)), 0.5f);
 	}
 
 	@Override
@@ -42,7 +42,7 @@ public class ScarecrowRenderer extends MobRenderer<ScarecrowEntity, LivingEntity
 		return entityTexture;
 	}
 
-	private static final class AnimatedModel extends ModelCustomModel {
+	private static final class AnimatedModel extends Modelscarecrow {
 		private ScarecrowEntity entity = null;
 		private final KeyframeAnimation keyframeAnimation0;
 		private final KeyframeAnimation keyframeAnimation1;
