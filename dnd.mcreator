@@ -507,6 +507,22 @@
           {
             "name": "entity",
             "type": "entity"
+          },
+          {
+            "name": "x",
+            "type": "number"
+          },
+          {
+            "name": "y",
+            "type": "number"
+          },
+          {
+            "name": "z",
+            "type": "number"
+          },
+          {
+            "name": "world",
+            "type": "world"
           }
         ],
         "files": [
@@ -760,6 +776,55 @@
         ]
       },
       "path": "~/Potions"
+    },
+    {
+      "name": "Stunned",
+      "type": "potioneffect",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "stunned",
+      "metadata": {
+        "files": [
+          "src/main/java/net/luderspieler/dnd/potion/StunnedMobEffect.java"
+        ]
+      },
+      "path": "~/Potions"
+    },
+    {
+      "name": "DecayingStareOnEffectActiveTick",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "decaying_stare_on_effect_active_tick",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/DecayingStareOnEffectActiveTickProcedure.java"
+        ]
+      },
+      "path": "~/Potions"
+    },
+    {
+      "name": "DecayingStare",
+      "type": "potioneffect",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "decaying_stare",
+      "metadata": {
+        "files": [
+          "src/main/java/net/luderspieler/dnd/potion/DecayingStareMobEffect.java"
+        ]
+      },
+      "path": "~/Potions"
     }
   ],
   "variable_elements": [
@@ -948,6 +1013,18 @@
       "type": "string",
       "scope": "player_lifetime",
       "value": "\"\""
+    },
+    {
+      "name": "grabber",
+      "type": "string",
+      "scope": "player_lifetime",
+      "value": "\"\""
+    },
+    {
+      "name": "Decaying_Focus",
+      "type": "string",
+      "scope": "player_lifetime",
+      "value": "\"\""
     }
   ],
   "sound_elements": [
@@ -1070,7 +1147,9 @@
       "entity.dnd.nothic": "Nothic",
       "entity.dnd.vampire": "Vampire",
       "item.dnd.vampire_spawn_egg": "Vampire Spawn Egg",
-      "effect.dnd.grabbed": "Charmed"
+      "effect.dnd.grabbed": "Charmed",
+      "effect.dnd.stunned": "Stunned",
+      "effect.dnd.decaying_stare": "Decaying Stare"
     }
   },
   "metadata": {

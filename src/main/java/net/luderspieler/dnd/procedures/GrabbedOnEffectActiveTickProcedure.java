@@ -15,9 +15,9 @@ public class GrabbedOnEffectActiveTickProcedure {
 			return;
 		Entity charmer = null;
 		Vec3 vec = Vec3.ZERO;
-		charmer = world instanceof ServerLevel _level0 ? getEntityFromUUID(_level0, entity.getData(DndModVariables.PLAYER_VARIABLES).Charmer) : null;
+		charmer = world instanceof ServerLevel _level0 ? getEntityFromUUID(_level0, entity.getData(DndModVariables.PLAYER_VARIABLES).grabber) : null;
 		if (charmer != null) {
-			vec = ((new Vec3((charmer.getX() - x), (charmer.getY() - y), (charmer.getZ() - z))).normalize()).scale(0.03);
+			vec = ((new Vec3((charmer.getX() - x), (charmer.getY() - y), (charmer.getZ() - z))).normalize()).scale(0.02);
 			entity.push((vec.x()), (vec.y() * 0), (vec.z()));
 			entity.hurtMarked = true;
 		}

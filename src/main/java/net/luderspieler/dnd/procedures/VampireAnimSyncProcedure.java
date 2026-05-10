@@ -9,6 +9,7 @@ import net.neoforged.bus.api.Event;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.damagesource.DamageSource;
 
@@ -43,15 +44,23 @@ public class VampireAnimSyncProcedure {
 				_datEntSetI.getEntityData().set(VampireEntity.DATA_cooldown, 20);
 			if (immediatesourceentity instanceof VampireEntity _datEntSetS)
 				_datEntSetS.getEntityData().set(VampireEntity.DATA_anim, "attack");
+			if (entity instanceof LivingEntity _livEnt3 && _livEnt3.hasEffect(DndModMobEffects.GRABBED)) {
+				if (entity instanceof LivingEntity _entity && !_entity.level().isClientSide())
+					_entity.addEffect(new MobEffectInstance(MobEffects.WITHER, 200, 2, false, false));
+			}
 			DndMod.queueServerWork(15, () -> {
 				if (entity instanceof LivingEntity _entity && !_entity.level().isClientSide())
 					_entity.addEffect(new MobEffectInstance(DndModMobEffects.GRABBED, 60, 1, false, false));
+				if (entity instanceof LivingEntity _entity && !_entity.level().isClientSide())
+					_entity.addEffect(new MobEffectInstance(DndModMobEffects.STUNNED, 60, 1, false, false));
 				{
 					DndModVariables.PlayerVariables _vars = entity.getData(DndModVariables.PLAYER_VARIABLES);
 					_vars.Charmer = immediatesourceentity.getStringUUID();
 					_vars.markSyncDirty();
 				}
 				entity.hurt(damagesource, 15);
+				if (immediatesourceentity instanceof LivingEntity _entity)
+					_entity.setHealth((immediatesourceentity instanceof LivingEntity _livEnt ? _livEnt.getHealth() : -1) + 8);
 			});
 		}
 	}

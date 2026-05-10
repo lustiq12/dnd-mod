@@ -101,6 +101,8 @@ public class DndModVariables {
 			clone.TargetingModeType = original.TargetingModeType;
 			clone.AbilityData = original.AbilityData;
 			clone.Charmer = original.Charmer;
+			clone.grabber = original.grabber;
+			clone.Decaying_Focus = original.Decaying_Focus;
 		}
 		event.getEntity().setData(PLAYER_VARIABLES, clone);
 	}
@@ -138,6 +140,8 @@ public class DndModVariables {
 		public String TargetingModeType = "\"\"";
 		public String AbilityData = "\"\"";
 		public String Charmer = "\"\"";
+		public String grabber = "\"\"";
+		public String Decaying_Focus = "\"\"";
 
 		@Override
 		public void serialize(ValueOutput output) {
@@ -172,6 +176,8 @@ public class DndModVariables {
 			output.putString("TargetingModeType", TargetingModeType);
 			output.putString("AbilityData", AbilityData);
 			output.putString("Charmer", Charmer);
+			output.putString("grabber", grabber);
+			output.putString("Decaying_Focus", Decaying_Focus);
 		}
 
 		@Override
@@ -207,6 +213,8 @@ public class DndModVariables {
 			TargetingModeType = input.getStringOr("TargetingModeType", "");
 			AbilityData = input.getStringOr("AbilityData", "");
 			Charmer = input.getStringOr("Charmer", "");
+			grabber = input.getStringOr("grabber", "");
+			Decaying_Focus = input.getStringOr("Decaying_Focus", "");
 		}
 
 		public void markSyncDirty() {

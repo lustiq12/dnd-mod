@@ -152,6 +152,18 @@
         "name": "anim",
         "type": "string",
         "value": ""
+      },
+      {
+        "name": "focus",
+        "type": "string",
+        "value": ""
+      },
+      {
+        "min": -2147483648,
+        "max": 2147483647,
+        "name": "stare_cooldown",
+        "type": "integer",
+        "value": 0
       }
     ],
     "onMobTickUpdate": {

@@ -36,6 +36,8 @@ import net.luderspieler.dnd.init.DndModEntities;
 public class NothicEntity extends Monster {
 	public static final EntityDataAccessor<Integer> DATA_cooldown = SynchedEntityData.defineId(NothicEntity.class, EntityDataSerializers.INT);
 	public static final EntityDataAccessor<String> DATA_anim = SynchedEntityData.defineId(NothicEntity.class, EntityDataSerializers.STRING);
+	public static final EntityDataAccessor<String> DATA_focus = SynchedEntityData.defineId(NothicEntity.class, EntityDataSerializers.STRING);
+	public static final EntityDataAccessor<Integer> DATA_stare_cooldown = SynchedEntityData.defineId(NothicEntity.class, EntityDataSerializers.INT);
 	public final AnimationState animationState0 = new AnimationState();
 
 	public NothicEntity(EntityType<NothicEntity> type, Level world) {
@@ -50,6 +52,8 @@ public class NothicEntity extends Monster {
 		super.defineSynchedData(builder);
 		builder.define(DATA_cooldown, 0);
 		builder.define(DATA_anim, "");
+		builder.define(DATA_focus, "");
+		builder.define(DATA_stare_cooldown, 0);
 	}
 
 	@Override
@@ -99,6 +103,8 @@ public class NothicEntity extends Monster {
 		super.addAdditionalSaveData(valueOutput);
 		valueOutput.putInt("Datacooldown", this.entityData.get(DATA_cooldown));
 		valueOutput.putString("Dataanim", this.entityData.get(DATA_anim));
+		valueOutput.putString("Datafocus", this.entityData.get(DATA_focus));
+		valueOutput.putInt("Datastare_cooldown", this.entityData.get(DATA_stare_cooldown));
 	}
 
 	@Override
@@ -106,6 +112,8 @@ public class NothicEntity extends Monster {
 		super.readAdditionalSaveData(valueInput);
 		this.entityData.set(DATA_cooldown, valueInput.getIntOr("Datacooldown", 0));
 		this.entityData.set(DATA_anim, valueInput.getStringOr("Dataanim", ""));
+		this.entityData.set(DATA_focus, valueInput.getStringOr("Datafocus", ""));
+		this.entityData.set(DATA_stare_cooldown, valueInput.getIntOr("Datastare_cooldown", 0));
 	}
 
 	@Override
@@ -119,7 +127,7 @@ public class NothicEntity extends Monster {
 	@Override
 	public void baseTick() {
 		super.baseTick();
-		NothicIdleCooldownProcedure.execute(this);
+		NothicIdleCooldownProcedure.execute(this.level(), this.getX(), this.getY(), this.getZ(), this);
 	}
 
 	@Override

@@ -712,6 +712,67 @@
         ]
       },
       "path": "~/Monsters/Vampire"
+    },
+    {
+      "name": "Grabbed",
+      "type": "potioneffect",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "grabbed",
+      "metadata": {
+        "files": [
+          "src/main/java/net/luderspieler/dnd/potion/GrabbedMobEffect.java"
+        ]
+      },
+      "path": "~/Potions"
+    },
+    {
+      "name": "GrabbedOnEffectActiveTick",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "grabbed_on_effect_active_tick",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          },
+          {
+            "name": "x",
+            "type": "number"
+          },
+          {
+            "name": "y",
+            "type": "number"
+          },
+          {
+            "name": "z",
+            "type": "number"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/GrabbedOnEffectActiveTickProcedure.java"
+        ]
+      },
+      "path": "~/Potions"
+    },
+    {
+      "name": "Stunned",
+      "type": "potioneffect",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "stunned",
+      "metadata": {
+        "files": [
+          "src/main/java/net/luderspieler/dnd/potion/StunnedMobEffect.java"
+        ]
+      },
+      "path": "~/Potions"
     }
   ],
   "variable_elements": [
@@ -1021,7 +1082,9 @@
       "item.dnd.nothic_spawn_egg": "Nothic Spawn Egg",
       "entity.dnd.nothic": "Nothic",
       "entity.dnd.vampire": "Vampire",
-      "item.dnd.vampire_spawn_egg": "Vampire Spawn Egg"
+      "item.dnd.vampire_spawn_egg": "Vampire Spawn Egg",
+      "effect.dnd.grabbed": "Charmed",
+      "effect.dnd.stunned": "Stunned"
     }
   },
   "metadata": {

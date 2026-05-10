@@ -42,7 +42,7 @@ public class StirgeAnimSyncProcedure {
 			if (immediatesourceentity instanceof StirgeEntity _datEntSetS)
 				_datEntSetS.getEntityData().set(StirgeEntity.DATA_anim, "attack");
 			immediatesourceentity.lookAt(EntityAnchorArgument.Anchor.EYES, new Vec3((entity.getX()), (entity.getY()), (entity.getZ())));
-			immediatesourceentity.setDeltaMovement(new Vec3((immediatesourceentity.getLookAngle().x), (immediatesourceentity.getLookAngle().y), (immediatesourceentity.getLookAngle().z)));
+			immediatesourceentity.setDeltaMovement(new Vec3((immediatesourceentity.getLookAngle().x * 0.5), (immediatesourceentity.getLookAngle().y * 0.5), (immediatesourceentity.getLookAngle().z * 0.5)));
 			DndMod.queueServerWork(6, () -> {
 				entity.hurt(damagesource, 6);
 			});

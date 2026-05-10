@@ -175,13 +175,13 @@ public class StirgeEntity extends Monster {
 
 	public static AttributeSupplier.Builder createAttributes() {
 		AttributeSupplier.Builder builder = Mob.createMobAttributes();
-		builder = builder.add(Attributes.MOVEMENT_SPEED, 0.2);
+		builder = builder.add(Attributes.MOVEMENT_SPEED, 0.15);
 		builder = builder.add(Attributes.MAX_HEALTH, 10);
 		builder = builder.add(Attributes.ARMOR, 0);
 		builder = builder.add(Attributes.ATTACK_DAMAGE, 100);
 		builder = builder.add(Attributes.FOLLOW_RANGE, 16);
 		builder = builder.add(Attributes.STEP_HEIGHT, 0.6);
-		builder = builder.add(Attributes.FLYING_SPEED, 0.2);
+		builder = builder.add(Attributes.FLYING_SPEED, 0.15);
 		return builder;
 	}
 }

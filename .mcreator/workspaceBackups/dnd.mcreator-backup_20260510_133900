@@ -28,7 +28,7 @@
           "src/main/resources/data/dnd/neoforge/biome_modifier/stirge_biome_modifier.json"
         ]
       },
-      "path": "~/Potions/Monsters"
+      "path": "~/Monsters"
     },
     {
       "name": "StirgeIdleCooldown",
@@ -47,7 +47,7 @@
           "src/main/java/net/luderspieler/dnd/procedures/StirgeIdleCooldownProcedure.java"
         ]
       },
-      "path": "~/Potions/Monsters/Stirge"
+      "path": "~/Monsters/Stirge"
     },
     {
       "name": "StirgeAnimSync",
@@ -82,7 +82,7 @@
           "src/main/java/net/luderspieler/dnd/procedures/StirgeAnimSyncProcedure.java"
         ]
       },
-      "path": "~/Potions/Monsters/Stirge"
+      "path": "~/Monsters/Stirge"
     },
     {
       "name": "StirgeAttackPlaybackCondition",
@@ -102,7 +102,7 @@
           "src/main/java/net/luderspieler/dnd/procedures/StirgeAttackPlaybackConditionProcedure.java"
         ]
       },
-      "path": "~/Potions/Monsters/Stirge"
+      "path": "~/Monsters/Stirge"
     },
     {
       "name": "ClassGUI",
@@ -170,7 +170,7 @@
           "src/main/java/net/luderspieler/dnd/procedures/ScareCrowIdleCooldownProcedure.java"
         ]
       },
-      "path": "~/Potions/Monsters/Scarecrow"
+      "path": "~/Monsters/Scarecrow"
     },
     {
       "name": "ScareCrowAnimSync",
@@ -205,7 +205,7 @@
           "src/main/java/net/luderspieler/dnd/procedures/ScareCrowAnimSyncProcedure.java"
         ]
       },
-      "path": "~/Potions/Monsters/Scarecrow"
+      "path": "~/Monsters/Scarecrow"
     },
     {
       "name": "ScareCrowAttackPlaybackCondition",
@@ -225,7 +225,7 @@
           "src/main/java/net/luderspieler/dnd/procedures/ScareCrowAttackPlaybackConditionProcedure.java"
         ]
       },
-      "path": "~/Potions/Monsters/Scarecrow"
+      "path": "~/Monsters/Scarecrow"
     },
     {
       "name": "Scarecrow",
@@ -242,7 +242,7 @@
           "src/main/resources/assets/dnd/models/item/scarecrow_spawn_egg.json"
         ]
       },
-      "path": "~/Potions/Monsters"
+      "path": "~/Monsters"
     },
     {
       "name": "ScareCrowIdlePlaybackCondition",
@@ -262,7 +262,7 @@
           "src/main/java/net/luderspieler/dnd/procedures/ScareCrowIdlePlaybackConditionProcedure.java"
         ]
       },
-      "path": "~/Potions/Monsters/Scarecrow"
+      "path": "~/Monsters/Scarecrow"
     },
     {
       "name": "ScareCrowAttackCondition",
@@ -282,7 +282,7 @@
           "src/main/java/net/luderspieler/dnd/procedures/ScareCrowAttackConditionProcedure.java"
         ]
       },
-      "path": "~/Potions/Monsters/Scarecrow"
+      "path": "~/Monsters/Scarecrow"
     },
     {
       "name": "Harpy",
@@ -299,7 +299,7 @@
           "src/main/resources/assets/dnd/items/harpy_spawn_egg.json"
         ]
       },
-      "path": "~/Potions/Monsters"
+      "path": "~/Monsters"
     },
     {
       "name": "HarpyIdleCooldown",
@@ -334,7 +334,7 @@
           "src/main/java/net/luderspieler/dnd/procedures/HarpyIdleCooldownProcedure.java"
         ]
       },
-      "path": "~/Potions/Monsters/Harpy"
+      "path": "~/Monsters/Harpy"
     },
     {
       "name": "HarpyAnimSync",
@@ -369,7 +369,7 @@
           "src/main/java/net/luderspieler/dnd/procedures/HarpyAnimSyncProcedure.java"
         ]
       },
-      "path": "~/Potions/Monsters/Harpy"
+      "path": "~/Monsters/Harpy"
     },
     {
       "name": "HarpyAttackPlaybackCondition",
@@ -389,7 +389,7 @@
           "src/main/java/net/luderspieler/dnd/procedures/HarpyAttackPlaybackConditionProcedure.java"
         ]
       },
-      "path": "~/Potions/Monsters/Harpy"
+      "path": "~/Monsters/Harpy"
     },
     {
       "name": "HarpyIdlePlaybackCondition",
@@ -409,7 +409,7 @@
           "src/main/java/net/luderspieler/dnd/procedures/HarpyIdlePlaybackConditionProcedure.java"
         ]
       },
-      "path": "~/Potions/Monsters/Harpy"
+      "path": "~/Monsters/Harpy"
     },
     {
       "name": "HarpyRizzPlaybackCondition",
@@ -429,7 +429,7 @@
           "src/main/java/net/luderspieler/dnd/procedures/HarpyRizzPlaybackConditionProcedure.java"
         ]
       },
-      "path": "~/Potions/Monsters/Harpy"
+      "path": "~/Monsters/Harpy"
     },
     {
       "name": "Charmed",
@@ -494,7 +494,7 @@
           "src/main/java/net/luderspieler/dnd/entity/NothicEntity.java"
         ]
       },
-      "path": "~/Potions/Monsters"
+      "path": "~/Monsters"
     },
     {
       "name": "NothicIdleCooldown",
@@ -513,7 +513,7 @@
           "src/main/java/net/luderspieler/dnd/procedures/NothicIdleCooldownProcedure.java"
         ]
       },
-      "path": "~/Potions/Monsters/Nothic"
+      "path": "~/Monsters/Nothic"
     },
     {
       "name": "NothicAnimSync",
@@ -544,7 +544,7 @@
           "src/main/java/net/luderspieler/dnd/procedures/NothicAnimSyncProcedure.java"
         ]
       },
-      "path": "~/Potions/Monsters/Nothic"
+      "path": "~/Monsters/Nothic"
     },
     {
       "name": "NothicIdlePlaybackCondition",
@@ -564,7 +564,251 @@
           "src/main/java/net/luderspieler/dnd/procedures/NothicIdlePlaybackConditionProcedure.java"
         ]
       },
-      "path": "~/Potions/Monsters/Nothic"
+      "path": "~/Monsters/Nothic"
+    },
+    {
+      "name": "Vampire",
+      "type": "livingentity",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "vampire",
+      "metadata": {
+        "files": [
+          "src/main/java/net/luderspieler/dnd/entity/VampireEntity.java",
+          "src/main/java/net/luderspieler/dnd/client/renderer/VampireRenderer.java",
+          "src/main/resources/assets/dnd/models/item/vampire_spawn_egg.json",
+          "src/main/resources/assets/dnd/items/vampire_spawn_egg.json",
+          "src/main/resources/data/dnd/neoforge/biome_modifier/vampire_biome_modifier.json"
+        ]
+      },
+      "path": "~/Monsters"
+    },
+    {
+      "name": "VampireIdleCooldown",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "vampire_idle_cooldown",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          },
+          {
+            "name": "x",
+            "type": "number"
+          },
+          {
+            "name": "y",
+            "type": "number"
+          },
+          {
+            "name": "z",
+            "type": "number"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/VampireIdleCooldownProcedure.java"
+        ]
+      },
+      "path": "~/Monsters/Vampire"
+    },
+    {
+      "name": "VampireAnimSync",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "vampire_anim_sync",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "damagesource",
+            "type": "damagesource"
+          },
+          {
+            "name": "entity",
+            "type": "entity"
+          },
+          {
+            "name": "immediatesourceentity",
+            "type": "entity"
+          },
+          {
+            "name": "amount",
+            "type": "number"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/VampireAnimSyncProcedure.java"
+        ]
+      },
+      "path": "~/Monsters/Vampire"
+    },
+    {
+      "name": "VampireAttackPlaybackCondition",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "vampire_attack_playback_condition",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "return_type": "logic",
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/VampireAttackPlaybackConditionProcedure.java"
+        ]
+      },
+      "path": "~/Monsters/Vampire"
+    },
+    {
+      "name": "VampireIdlePlaybackCondition",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "vampire_idle_playback_condition",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "return_type": "logic",
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/VampireIdlePlaybackConditionProcedure.java"
+        ]
+      },
+      "path": "~/Monsters/Vampire"
+    },
+    {
+      "name": "VampireRizzPlaybackCondition",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "vampire_rizz_playback_condition",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "return_type": "logic",
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/VampireRizzPlaybackConditionProcedure.java"
+        ]
+      },
+      "path": "~/Monsters/Vampire"
+    },
+    {
+      "name": "Grabbed",
+      "type": "potioneffect",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "grabbed",
+      "metadata": {
+        "files": [
+          "src/main/java/net/luderspieler/dnd/potion/GrabbedMobEffect.java"
+        ]
+      },
+      "path": "~/Potions"
+    },
+    {
+      "name": "GrabbedOnEffectActiveTick",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "grabbed_on_effect_active_tick",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          },
+          {
+            "name": "x",
+            "type": "number"
+          },
+          {
+            "name": "y",
+            "type": "number"
+          },
+          {
+            "name": "z",
+            "type": "number"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/GrabbedOnEffectActiveTickProcedure.java"
+        ]
+      },
+      "path": "~/Potions"
+    },
+    {
+      "name": "Stunned",
+      "type": "potioneffect",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "stunned",
+      "metadata": {
+        "files": [
+          "src/main/java/net/luderspieler/dnd/potion/StunnedMobEffect.java"
+        ]
+      },
+      "path": "~/Potions"
+    },
+    {
+      "name": "DecayingStareOnEffectActiveTick",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "decaying_stare_on_effect_active_tick",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/DecayingStareOnEffectActiveTickProcedure.java"
+        ]
+      },
+      "path": "~/Potions"
+    },
+    {
+      "name": "DecayingStare",
+      "type": "potioneffect",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "decaying_stare",
+      "metadata": {
+        "files": [
+          "src/main/java/net/luderspieler/dnd/potion/DecayingStareMobEffect.java"
+        ]
+      },
+      "path": "~/Potions"
     }
   ],
   "variable_elements": [
@@ -753,6 +997,18 @@
       "type": "string",
       "scope": "player_lifetime",
       "value": "\"\""
+    },
+    {
+      "name": "grabber",
+      "type": "string",
+      "scope": "player_lifetime",
+      "value": "\"\""
+    },
+    {
+      "name": "Decaying_Focus",
+      "type": "string",
+      "scope": "player_lifetime",
+      "value": "\"\""
     }
   ],
   "sound_elements": [
@@ -872,7 +1128,12 @@
       "subtitles.harpy_rizz": "",
       "effect.dnd.charmed": "Charmed",
       "item.dnd.nothic_spawn_egg": "Nothic Spawn Egg",
-      "entity.dnd.nothic": "Nothic"
+      "entity.dnd.nothic": "Nothic",
+      "entity.dnd.vampire": "Vampire",
+      "item.dnd.vampire_spawn_egg": "Vampire Spawn Egg",
+      "effect.dnd.grabbed": "Charmed",
+      "effect.dnd.stunned": "Stunned",
+      "effect.dnd.decaying_stare": "Decaying Stare"
     }
   },
   "metadata": {
@@ -904,31 +1165,34 @@
       },
       {
         "name": "Potions",
+        "children": []
+      },
+      {
+        "name": "Class_Species_System",
+        "children": []
+      },
+      {
+        "name": "Monsters",
         "children": [
           {
-            "name": "Class_Species_System",
+            "name": "Stirge",
             "children": []
           },
           {
-            "name": "Monsters",
-            "children": [
-              {
-                "name": "Stirge",
-                "children": []
-              },
-              {
-                "name": "Scarecrow",
-                "children": []
-              },
-              {
-                "name": "Harpy",
-                "children": []
-              },
-              {
-                "name": "Nothic",
-                "children": []
-              }
-            ]
+            "name": "Scarecrow",
+            "children": []
+          },
+          {
+            "name": "Harpy",
+            "children": []
+          },
+          {
+            "name": "Nothic",
+            "children": []
+          },
+          {
+            "name": "Vampire",
+            "children": []
           }
         ]
       }

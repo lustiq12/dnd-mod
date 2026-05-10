@@ -3,7 +3,7 @@
   "_type": "potioneffect",
   "definition": {
     "effectName": "Charmed",
-    "icon": "heart",
+    "icon": "grabbed",
     "color": {
       "value": -39169,
       "falpha": 0.0
@@ -15,7 +15,7 @@
     "mobEffectCategory": "HARMFUL",
     "renderStatusInInventory": true,
     "renderStatusInHUD": true,
-    "isCuredbyHoney": false,
+    "isCuredbyHoney": true,
     "modifiers": [],
     "onActiveTick": {
       "name": "GrabbedOnEffectActiveTick"

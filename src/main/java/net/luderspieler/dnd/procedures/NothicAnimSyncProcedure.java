@@ -6,10 +6,8 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.bus.api.ICancellableEvent;
 import net.neoforged.bus.api.Event;
 
-import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.commands.arguments.EntityAnchorArgument;
 
 import net.luderspieler.dnd.entity.NothicEntity;
 
@@ -37,7 +35,6 @@ public class NothicAnimSyncProcedure {
 			}
 			if (immediatesourceentity instanceof NothicEntity _datEntSetS)
 				_datEntSetS.getEntityData().set(NothicEntity.DATA_anim, "attack");
-			immediatesourceentity.lookAt(EntityAnchorArgument.Anchor.EYES, new Vec3((entity.getX()), (entity.getY()), (entity.getZ())));
 			entity.hurt(damagesource, 8);
 		}
 	}

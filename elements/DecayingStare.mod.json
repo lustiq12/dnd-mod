@@ -2,10 +2,10 @@
   "_fv": 85,
   "_type": "potioneffect",
   "definition": {
-    "effectName": "Charmed",
-    "icon": "heart",
+    "effectName": "Decaying Stare",
+    "icon": "decaying_stare",
     "color": {
-      "value": -39169,
+      "value": -1,
       "falpha": 0.0
     },
     "onAddedSound": {
@@ -15,10 +15,10 @@
     "mobEffectCategory": "HARMFUL",
     "renderStatusInInventory": true,
     "renderStatusInHUD": true,
-    "isCuredbyHoney": true,
+    "isCuredbyHoney": false,
     "modifiers": [],
     "onActiveTick": {
-      "name": "CharmedOnEffectActiveTick"
+      "name": "DecayingStareOnEffectActiveTick"
     }
   }
 }
