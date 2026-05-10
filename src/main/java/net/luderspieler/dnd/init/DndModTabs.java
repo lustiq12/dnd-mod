@@ -26,6 +26,7 @@ public class DndModTabs {
 			tabData.accept(DndModItems.HARPY_SPAWN_EGG.get());
 			tabData.accept(DndModItems.NOTHIC_SPAWN_EGG.get());
 			tabData.accept(DndModItems.VAMPIRE_SPAWN_EGG.get());
+			tabData.accept(DndModItems.MEDUSA_SPAWN_EGG.get());
 		}
 	}
 }

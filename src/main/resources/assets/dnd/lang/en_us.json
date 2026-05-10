@@ -59,5 +59,8 @@
   "item.dnd.vampire_spawn_egg": "Vampire Spawn Egg",
   "effect.dnd.grabbed": "Charmed",
   "effect.dnd.stunned": "Stunned",
-  "effect.dnd.decaying_stare": "Decaying Stare"
+  "effect.dnd.decaying_stare": "Decaying Stare",
+  "entity.dnd.medusa": "Medusa",
+  "item.dnd.medusa_spawn_egg": "Medusa Spawn Egg",
+  "effect.dnd.petrified": "Petrified"
 }

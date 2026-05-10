@@ -2,8 +2,8 @@
   "_fv": 85,
   "_type": "potioneffect",
   "definition": {
-    "effectName": "Stunned",
-    "icon": "stunned",
+    "effectName": "Petrified",
+    "icon": "petrified",
     "color": {
       "value": -6711040,
       "falpha": 0.0

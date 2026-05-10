@@ -22,12 +22,12 @@ import java.util.List;
 import java.util.ArrayList;
 
 @EventBusSubscriber
-public class StunnedMobEffect extends MobEffect {
-	public StunnedMobEffect() {
+public class PetrifiedMobEffect extends MobEffect {
+	public PetrifiedMobEffect() {
 		super(MobEffectCategory.NEUTRAL, -6711040);
-		this.addAttributeModifier(Attributes.MOVEMENT_SPEED, ResourceLocation.fromNamespaceAndPath(DndMod.MODID, "effect.stunned_0"), -1, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
-		this.addAttributeModifier(Attributes.JUMP_STRENGTH, ResourceLocation.fromNamespaceAndPath(DndMod.MODID, "effect.stunned_1"), -1, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
-		this.addAttributeModifier(Attributes.ATTACK_SPEED, ResourceLocation.fromNamespaceAndPath(DndMod.MODID, "effect.stunned_2"), -1, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+		this.addAttributeModifier(Attributes.MOVEMENT_SPEED, ResourceLocation.fromNamespaceAndPath(DndMod.MODID, "effect.petrified_0"), -1, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+		this.addAttributeModifier(Attributes.JUMP_STRENGTH, ResourceLocation.fromNamespaceAndPath(DndMod.MODID, "effect.petrified_1"), -1, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+		this.addAttributeModifier(Attributes.ATTACK_SPEED, ResourceLocation.fromNamespaceAndPath(DndMod.MODID, "effect.petrified_2"), -1, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
 	}
 
 	@SubscribeEvent
@@ -35,7 +35,7 @@ public class StunnedMobEffect extends MobEffect {
 		Consumable original = Items.HONEY_BOTTLE.components().get(DataComponents.CONSUMABLE);
 		if (original != null) {
 			List<ConsumeEffect> onConsumeEffects = new ArrayList<>(original.onConsumeEffects());
-			onConsumeEffects.add(new RemoveStatusEffectsConsumeEffect(DndModMobEffects.STUNNED));
+			onConsumeEffects.add(new RemoveStatusEffectsConsumeEffect(DndModMobEffects.PETRIFIED));
 			Consumable replacementConsumable = new Consumable(original.consumeSeconds(), original.animation(), original.sound(), original.hasConsumeParticles(), onConsumeEffects);
 			event.modify(Items.HONEY_BOTTLE, builder -> builder.set(DataComponents.CONSUMABLE, replacementConsumable));
 		}

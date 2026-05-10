@@ -10,6 +10,7 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.core.registries.Registries;
 
 import net.luderspieler.dnd.potion.StunnedMobEffect;
+import net.luderspieler.dnd.potion.PetrifiedMobEffect;
 import net.luderspieler.dnd.potion.GrabbedMobEffect;
 import net.luderspieler.dnd.potion.DecayingStareMobEffect;
 import net.luderspieler.dnd.potion.CharmedMobEffect;
@@ -21,4 +22,5 @@ public class DndModMobEffects {
 	public static final DeferredHolder<MobEffect, MobEffect> GRABBED = REGISTRY.register("grabbed", () -> new GrabbedMobEffect());
 	public static final DeferredHolder<MobEffect, MobEffect> STUNNED = REGISTRY.register("stunned", () -> new StunnedMobEffect());
 	public static final DeferredHolder<MobEffect, MobEffect> DECAYING_STARE = REGISTRY.register("decaying_stare", () -> new DecayingStareMobEffect());
+	public static final DeferredHolder<MobEffect, MobEffect> PETRIFIED = REGISTRY.register("petrified", () -> new PetrifiedMobEffect());
 }

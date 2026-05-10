@@ -17,11 +17,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.core.registries.Registries;
 
-import net.luderspieler.dnd.entity.VampireEntity;
-import net.luderspieler.dnd.entity.StirgeEntity;
-import net.luderspieler.dnd.entity.ScarecrowEntity;
-import net.luderspieler.dnd.entity.NothicEntity;
-import net.luderspieler.dnd.entity.HarpyEntity;
+import net.luderspieler.dnd.entity.*;
 import net.luderspieler.dnd.DndMod;
 
 @EventBusSubscriber
@@ -47,6 +43,10 @@ public class DndModEntities {
 			EntityType.Builder.<VampireEntity>of(VampireEntity::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3)
 
 					.sized(0.6f, 1.8f));
+	public static final DeferredHolder<EntityType<?>, EntityType<MedusaEntity>> MEDUSA = register("medusa",
+			EntityType.Builder.<MedusaEntity>of(MedusaEntity::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3)
+
+					.sized(0.6f, 1.8f));
 
 	// Start of user code block custom entities
 	// End of user code block custom entities
@@ -61,6 +61,7 @@ public class DndModEntities {
 		HarpyEntity.init(event);
 		NothicEntity.init(event);
 		VampireEntity.init(event);
+		MedusaEntity.init(event);
 	}
 
 	@SubscribeEvent
@@ -70,5 +71,6 @@ public class DndModEntities {
 		event.put(HARPY.get(), HarpyEntity.createAttributes().build());
 		event.put(NOTHIC.get(), NothicEntity.createAttributes().build());
 		event.put(VAMPIRE.get(), VampireEntity.createAttributes().build());
+		event.put(MEDUSA.get(), MedusaEntity.createAttributes().build());
 	}
 }

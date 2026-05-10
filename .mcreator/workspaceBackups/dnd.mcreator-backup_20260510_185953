@@ -509,8 +509,20 @@
             "type": "entity"
           },
           {
-            "name": "immediatesourceentity",
-            "type": "entity"
+            "name": "x",
+            "type": "number"
+          },
+          {
+            "name": "y",
+            "type": "number"
+          },
+          {
+            "name": "z",
+            "type": "number"
+          },
+          {
+            "name": "world",
+            "type": "world"
           }
         ],
         "files": [
@@ -810,6 +822,99 @@
       "metadata": {
         "files": [
           "src/main/java/net/luderspieler/dnd/potion/DecayingStareMobEffect.java"
+        ]
+      },
+      "path": "~/Potions"
+    },
+    {
+      "name": "MedusaIdleCooldown",
+      "type": "procedure",
+      "compiles": false,
+      "locked_code": false,
+      "registry_name": "medusa_idle_cooldown",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/MedusaIdleCooldownProcedure.java"
+        ]
+      },
+      "path": "~/Monsters/Medusa"
+    },
+    {
+      "name": "Medusa",
+      "type": "livingentity",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "medusa",
+      "metadata": {
+        "files": [
+          "src/main/java/net/luderspieler/dnd/entity/MedusaEntity.java",
+          "src/main/resources/assets/dnd/models/item/medusa_spawn_egg.json",
+          "src/main/java/net/luderspieler/dnd/client/renderer/MedusaRenderer.java",
+          "src/main/resources/assets/dnd/items/medusa_spawn_egg.json",
+          "src/main/resources/data/dnd/neoforge/biome_modifier/medusa_biome_modifier.json"
+        ]
+      },
+      "path": "~/Monsters"
+    },
+    {
+      "name": "MedusaIdlePlaybackCondition",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "medusa_idle_playback_condition",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "return_type": "logic",
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/MedusaIdlePlaybackConditionProcedure.java"
+        ]
+      },
+      "path": "~/Monsters/Medusa"
+    },
+    {
+      "name": "MedusaStonePlaybackCondition",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "medusa_stone_playback_condition",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "return_type": "logic",
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/MedusaStonePlaybackConditionProcedure.java"
+        ]
+      },
+      "path": "~/Monsters/Medusa"
+    },
+    {
+      "name": "Petrified",
+      "type": "potioneffect",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "petrified",
+      "metadata": {
+        "files": [
+          "src/main/java/net/luderspieler/dnd/potion/PetrifiedMobEffect.java"
         ]
       },
       "path": "~/Potions"
@@ -1137,7 +1242,10 @@
       "item.dnd.vampire_spawn_egg": "Vampire Spawn Egg",
       "effect.dnd.grabbed": "Charmed",
       "effect.dnd.stunned": "Stunned",
-      "effect.dnd.decaying_stare": "Decaying Stare"
+      "effect.dnd.decaying_stare": "Decaying Stare",
+      "entity.dnd.medusa": "Medusa",
+      "item.dnd.medusa_spawn_egg": "Medusa Spawn Egg",
+      "effect.dnd.petrified": "Petrified"
     }
   },
   "metadata": {
@@ -1196,6 +1304,10 @@
           },
           {
             "name": "Vampire",
+            "children": []
+          },
+          {
+            "name": "Medusa",
             "children": []
           }
         ]
