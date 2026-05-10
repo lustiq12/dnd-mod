@@ -45,7 +45,7 @@ public class NothicRenderer extends MobRenderer<NothicEntity, LivingEntityRender
 
 	@Override
 	protected void scale(LivingEntityRenderState state, PoseStack poseStack) {
-		poseStack.scale(1.8f, 1.8f, 1.8f);
+		poseStack.scale(1.4f, 1.4f, 1.4f);
 	}
 
 	private static final class AnimatedModel extends Modelnothic {

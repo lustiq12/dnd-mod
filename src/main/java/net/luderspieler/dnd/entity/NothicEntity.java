@@ -132,7 +132,7 @@ public class NothicEntity extends Monster {
 
 	@Override
 	public EntityDimensions getDefaultDimensions(Pose pose) {
-		return super.getDefaultDimensions(pose).scale(1.8f);
+		return super.getDefaultDimensions(pose).scale(1.4f);
 	}
 
 	public static void init(RegisterSpawnPlacementsEvent event) {
