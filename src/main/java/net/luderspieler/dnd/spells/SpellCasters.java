@@ -1,7 +1,9 @@
 package net.luderspieler.dnd.spells;
 
+import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageTypes;
@@ -10,6 +12,7 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.LargeFireball;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.Set;
@@ -24,7 +27,12 @@ public class SpellCasters {
     // --- Cantrips ---
     public static void castAcidSplash(ServerPlayer p) { /* Implement Logic */ }
     public static void castChillTouch(ServerPlayer caster, LivingEntity target) {
-        target.hurt(caster.damageSources().source(DamageTypes.FREEZE), 10.0F);
+        Level level = target.level();
+        target.hurt(caster.damageSources().source(DamageTypes.FREEZE, caster), 10.0F);
+        level.playSound(null, target.getX(), target.getY(), target.getZ(),
+                SoundEvents.PLAYER_HURT_FREEZE, SoundSource.PLAYERS, 1.0F, 1.0F);
+        caster.playSound(SoundEvents.PLAYER_HURT_FREEZE, 1.0F, 1.0F);
+
     }
     public static void castDancingLights(ServerPlayer p) { /* Implement Logic */ }
     public static void castDruidcraft(ServerPlayer p) { /* Implement Logic */ }
