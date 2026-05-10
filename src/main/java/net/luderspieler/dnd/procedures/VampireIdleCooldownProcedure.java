@@ -56,7 +56,7 @@ public class VampireIdleCooldownProcedure {
 			DndMod.queueServerWork(30, () -> {
 				{
 					final Vec3 _center = new Vec3(x, y, z);
-					for (Entity entityiterator : world.getEntitiesOfClass(Entity.class, new AABB(_center, _center).inflate(64 / 2d), e -> true).stream().sorted(Comparator.comparingDouble(_entcnd -> _entcnd.distanceToSqr(_center))).toList()) {
+					for (Entity entityiterator : world.getEntitiesOfClass(Entity.class, new AABB(_center, _center).inflate(16 / 2d), e -> true).stream().sorted(Comparator.comparingDouble(_entcnd -> _entcnd.distanceToSqr(_center))).toList()) {
 						if (entityiterator instanceof ServerPlayer) {
 							if (entityiterator instanceof LivingEntity _entity && !_entity.level().isClientSide())
 								_entity.addEffect(new MobEffectInstance(DndModMobEffects.CHARMED, 240, 0));

@@ -43,10 +43,14 @@ public class NothicIdleCooldownProcedure {
 							_vars.Decaying_Focus = entity.getStringUUID();
 							_vars.markSyncDirty();
 						}
+						if (entityiterator instanceof LivingEntity _entity && !_entity.level().isClientSide())
+							_entity.addEffect(new MobEffectInstance(DndModMobEffects.STUNNED, 120, 0, false, false));
 						if (entity instanceof LivingEntity _entity && !_entity.level().isClientSide())
 							_entity.addEffect(new MobEffectInstance(DndModMobEffects.DECAYING_STARE, 120, 0, false, false));
 						if (entity instanceof NothicEntity _datEntSetS)
 							_datEntSetS.getEntityData().set(NothicEntity.DATA_focus, (entityiterator.getStringUUID()));
+						if (entity instanceof LivingEntity _entity && !_entity.level().isClientSide())
+							_entity.addEffect(new MobEffectInstance(DndModMobEffects.STUNNED, 120, 0, false, false));
 						done = true;
 					}
 				}
