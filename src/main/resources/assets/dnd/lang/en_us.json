@@ -54,5 +54,8 @@
   "subtitles.harpy_rizz": "",
   "effect.dnd.charmed": "Charmed",
   "item.dnd.nothic_spawn_egg": "Nothic Spawn Egg",
-  "entity.dnd.nothic": "Nothic"
+  "entity.dnd.nothic": "Nothic",
+  "entity.dnd.vampire": "Vampire",
+  "item.dnd.vampire_spawn_egg": "Vampire Spawn Egg",
+  "effect.dnd.grabbed": "Charmed"
 }

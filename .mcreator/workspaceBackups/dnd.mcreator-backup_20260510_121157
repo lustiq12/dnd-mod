@@ -903,6 +903,10 @@
         "children": []
       },
       {
+        "name": "Potions",
+        "children": []
+      },
+      {
         "name": "Class_Species_System",
         "children": []
       },
@@ -926,10 +930,6 @@
             "children": []
           }
         ]
-      },
-      {
-        "name": "Potions",
-        "children": []
       }
     ]
   },

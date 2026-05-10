@@ -478,6 +478,288 @@
         ]
       },
       "path": "~/Potions"
+    },
+    {
+      "name": "Nothic",
+      "type": "livingentity",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "nothic",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/dnd/items/nothic_spawn_egg.json",
+          "src/main/resources/assets/dnd/models/item/nothic_spawn_egg.json",
+          "src/main/java/net/luderspieler/dnd/client/renderer/NothicRenderer.java",
+          "src/main/resources/data/dnd/neoforge/biome_modifier/nothic_biome_modifier.json",
+          "src/main/java/net/luderspieler/dnd/entity/NothicEntity.java"
+        ]
+      },
+      "path": "~/Monsters"
+    },
+    {
+      "name": "NothicIdleCooldown",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "nothic_idle_cooldown",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/NothicIdleCooldownProcedure.java"
+        ]
+      },
+      "path": "~/Monsters/Nothic"
+    },
+    {
+      "name": "NothicAnimSync",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "nothic_anim_sync",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "damagesource",
+            "type": "damagesource"
+          },
+          {
+            "name": "entity",
+            "type": "entity"
+          },
+          {
+            "name": "immediatesourceentity",
+            "type": "entity"
+          },
+          {
+            "name": "amount",
+            "type": "number"
+          }
+        ],
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/NothicAnimSyncProcedure.java"
+        ]
+      },
+      "path": "~/Monsters/Nothic"
+    },
+    {
+      "name": "NothicIdlePlaybackCondition",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "nothic_idle_playback_condition",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "return_type": "logic",
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/NothicIdlePlaybackConditionProcedure.java"
+        ]
+      },
+      "path": "~/Monsters/Nothic"
+    },
+    {
+      "name": "Vampire",
+      "type": "livingentity",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "vampire",
+      "metadata": {
+        "files": [
+          "src/main/java/net/luderspieler/dnd/entity/VampireEntity.java",
+          "src/main/java/net/luderspieler/dnd/client/renderer/VampireRenderer.java",
+          "src/main/resources/assets/dnd/models/item/vampire_spawn_egg.json",
+          "src/main/resources/assets/dnd/items/vampire_spawn_egg.json",
+          "src/main/resources/data/dnd/neoforge/biome_modifier/vampire_biome_modifier.json"
+        ]
+      },
+      "path": "~/Monsters"
+    },
+    {
+      "name": "VampireIdleCooldown",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "vampire_idle_cooldown",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          },
+          {
+            "name": "x",
+            "type": "number"
+          },
+          {
+            "name": "y",
+            "type": "number"
+          },
+          {
+            "name": "z",
+            "type": "number"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/VampireIdleCooldownProcedure.java"
+        ]
+      },
+      "path": "~/Monsters/Vampire"
+    },
+    {
+      "name": "VampireAnimSync",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "vampire_anim_sync",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "damagesource",
+            "type": "damagesource"
+          },
+          {
+            "name": "entity",
+            "type": "entity"
+          },
+          {
+            "name": "immediatesourceentity",
+            "type": "entity"
+          },
+          {
+            "name": "amount",
+            "type": "number"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/VampireAnimSyncProcedure.java"
+        ]
+      },
+      "path": "~/Monsters/Vampire"
+    },
+    {
+      "name": "VampireAttackPlaybackCondition",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "vampire_attack_playback_condition",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "return_type": "logic",
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/VampireAttackPlaybackConditionProcedure.java"
+        ]
+      },
+      "path": "~/Monsters/Vampire"
+    },
+    {
+      "name": "VampireIdlePlaybackCondition",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "vampire_idle_playback_condition",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "return_type": "logic",
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/VampireIdlePlaybackConditionProcedure.java"
+        ]
+      },
+      "path": "~/Monsters/Vampire"
+    },
+    {
+      "name": "VampireRizzPlaybackCondition",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "vampire_rizz_playback_condition",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "return_type": "logic",
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/VampireRizzPlaybackConditionProcedure.java"
+        ]
+      },
+      "path": "~/Monsters/Vampire"
+    },
+    {
+      "name": "Grabbed",
+      "type": "potioneffect",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "grabbed",
+      "metadata": {
+        "files": [
+          "src/main/java/net/luderspieler/dnd/potion/GrabbedMobEffect.java"
+        ]
+      },
+      "path": "~/Potions"
+    },
+    {
+      "name": "GrabbedOnEffectActiveTick",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "grabbed_on_effect_active_tick",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          },
+          {
+            "name": "x",
+            "type": "number"
+          },
+          {
+            "name": "y",
+            "type": "number"
+          },
+          {
+            "name": "z",
+            "type": "number"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/GrabbedOnEffectActiveTickProcedure.java"
+        ]
+      },
+      "path": "~/Potions"
     }
   ],
   "variable_elements": [
@@ -783,7 +1065,12 @@
       "item.dnd.harpy_spawn_egg": "Harpy Spawn Egg",
       "entity.dnd.harpy": "Harpy",
       "subtitles.harpy_rizz": "",
-      "effect.dnd.charmed": "Charmed"
+      "effect.dnd.charmed": "Charmed",
+      "item.dnd.nothic_spawn_egg": "Nothic Spawn Egg",
+      "entity.dnd.nothic": "Nothic",
+      "entity.dnd.vampire": "Vampire",
+      "item.dnd.vampire_spawn_egg": "Vampire Spawn Egg",
+      "effect.dnd.grabbed": "Charmed"
     }
   },
   "metadata": {
@@ -814,6 +1101,10 @@
         "children": []
       },
       {
+        "name": "Potions",
+        "children": []
+      },
+      {
         "name": "Class_Species_System",
         "children": []
       },
@@ -831,12 +1122,16 @@
           {
             "name": "Harpy",
             "children": []
+          },
+          {
+            "name": "Nothic",
+            "children": []
+          },
+          {
+            "name": "Vampire",
+            "children": []
           }
         ]
-      },
-      {
-        "name": "Potions",
-        "children": []
       }
     ]
   },

@@ -2,10 +2,10 @@
   "_fv": 85,
   "_type": "livingentity",
   "definition": {
-    "mobName": "Scarecrow",
+    "mobName": "Vampire",
     "mobLabel": "",
-    "mobModelName": "ModelCustomModel",
-    "mobModelTexture": "scarecrow.png",
+    "mobModelName": "Modelvampire",
+    "mobModelTexture": "vampire.png",
     "transparentModelCondition": {
       "fixedValue": false
     },
@@ -25,15 +25,18 @@
     "animations": [
       {
         "animation": {
-          "value": "CUSTOM:scarecrowAnimation.idle"
+          "value": "CUSTOM:vampireAnimation.idle"
         },
         "speed": 1.0,
+        "condition": {
+          "name": "VampireIdlePlaybackCondition"
+        },
         "walking": false,
         "amplitude": 1.0
       },
       {
         "animation": {
-          "value": "CUSTOM:scarecrowAnimation.walk"
+          "value": "CUSTOM:vampireAnimation.walk"
         },
         "speed": 1.0,
         "walking": true,
@@ -41,11 +44,22 @@
       },
       {
         "animation": {
-          "value": "CUSTOM:StirgeAnimation.attack"
+          "value": "CUSTOM:vampireAnimation.claw"
         },
         "speed": 1.0,
         "condition": {
-          "name": "ScareCrowAttackPlaybackCondition"
+          "name": "VampireAttackPlaybackCondition"
+        },
+        "walking": false,
+        "amplitude": 1.0
+      },
+      {
+        "animation": {
+          "value": "CUSTOM:vampireAnimation.rizz"
+        },
+        "speed": 1.0,
+        "condition": {
+          "name": "VampireRizzPlaybackCondition"
         },
         "walking": false,
         "amplitude": 1.0
@@ -100,8 +114,8 @@
     "stepHeight": 0.6,
     "armorBaseValue": 0.0,
     "trackingRange": 64,
-    "followRange": 32,
-    "health": 72,
+    "followRange": 16,
+    "health": 390,
     "xpAmount": 0,
     "waterMob": false,
     "breatheUnderwater": {
@@ -119,17 +133,17 @@
     "canControlStrafe": false,
     "immuneToFire": false,
     "immuneToArrows": false,
-    "immuneToFallDamage": true,
+    "immuneToFallDamage": false,
     "immuneToCactus": false,
-    "immuneToDrowning": true,
+    "immuneToDrowning": false,
     "immuneToLightning": false,
-    "immuneToPotions": true,
+    "immuneToPotions": false,
     "immuneToPlayer": false,
     "immuneToExplosion": false,
     "immuneToTrident": false,
     "immuneToAnvil": false,
     "immuneToWither": false,
-    "immuneToDragonBreath": true,
+    "immuneToDragonBreath": false,
     "mobDrop": {
       "value": ""
     },
@@ -152,7 +166,7 @@
       {
         "min": -2147483648,
         "max": 2147483647,
-        "name": "cd",
+        "name": "cooldown",
         "type": "integer",
         "value": 0
       },
@@ -162,17 +176,19 @@
         "value": "idle"
       },
       {
-        "name": "frozen",
-        "type": "logic",
-        "value": false
+        "min": -2147483648,
+        "max": 2147483647,
+        "name": "rizz",
+        "type": "integer",
+        "value": 0
       }
     ],
     "onMobTickUpdate": {
-      "name": "ScareCrowIdleCooldown"
+      "name": "VampireIdleCooldown"
     },
     "hasAI": true,
     "aiBase": "(none)",
-    "aixml": "<xml xmlns=\"https://developers.google.com/blockly/xml\"><block type=\"aitasks_container\" deletable=\"false\" x=\"40\" y=\"40\"><next><block type=\"attack_on_collide\"><field name=\"speed\">1.2</field><field name=\"longmemory\">FALSE</field><field name=\"condition\">ScareCrowAttackCondition,ScareCrowAttackCondition</field><next><block type=\"attack_action\"><field name=\"callhelp\">FALSE</field><field name=\"condition\">null,null</field><next><block type=\"wander\"><field name=\"speed\">0.8</field><field name=\"condition\">null,null</field><next><block type=\"look_around\"><field name=\"condition\">null,null</field><next><block type=\"attack_entity\"><field name=\"insight\">FALSE</field><field name=\"nearby\">FALSE</field><field name=\"entity\">EntityPlayer</field><field name=\"condition\">ScareCrowAttackCondition,ScareCrowAttackCondition</field></block></next></block></next></block></next></block></next></block></next></block></xml>",
+    "aixml": "<xml xmlns=\"https://developers.google.com/blockly/xml\"><block type=\"aitasks_container\" deletable=\"false\" x=\"40\" y=\"40\"><next><block type=\"attack_on_collide\"><field name=\"speed\">1.2</field><field name=\"longmemory\">FALSE</field><field name=\"condition\">null,null</field><next><block type=\"attack_action\"><field name=\"callhelp\">FALSE</field><field name=\"condition\">null,null</field><next><block type=\"wander\"><field name=\"speed\">0.8</field><field name=\"condition\">null,null</field><next><block type=\"look_around\"><field name=\"condition\">null,null</field><next><block type=\"attack_entity\"><field name=\"insight\">FALSE</field><field name=\"nearby\">FALSE</field><field name=\"entity\">EntityPlayer</field><field name=\"condition\">null,null</field></block></next></block></next></block></next></block></next></block></next></block></xml>",
     "breedable": false,
     "tameable": false,
     "breedTriggerItems": [],

@@ -8,19 +8,18 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.animation.KeyframeAnimation;
 import net.minecraft.client.animation.AnimationDefinition;
 
-import net.luderspieler.dnd.entity.ScarecrowEntity;
-import net.luderspieler.dnd.client.model.animations.scarecrowAnimation;
-import net.luderspieler.dnd.client.model.animations.StirgeAnimation;
-import net.luderspieler.dnd.client.model.ModelCustomModel;
+import net.luderspieler.dnd.entity.VampireEntity;
+import net.luderspieler.dnd.client.model.animations.vampireAnimation;
+import net.luderspieler.dnd.client.model.Modelvampire;
 
 import java.util.Map;
 
-public class ScarecrowRenderer extends MobRenderer<ScarecrowEntity, LivingEntityRenderState, ModelCustomModel> {
-	private ScarecrowEntity entity = null;
-	private final ResourceLocation entityTexture = ResourceLocation.parse("dnd:textures/entities/scarecrow.png");
+public class VampireRenderer extends MobRenderer<VampireEntity, LivingEntityRenderState, Modelvampire> {
+	private VampireEntity entity = null;
+	private final ResourceLocation entityTexture = ResourceLocation.parse("dnd:textures/entities/vampire.png");
 
-	public ScarecrowRenderer(EntityRendererProvider.Context context) {
-		super(context, new AnimatedModel(context.bakeLayer(ModelCustomModel.LAYER_LOCATION)), 0.5f);
+	public VampireRenderer(EntityRendererProvider.Context context) {
+		super(context, new AnimatedModel(context.bakeLayer(Modelvampire.LAYER_LOCATION)), 0.5f);
 	}
 
 	@Override
@@ -29,7 +28,7 @@ public class ScarecrowRenderer extends MobRenderer<ScarecrowEntity, LivingEntity
 	}
 
 	@Override
-	public void extractRenderState(ScarecrowEntity entity, LivingEntityRenderState state, float partialTicks) {
+	public void extractRenderState(VampireEntity entity, LivingEntityRenderState state, float partialTicks) {
 		super.extractRenderState(entity, state, partialTicks);
 		this.entity = entity;
 		if (this.model instanceof AnimatedModel) {
@@ -42,17 +41,19 @@ public class ScarecrowRenderer extends MobRenderer<ScarecrowEntity, LivingEntity
 		return entityTexture;
 	}
 
-	private static final class AnimatedModel extends ModelCustomModel {
-		private ScarecrowEntity entity = null;
+	private static final class AnimatedModel extends Modelvampire {
+		private VampireEntity entity = null;
 		private final KeyframeAnimation keyframeAnimation0;
 		private final KeyframeAnimation keyframeAnimation1;
 		private final KeyframeAnimation keyframeAnimation2;
+		private final KeyframeAnimation keyframeAnimation3;
 
 		public AnimatedModel(ModelPart root) {
 			super(root);
-			this.keyframeAnimation0 = safeBake(scarecrowAnimation.idle);
-			this.keyframeAnimation1 = safeBake(scarecrowAnimation.walk);
-			this.keyframeAnimation2 = safeBake(StirgeAnimation.attack);
+			this.keyframeAnimation0 = safeBake(vampireAnimation.idle);
+			this.keyframeAnimation1 = safeBake(vampireAnimation.walk);
+			this.keyframeAnimation2 = safeBake(vampireAnimation.claw);
+			this.keyframeAnimation3 = safeBake(vampireAnimation.rizz);
 		}
 
 		private KeyframeAnimation safeBake(AnimationDefinition source) {
@@ -63,7 +64,7 @@ public class ScarecrowRenderer extends MobRenderer<ScarecrowEntity, LivingEntity
 			}
 		}
 
-		public void setEntity(ScarecrowEntity entity) {
+		public void setEntity(VampireEntity entity) {
 			this.entity = entity;
 		}
 
@@ -73,6 +74,7 @@ public class ScarecrowRenderer extends MobRenderer<ScarecrowEntity, LivingEntity
 			this.keyframeAnimation0.apply(entity.animationState0, state.ageInTicks, 1f);
 			this.keyframeAnimation1.applyWalk(state.walkAnimationPos, state.walkAnimationSpeed, 1f, 1f);
 			this.keyframeAnimation2.apply(entity.animationState2, state.ageInTicks, 1f);
+			this.keyframeAnimation3.apply(entity.animationState3, state.ageInTicks, 1f);
 			super.setupAnim(state);
 		}
 	}

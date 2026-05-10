@@ -8,6 +8,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.api.distmarker.Dist;
 
+import net.luderspieler.dnd.client.renderer.VampireRenderer;
 import net.luderspieler.dnd.client.renderer.StirgeRenderer;
 import net.luderspieler.dnd.client.renderer.ScarecrowRenderer;
 import net.luderspieler.dnd.client.renderer.NothicRenderer;
@@ -21,5 +22,6 @@ public class DndModEntityRenderers {
 		event.registerEntityRenderer(DndModEntities.SCARECROW.get(), ScarecrowRenderer::new);
 		event.registerEntityRenderer(DndModEntities.HARPY.get(), HarpyRenderer::new);
 		event.registerEntityRenderer(DndModEntities.NOTHIC.get(), NothicRenderer::new);
+		event.registerEntityRenderer(DndModEntities.VAMPIRE.get(), VampireRenderer::new);
 	}
 }

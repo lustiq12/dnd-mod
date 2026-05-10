@@ -17,6 +17,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.core.registries.Registries;
 
+import net.luderspieler.dnd.entity.VampireEntity;
 import net.luderspieler.dnd.entity.StirgeEntity;
 import net.luderspieler.dnd.entity.ScarecrowEntity;
 import net.luderspieler.dnd.entity.NothicEntity;
@@ -42,6 +43,10 @@ public class DndModEntities {
 			EntityType.Builder.<NothicEntity>of(NothicEntity::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3)
 
 					.sized(0.6f, 0.6f));
+	public static final DeferredHolder<EntityType<?>, EntityType<VampireEntity>> VAMPIRE = register("vampire",
+			EntityType.Builder.<VampireEntity>of(VampireEntity::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3)
+
+					.sized(0.6f, 1.8f));
 
 	// Start of user code block custom entities
 	// End of user code block custom entities
@@ -55,6 +60,7 @@ public class DndModEntities {
 		ScarecrowEntity.init(event);
 		HarpyEntity.init(event);
 		NothicEntity.init(event);
+		VampireEntity.init(event);
 	}
 
 	@SubscribeEvent
@@ -63,5 +69,6 @@ public class DndModEntities {
 		event.put(SCARECROW.get(), ScarecrowEntity.createAttributes().build());
 		event.put(HARPY.get(), HarpyEntity.createAttributes().build());
 		event.put(NOTHIC.get(), NothicEntity.createAttributes().build());
+		event.put(VAMPIRE.get(), VampireEntity.createAttributes().build());
 	}
 }
