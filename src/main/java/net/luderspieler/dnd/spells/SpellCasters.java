@@ -1,6 +1,7 @@
 package net.luderspieler.dnd.spells;
 
 import net.minecraft.client.resources.sounds.SoundInstance;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
@@ -21,7 +22,7 @@ import java.util.Set;
 public class SpellCasters {
 
     public static final Set<String> FINISHED_SPELLS = Set.of(
-            "CURE_WOUNDS", "HEALING_WORD", "RESTORATION", "AID", "INFLICT_WOUNDS", "BLIGHT", "HOLD_PERSON", "BESTOW_CURSE","THUNDERWAVE", "FIRE_BOLT", "FIREBALL", "FALSE_LIFE", "FEATHER_FALL", "MAGE_ARMOR", "MIND_SPIKE", "MENDING", "CHILL_TOUCH"
+            "CURE_WOUNDS", "HEALING_WORD", "RESTORATION", "AID", "INFLICT_WOUNDS", "BLIGHT", "HOLD_PERSON", "BESTOW_CURSE","THUNDERWAVE", "FIRE_BOLT", "FIREBALL", "FALSE_LIFE", "FEATHER_FALL", "MAGE_ARMOR", "MIND_SPIKE", "MENDING", "CHILL_TOUCH", "WATER_BREATHING"
     );
     
     // --- Cantrips ---
@@ -146,7 +147,7 @@ public class SpellCasters {
     public static void castIdentify(ServerPlayer p) { /* Implement Logic */ }
     public static void castIllusoryScript(ServerPlayer p) { /* Implement Logic */ }
     public static void castInflictWounds(ServerPlayer caster, LivingEntity target) {
-        target.hurt(caster.damageSources().source(DamageTypes.WITHER), 18.5F);
+        target.hurt(caster.damageSources().source(DamageTypes.WITHER, caster), 18.5F);
         // Nekrotische Partikel
         ((net.minecraft.server.level.ServerLevel)target.level()).sendParticles(
                 net.minecraft.core.particles.ParticleTypes.SMOKE, target.getX(), target.getY() + 1, target.getZ(), 10, 0.2, 0.2, 0.2, 0.05);
@@ -174,17 +175,15 @@ public class SpellCasters {
 
         for (LivingEntity target : entities) {
             if (target != p) { // Den Zauberer selbst schützen
-                // Schaden: 1w6 + 2 ≈ 5.5 (Donner/Schall)
-                target.hurt(p.damageSources().source(net.minecraft.world.damagesource.DamageTypes.MAGIC), 5.5F);
 
-                // Ein bisschen visueller "Wumms" (Rauch/Wolken)
+                target.hurt(p.damageSources().source(DamageTypes.MAGIC, p), 5.5F);
+
                 ((net.minecraft.server.level.ServerLevel)p.level()).sendParticles(
-                        net.minecraft.core.particles.ParticleTypes.CLOUD,
+                        ParticleTypes.CLOUD,
                         target.getX(), target.getY() + 0.5, target.getZ(), 5, 0.2, 0.2, 0.2, 0.01);
             }
         }
 
-        // Der markante Sound: Blitzschlag ohne Feuer
         p.level().playSound(null, p.getX(), p.getY(), p.getZ(),
                 net.minecraft.sounds.SoundEvents.LIGHTNING_BOLT_THUNDER, net.minecraft.sounds.SoundSource.PLAYERS, 1.0F, 1.5F);
     }
@@ -345,7 +344,7 @@ public class SpellCasters {
     public static void castBanishment(ServerPlayer p) { /* Logic */ }
     public static void castBlackTentacles(ServerPlayer p) { /* Logic */ }
     public static void castBlight(ServerPlayer caster, LivingEntity target) {
-        target.hurt(caster.damageSources().source(DamageTypes.MAGIC), 38.0F);
+        target.hurt(caster.damageSources().source(DamageTypes.MAGIC, caster), 38.0F);
         // Verwelken-Effekt
         target.addEffect(new MobEffectInstance(MobEffects.WITHER, 60, 1));
     }
