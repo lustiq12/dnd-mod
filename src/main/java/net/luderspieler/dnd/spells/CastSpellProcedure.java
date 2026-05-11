@@ -208,7 +208,7 @@ public class CastSpellProcedure {
             case "TINY_HUT" -> castTinyHut(player);
             case "TONGUES" -> castTongues(player);
             case "VAMPIRIC_TOUCH" -> castVampiricTouch(player);
-            case "WATER_BREATHING" -> castWaterBreathing(player);
+            case "WATER_BREATHING" -> SpellCasterHelper.startTargeting(player, 9.0, 10, "WATER_BREATHING");
             case "WATER_WALK" -> castWaterWalk(player);
             case "WIND_WALL" -> castWindWall(player);
 

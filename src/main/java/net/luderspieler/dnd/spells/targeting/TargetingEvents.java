@@ -125,6 +125,7 @@ public class TargetingEvents {
             case "FEATHER_FALL" -> SpellCasters.castFeatherFall(player, target);
             case "MIND_SPIKE" -> SpellCasters.castMindSpike(player, target);
             case "CHILL_TOUCH" -> SpellCasters.castChillTouch(player, target);
+            case "WATER_BREATHING" -> SpellCasters.castWaterBreathing(player, target);
         }
     }
 

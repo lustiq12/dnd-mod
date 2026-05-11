@@ -333,7 +333,9 @@ public class SpellCasters {
     public static void castTinyHut(ServerPlayer p) { /* Logic */ }
     public static void castTongues(ServerPlayer p) { /* Logic */ }
     public static void castVampiricTouch(ServerPlayer p) { /* Logic */ }
-    public static void castWaterBreathing(ServerPlayer p) { /* Logic */ }
+    public static void castWaterBreathing(ServerPlayer p, LivingEntity target) {
+        target.addEffect(new MobEffectInstance(MobEffects.WATER_BREATHING, 24000, 0, false, false));
+    }
     public static void castWaterWalk(ServerPlayer p) { /* Logic */ }
     public static void castWindWall(ServerPlayer p) { /* Logic */ }
 
