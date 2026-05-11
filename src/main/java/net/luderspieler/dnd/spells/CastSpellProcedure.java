@@ -234,7 +234,7 @@ public class CastSpellProcedure {
             case "FIRE_SHIELD" -> castFireShield(player);
             case "FREEDOM_OF_MOVEMENT" -> castFreedomOfMovement(player);
             case "GIANT_INSECT" -> castGiantInsect(player);
-            case "GREATER_INVISIBILITY" -> castGreaterInvisibility(player);
+            case "GREATER_INVISIBILITY" -> SpellCasterHelper.startTargeting(player, 2.0, 1, "GREATER_INVISIBILITY");
             case "GUARDIAN_OF_FAITH" -> castGuardianOfFaith(player);
             case "HALLUCINATORY_TERRAIN" -> castHallucinatoryTerrain(player);
             case "ICE_STORM" -> castIceStorm(player);

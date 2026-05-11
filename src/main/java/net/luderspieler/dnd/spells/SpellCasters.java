@@ -121,10 +121,10 @@ public class SpellCasters {
     public static void castExpeditiousRetreat(ServerPlayer p) { /* Implement Logic */ }
     public static void castFaerieFire(ServerPlayer p) { /* Implement Logic */ }
     public static void castFalseLife(ServerPlayer p) {
-        p.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, 1000, 2));
+        p.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, 24000, 2));
     }
     public static void castFeatherFall(ServerPlayer p, LivingEntity target) {
-        target.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, 1000, 2));
+        target.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, 1200, 2));
     }
     public static void castFindFamiliar(ServerPlayer p) { /* Implement Logic */ }
     public static void castFloatingDisk(ServerPlayer p) { /* Implement Logic */ }
@@ -155,7 +155,7 @@ public class SpellCasters {
     public static void castJump(ServerPlayer p) { /* Implement Logic */ }
     public static void castLongstrider(ServerPlayer p) { /* Implement Logic */ }
     public static void castMageArmor(ServerPlayer p) {
-        p.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, 8000, 0));
+        p.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, 24000, 0));
     }
     public static void castMagicMissile(ServerPlayer p) { /* Implement Logic */ }
     public static void castProtectionFromEvilAndGood(ServerPlayer p) { /* Implement Logic */ }
@@ -192,7 +192,7 @@ public class SpellCasters {
     // --- Grade 2 ---
     public static void castAcidArrow(ServerPlayer p) { /* Logic */ }
     public static void castAid(ServerPlayer caster, LivingEntity target) {
-        target.addEffect(new MobEffectInstance(MobEffects.HEALTH_BOOST, 1200, 1, false, true));
+        target.addEffect(new MobEffectInstance(MobEffects.HEALTH_BOOST, 24000, 1, false, true));
         target.heal(8.0F); // Sofortige Heilung der neuen HP
     }
     public static void castAlterSelf(ServerPlayer p) { /* Logic */ }
@@ -265,8 +265,8 @@ public class SpellCasters {
     public static void castAnimateDead(ServerPlayer p) { /* Logic */ }
     public static void castBeaconOfHope(ServerPlayer p) { /* Logic */ }
     public static void castBestowCurse(ServerPlayer caster, LivingEntity target) {
-        target.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 600, 2));
-        target.addEffect(new MobEffectInstance(MobEffects.UNLUCK, 600, 2));
+        target.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 1200, 0));
+        target.addEffect(new MobEffectInstance(MobEffects.UNLUCK, 1200, 2));
     }
     public static void castBlink(ServerPlayer p) { /* Logic */ }
     public static void castCallLightning(ServerPlayer p) { /* Logic */ }
@@ -333,7 +333,7 @@ public class SpellCasters {
     public static void castTongues(ServerPlayer p) { /* Logic */ }
     public static void castVampiricTouch(ServerPlayer p) { /* Logic */ }
     public static void castWaterBreathing(ServerPlayer p, LivingEntity target) {
-        target.addEffect(new MobEffectInstance(MobEffects.WATER_BREATHING, 24000, 0, false, false));
+        target.addEffect(new MobEffectInstance(MobEffects.WATER_BREATHING, 48000, 0, false, false));
     }
     public static void castWaterWalk(ServerPlayer p) { /* Logic */ }
     public static void castWindWall(ServerPlayer p) { /* Logic */ }
@@ -345,8 +345,6 @@ public class SpellCasters {
     public static void castBlackTentacles(ServerPlayer p) { /* Logic */ }
     public static void castBlight(ServerPlayer caster, LivingEntity target) {
         target.hurt(caster.damageSources().source(DamageTypes.MAGIC, caster), 38.0F);
-        // Verwelken-Effekt
-        target.addEffect(new MobEffectInstance(MobEffects.WITHER, 60, 1));
     }
     public static void castCharmMonster(ServerPlayer p) { /* Logic */ }
     public static void castCompulsion(ServerPlayer p) { /* Logic */ }
@@ -363,7 +361,9 @@ public class SpellCasters {
     public static void castFireShield(ServerPlayer p) { /* Logic */ }
     public static void castFreedomOfMovement(ServerPlayer p) { /* Logic */ }
     public static void castGiantInsect(ServerPlayer p) { /* Logic */ }
-    public static void castGreaterInvisibility(ServerPlayer p) { /* Logic */ }
+    public static void castGreaterInvisibility(ServerPlayer p, LivingEntity target) {
+        target.addEffect(new MobEffectInstance(MobEffects.INVISIBILITY, 1200, 0));
+    }
     public static void castGuardianOfFaith(ServerPlayer p) { /* Logic */ }
     public static void castHallucinatoryTerrain(ServerPlayer p) { /* Logic */ }
     public static void castIceStorm(ServerPlayer p) { /* Logic */ }
