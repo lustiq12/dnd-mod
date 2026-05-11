@@ -4,6 +4,7 @@ import net.luderspieler.dnd.network.AirClickPacket;
 import net.luderspieler.dnd.network.DndModVariables;
 import net.luderspieler.dnd.spells.SpellCasters;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
@@ -16,9 +17,30 @@ import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @EventBusSubscriber
 public class TargetingEvents {
+
+    @SubscribeEvent
+    public static void onLeftClickEmpty(PlayerInteractEvent.LeftClickEmpty event) {
+        if (event.getEntity() instanceof ServerPlayer player && player.isShiftKeyDown()) {
+            var vars = player.getData(DndModVariables.PLAYER_VARIABLES);
+            resetTargeting(vars);
+            player.displayClientMessage(Component.literal("LeftClickEmptyReset"), false);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onLeftClickBlock(PlayerInteractEvent.LeftClickBlock event) {
+        if (event.getEntity() instanceof ServerPlayer player && player.isShiftKeyDown()) {
+            var vars = player.getData(DndModVariables.PLAYER_VARIABLES);
+            resetTargeting(vars);
+            player.displayClientMessage(Component.literal("LeftClickBlockReset"), false);
+        }
+    }
 
     @SubscribeEvent
     public static void onEntityTick(EntityTickEvent.Post event) {
@@ -56,12 +78,14 @@ public class TargetingEvents {
         var vars = event.getEntity().getData(DndModVariables.PLAYER_VARIABLES);
         if (vars.TargetingMode) {
             ClientPacketDistributor.sendToServer(new AirClickPacket());
+            event.getEntity().displayClientMessage(Component.literal("RightClickEmpty"), false);
         }
     }
 
     @SubscribeEvent
     public static void onRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
         handleCasting(event.getEntity(), event.getHand());
+        event.getEntity().displayClientMessage(Component.literal("RightClickBlock"), false);
     }
 
     @SubscribeEvent
@@ -73,6 +97,26 @@ public class TargetingEvents {
         if (p instanceof ServerPlayer player && hand == InteractionHand.MAIN_HAND) {
             var vars = player.getData(DndModVariables.PLAYER_VARIABLES);
             if (!vars.TargetingMode) return;
+
+            // Sneak + Right Click: Spieler selbst als Target hinzufügen
+            if (player.isShiftKeyDown()) {
+                String uuid = player.getStringUUID();
+                List<String> uuidList = new ArrayList<>(Arrays.asList(vars.targetUUIDS.split(","))
+                        .stream().filter(s -> !s.isEmpty()).toList());
+
+                if (!uuidList.contains(uuid) && uuidList.size() < vars.TargetingAmount) {
+                    uuidList.add(uuid);
+                    vars.targetUUIDS = String.join(",", uuidList);
+                    vars.markSyncDirty();
+                    SpellCasterHelper.sendGlowPacket(player, player, true);
+                    player.displayClientMessage(Component.literal("§6Target chosen! (" + uuidList.size() + "/" + (int)vars.TargetingAmount + ")"), true);
+                }
+
+                if (uuidList.size() >= vars.TargetingAmount && vars.TargetingAmount > 0) {
+                    confirmAndCast(player, vars);
+                }
+                return;
+            }
 
             HitResult precisionHit = player.pick(vars.TargetingRange, 0.0f, false);
             boolean lookingAtAnything = (precisionHit.getType() != HitResult.Type.MISS);

@@ -2,6 +2,7 @@ package net.luderspieler.dnd.spells;
 
 import net.luderspieler.dnd.network.DndModVariables;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -47,14 +48,14 @@ public record CastSpellPacket(String spellId, int level) implements CustomPacket
             if (level > 0 && !player.isCreative()) {
                 String slots = vars.Spellslots;
 
-                // Prüfung: Hat der Spieler überhaupt Slots?
-                if (slots == null || slots.length() < level) return;
+                // FIXED: Explizitere Prüfung
+                if (slots == null || slots.isEmpty() || slots.length() < level) return;
 
                 int slotCount = slots.charAt(level - 1) - '0';
 
-                // Prüfung: Ist noch ein Slot auf diesem Level frei?
-                if (slotCount <= 0) {
-                    // Optional: Nachricht an Spieler, dass keine Slots da sind
+                // FIXED: Explizit prüfen ob Slots vorhanden sind
+                if (slotCount < 1) {
+                    player.displayClientMessage(Component.literal("§cNo spell slots available!"), true);
                     return;
                 }
 
@@ -65,7 +66,7 @@ public record CastSpellPacket(String spellId, int level) implements CustomPacket
                 vars.markSyncDirty();
             }
 
-            // 3. Ausführung
+            // 3. Ausführung - erst NACH erfolgreicher Validierung
             CastSpellProcedure.execute(player, pkt.spellId(), level);
         });
     }
