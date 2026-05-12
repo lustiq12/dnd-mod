@@ -4,11 +4,15 @@ import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.suggestion.SuggestionProvider;
 import net.luderspieler.dnd.classes.ClassDefinition;
 import net.luderspieler.dnd.classes.ClassRegistry;
 import net.luderspieler.dnd.network.DndModVariables;
+import net.luderspieler.dnd.spells.SpellCasters;
+import net.luderspieler.dnd.spells.Spells;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -16,11 +20,28 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @EventBusSubscriber
 public class DndCommand {
+
+    // Erstellt die Liste der Vorschläge aus allen Enums + "*"
+    private static final SuggestionProvider<CommandSourceStack> SPELL_SUGGESTIONS = (context, builder) -> {
+        List<String> allSpells = new ArrayList<>();
+        allSpells.add("*");
+        Stream.of(
+                Spells.Cantrip.values(), Spells.Grade1.values(), Spells.Grade2.values(),
+                Spells.Grade3.values(), Spells.Grade4.values(), Spells.Grade5.values(),
+                Spells.Grade6.values(), Spells.Grade7.values(), Spells.Grade8.values(),
+                Spells.Grade9.values()
+        ).flatMap(Arrays::stream).forEach(e -> allSpells.add(e.name()));
+
+        return SharedSuggestionProvider.suggest(allSpells, builder);
+    };
 
     @SubscribeEvent
     public static void registerCommand(RegisterCommandsEvent event) {
@@ -32,21 +53,24 @@ public class DndCommand {
         // 1. LEARN
         spellsNode.then(Commands.literal("learn")
                 .then(Commands.argument("target", EntityArgument.player())
-                        .then(Commands.argument("spellname", StringArgumentType.string())
+                        .then(Commands.argument("spellname", StringArgumentType.greedyString())
+                                .suggests(SPELL_SUGGESTIONS) // Vorschau hinzugefügt
                                 .executes(c -> handleSpellAction(c.getSource(), EntityArgument.getPlayer(c, "target"),
                                         StringArgumentType.getString(c, "spellname"), "learn")))));
 
         // 2. FORCELEARN
         spellsNode.then(Commands.literal("forceLearn")
                 .then(Commands.argument("target", EntityArgument.player())
-                        .then(Commands.argument("spellname", StringArgumentType.string())
+                        .then(Commands.argument("spellname", StringArgumentType.greedyString())
+                                .suggests(SPELL_SUGGESTIONS) // Vorschau hinzugefügt
                                 .executes(c -> handleSpellAction(c.getSource(), EntityArgument.getPlayer(c, "target"),
                                         StringArgumentType.getString(c, "spellname"), "force")))));
 
         // 3. UNLEARN
         spellsNode.then(Commands.literal("unlearn")
                 .then(Commands.argument("target", EntityArgument.player())
-                        .then(Commands.argument("spellname", StringArgumentType.string())
+                        .then(Commands.argument("spellname", StringArgumentType.greedyString())
+                                .suggests(SPELL_SUGGESTIONS) // Vorschau hinzugefügt
                                 .executes(c -> handleSpellAction(c.getSource(), EntityArgument.getPlayer(c, "target"),
                                         StringArgumentType.getString(c, "spellname"), "unlearn")))));
 
@@ -70,7 +94,6 @@ public class DndCommand {
     }
 
     private static int handleSpellAction(CommandSourceStack source, ServerPlayer player, String spellName, String action) {
-        final String finalSpellName = spellName.toUpperCase();
         DndModVariables.PlayerVariables vars = player.getData(DndModVariables.PLAYER_VARIABLES);
         ClassDefinition classDef = ClassRegistry.getClass(vars.PlayerClass);
 
@@ -79,6 +102,33 @@ public class DndCommand {
             return 0;
         }
 
+        if (spellName.trim().equals("*") && (action.equals("learn") || action.equals("force"))) {
+            int count = 0;
+            for (String s : SpellCasters.FINISHED_SPELLS) {
+                int g = classDef.getGradeOfSpell(s);
+                if (g == -1) continue;
+
+                if (action.equals("learn")) {
+                    boolean isInList = classDef.getSpellList().stream().anyMatch(e -> e.name().equalsIgnoreCase(s));
+                    if (!isInList) continue;
+                }
+
+                String current = getListByGrade(vars, g);
+                if (Arrays.asList(current.split(",")).contains(s)) continue;
+
+                if (action.equals("learn") && !classDef.canPrepareMore(current, (int) vars.PlayerLevel, g)) continue;
+
+                String updated = (current.isEmpty() || current.equals("\"\"")) ? s : current + "," + s;
+                setListByGrade(vars, g, updated);
+                count++;
+            }
+            vars.markSyncDirty();
+            int finalCount = count;
+            source.sendSuccess(() -> Component.literal("§aAdded " + finalCount + " spells from the finished list."), true);
+            return count;
+        }
+
+        final String finalSpellName = spellName.toUpperCase().trim();
         int grade = classDef.getGradeOfSpell(finalSpellName);
         if (grade == -1) {
             source.sendFailure(Component.literal("§cSpell '" + finalSpellName + "' does not exist in the system!"));

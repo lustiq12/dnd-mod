@@ -1,0 +1,12 @@
+{
+  "_fv": 85,
+  "_type": "keybind",
+  "definition": {
+    "triggerKey": "R",
+    "keyBindingName": "Character Sheet",
+    "keyBindingCategoryKey": "misc",
+    "onKeyPressed": {
+      "name": "StirgeIdleCooldown"
+    }
+  }
+}

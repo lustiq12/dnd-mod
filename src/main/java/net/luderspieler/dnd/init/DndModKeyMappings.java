@@ -16,6 +16,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.KeyMapping;
 
 import net.luderspieler.dnd.network.PrepareSpellsMessage;
+import net.luderspieler.dnd.network.CharacterSheetMessage;
 import net.luderspieler.dnd.network.CastSpellMessage;
 
 @EventBusSubscriber(Dist.CLIENT)
@@ -46,11 +47,25 @@ public class DndModKeyMappings {
 			isDownOld = isDown;
 		}
 	};
+	public static final KeyMapping CHARACTER_SHEET = new KeyMapping("key.dnd.character_sheet", GLFW.GLFW_KEY_R, "key.categories.misc") {
+		private boolean isDownOld = false;
+
+		@Override
+		public void setDown(boolean isDown) {
+			super.setDown(isDown);
+			if (isDownOld != isDown && isDown) {
+				ClientPacketDistributor.sendToServer(new CharacterSheetMessage(0, 0));
+				CharacterSheetMessage.pressAction(Minecraft.getInstance().player, 0, 0);
+			}
+			isDownOld = isDown;
+		}
+	};
 
 	@SubscribeEvent
 	public static void registerKeyMappings(RegisterKeyMappingsEvent event) {
 		event.register(CAST_SPELL);
 		event.register(PREPARE_SPELLS);
+		event.register(CHARACTER_SHEET);
 	}
 
 	@EventBusSubscriber(Dist.CLIENT)
@@ -60,6 +75,7 @@ public class DndModKeyMappings {
 			if (Minecraft.getInstance().screen == null) {
 				CAST_SPELL.consumeClick();
 				PREPARE_SPELLS.consumeClick();
+				CHARACTER_SHEET.consumeClick();
 			}
 		}
 	}

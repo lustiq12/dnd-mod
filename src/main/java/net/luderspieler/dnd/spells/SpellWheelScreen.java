@@ -153,7 +153,7 @@ public class SpellWheelScreen extends Screen {
     private void renderSpellWheel(GuiGraphics g, int mouseX, int mouseY) {
         int segments = currentSpells.isEmpty() ? 1 : currentSpells.size();
 
-        float scale = (segments >= 12) ? 3.0f : (segments >= 8 ? 2.0f : 1.0f);
+        float scale = (segments >= 12) ? 3.0f : (segments >= 6 ? 2.0f : 1.0f);
         int currentOuterRadius = (int) (OUTER_RADIUS * scale);
         int currentHubRadius = (int) (HUB_RADIUS * scale);
         int currentLabelRadius = (int) (LABEL_RADIUS_INNER * scale);

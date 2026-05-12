@@ -62,5 +62,6 @@
   "effect.dnd.decaying_stare": "Decaying Stare",
   "entity.dnd.medusa": "Medusa",
   "item.dnd.medusa_spawn_egg": "Medusa Spawn Egg",
-  "effect.dnd.petrified": "Petrified"
+  "effect.dnd.petrified": "Petrified",
+  "key.dnd.character_sheet": "Character Sheet"
 }

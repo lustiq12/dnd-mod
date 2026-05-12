@@ -837,37 +837,6 @@
           {
             "name": "entity",
             "type": "entity"
-          }
-        ],
-        "files": [
-          "src/main/java/net/luderspieler/dnd/procedures/MedusaIdleCooldownProcedure.java"
-        ]
-      },
-      "path": "~/Monsters/Medusa"
-    },
-    {
-      "name": "MedusaAnimSync",
-      "type": "procedure",
-      "compiles": true,
-      "locked_code": false,
-      "registry_name": "medusa_anim_sync",
-      "metadata": {
-        "dependencies": [
-          {
-            "name": "damagesource",
-            "type": "damagesource"
-          },
-          {
-            "name": "entity",
-            "type": "entity"
-          },
-          {
-            "name": "immediatesourceentity",
-            "type": "entity"
-          },
-          {
-            "name": "amount",
-            "type": "number"
           },
           {
             "name": "world",
@@ -875,27 +844,7 @@
           }
         ],
         "files": [
-          "src/main/java/net/luderspieler/dnd/procedures/MedusaAnimSyncProcedure.java"
-        ]
-      },
-      "path": "~/Monsters/Medusa"
-    },
-    {
-      "name": "MedusaAttackPlaybackCondition",
-      "type": "procedure",
-      "compiles": true,
-      "locked_code": false,
-      "registry_name": "medusa_attack_playback_condition",
-      "metadata": {
-        "dependencies": [
-          {
-            "name": "entity",
-            "type": "entity"
-          }
-        ],
-        "return_type": "logic",
-        "files": [
-          "src/main/java/net/luderspieler/dnd/procedures/MedusaAttackPlaybackConditionProcedure.java"
+          "src/main/java/net/luderspieler/dnd/procedures/MedusaIdleCooldownProcedure.java"
         ]
       },
       "path": "~/Monsters/Medusa"
@@ -916,6 +865,59 @@
         ]
       },
       "path": "~/Monsters"
+    },
+    {
+      "name": "MedusaIdlePlaybackCondition",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "medusa_idle_playback_condition",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "return_type": "logic",
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/MedusaIdlePlaybackConditionProcedure.java"
+        ]
+      },
+      "path": "~/Monsters/Medusa"
+    },
+    {
+      "name": "MedusaStonePlaybackCondition",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "medusa_stone_playback_condition",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "return_type": "logic",
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/MedusaStonePlaybackConditionProcedure.java"
+        ]
+      },
+      "path": "~/Monsters/Medusa"
+    },
+    {
+      "name": "Petrified",
+      "type": "potioneffect",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "petrified",
+      "metadata": {
+        "files": [
+          "src/main/java/net/luderspieler/dnd/potion/PetrifiedMobEffect.java"
+        ]
+      },
+      "path": "~/Potions"
     }
   ],
   "variable_elements": [
@@ -1242,7 +1244,8 @@
       "effect.dnd.stunned": "Stunned",
       "effect.dnd.decaying_stare": "Decaying Stare",
       "entity.dnd.medusa": "Medusa",
-      "item.dnd.medusa_spawn_egg": "Medusa Spawn Egg"
+      "item.dnd.medusa_spawn_egg": "Medusa Spawn Egg",
+      "effect.dnd.petrified": "Petrified"
     }
   },
   "metadata": {
