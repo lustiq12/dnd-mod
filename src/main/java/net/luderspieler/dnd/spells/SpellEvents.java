@@ -7,6 +7,7 @@ import net.minecraft.world.entity.projectile.LargeFireball;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.event.tick.EntityTickEvent;
 
 import java.util.List;
 
@@ -59,6 +60,27 @@ public class SpellEvents {
                     }
 
                     // 5. Projektil entfernen
+                    fireball.discard();
+                }
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onEntityTick(EntityTickEvent.Post event) {
+        if (event.getEntity() instanceof LargeFireball fireball) {
+            CompoundTag nbt = fireball.getPersistentData();
+            if (nbt.contains("spell_max_range")) {
+                // Optionals müssen mit .orElse() entpackt werden
+                double maxRange = nbt.getDouble("spell_max_range").orElse(0.0);
+
+                double startX = nbt.getDouble("spell_start_x").orElse(0.0);
+                double startY = nbt.getDouble("spell_start_y").orElse(0.0);
+                double startZ = nbt.getDouble("spell_start_z").orElse(0.0);
+
+                Vec3 startPos = new Vec3(startX, startY, startZ);
+
+                if (fireball.position().distanceTo(startPos) >= maxRange) {
                     fireball.discard();
                 }
             }

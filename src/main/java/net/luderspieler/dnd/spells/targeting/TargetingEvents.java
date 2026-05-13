@@ -43,27 +43,6 @@ public class TargetingEvents {
     }
 
     @SubscribeEvent
-    public static void onEntityTick(EntityTickEvent.Post event) {
-        if (event.getEntity() instanceof LargeFireball fireball) {
-            CompoundTag nbt = fireball.getPersistentData();
-            if (nbt.contains("spell_max_range")) {
-                // Optionals müssen mit .orElse() entpackt werden
-                double maxRange = nbt.getDouble("spell_max_range").orElse(0.0);
-
-                double startX = nbt.getDouble("spell_start_x").orElse(0.0);
-                double startY = nbt.getDouble("spell_start_y").orElse(0.0);
-                double startZ = nbt.getDouble("spell_start_z").orElse(0.0);
-
-                Vec3 startPos = new Vec3(startX, startY, startZ);
-
-                if (fireball.position().distanceTo(startPos) >= maxRange) {
-                    fireball.discard();
-                }
-            }
-        }
-    }
-
-    @SubscribeEvent
     public static void onPlayerTick(PlayerTickEvent.Post event) {
         if (event.getEntity() instanceof ServerPlayer player) {
             var vars = player.getData(DndModVariables.PLAYER_VARIABLES);
