@@ -179,6 +179,7 @@ public class TargetingEvents {
             case "WATER_BREATHING" -> SpellCasters.castWaterBreathing(player, target);
             case "GREATER_INVISIBILITY" -> SpellCasters.castGreaterInvisibility(player, target);
             case "LEVITATE" -> SpellCasters.castLevitate(player, target);
+            case "RAY_OF_FROST" -> SpellCasters.castRayOfFrost(player, vars.TargetingRange);
         }
     }
 

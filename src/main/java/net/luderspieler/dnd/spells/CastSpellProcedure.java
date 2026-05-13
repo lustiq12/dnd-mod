@@ -32,7 +32,7 @@ public class CastSpellProcedure {
             case "POISON_SPRAY" -> castPoisonSpray(player);
             case "PRESTIDIGITATION" -> castPrestidigitation(player);
             case "PRODUCE_FLAME" -> castProduceFlame(player);
-            case "RAY_OF_FROST" -> castRayOfFrost(player);
+            case "RAY_OF_FROST" -> SpellCasterHelper.loadSpellForTargeting(player, "RAY_OF_FROST", 18.0);
             case "RESISTANCE" -> castResistance(player);
             case "SACRED_FLAME" -> castSacredFlame(player);
             case "SHILLELAGH" -> castShillelagh(player);

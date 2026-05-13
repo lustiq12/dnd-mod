@@ -1,8 +1,10 @@
 package net.luderspieler.dnd.spells;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.entity.projectile.LargeFireball;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -64,6 +66,43 @@ public class SpellEvents {
                 }
             }
         }
+
+        else if (event.getEntity() instanceof net.minecraft.world.entity.projectile.Arrow arrow) {
+            CompoundTag nbt = arrow.getPersistentData();
+            net.minecraft.world.level.Level world = arrow.level();
+
+            if (nbt.contains("spell_max_range")) {
+                String spellName = nbt.getString("spell_name").orElse("");
+
+                if ("RAY_OF_FROST".equals(spellName)) {
+                    // Standard-Verhalten (Steckenbleiben/Schaden durch Pfeil-Physik) unterbinden
+                    event.setCanceled(true);
+
+                    // Getroffene Entity ermitteln
+                    if (event.getRayTraceResult() instanceof net.minecraft.world.phys.EntityHitResult entityHit) {
+                        if (entityHit.getEntity() instanceof LivingEntity target) {
+                            Entity owner = arrow.getOwner();
+
+                            // 8 Schaden verursachen
+                            target.hurt(world.damageSources().thrown(arrow, owner), 8.0F);
+
+                            // Slowness I (Level 0) für 100 Ticks hinzufügen
+                            target.addEffect(new net.minecraft.world.effect.MobEffectInstance(
+                                    MobEffects.SLOWNESS, 100, 0));
+
+                            // Visueller Effekt (Schnee/Eis Partikel beim Treffer)
+                            if (world instanceof net.minecraft.server.level.ServerLevel serverLevel) {
+                                serverLevel.sendParticles(net.minecraft.core.particles.ParticleTypes.SNOWFLAKE,
+                                        target.getX(), target.getY(0.5), target.getZ(), 10, 0.2, 0.2, 0.2, 0.05);
+                            }
+                        }
+                    }
+
+                    // Projektil entfernen
+                    arrow.discard();
+                }
+            }
+        }
     }
 
     @SubscribeEvent
@@ -82,6 +121,25 @@ public class SpellEvents {
 
                 if (fireball.position().distanceTo(startPos) >= maxRange) {
                     fireball.discard();
+                }
+            }
+            else if (event.getEntity() instanceof AbstractArrow arrow) { // AbstractArrow deckt normale, Tipped & Spectral Arrows ab
+                CompoundTag nbt2 = arrow.getPersistentData();
+
+                if (nbt.contains("spell_max_range")) {
+                    // Direktes Auslesen (nbt.getDouble gibt 0.0 zurück, falls der Tag fehlt)
+                    double maxRange = nbt2.getDouble("spell_max_range").orElse(0.0);
+
+                    double startX = nbt2.getDouble("spell_start_x").orElse(0.0);
+                    double startY = nbt2.getDouble("spell_start_y").orElse(0.0);
+                    double startZ = nbt2.getDouble("spell_start_z").orElse(0.0);
+
+                    Vec3 startPos = new Vec3(startX, startY, startZ);
+
+                    // Prüfen, ob die Distanz überschritten ist
+                    if (arrow.position().distanceTo(startPos) >= maxRange) {
+                        arrow.discard();
+                    }
                 }
             }
         }

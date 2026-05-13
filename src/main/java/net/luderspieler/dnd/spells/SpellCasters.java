@@ -13,7 +13,9 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.projectile.Arrow;
 import net.minecraft.world.entity.projectile.LargeFireball;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -25,9 +27,12 @@ import java.util.Set;
 public class SpellCasters {
 
     public static final Set<String> FINISHED_SPELLS = Set.of(
-            "CURE_WOUNDS", "HEALING_WORD", "RESTORATION", "AID", "INFLICT_WOUNDS", "BLIGHT", "HOLD_PERSON", "BESTOW_CURSE","THUNDERWAVE", "FIRE_BOLT", "FIREBALL", "FALSE_LIFE", "FEATHER_FALL", "MAGE_ARMOR", "MIND_SPIKE", "MENDING", "CHILL_TOUCH", "WATER_BREATHING", "LEVITATE"
+            "CURE_WOUNDS", "HEALING_WORD", "RESTORATION", "AID", "INFLICT_WOUNDS",
+            "BLIGHT", "HOLD_PERSON", "BESTOW_CURSE","THUNDERWAVE", "FIRE_BOLT",
+            "FIREBALL", "FALSE_LIFE", "FEATHER_FALL", "MAGE_ARMOR", "MIND_SPIKE",
+            "MENDING", "CHILL_TOUCH", "WATER_BREATHING", "LEVITATE", "LIGHT", "RAY_OF_FROST"
     );
-    
+
     // --- Cantrips ---
     public static void castAcidSplash(ServerPlayer p) { /* Implement Logic */ }
     public static void castChillTouch(ServerPlayer caster, LivingEntity target) {
@@ -100,7 +105,39 @@ public class SpellCasters {
     public static void castPoisonSpray(ServerPlayer p) { /* Implement Logic */ }
     public static void castPrestidigitation(ServerPlayer p) { /* Implement Logic */ }
     public static void castProduceFlame(ServerPlayer p) { /* Implement Logic */ }
-    public static void castRayOfFrost(ServerPlayer p) { /* Implement Logic */ }
+    public static void castRayOfFrost(ServerPlayer caster, double range) {
+        if (caster.level().isClientSide()) return;
+        Level level = caster.level();
+        Vec3 lookVec = caster.getViewVector(1.0F);
+        double speed = 5.0;
+        Vec3 velocity = lookVec.scale(speed);
+
+        double x = caster.getX() + lookVec.x;
+        double y = caster.getY() + caster.getEyeHeight() + lookVec.y * 0.5;
+        double z = caster.getZ() + lookVec.z;
+
+        Arrow arrow = new Arrow(EntityType.ARROW, level);
+
+        arrow.setPos(x, y, z);
+        arrow.shoot(velocity.x, velocity.y, velocity.z, (float) velocity.length(), 0.0F);
+        arrow.hasImpulse = true;
+
+        arrow.setBaseDamage(2.5);
+        arrow.setCritArrow(true);
+
+
+        CompoundTag nbt = arrow.getPersistentData();
+        nbt.putDouble("spell_max_range", range);
+        nbt.putDouble("spell_start_x", x);
+        nbt.putDouble("spell_start_y", y);
+        nbt.putDouble("spell_start_z", z);
+        nbt.putString("spell_name", "RAY_OF_FROST");
+
+        caster.level().addFreshEntity(arrow);
+
+        caster.level().playSound(null, caster.getX(), caster.getY(), caster.getZ(),
+                SoundEvents.PLAYER_HURT_FREEZE, SoundSource.PLAYERS, 1.0f, 1.0f);
+    }
     public static void castResistance(ServerPlayer p) { /* Implement Logic */ }
     public static void castSacredFlame(ServerPlayer p) { /* Implement Logic */ }
     public static void castShillelagh(ServerPlayer p) { /* Implement Logic */ }
