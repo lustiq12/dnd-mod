@@ -2,8 +2,10 @@ package net.luderspieler.dnd.spells;
 
 import net.luderspieler.dnd.init.DndModMobEffects;
 import net.minecraft.client.resources.sounds.SoundInstance;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -69,7 +71,22 @@ public class SpellCasters {
                 SoundEvents.GHAST_SHOOT, SoundSource.PLAYERS, 1.0f, 1.0f);
     }
     public static void castGuidance(ServerPlayer p) { /* Implement Logic */ }
-    public static void castLight(ServerPlayer p) { /* Implement Logic */ }
+    public static void castLight(ServerPlayer p, BlockPos clicked, BlockPos adjacent) {
+        ServerLevel level = p.level();
+
+        if (level.mayInteract(p, adjacent) && level.getBlockState(adjacent).canBeReplaced()) {
+
+            level.setBlockAndUpdate(adjacent, net.minecraft.world.level.block.Blocks.LIGHT.defaultBlockState());
+
+            BlockUpdater.registerBlockForUpdate(level, adjacent, 200, "DESPAWN");
+
+
+            level.sendParticles(net.minecraft.core.particles.ParticleTypes.END_ROD,
+                    adjacent.getX() + 0.5, adjacent.getY() + 0.5, adjacent.getZ() + 0.5,
+                    10, 0.2, 0.2, 0.2, 0.05);
+
+        }
+    }
     public static void castMageHand(ServerPlayer p) { /* Implement Logic */ }
     public static void castMending(ServerPlayer p) {
         ItemStack item = p.getMainHandItem();

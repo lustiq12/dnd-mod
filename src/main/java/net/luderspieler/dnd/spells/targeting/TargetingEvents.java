@@ -3,14 +3,15 @@ package net.luderspieler.dnd.spells.targeting;
 import net.luderspieler.dnd.network.AirClickPacket;
 import net.luderspieler.dnd.network.DndModVariables;
 import net.luderspieler.dnd.spells.SpellCasters;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.LargeFireball;
-import net.minecraft.world.phys.HitResult;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.*;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
@@ -29,7 +30,6 @@ public class TargetingEvents {
         if (event.getEntity() instanceof ServerPlayer player && player.isShiftKeyDown()) {
             var vars = player.getData(DndModVariables.PLAYER_VARIABLES);
             resetTargeting(vars);
-            player.displayClientMessage(Component.literal("LeftClickEmptyReset"), false);
         }
     }
 
@@ -38,7 +38,6 @@ public class TargetingEvents {
         if (event.getEntity() instanceof ServerPlayer player && player.isShiftKeyDown()) {
             var vars = player.getData(DndModVariables.PLAYER_VARIABLES);
             resetTargeting(vars);
-            player.displayClientMessage(Component.literal("LeftClickBlockReset"), false);
         }
     }
 
@@ -57,14 +56,12 @@ public class TargetingEvents {
         var vars = event.getEntity().getData(DndModVariables.PLAYER_VARIABLES);
         if (vars.TargetingMode) {
             ClientPacketDistributor.sendToServer(new AirClickPacket());
-            event.getEntity().displayClientMessage(Component.literal("RightClickEmpty"), false);
         }
     }
 
     @SubscribeEvent
     public static void onRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
         handleCasting(event.getEntity(), event.getHand());
-        event.getEntity().displayClientMessage(Component.literal("RightClickBlock"), false);
     }
 
     @SubscribeEvent
@@ -100,29 +97,60 @@ public class TargetingEvents {
             HitResult precisionHit = player.pick(vars.TargetingRange, 0.0f, false);
             boolean lookingAtAnything = (precisionHit.getType() != HitResult.Type.MISS);
 
+            // FreeAim-Mode
             if ("FREE_AIM".equals(vars.TargetingModeType)) {
                 castSelectedSpell(player, vars, null);
                 resetTargeting(vars);
-            } else {
+            }
+            else if ("ENTITY".equals(vars.TargetingModeType))
+            {
                 // Entity-Mode
                 SpellCasterHelper.tryPickTarget(player, vars.TargetingRange, (int) vars.TargetingAmount, (targets) -> {
-                    // Falls wir Ziele zurückbekommen (Limit erreicht oder Ziel ausgewählt)
                     if (!targets.isEmpty()) {
                         for (LivingEntity target : targets) {
                             castSelectedSpell(player, vars, target);
                         }
                         resetTargeting(vars);
                     } else if (lookingAtAnything) {
-                        // Nichts Neues getroffen, aber auf Boden geklickt -> Vorzeitig beenden
                         confirmAndCast(player, vars);
                     }
                 });
             }
+            // Block-Mode
+            else if ("BLOCK".equals(vars.TargetingModeType)) {
+                Vec3 eyePos = player.getEyePosition();
+                Vec3 lookVec = player.getViewVector(1.0F);
+                double range = vars.TargetingRange;
+
+                // 1. Block finden
+                HitResult blockHit = player.pick(range, 0.0f, false);
+                double maxDist = (blockHit.getType() == HitResult.Type.BLOCK) ? eyePos.distanceTo(blockHit.getLocation()) : range;
+
+                // 2. Entity finden (das eventuell vor dem Block steht)
+                Vec3 reachVec = eyePos.add(lookVec.scale(range));
+                AABB searchBox = player.getBoundingBox().expandTowards(lookVec.scale(range)).inflate(1.0D);
+                EntityHitResult entityHit = net.minecraft.world.entity.projectile.ProjectileUtil.getEntityHitResult(
+                        player, eyePos, reachVec, searchBox, (e) -> e instanceof LivingEntity, maxDist * maxDist
+                );
+
+                if (entityHit != null && entityHit.getEntity() instanceof LivingEntity target) {
+                    // Entity angeklickt -> Nutze dessen Füße als Position
+                    BlockPos entityPos = target.blockPosition();
+                    castBlockSpell(player, vars.TargetingSpell, entityPos, entityPos);
+                    resetTargeting(vars);
+                } else if (blockHit.getType() == HitResult.Type.BLOCK) {
+                    // Block angeklickt
+                    BlockHitResult bHit = (BlockHitResult) blockHit;
+                    castBlockSpell(player, vars.TargetingSpell, bHit.getBlockPos(), bHit.getBlockPos().relative(bHit.getDirection()));
+                    resetTargeting(vars);
+                }
+            }
+
+            else player.displayClientMessage(Component.literal("You shouldnt have gotten this message, if you tinkered with the mod its fine, it just didnt recognise the aiming type you put in, if you didnt tinker please contact us."), false);
         }
     }
 
     private static void confirmAndCast(ServerPlayer player, DndModVariables.PlayerVariables vars) {
-        // Wir holen die Ziele, die wir bisher gesammelt haben
         SpellCasterHelper.forceCastExistingTargets(player, (targets) -> {
             if (!targets.isEmpty()) {
                 for (LivingEntity target : targets) {
@@ -151,6 +179,12 @@ public class TargetingEvents {
             case "WATER_BREATHING" -> SpellCasters.castWaterBreathing(player, target);
             case "GREATER_INVISIBILITY" -> SpellCasters.castGreaterInvisibility(player, target);
             case "LEVITATE" -> SpellCasters.castLevitate(player, target);
+        }
+    }
+
+    private static void castBlockSpell(ServerPlayer player, String spell, BlockPos clicked, BlockPos adjacent) {
+        switch (spell) {
+            case "LIGHT" -> SpellCasters.castLight(player, clicked, adjacent);
         }
     }
 

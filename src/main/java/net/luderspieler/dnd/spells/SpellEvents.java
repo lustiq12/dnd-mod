@@ -67,7 +67,7 @@ public class SpellEvents {
     }
 
     @SubscribeEvent
-    public static void onEntityTick(EntityTickEvent.Post event) {
+    public void onEntityTick(EntityTickEvent.Post event) {
         if (event.getEntity() instanceof LargeFireball fireball) {
             CompoundTag nbt = fireball.getPersistentData();
             if (nbt.contains("spell_max_range")) {

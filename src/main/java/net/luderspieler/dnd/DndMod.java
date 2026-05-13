@@ -1,5 +1,6 @@
 package net.luderspieler.dnd;
 
+import net.luderspieler.dnd.spells.BlockUpdater;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -70,6 +71,7 @@ public class DndMod {
 		NeoForge.EVENT_BUS.register(new AbilityPassiveTriggers());
 		NeoForge.EVENT_BUS.register(new SleepingIntereferer());
 		NeoForge.EVENT_BUS.register(new SpellEvents());
+		NeoForge.EVENT_BUS.register(new BlockUpdater());
 		// End of user code block mod init
 	}
 

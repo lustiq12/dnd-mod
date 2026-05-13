@@ -21,7 +21,7 @@ public class SpellCasterHelper {
         vars.TargetingMode = true;
         vars.TargetingModeType = "FREE_AIM";
         vars.TargetingRange = range;
-        vars.TargetingSpell = spellName; // WICHTIG
+        vars.TargetingSpell = spellName;
         vars.targetUUIDS = "";
         vars.markSyncDirty();
     }
@@ -32,7 +32,17 @@ public class SpellCasterHelper {
         vars.TargetingModeType = "ENTITY";
         vars.TargetingRange = range;
         vars.TargetingAmount = (double) amount;
-        vars.TargetingSpell = spellName; // WICHTIG: Hier muss der Name rein!
+        vars.TargetingSpell = spellName;
+        vars.targetUUIDS = "";
+        vars.markSyncDirty();
+    }
+
+    public static void startTargetingBlock(ServerPlayer player, double range, String spellName) {
+        var vars = player.getData(DndModVariables.PLAYER_VARIABLES);
+        vars.TargetingMode = true;
+        vars.TargetingModeType = "BLOCK";
+        vars.TargetingRange = range;
+        vars.TargetingSpell = spellName;
         vars.targetUUIDS = "";
         vars.markSyncDirty();
     }
@@ -79,8 +89,7 @@ public class SpellCasterHelper {
 
         Vec3 targetPos = null;
 
-        // 3. Modus-Logik für Partikel
-        if ("FREE_AIM".equals(vars.TargetingModeType)) {
+        if ("FREE_AIM".equals(vars.TargetingModeType) || "BLOCK".equals(vars.TargetingModeType)) {
             if (entityHit != null) {
                 targetPos = entityHit.getLocation();
             } else if (hitBlock) {

@@ -918,6 +918,31 @@
         ]
       },
       "path": "~/Potions"
+    },
+    {
+      "name": "CharacterSheet",
+      "type": "keybind",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "character_sheet",
+      "metadata": {
+        "files": [
+          "src/main/java/net/luderspieler/dnd/network/CharacterSheetMessage.java"
+        ]
+      }
+    },
+    {
+      "name": "Hovering",
+      "type": "potioneffect",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "hovering",
+      "metadata": {
+        "files": [
+          "src/main/java/net/luderspieler/dnd/potion/HoveringMobEffect.java"
+        ]
+      },
+      "path": "~/Potions"
     }
   ],
   "variable_elements": [
@@ -1118,6 +1143,12 @@
       "type": "string",
       "scope": "player_lifetime",
       "value": "\"\""
+    },
+    {
+      "name": "BlocksToUpdate",
+      "type": "string",
+      "scope": "world",
+      "value": "\"\""
     }
   ],
   "sound_elements": [
@@ -1245,7 +1276,9 @@
       "effect.dnd.decaying_stare": "Decaying Stare",
       "entity.dnd.medusa": "Medusa",
       "item.dnd.medusa_spawn_egg": "Medusa Spawn Egg",
-      "effect.dnd.petrified": "Petrified"
+      "effect.dnd.petrified": "Petrified",
+      "key.dnd.character_sheet": "Character Sheet",
+      "effect.dnd.hovering": "Hovering"
     }
   },
   "metadata": {

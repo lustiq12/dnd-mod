@@ -24,7 +24,7 @@ public class CastSpellProcedure {
             case "ELEMENTALISM" -> castElementalism(player);
             case "FIRE_BOLT" -> SpellCasterHelper.loadSpellForTargeting(player, "FIRE_BOLT", 36.0);
             case "GUIDANCE" -> castGuidance(player);
-            case "LIGHT" -> castLight(player);
+            case "LIGHT" -> SpellCasterHelper.startTargetingBlock(player, 2, "LIGHT");
             case "MAGE_HAND" -> castMageHand(player);
             case "MENDING" -> castMending(player);
             case "MESSAGE" -> castMessage(player);
