@@ -78,7 +78,7 @@ public class SpellCasters {
 
             level.setBlockAndUpdate(adjacent, net.minecraft.world.level.block.Blocks.LIGHT.defaultBlockState());
 
-            BlockUpdater.registerBlockForUpdate(level, adjacent, 200, "DESPAWN");
+            BlockUpdater.registerBlockForUpdate(level, adjacent, 12000, "DESPAWN");
 
 
             level.sendParticles(net.minecraft.core.particles.ParticleTypes.END_ROD,
