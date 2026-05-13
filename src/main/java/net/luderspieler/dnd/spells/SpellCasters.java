@@ -1,5 +1,6 @@
 package net.luderspieler.dnd.spells;
 
+import net.luderspieler.dnd.init.DndModMobEffects;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -22,7 +23,7 @@ import java.util.Set;
 public class SpellCasters {
 
     public static final Set<String> FINISHED_SPELLS = Set.of(
-            "CURE_WOUNDS", "HEALING_WORD", "RESTORATION", "AID", "INFLICT_WOUNDS", "BLIGHT", "HOLD_PERSON", "BESTOW_CURSE","THUNDERWAVE", "FIRE_BOLT", "FIREBALL", "FALSE_LIFE", "FEATHER_FALL", "MAGE_ARMOR", "MIND_SPIKE", "MENDING", "CHILL_TOUCH", "WATER_BREATHING"
+            "CURE_WOUNDS", "HEALING_WORD", "RESTORATION", "AID", "INFLICT_WOUNDS", "BLIGHT", "HOLD_PERSON", "BESTOW_CURSE","THUNDERWAVE", "FIRE_BOLT", "FIREBALL", "FALSE_LIFE", "FEATHER_FALL", "MAGE_ARMOR", "MIND_SPIKE", "MENDING", "CHILL_TOUCH", "WATER_BREATHING", "LEVITATE"
     );
     
     // --- Cantrips ---
@@ -231,7 +232,9 @@ public class SpellCasters {
         target.removeEffect(MobEffects.POISON);
         target.removeEffect(MobEffects.WITHER);
     }
-    public static void castLevitate(ServerPlayer p) { /* Logic */ }
+    public static void castLevitate(ServerPlayer p, LivingEntity target) {
+        target.addEffect(new MobEffectInstance(DndModMobEffects.HOVERING, 6000, 0));
+    }
     public static void castLocateAnimalsOrPlants(ServerPlayer p) { /* Logic */ }
     public static void castLocateObject(ServerPlayer p) { /* Logic */ }
     public static void castMagicMouth(ServerPlayer p) { /* Logic */ }

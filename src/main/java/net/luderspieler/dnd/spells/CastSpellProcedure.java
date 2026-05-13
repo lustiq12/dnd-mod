@@ -139,7 +139,7 @@ public class CastSpellProcedure {
             case "KNOCK" -> castKnock(player);
             case "RESTORATION" ->
                     SpellCasterHelper.startTargeting(player, 2.0, 1, "RESTORATION");
-            case "LEVITATE" -> castLevitate(player);
+            case "LEVITATE" -> SpellCasterHelper.startTargeting(player, 18.0, 1, "LEVITATE");
             case "LOCATE_ANIMALS_OR_PLANTS" -> castLocateAnimalsOrPlants(player);
             case "LOCATE_OBJECT" -> castLocateObject(player);
             case "MAGIC_MOUTH" -> castMagicMouth(player);

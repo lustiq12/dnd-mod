@@ -837,6 +837,10 @@
           {
             "name": "entity",
             "type": "entity"
+          },
+          {
+            "name": "world",
+            "type": "world"
           }
         ],
         "files": [
@@ -914,6 +918,18 @@
         ]
       },
       "path": "~/Potions"
+    },
+    {
+      "name": "CharacterSheet",
+      "type": "keybind",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "character_sheet",
+      "metadata": {
+        "files": [
+          "src/main/java/net/luderspieler/dnd/network/CharacterSheetMessage.java"
+        ]
+      }
     }
   ],
   "variable_elements": [
@@ -1241,7 +1257,8 @@
       "effect.dnd.decaying_stare": "Decaying Stare",
       "entity.dnd.medusa": "Medusa",
       "item.dnd.medusa_spawn_egg": "Medusa Spawn Egg",
-      "effect.dnd.petrified": "Stunned"
+      "effect.dnd.petrified": "Petrified",
+      "key.dnd.character_sheet": "Character Sheet"
     }
   },
   "metadata": {

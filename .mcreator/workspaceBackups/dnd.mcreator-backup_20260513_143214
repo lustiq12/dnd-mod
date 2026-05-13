@@ -829,7 +829,7 @@
     {
       "name": "MedusaIdleCooldown",
       "type": "procedure",
-      "compiles": false,
+      "compiles": true,
       "locked_code": false,
       "registry_name": "medusa_idle_cooldown",
       "metadata": {
@@ -915,6 +915,31 @@
       "metadata": {
         "files": [
           "src/main/java/net/luderspieler/dnd/potion/PetrifiedMobEffect.java"
+        ]
+      },
+      "path": "~/Potions"
+    },
+    {
+      "name": "CharacterSheet",
+      "type": "keybind",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "character_sheet",
+      "metadata": {
+        "files": [
+          "src/main/java/net/luderspieler/dnd/network/CharacterSheetMessage.java"
+        ]
+      }
+    },
+    {
+      "name": "Hovering",
+      "type": "potioneffect",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "hovering",
+      "metadata": {
+        "files": [
+          "src/main/java/net/luderspieler/dnd/potion/HoveringMobEffect.java"
         ]
       },
       "path": "~/Potions"
@@ -1245,7 +1270,9 @@
       "effect.dnd.decaying_stare": "Decaying Stare",
       "entity.dnd.medusa": "Medusa",
       "item.dnd.medusa_spawn_egg": "Medusa Spawn Egg",
-      "effect.dnd.petrified": "Petrified"
+      "effect.dnd.petrified": "Petrified",
+      "key.dnd.character_sheet": "Character Sheet",
+      "effect.dnd.hovering": "Charmed"
     }
   },
   "metadata": {

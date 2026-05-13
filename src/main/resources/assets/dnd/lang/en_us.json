@@ -63,5 +63,6 @@
   "entity.dnd.medusa": "Medusa",
   "item.dnd.medusa_spawn_egg": "Medusa Spawn Egg",
   "effect.dnd.petrified": "Petrified",
-  "key.dnd.character_sheet": "Character Sheet"
+  "key.dnd.character_sheet": "Character Sheet",
+  "effect.dnd.hovering": "Hovering"
 }

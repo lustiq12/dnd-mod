@@ -1,0 +1,41 @@
+{
+  "_fv": 85,
+  "_type": "potioneffect",
+  "definition": {
+    "effectName": "Hovering",
+    "icon": "charmed",
+    "color": {
+      "value": -3355444,
+      "falpha": 0.0
+    },
+    "onAddedSound": {
+      "value": ""
+    },
+    "isInstant": false,
+    "mobEffectCategory": "HARMFUL",
+    "renderStatusInInventory": true,
+    "renderStatusInHUD": true,
+    "isCuredbyHoney": true,
+    "modifiers": [
+      {
+        "equipmentSlot": "any",
+        "attribute": {
+          "value": "ENTITY_GRAVITY"
+        },
+        "amount": -1.0,
+        "operation": "ADD_MULTIPLIED_TOTAL"
+      },
+      {
+        "equipmentSlot": "any",
+        "attribute": {
+          "value": "MOVEMENT_SPEED"
+        },
+        "amount": -0.8,
+        "operation": "ADD_MULTIPLIED_TOTAL"
+      }
+    ],
+    "onActiveTick": {
+      "name": "CharmedOnEffectActiveTick"
+    }
+  }
+}
