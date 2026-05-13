@@ -45,8 +45,7 @@ public class SpellEvents {
                         // wir nutzen die DamageSource des Projektils oder des Schützen.
                         Entity owner = fireball.getOwner();
 
-                        // Schaden: 30 (entspricht ca. 8d6 im Durchschnitt, hier fixiert auf 15 Herzen)
-                        target.hurt(world.damageSources().fireball(fireball, owner), 30.0F);
+                        target.hurt(world.damageSources().fireball(fireball, owner), 48.0F);
 
                         // Optional: Ziel in Brand setzen
                         target.setRemainingFireTicks(100);

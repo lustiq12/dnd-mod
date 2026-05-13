@@ -187,7 +187,7 @@ public class CastSpellProcedure {
             case "GLYPH_OF_WARDING" -> castGlyphOfWarding(player);
             case "HASTE" -> castHaste(player);
             case "HYPNOTIC_PATTERN" -> castHypnoticPattern(player);
-            case "LIGHTNING_BOLT" -> castLightningBolt(player);
+            case "LIGHTNING_BOLT" -> SpellCasterHelper.loadSpellForTargeting(player, "LIGHTNING_BOLT", 18.0);
             case "MAGIC_CIRCLE" -> castMagicCircle(player);
             case "MAJOR_IMAGE" -> castMajorImage(player);
             case "MASS_HEALING_WORD" -> castMassHealingWord(player);

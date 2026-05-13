@@ -10,17 +10,21 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.Arrow;
 import net.minecraft.world.entity.projectile.LargeFireball;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
+import java.util.List;
 import java.util.Set;
 
 @SuppressWarnings("unused")
@@ -30,7 +34,8 @@ public class SpellCasters {
             "CURE_WOUNDS", "HEALING_WORD", "RESTORATION", "AID", "INFLICT_WOUNDS",
             "BLIGHT", "HOLD_PERSON", "BESTOW_CURSE","THUNDERWAVE", "FIRE_BOLT",
             "FIREBALL", "FALSE_LIFE", "FEATHER_FALL", "MAGE_ARMOR", "MIND_SPIKE",
-            "MENDING", "CHILL_TOUCH", "WATER_BREATHING", "LEVITATE", "LIGHT", "RAY_OF_FROST"
+            "MENDING", "CHILL_TOUCH", "WATER_BREATHING", "LEVITATE", "LIGHT", "RAY_OF_FROST",
+            "LIGHTNING_BOLT"
     );
 
     // --- Cantrips ---
@@ -368,7 +373,56 @@ public class SpellCasters {
     public static void castGlyphOfWarding(ServerPlayer p) { /* Logic */ }
     public static void castHaste(ServerPlayer p) { /* Logic */ }
     public static void castHypnoticPattern(ServerPlayer p) { /* Logic */ }
-    public static void castLightningBolt(ServerPlayer p) { /* Logic */ }
+    public static void castLightningBolt(ServerPlayer p) {
+        Level level = p.level();
+        Vec3 start = p.getEyePosition();
+        Vec3 direction = p.getLookAngle();
+        double range = 30.0;
+        double radius = 1.0;
+
+        level.playSound(null, p.getX(), p.getY(), p.getZ(),
+                SoundEvents.LIGHTNING_BOLT_THUNDER, SoundSource.PLAYERS, 1.0f, 1.0f);
+
+        level.playSound(null, p.getX(), p.getY(), p.getZ(),
+                SoundEvents.LIGHTNING_BOLT_IMPACT, SoundSource.PLAYERS, 1.0f, 1.2f);
+
+        // Wir iterieren in kleinen Schritten entlang der 30m Linie
+        for (double i = 0; i < range; i += 0.5) {
+            Vec3 point = start.add(direction.scale(i));
+
+            // Partikel-Effekt: Erzeugt Sparks in einem 1m Radius um den aktuellen Punkt der Linie
+            for (int j = 0; j < 5; j++) {
+                double offsetX = (level.random.nextDouble() - 0.5) * 2.0 * radius;
+                double offsetY = (level.random.nextDouble() - 0.5) * 2.0 * radius;
+                double offsetZ = (level.random.nextDouble() - 0.5) * 2.0 * radius;
+
+                ((ServerLevel) level).sendParticles(
+                        ParticleTypes.ELECTRIC_SPARK,
+                        point.x + offsetX, point.y + offsetY, point.z + offsetZ,
+                        50, 0, 0, 0, 0.0
+                );
+            }
+
+            java.util.Set<LivingEntity> hitEntities = new java.util.HashSet<>();
+            DamageSource lightningDamage = level.damageSources().playerAttack(p);
+
+            AABB area = new AABB(
+                    point.x - radius, point.y - radius, point.z - radius,
+                    point.x + radius, point.y + radius, point.z + radius
+            );
+
+            List<LivingEntity> targets = level.getEntitiesOfClass(LivingEntity.class, area,
+                    entity -> entity != p && entity.isAlive());
+
+            for (LivingEntity target : targets) {
+                // Prüft den kürzesten Abstand von 'point' zu irgendeinem Punkt der Hitbox
+                if (!hitEntities.contains(target) && target.getBoundingBox().distanceToSqr(point) <= radius * radius) {
+                    target.hurt(lightningDamage, 48.0f);
+                    hitEntities.add(target);
+                }
+            }
+        }
+    }
     public static void castMagicCircle(ServerPlayer p) { /* Logic */ }
     public static void castMajorImage(ServerPlayer p) { /* Logic */ }
     public static void castMassHealingWord(ServerPlayer p) { /* Logic */ }
