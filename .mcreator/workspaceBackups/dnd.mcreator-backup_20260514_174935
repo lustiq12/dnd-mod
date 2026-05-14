@@ -1143,6 +1143,18 @@
       "type": "string",
       "scope": "player_lifetime",
       "value": "\"\""
+    },
+    {
+      "name": "BlocksToUpdate",
+      "type": "string",
+      "scope": "world",
+      "value": "\"\""
+    },
+    {
+      "name": "ChoicesNeeded",
+      "type": "string",
+      "scope": "player_persistent",
+      "value": "\"\""
     }
   ],
   "sound_elements": [

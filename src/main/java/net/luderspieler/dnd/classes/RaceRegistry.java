@@ -7,23 +7,27 @@ public class RaceRegistry {
     public static final List<RaceDefinition>    RACES    = new ArrayList<>();
     public static final List<SubraceDefinition> SUBRACES = new ArrayList<>();
 
-    private static Map<String,Double> attrs(double hp,double dmg,double armor,double spd,double aspd,double luck){
-        Map<String,Double> m=new LinkedHashMap<>();
-        m.put("Max Health",hp);m.put("Attack Damage",dmg);m.put("Armor",armor);
-        m.put("Movement Speed",spd);m.put("Attack Speed",aspd);m.put("Luck",luck);return m;}
-
-    // ── ATTRS ──
-    private static final Map<String,Double> AASIMAR_ATTRS    = attrs(+8,  +2, +2,   0,     0,   +4);
-    private static final Map<String,Double> DRAGONBORN_ATTRS = attrs(+6,  +4, +3,   0,     0,    0);
-    private static final Map<String,Double> DWARF_ATTRS      = attrs(+10,  0, +4,  -0.02,  0,    0);
-    private static final Map<String,Double> ELF_ATTRS        = attrs(-2,   0, -1,  +0.05, +0.5, +3);
-    private static final Map<String,Double> GNOME_ATTRS      = attrs(-4,  -1,  0,  +0.02, +0.3, +5);
-    private static final Map<String,Double> GOLIATH_ATTRS    = attrs(+12, +4, +3,  +0.01,  0,    0);
-    private static final Map<String,Double> HALFLING_ATTRS   = attrs(-2,  -1,  0,  +0.03, +0.3, +6);
-    private static final Map<String,Double> HUMAN_ATTRS      = attrs(+4,  +1, +1,  +0.01,  0,  +2);
-    private static final Map<String,Double> ORC_ATTRS        = attrs(+8,  +6, +2,  +0.02,  0,    0);
-    private static final Map<String,Double> TIEFLING_ATTRS   = attrs(-2,  +4, +1,  +0.02,  0,  +3);
-
+    private static Map<String, Integer> attrs(int str, int dex, int con, int intel, int wis, int cha) {
+        Map<String, Integer> m = new java.util.LinkedHashMap<>();
+        m.put("Strength", str);
+        m.put("Dexterity", dex);
+        m.put("Constitution", con);
+        m.put("Intelligence", intel);
+        m.put("Wisdom", wis);
+        m.put("Charisma", cha);
+        return m;
+    }
+    // ── RACE ATTRS (D&D Standard) ──
+    private static final Map<String, Integer> AASIMAR_ATTRS    = attrs(0, 0, 0, 0, 1, 2); // +2 CHA, +1 WIS
+    private static final Map<String, Integer> DRAGONBORN_ATTRS = attrs(2, 0, 0, 0, 0, 1); // +2 STR, +1 CHA
+    private static final Map<String, Integer> DWARF_ATTRS      = attrs(0, 0, 2, 0, 1, 0); // +2 CON, +1 WIS (Hill Dwarf style)
+    private static final Map<String, Integer> ELF_ATTRS        = attrs(0, 2, 0, 1, 0, 0); // +2 DEX, +1 INT (High Elf style)
+    private static final Map<String, Integer> GNOME_ATTRS      = attrs(0, 0, 1, 2, 0, 0); // +2 INT, +1 CON
+    private static final Map<String, Integer> GOLIATH_ATTRS    = attrs(2, 0, 1, 0, 0, 0); // +2 STR, +1 CON
+    private static final Map<String, Integer> HALFLING_ATTRS   = attrs(0, 2, 1, 0, 0, 0); // +2 DEX, +1 CON
+    private static final Map<String, Integer> HUMAN_ATTRS      = attrs(1, 1, 1, 1, 1, 1); // +1 auf alles
+    private static final Map<String, Integer> ORC_ATTRS        = attrs(2, 0, 1, 0, 0, 0); // +2 STR, +1 CON
+    private static final Map<String, Integer> TIEFLING_ATTRS   = attrs(0, 0, 0, 1, 0, 2); // +2 CHA, +1 INT
     // ── PROFICIENCIES ──
     // Races grant mostly no extra armor/weapon proficiencies beyond class
     // Exceptions (as per official D&D 5e/2024):
@@ -73,48 +77,48 @@ public class RaceRegistry {
     static {
         // No starterItems — items come from class only
         RACES.add(new RaceDefinition("aasimar",    "Aasimar",    "Touched by the divine, born to serve the light.",   AASIMAR_ATTRS,    AASIMAR_AB,    P_NONE));
-        SUBRACES.add(new SubraceDefinition("celestial_revelation","aasimar",   "Celestial Revelation","Unleashes the full power of divine heritage.",   CELESTIAL_REVELATION_AB, P_NONE));
+        SUBRACES.add(new SubraceDefinition("celestial_revelation","aasimar",   "Celestial Revelation","Unleashes the full power of divine heritage.",   CELESTIAL_REVELATION_AB, P_NONE, new HashMap<>()));
 
         RACES.add(new RaceDefinition("dragonborn", "Dragonborn", "Proud dragon-blooded warriors.",                    DRAGONBORN_ATTRS, DRAGONBORN_AB, P_NONE));
-        SUBRACES.add(new SubraceDefinition("chromatic_dragonborn","dragonborn","Chromatic Dragonborn","Descended from the chromatic dragons.",          CHROMATIC_DRAGONBORN_AB, P_NONE));
-        SUBRACES.add(new SubraceDefinition("metallic_dragonborn", "dragonborn","Metallic Dragonborn", "Noble lineage of the metallic dragons.",         METALLIC_DRAGONBORN_AB,  P_NONE));
-        SUBRACES.add(new SubraceDefinition("gem_dragonborn",      "dragonborn","Gem Dragonborn",      "Descended from the rare gem dragons.",           GEM_DRAGONBORN_AB,       P_NONE));
+        SUBRACES.add(new SubraceDefinition("chromatic_dragonborn","dragonborn","Chromatic Dragonborn","Descended from the chromatic dragons.",          CHROMATIC_DRAGONBORN_AB, P_NONE, new HashMap<>()));
+        SUBRACES.add(new SubraceDefinition("metallic_dragonborn", "dragonborn","Metallic Dragonborn", "Noble lineage of the metallic dragons.",         METALLIC_DRAGONBORN_AB,  P_NONE, new HashMap<>()));
+        SUBRACES.add(new SubraceDefinition("gem_dragonborn",      "dragonborn","Gem Dragonborn",      "Descended from the rare gem dragons.",           GEM_DRAGONBORN_AB,       P_NONE, new HashMap<>()));
 
         RACES.add(new RaceDefinition("dwarf",      "Dwarf",      "Stout and resilient, masters of stone and steel.",  DWARF_ATTRS,      DWARF_AB,      P_DWARF));
-        SUBRACES.add(new SubraceDefinition("hill_dwarf",          "dwarf",     "Hill Dwarf",          "Hardy and wise, blessed with great vitality.",   HILL_DWARF_AB,           P_DWARF));
-        SUBRACES.add(new SubraceDefinition("mountain_dwarf",      "dwarf",     "Mountain Dwarf",      "Trained for war, clad in the finest armor.",     MOUNTAIN_DWARF_AB,       P_MOUNTAIN_D));
+        SUBRACES.add(new SubraceDefinition("hill_dwarf",          "dwarf",     "Hill Dwarf",          "Hardy and wise, blessed with great vitality.",   HILL_DWARF_AB,           P_DWARF, new HashMap<>()));
+        SUBRACES.add(new SubraceDefinition("mountain_dwarf",      "dwarf",     "Mountain Dwarf",      "Trained for war, clad in the finest armor.",     MOUNTAIN_DWARF_AB,       P_MOUNTAIN_D, new HashMap<>()));
 
         RACES.add(new RaceDefinition("elf",        "Elf",        "Ancient, graceful and deeply tied to magic.",       ELF_ATTRS,        ELF_AB,        P_NONE));
-        SUBRACES.add(new SubraceDefinition("drow",                "elf",       "Drow",                "Dark elves from the depths of the Underdark.",   DROW_AB,                 P_NONE));
-        SUBRACES.add(new SubraceDefinition("high_elf",            "elf",       "High Elf",            "Devoted to magic and lore of ancient times.",    HIGH_ELF_AB,             P_NONE));
-        SUBRACES.add(new SubraceDefinition("wood_elf",            "elf",       "Wood Elf",            "Swift hunters of the deep forest.",              WOOD_ELF_AB,             P_NONE));
+        SUBRACES.add(new SubraceDefinition("drow",                "elf",       "Drow",                "Dark elves from the depths of the Underdark.",   DROW_AB,                 P_NONE, new HashMap<>()));
+        SUBRACES.add(new SubraceDefinition("high_elf",            "elf",       "High Elf",            "Devoted to magic and lore of ancient times.",    HIGH_ELF_AB,             P_NONE, new HashMap<>()));
+        SUBRACES.add(new SubraceDefinition("wood_elf",            "elf",       "Wood Elf",            "Swift hunters of the deep forest.",              WOOD_ELF_AB,             P_NONE, new HashMap<>()));
 
         RACES.add(new RaceDefinition("gnome",      "Gnome",      "Curious and inventive, full of wonder.",            GNOME_ATTRS,      GNOME_AB,      P_NONE));
-        SUBRACES.add(new SubraceDefinition("forest_gnome",        "gnome",     "Forest Gnome",        "Friends of animals and nature's secrets.",       FOREST_GNOME_AB,         P_NONE));
-        SUBRACES.add(new SubraceDefinition("rock_gnome",          "gnome",     "Rock Gnome",          "Tinkerers and craftsmen of the earth.",          ROCK_GNOME_AB,           P_NONE));
+        SUBRACES.add(new SubraceDefinition("forest_gnome",        "gnome",     "Forest Gnome",        "Friends of animals and nature's secrets.",       FOREST_GNOME_AB,         P_NONE, new HashMap<>()));
+        SUBRACES.add(new SubraceDefinition("rock_gnome",          "gnome",     "Rock Gnome",          "Tinkerers and craftsmen of the earth.",          ROCK_GNOME_AB,           P_NONE, new HashMap<>()));
 
         RACES.add(new RaceDefinition("goliath",    "Goliath",    "Towering warriors born of the mountains.",          GOLIATH_ATTRS,    GOLIATH_AB,    P_NONE));
-        SUBRACES.add(new SubraceDefinition("cloud_giant",         "goliath",   "Cloud Giant Ancestry","Born of the sky, blessed with grace and wind.",  CLOUD_GIANT_AB,          P_NONE));
-        SUBRACES.add(new SubraceDefinition("fire_giant",          "goliath",   "Fire Giant Ancestry", "Forged in flame, relentless in battle.",         FIRE_GIANT_AB,           P_NONE));
-        SUBRACES.add(new SubraceDefinition("frost_giant",         "goliath",   "Frost Giant Ancestry","Born of the frozen north, unyielding as ice.",   FROST_GIANT_AB,          P_NONE));
-        SUBRACES.add(new SubraceDefinition("hill_giant",          "goliath",   "Hill Giant Ancestry", "Massive and enduring, born to weather any storm.",HILL_GIANT_AB,          P_NONE));
-        SUBRACES.add(new SubraceDefinition("stone_giant",         "goliath",   "Stone Giant Ancestry","Still as stone, armored like the earth itself.", STONE_GIANT_AB,          P_NONE));
-        SUBRACES.add(new SubraceDefinition("storm_giant",         "goliath",   "Storm Giant Ancestry","Commands the power of thunder and lightning.",   STORM_GIANT_AB,          P_NONE));
+        SUBRACES.add(new SubraceDefinition("cloud_giant",         "goliath",   "Cloud Giant Ancestry","Born of the sky, blessed with grace and wind.",  CLOUD_GIANT_AB,          P_NONE, new HashMap<>()));
+        SUBRACES.add(new SubraceDefinition("fire_giant",          "goliath",   "Fire Giant Ancestry", "Forged in flame, relentless in battle.",         FIRE_GIANT_AB,           P_NONE, new HashMap<>()));
+        SUBRACES.add(new SubraceDefinition("frost_giant",         "goliath",   "Frost Giant Ancestry","Born of the frozen north, unyielding as ice.",   FROST_GIANT_AB,          P_NONE, new HashMap<>()));
+        SUBRACES.add(new SubraceDefinition("hill_giant",          "goliath",   "Hill Giant Ancestry", "Massive and enduring, born to weather any storm.",HILL_GIANT_AB,          P_NONE, new HashMap<>()));
+        SUBRACES.add(new SubraceDefinition("stone_giant",         "goliath",   "Stone Giant Ancestry","Still as stone, armored like the earth itself.", STONE_GIANT_AB,          P_NONE, new HashMap<>()));
+        SUBRACES.add(new SubraceDefinition("storm_giant",         "goliath",   "Storm Giant Ancestry","Commands the power of thunder and lightning.",   STORM_GIANT_AB,          P_NONE, new HashMap<>()));
 
         RACES.add(new RaceDefinition("halfling",   "Halfling",   "Small but extraordinarily lucky.",                  HALFLING_ATTRS,   HALFLING_AB,   P_NONE));
-        SUBRACES.add(new SubraceDefinition("lightfoot",           "halfling",  "Lightfoot Halfling",  "Nimble and stealthy, with a natural silver tongue.",LIGHTFOOT_AB,         P_NONE));
-        SUBRACES.add(new SubraceDefinition("stout_halfling",      "halfling",  "Stout Halfling",      "Tougher than they look, with dwarven blood.",    STOUT_AB,                P_NONE));
+        SUBRACES.add(new SubraceDefinition("lightfoot",           "halfling",  "Lightfoot Halfling",  "Nimble and stealthy, with a natural silver tongue.",LIGHTFOOT_AB,         P_NONE, new HashMap<>()));
+        SUBRACES.add(new SubraceDefinition("stout_halfling",      "halfling",  "Stout Halfling",      "Tougher than they look, with dwarven blood.",    STOUT_AB,                P_NONE, new HashMap<>()));
 
         RACES.add(new RaceDefinition("human",      "Human",      "Adaptable and ambitious, found everywhere.",        HUMAN_ATTRS,      HUMAN_AB,      P_NONE));
-        SUBRACES.add(new SubraceDefinition("versatile_human",     "human",     "Versatile Human",     "Masters of adaptability, excelling in any field.",VERSATILE_HUMAN_AB,     P_NONE));
+        SUBRACES.add(new SubraceDefinition("versatile_human",     "human",     "Versatile Human",     "Masters of adaptability, excelling in any field.",VERSATILE_HUMAN_AB,     P_NONE, new HashMap<>()));
 
         RACES.add(new RaceDefinition("orc",        "Orc",        "Powerful and fierce warriors of the wilds.",        ORC_ATTRS,        ORC_AB,        P_NONE));
-        SUBRACES.add(new SubraceDefinition("adrenaline_rush",     "orc",       "Adrenaline Rush",     "Pushes beyond limits in the heat of battle.",    ADRENALINE_RUSH_AB,      P_NONE));
+        SUBRACES.add(new SubraceDefinition("adrenaline_rush",     "orc",       "Adrenaline Rush",     "Pushes beyond limits in the heat of battle.",    ADRENALINE_RUSH_AB,      P_NONE, new HashMap<>()));
 
         RACES.add(new RaceDefinition("tiefling",   "Tiefling",   "Bearing infernal heritage, often mistrusted.",      TIEFLING_ATTRS,   TIEFLING_AB,   P_NONE));
-        SUBRACES.add(new SubraceDefinition("abyssal_tiefling",    "tiefling",  "Abyssal Tiefling",    "Touched by demon blood, chaotic and swift.",     ABYSSAL_TIEFLING_AB,     P_NONE));
-        SUBRACES.add(new SubraceDefinition("chthonic_tiefling",   "tiefling",  "Chthonic Tiefling",   "Marked by the deepest underworld forces.",       CHTHONIC_TIEFLING_AB,    P_NONE));
-        SUBRACES.add(new SubraceDefinition("infernal_tiefling",   "tiefling",  "Infernal Tiefling",   "Descended from devils, burning with dark power.", INFERNAL_TIEFLING_AB,   P_NONE));
+        SUBRACES.add(new SubraceDefinition("abyssal_tiefling",    "tiefling",  "Abyssal Tiefling",    "Touched by demon blood, chaotic and swift.",     ABYSSAL_TIEFLING_AB,     P_NONE, new HashMap<>()));
+        SUBRACES.add(new SubraceDefinition("chthonic_tiefling",   "tiefling",  "Chthonic Tiefling",   "Marked by the deepest underworld forces.",       CHTHONIC_TIEFLING_AB,    P_NONE, new HashMap<>()));
+        SUBRACES.add(new SubraceDefinition("infernal_tiefling",   "tiefling",  "Infernal Tiefling",   "Descended from devils, burning with dark power.", INFERNAL_TIEFLING_AB,   P_NONE, new HashMap<>()));
     }
 
     public static List<SubraceDefinition> getSubracesFor(String parentId) {

@@ -21,7 +21,7 @@ public class CharacterFinalizationScreen extends Screen {
     private static final int BOX_WIDTH  = 220;
     private static final int ICON_SIZE  = 16;
     private static final int ITEM_SIZE  = 16;
-    private static final int COLUMN_WIDTH = 180; // Leicht erhöht für mehr Textplatz
+    private static final int COLUMN_WIDTH = 180;
 
     private final boolean isNewCharacter;
     private EditBox nameBox;
@@ -33,103 +33,73 @@ public class CharacterFinalizationScreen extends Screen {
     private ClassDefinition   cls;
 
     public CharacterFinalizationScreen(boolean isNewCharacter) {
-        super(Component.literal("Finalize Your Character"));
+        super(Component.literal("Character Finalization"));
         this.isNewCharacter = isNewCharacter;
+        this.race = RaceRegistry.getRace(CharacterCreationState.selectedRaceId);
+        this.subrace = RaceRegistry.getSubrace(CharacterCreationState.selectedSubraceId);
+        this.cls = ClassRegistry.getClass(CharacterCreationState.selectedClassId);
     }
 
     @Override
     protected void init() {
-        super.init();
-        race    = RaceRegistry.getRace(CharacterCreationState.selectedRaceId);
-        subrace = RaceRegistry.getSubrace(CharacterCreationState.selectedSubraceId);
-        cls     = ClassRegistry.getClass(CharacterCreationState.selectedClassId);
+        int centerX = this.width / 2;
+        int startY = 40;
 
-        int inputX = this.width / 2 - BOX_WIDTH / 2;
+        // Falls CharacterCreationState keine Felder für Name/Story hat, nutzen wir hier leere Strings
+        this.nameBox = new EditBox(this.font, centerX - 110, startY, BOX_WIDTH, 20, Component.literal("Name"));
+        this.addRenderableWidget(this.nameBox);
 
-        nameBox = new EditBox(this.font, inputX, 30, BOX_WIDTH, 14, Component.literal("Name"));
-        nameBox.setMaxLength(32);
-        this.addRenderableWidget(nameBox);
+        this.storyBox = new EditBox(this.font, centerX - 110, startY + 40, BOX_WIDTH, 20, Component.literal("Story"));
+        this.addRenderableWidget(this.storyBox);
 
-        storyBox = new EditBox(this.font, inputX, 55, BOX_WIDTH, 14, Component.literal("Backstory"));
-        storyBox.setMaxLength(256);
-        this.addRenderableWidget(storyBox);
+        this.personalityBox = new EditBox(this.font, centerX - 110, startY + 80, BOX_WIDTH, 20, Component.literal("Personality"));
+        this.addRenderableWidget(this.personalityBox);
 
-        personalityBox = new EditBox(this.font, inputX, 80, BOX_WIDTH, 14, Component.literal("Personality"));
-        personalityBox.setMaxLength(256);
-        this.addRenderableWidget(personalityBox);
+        this.addRenderableWidget(Button.builder(Component.literal("Back"), b -> this.minecraft.setScreen(new ClassDetailScreen(cls, isNewCharacter)))
+                .bounds(centerX - 110, this.height - 40, 100, 20).build());
 
-        this.addRenderableWidget(Button.builder(Component.literal("Create Character"), btn -> createCharacter())
-                .bounds(this.width / 2 - 60, this.height - 22, 120, 18).build());
-
-        this.addRenderableWidget(Button.builder(Component.literal("Back"), btn -> this.minecraft.setScreen(new ClassListScreen(isNewCharacter)))
-                .bounds(8, this.height - 22, 50, 18).build());
-    }
-
-    private void createCharacter() {
-        if (this.minecraft == null || this.minecraft.player == null) return;
-        CharacterCreationPacket.send(CharacterCreationState.selectedRaceId, CharacterCreationState.selectedSubraceId, CharacterCreationState.selectedClassId,
-                nameBox.getValue().isEmpty() ? "Adventurer" : nameBox.getValue(), storyBox.getValue(), personalityBox.getValue());
-        CharacterCreationState.reset();
-        this.minecraft.player.closeContainer();
+        this.addRenderableWidget(Button.builder(Component.literal("Finish"), b -> {
+            // Hier müsstest du die Daten an dein Packet übergeben
+            this.onClose();
+        }).bounds(centerX + 10, this.height - 40, 100, 20).build());
     }
 
     @Override
     public void render(GuiGraphics g, int mouseX, int mouseY, float partial) {
-        g.fillGradient(0, 0, this.width, this.height, 0xD0101010, 0xE0101010);
+        this.renderBackground(g, mouseX, mouseY, partial);
         super.render(g, mouseX, mouseY, partial);
 
-        int cx = this.width / 2;
-        int divY = 105;
-        g.fill(20, divY, this.width - 20, divY + 1, 0x44FFFFFF);
+        int centerX = this.width / 2;
+        int rightX = centerX + 120;
+        int currentRY = 40;
 
-        // Header Labels
-        int inputLabelX = cx - BOX_WIDTH / 2;
-        g.drawString(this.font, "Name:", inputLabelX, 20, -1, true);
-        g.drawString(this.font, "Backstory:", inputLabelX, 45, -1, true);
-        g.drawString(this.font, "Personality:", inputLabelX, 70, -1, true);
+        g.drawString(this.font, "Name:", centerX - 110, 30, -1);
+        g.drawString(this.font, "Backstory:", centerX - 110, 70, -1);
+        g.drawString(this.font, "Personality:", centerX - 110, 110, -1);
 
-        // Spalten-Konfiguration (30 Pixel weiter nach außen verschoben)
-        int leftX = inputLabelX - 50;
-        int rightX = cx + (BOX_WIDTH / 2) - 110 + 50; // Angepasst für Symmetrie nach rechts
-        int currentLY = divY + 8;
+        g.drawString(this.font, "Summary:", rightX, currentRY, -1, true);
+        currentRY += 15;
+        if (race != null) g.drawString(this.font, "Race: " + race.getDisplayName(), rightX, currentRY, 0xAAAAAA, true);
+        currentRY += 10;
+        if (subrace != null) g.drawString(this.font, "Subrace: " + subrace.getDisplayName(), rightX, currentRY, 0xAAAAAA, true);
+        currentRY += 10;
+        if (cls != null) g.drawString(this.font, "Class: " + cls.getDisplayName(), rightX, currentRY, 0xAAAAAA, true);
 
-        // ── KLASSE (Links Oben) ──
-        if (cls != null) {
-            g.blit(RenderPipelines.GUI_TEXTURED, cls.getIcon(), leftX, currentLY, 0, 0, ICON_SIZE, ICON_SIZE, ICON_SIZE, ICON_SIZE);
-            g.drawString(this.font, cls.getDisplayName(), leftX + 20, currentLY + 4, -1, true);
-            currentLY += 20;
-
-            for (String feat : cls.getAbilityLines()) {
-                List<FormattedCharSequence> lines = this.font.split(Component.literal("» " + feat), COLUMN_WIDTH);
-                for (FormattedCharSequence line : lines) {
-                    g.drawString(this.font, line, leftX, currentLY, -1, true);
-                    currentLY += 10;
-                }
-            }
-        }
-
-        // ── SPEZIES (Darunter) ──
-        currentLY += 10;
-        if (race != null) {
-            g.blit(RenderPipelines.GUI_TEXTURED, (subrace != null ? subrace.getIcon() : race.getIcon()), leftX, currentLY, 0, 0, ICON_SIZE, ICON_SIZE, ICON_SIZE, ICON_SIZE);
-            g.drawString(this.font, (subrace != null ? subrace.getDisplayName() : race.getDisplayName()), leftX + 20, currentLY + 4, -1, true);
-            currentLY += 20;
-
-            for (String trait : race.getAbilityLines()) {
-                List<FormattedCharSequence> lines = this.font.split(Component.literal("» " + trait), COLUMN_WIDTH);
-                for (FormattedCharSequence line : lines) {
-                    g.drawString(this.font, line, leftX, currentLY, -1, true);
-                    currentLY += 10;
-                }
-            }
-        }
-
-        // ── RECHTE SEITE ──
-        int currentRY = divY + 8;
-
-        // Starter Items
-        g.drawString(this.font, "Starter Items:", rightX, currentRY, -1, true);
+        currentRY += 25;
+        g.drawString(this.font, "Final Stats:", rightX, currentRY, -1, true);
         currentRY += 12;
+
+        for (Map.Entry<String, Integer> e : buildCombinedAttrs().entrySet()) {
+            if (e.getValue() == 0) continue;
+            String sign = e.getValue() > 0 ? "+" : "";
+            g.drawString(this.font, e.getKey() + ": " + sign + formatVal(e.getKey(), e.getValue()), rightX, currentRY, -1, true);
+            currentRY += 10;
+        }
+
+        currentRY += 15;
+        g.drawString(this.font, "Starting Equipment:", rightX, currentRY, -1, true);
+        currentRY += 15;
+
         if (cls != null) {
             List<ItemStack> items = cls.getStarterItems();
             for (int i = 0; i < items.size(); i++) {
@@ -139,34 +109,15 @@ public class CharacterFinalizationScreen extends Screen {
             }
         }
 
-        // Stats
+        // Proficiencies Anzeige (War in deinem Original drin)
         currentRY += 25;
-        g.drawString(this.font, "Final Stats:", rightX, currentRY, -1, true);
-        currentRY += 12;
-        for (Map.Entry<String, Double> e : buildCombinedAttrs().entrySet()) {
-            if (e.getValue() == 0) continue;
-            g.drawString(this.font, e.getKey() + ": " + (e.getValue() > 0 ? "+" : "") + formatVal(e.getKey(), e.getValue()), rightX, currentRY, -1, true);
-            currentRY += 10;
-        }
-
-        // NEU: Abgegrenzte Zeile unter den Final Stats
-        currentRY += 2; // Kleiner Puffer
-        if (cls != null) {
-            g.drawString(this.font, "Level up health increase: " + cls.getClassHealth(), rightX, currentRY, -1, true);
-            currentRY += 10;
-        }
-
-        // Proficiencies
-        currentRY += 10;
         g.drawString(this.font, "Proficiencies:", rightX, currentRY, -1, true);
         currentRY += 12;
-        for (String prof : buildCombinedProfs().split(",")) {
-            if (prof.isBlank()) continue;
-            List<FormattedCharSequence> lines = this.font.split(Component.literal("- " + prof.trim().replace("_", " ")), COLUMN_WIDTH);
-            for (FormattedCharSequence line : lines) {
-                g.drawString(this.font, line, rightX, currentRY, -1, true);
-                currentRY += 10;
-            }
+        String profs = buildCombinedProfs();
+        List<FormattedCharSequence> wrappedProfs = this.font.split(Component.literal(profs), 150);
+        for (FormattedCharSequence line : wrappedProfs) {
+            g.drawString(this.font, line, rightX, currentRY, 0xAAAAAA, true);
+            currentRY += 10;
         }
     }
 
@@ -181,10 +132,11 @@ public class CharacterFinalizationScreen extends Screen {
         }
     }
 
-    private Map<String, Double> buildCombinedAttrs() {
-        Map<String, Double> result = new LinkedHashMap<>();
-        if (race != null) race.getAttributeModifiers().forEach((k, v) -> result.merge(k, v, Double::sum));
-        if (cls != null) cls.getAttributeModifiers().forEach((k, v) -> result.merge(k, v, Double::sum));
+    private Map<String, Integer> buildCombinedAttrs() {
+        Map<String, Integer> result = new LinkedHashMap<>();
+        // Nutzt jetzt die korrekten D&D Getter
+        if (race != null) race.getAbilityScoreIncrements().forEach((k, v) -> result.merge(k, v, Integer::sum));
+        if (cls != null) cls.getAbilityScoreIncrements().forEach((k, v) -> result.merge(k, v, Integer::sum));
         return result;
     }
 
@@ -193,7 +145,7 @@ public class CharacterFinalizationScreen extends Screen {
         if (race != null) addProfs(set, race.getProficiencies());
         if (subrace != null) addProfs(set, subrace.getProficiencies());
         if (cls != null) addProfs(set, cls.getProficiencies());
-        return String.join(",", set);
+        return set.isEmpty() ? "None" : String.join(", ", set);
     }
 
     private void addProfs(java.util.LinkedHashSet<String> set, String profs) {
@@ -201,10 +153,10 @@ public class CharacterFinalizationScreen extends Screen {
         for (String p : profs.split(",")) if (!p.trim().isEmpty()) set.add(p.trim());
     }
 
-    private String formatVal(String key, double val) {
-        if (key.contains("Speed")) return String.format("%.0f%%", val * 100);
-        return (val % 1 == 0) ? String.format("%.0f", val) : String.format("%.1f", val);
+    private String formatVal(String key, int val) {
+        return String.valueOf(val);
     }
 
-    @Override public boolean shouldCloseOnEsc() { return false; }
+    @Override
+    public boolean shouldCloseOnEsc() { return false; }
 }

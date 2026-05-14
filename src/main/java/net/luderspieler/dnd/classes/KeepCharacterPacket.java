@@ -26,27 +26,15 @@ public record KeepCharacterPacket() implements CustomPacketPayload {
 
     public static void handle(KeepCharacterPacket pkt, IPayloadContext ctx) {
         ctx.enqueueWork(() -> {
-            // Hier definierst du "player" als ServerPlayer
             if (!(ctx.player() instanceof ServerPlayer player)) return;
 
             DndModVariables.PlayerVariables vars = player.getData(DndModVariables.PLAYER_VARIABLES);
+
+            // WICHTIG: Erst Variablen sichern
             vars.FinishedCharacterCreation = true;
-
-            ClassDefinition cls = ClassRegistry.getClass(vars.PlayerClass);
-
-            if (cls != null) {
-                // Du nutzt hier einfach "player", da dieser bereits als ServerPlayer validiert wurde
-                CharacterCreationPacket.applyAttrs(player, cls.getAttributeModifiers(), false);
-
-                // Falls deine Rasse auch Attribute hat, solltest du diese hier ebenfalls
-                // erneut anwenden, damit nach dem Tod alles wieder da ist:
-                RaceDefinition race = RaceRegistry.getRace(vars.PlayerRace);
-                if (race != null) {
-                    CharacterCreationPacket.applyAttrs(player, race.getAttributeModifiers(), true);
-                }
-            }
-
             vars.markSyncDirty();
+
+            CharacterCreationPacket.applyAttrs(player, null, false);
         });
     }
 }

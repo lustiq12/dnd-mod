@@ -115,41 +115,41 @@ public class CharacterSheetScreen extends Screen {
     }
 
     private void renderCentralStats(GuiGraphics g, int centerX, int y) {
-        // ── ATTRIBUTE ──
+        // ── D&D ATTRIBUTES ──
         g.drawCenteredString(this.font, "§l§eAttributes", centerX, y, -1);
         y += 18;
 
-        renderStatLine(g, centerX, y, "Max Health", Attributes.MAX_HEALTH);
+        // Wir rufen jetzt unsere neue renderStatLine für die 6 Kern-Stats auf
+        renderStatLine(g, centerX, y, "Strength");
         y += 11;
-        renderStatLine(g, centerX, y, "Attack Damage", Attributes.ATTACK_DAMAGE);
+        renderStatLine(g, centerX, y, "Dexterity");
         y += 11;
-        renderStatLine(g, centerX, y, "Armor", Attributes.ARMOR);
+        renderStatLine(g, centerX, y, "Constitution");
         y += 11;
-        renderStatLine(g, centerX, y, "Movement Speed", Attributes.MOVEMENT_SPEED);
+        renderStatLine(g, centerX, y, "Intelligence");
         y += 11;
-        renderStatLine(g, centerX, y, "Attack Speed", Attributes.ATTACK_SPEED);
+        renderStatLine(g, centerX, y, "Wisdom");
         y += 11;
-        renderStatLine(g, centerX, y, "Luck", Attributes.LUCK);
+        renderStatLine(g, centerX, y, "Charisma");
 
         y += 15;
 
         // ── PROFICIENCIES ──
         g.drawCenteredString(this.font, "§l§eProficiencies", centerX, y, -1);
         y += 12;
+        // Fix: Falls dein Variablenname in DndModVariables "Proficiencys" ist:
         String profs = (vars.Proficiencys == null || vars.Proficiencys.isEmpty()) ? "None" : vars.Proficiencys.replace("_", " ").replace(",", ", ");
         y = renderWrappedText(g, profs, centerX, y, 220, "§7");
 
         y += 10;
 
-        // ── PERSONALITY ──
+        // ── PERSONALITY & BACKSTORY (bleiben gleich) ──
         g.drawCenteredString(this.font, "§l§bPersonality", centerX, y, -1);
         y += 12;
         String personality = (vars.PlayerPersonality == null || vars.PlayerPersonality.isEmpty()) ? "No personality traits defined." : vars.PlayerPersonality;
         y = renderWrappedText(g, personality, centerX, y, 220, "§f");
 
         y += 10;
-
-        // ── BACKSTORY ──
         g.drawCenteredString(this.font, "§l§dBackstory", centerX, y, -1);
         y += 12;
         String story = (vars.PlayerStory == null || vars.PlayerStory.isEmpty()) ? "This adventurer's past is shrouded in mystery..." : vars.PlayerStory;
@@ -166,28 +166,27 @@ public class CharacterSheetScreen extends Screen {
         return y;
     }
 
-    private void renderStatLine(GuiGraphics g, int centerX, int y, String label, Holder<Attribute> attrHolder) {
-        if (player == null) return;
-        AttributeInstance inst = player.getAttribute(attrHolder);
-        if (inst == null) return;
+    private void renderStatLine(GuiGraphics g, int centerX, int y, String label) {
+        if (vars == null) return;
 
-        double base = inst.getBaseValue();
-        double dndBonus = 0;
+        // Wert aus den Variablen holen
+        double value = switch (label) {
+            case "Strength" -> vars.Strength;
+            case "Dexterity" -> vars.Dexterity;
+            case "Constitution" -> vars.Constitution;
+            case "Intelligence" -> vars.Intelligence;
+            case "Wisdom" -> vars.Wisdom;
+            case "Charisma" -> vars.Charisma;
+            default -> 10.0;
+        };
 
-        // Nur spezifische D&D Modifier dazurechnen
-        ResourceLocation[] targets = DND_MODIFIERS.get(attrHolder);
-        if (targets != null) {
-            for (ResourceLocation id : targets) {
-                AttributeModifier mod = inst.getModifier(id);
-                if (mod != null) dndBonus += mod.amount();
-            }
-        }
+        int total = (int) value;
+        // D&D Modifier berechnen: (Score - 10) / 2
+        int modifier = Math.floorDiv(total - 10, 2);
+        String bonusStr = (modifier >= 0 ? "+" : "") + modifier;
 
-        double total = base + dndBonus;
-        String totalStr = formatVal(label, total);
-        String bonusStr = dndBonus != 0 ? " §a(" + (dndBonus > 0 ? "+" : "") + formatVal(label, dndBonus) + ")" : "";
-
-        String fullLine = "§7" + label + ": §f" + totalStr + bonusStr;
+        // Anzeige: "Strength: 15 (+2)"
+        String fullLine = "§7" + label + ": §f" + total + " §a(" + bonusStr + ")";
         g.drawCenteredString(this.font, fullLine, centerX, y, -1);
     }
 

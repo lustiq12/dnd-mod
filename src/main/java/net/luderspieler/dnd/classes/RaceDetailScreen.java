@@ -41,7 +41,6 @@ public class RaceDetailScreen extends Screen {
 
         // ── SUBRACE BUTTONS (Rechte Spalte) ──
         int subraceStartX = leftPos + 220;
-        // Startet nun bei 40, damit der erste Button kurz unter dem Header (bei 22) liegt
         int subraceStartY = topPos + 40;
         int count = Math.min(subraces.size(), 6);
         for (int i = 0; i < count; i++) {
@@ -53,8 +52,7 @@ public class RaceDetailScreen extends Screen {
             ).bounds(subraceStartX, by, SUBRACE_BTN_W, SUBRACE_BTN_H).build());
         }
 
-        // ── BACK BUTTON (Jetzt unten RECHTS im GUI-Fenster) ──
-        // x = leftPos + imageWidth - Breite des Buttons (60) - kleiner Rand (10)
+        // ── BACK BUTTON ──
         this.addRenderableWidget(Button.builder(
                 Component.literal("Back"),
                 btn -> this.minecraft.setScreen(new RaceListScreen(this.isNewCharacter))
@@ -75,17 +73,17 @@ public class RaceDetailScreen extends Screen {
         // ── ICON ──
         g.blit(RenderPipelines.GUI_TEXTURED, race.getIcon(), leftPos + 10, topPos + 14, 0, 0, ICON_SIZE, ICON_SIZE, ICON_SIZE, ICON_SIZE);
 
-        // ── NAME (Y = topPos + 22) ──
+        // ── NAME ──
         g.drawString(this.font, race.getDisplayName(), leftPos + 50, topPos + 22, -1);
 
-        // ── SUBRACE HEADER (Gleiche Höhe wie Name: topPos + 22) ──
+        // ── SUBRACE HEADER ──
         g.drawString(this.font, "Choose a Subrace:", leftPos + 220, topPos + 22, -1);
 
-        // ── ATTRIBUTES ──
+        // ── ATTRIBUTES (Angepasst auf Integer & neue Methode) ──
         int attrY = topPos + 60;
         g.drawString(this.font, "Attributes:", leftPos + 10, attrY, -1);
         attrY += 12;
-        for (Map.Entry<String, Double> e : race.getAttributeModifiers().entrySet()) {
+        for (Map.Entry<String, Integer> e : race.getAbilityScoreIncrements().entrySet()) {
             if (e.getValue() == 0) continue;
             String sign = e.getValue() > 0 ? "+" : "";
             String line = e.getKey() + ": " + sign + formatVal(e.getKey(), e.getValue());
@@ -103,10 +101,9 @@ public class RaceDetailScreen extends Screen {
         }
     }
 
-    private String formatVal(String key, double val) {
-        if (key.equals("Movement Speed")) return String.format("%.0f%%", val * 100);
-        if (key.equals("Attack Speed"))   return String.format("+%.1f", val);
-        return String.format("%.0f", val);
+    // Formatierung für D&D Integer-Werte
+    private String formatVal(String key, int val) {
+        return String.valueOf(val);
     }
 
     @Override

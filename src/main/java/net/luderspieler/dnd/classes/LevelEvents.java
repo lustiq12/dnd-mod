@@ -41,7 +41,7 @@ public class LevelEvents {
 
             ClassDefinition cls = ClassRegistry.getClass(vars.PlayerClass);
             if (cls != null) {
-                CharacterCreationPacket.applyAttrs(serverPlayer, cls.getAttributeModifiers(), false);
+                    CharacterCreationPacket.applyAttrs(serverPlayer, null, false);
             }
         }
 

@@ -41,11 +41,13 @@ public class ClassDetailScreen extends Screen {
         int topPos  = (this.height - imageHeight) / 2;
         int centerX = this.width / 2;
 
+        // "Choose" Button -> Finalization
         this.addRenderableWidget(Button.builder(Component.literal("Choose"), btn -> {
             CharacterCreationState.selectedClassId = cls.getId();
             this.minecraft.setScreen(new CharacterFinalizationScreen(isNewCharacter));
         }).bounds(centerX - 100, topPos + imageHeight - 35, 90, 20).build());
 
+        // "Back" Button -> Zurück zur Liste (gefixt)
         this.addRenderableWidget(Button.builder(Component.literal("Back"), btn ->
                 this.minecraft.setScreen(new ClassListScreen(isNewCharacter))
         ).bounds(centerX + 10, topPos + imageHeight - 35, 90, 20).build());
@@ -86,34 +88,28 @@ public class ClassDetailScreen extends Screen {
             }
         }
 
-        // ── STATS (12px Abstand) ──
+        // ── STATS (Integer-basiert für D&D) ──
         RaceDefinition race = RaceRegistry.getRace(CharacterCreationState.selectedRaceId);
-        Map<String, Double> combined = combinedAttrs(race, cls);
+        Map<String, Integer> combined = combinedAttrs(race, cls);
         int attrY = itemRowY + 30;
         g.drawString(this.font, "Total Stats:", leftPos + 20, attrY, -1, true);
         attrY += 15;
-        for (Map.Entry<String, Double> e : combined.entrySet()) {
-            if (e.getValue() == 0) continue;
-            String sign = e.getValue() > 0 ? "+" : "";
-            g.drawString(this.font, e.getKey() + ": " + sign + formatVal(e.getKey(), e.getValue()), leftPos + 20, attrY, -1, true);
-            attrY += 12; // Dein Referenz-Abstand
-        }
-
-        for (Map.Entry<String, Double> e : combined.entrySet()) {
+        for (Map.Entry<String, Integer> e : combined.entrySet()) {
             if (e.getValue() == 0) continue;
             String sign = e.getValue() > 0 ? "+" : "";
             g.drawString(this.font, e.getKey() + ": " + sign + formatVal(e.getKey(), e.getValue()), leftPos + 20, attrY, -1, true);
             attrY += 12;
         }
 
-        // NEU: Abgegrenzte Zeile unter den Attributen
-        attrY += 2; // Kleiner extra Puffer zur optischen Abgrenzung
+        // Health Increase Info
+        attrY += 2;
         g.drawString(this.font, "Level up health increase: " + cls.getClassHealth(), leftPos + 20, attrY, -1, true);
-        attrY += 12;
+        attrY += 15;
 
         // ── DESCRIPTION ──
-        g.drawWordWrap(this.font, Component.literal(cls.getDescription()), leftPos + 20, attrY + 15, 250, -1);
-        // ── CLASS ABILITIES (Dynamisches Flow-Layout mit Smart-Split) ──
+        g.drawWordWrap(this.font, Component.literal(cls.getDescription()), leftPos + 20, attrY, 250, -1);
+
+        // ── CLASS PROGRESSION (Rechte Spalte) ──
         int rightColumnStart = leftPos + 300;
         int columnWidth = 150;
         int columnGap = 165;
@@ -127,25 +123,23 @@ public class ClassDetailScreen extends Screen {
 
         List<String> abilities = cls.getAbilityLines();
         for (int i = 0; i < abilities.size(); i++) {
+            // Split 10/10 für zwei Spalten
             boolean isLeftColumn = i < 10;
             int x = isLeftColumn ? rightColumnStart : rightColumnStart + columnGap;
             int y = isLeftColumn ? currentYLeft : currentYRight;
 
             String rawText = abilities.get(i);
 
-            // Prüfen: Passt der gesamte Text in eine Zeile?
             if (this.font.width(rawText) <= columnWidth) {
                 g.drawString(this.font, rawText, x, y, -1, true);
                 y += lineSpacing;
             } else {
-                // Wenn nicht: Wir splitten an der Klammer, um den Spell Slot nach unten zu schieben
+                // Smart-Split an der Klammer für Spell Slots etc.
                 String[] parts = rawText.split("(?=\\()", 2);
                 for (String part : parts) {
                     String trimmed = part.trim();
                     if (trimmed.isEmpty()) continue;
 
-                    // Falls ein Teil (z.B. ein extrem langer Name) immer noch zu lang ist,
-                    // nutzen wir den normalen Wrap
                     List<FormattedCharSequence> wrapped = this.font.split(Component.literal(trimmed), columnWidth);
                     for (FormattedCharSequence line : wrapped) {
                         g.drawString(this.font, line, x, y, -1, true);
@@ -154,23 +148,27 @@ public class ClassDetailScreen extends Screen {
                 }
             }
 
-            // Y-Tracker aktualisieren
             if (isLeftColumn) currentYLeft = y;
             else currentYRight = y;
         }
-        }
+    }
 
-    private Map<String, Double> combinedAttrs(RaceDefinition race, ClassDefinition cls) {
-        Map<String, Double> result = new LinkedHashMap<>();
-        for (Map.Entry<String, Double> e : cls.getAttributeModifiers().entrySet()) result.put(e.getKey(), e.getValue());
-        if (race != null) for (Map.Entry<String, Double> e : race.getAttributeModifiers().entrySet()) result.merge(e.getKey(), e.getValue(), Double::sum);
+    private Map<String, Integer> combinedAttrs(RaceDefinition race, ClassDefinition cls) {
+        Map<String, Integer> result = new LinkedHashMap<>();
+        // Nutzt jetzt die korrekte Methode getAbilityScoreIncrements und Integer
+        for (Map.Entry<String, Integer> e : cls.getAbilityScoreIncrements().entrySet()) {
+            result.put(e.getKey(), e.getValue());
+        }
+        if (race != null) {
+            for (Map.Entry<String, Integer> e : race.getAbilityScoreIncrements().entrySet()) {
+                result.merge(e.getKey(), e.getValue(), Integer::sum);
+            }
+        }
         return result;
     }
 
-    private String formatVal(String key, double val) {
-        if (key.equals("Movement Speed")) return String.format("%.0f%%", val * 100);
-        if (key.equals("Attack Speed"))   return String.format("%.1f", val);
-        return String.format("%.0f", val);
+    private String formatVal(String key, int val) {
+        return String.valueOf(val);
     }
 
     @Override

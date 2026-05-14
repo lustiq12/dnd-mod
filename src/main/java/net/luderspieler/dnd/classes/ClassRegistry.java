@@ -10,10 +10,16 @@ public class ClassRegistry {
     public static final List<ClassDefinition>    CLASSES    = new ArrayList<>();
     public static final List<SubclassDefinition> SUBCLASSES = new ArrayList<>();
 
-    private static Map<String,Double> attrs(double hp,double dmg,double armor,double spd,double aspd,double luck){
-        Map<String,Double> m=new LinkedHashMap<>();
-        m.put("Max Health",hp);m.put("Attack Damage",dmg);m.put("Armor",armor);
-        m.put("Movement Speed",spd);m.put("Attack Speed",aspd);m.put("Luck",luck);return m;}
+    private static Map<String, Integer> attrs(int str, int dex, int con, int intel, int wis, int cha) {
+        Map<String, Integer> m = new java.util.LinkedHashMap<>();
+        m.put("Strength", str);
+        m.put("Dexterity", dex);
+        m.put("Constitution", con);
+        m.put("Intelligence", intel);
+        m.put("Wisdom", wis);
+        m.put("Charisma", cha);
+        return m;
+    }
 
     // Health Definitions (Hit Dice)
     public static final int CLASS_HEALTH_BARBARIAN = 12;
@@ -202,19 +208,18 @@ public class ClassRegistry {
 
 
     // ── ATTRS ──
-    private static final Map<String,Double> BARBARIAN_ATTRIBUTES = attrs(+20,+6, +4, +0.02,+0.1, 0);
-    private static final Map<String,Double> BARD_ATTRIBUTES      = attrs(+2, +2,  0,  +0.03,+0.3,+5);
-    private static final Map<String,Double> CLERIC_ATTRIBUTES    = attrs(+12,+3, +4,   0,    0,  +4);
-    private static final Map<String,Double> DRUID_ATTRIBUTES     = attrs(+8, +2, +2,  +0.02, 0,  +3);
-    private static final Map<String,Double> FIGHTER_ATTRIBUTES   = attrs(+10,+5, +5,   0,  +0.3,  0);
-    private static final Map<String,Double> MONK_ATTRIBUTES      = attrs(+6, +3, +1,  +0.05,+1.2,  0);
-    private static final Map<String,Double> PALADIN_ATTRIBUTES   = attrs(+14,+4, +6,   0,    0,    0);
-    private static final Map<String,Double> RANGER_ATTRIBUTES    = attrs(+4, +4,  0,  +0.03,+0.5,+2);
-    private static final Map<String,Double> ROGUE_ATTRIBUTES     = attrs(-2, +5,  0,  +0.04,+1.0,+3);
-    private static final Map<String,Double> SORCERER_ATTRIBUTES  = attrs(-4, +5,  0,  +0.03,+0.3,+4);
-    private static final Map<String,Double> WARLOCK_ATTRIBUTES   = attrs(-2, +7,  0,  +0.02,+0.3,+5);
-    private static final Map<String,Double> WIZARD_ATTRIBUTES    = attrs(-6, +2,  0,  +0.04,+0.2,+5);
-
+    private static final Map<String, Integer> BARBARIAN_ATTRIBUTES = attrs(2, 0, 1, 0, 0, 0); // +2 Str, +1 Con
+    private static final Map<String, Integer> BARD_ATTRIBUTES      = attrs(0, 1, 0, 0, 0, 2); // +2 Cha, +1 Dex
+    private static final Map<String, Integer> CLERIC_ATTRIBUTES    = attrs(1, 0, 0, 0, 2, 0); // +2 Wis, +1 Str
+    private static final Map<String, Integer> DRUID_ATTRIBUTES     = attrs(0, 0, 1, 0, 2, 0); // +2 Wis, +1 Con
+    private static final Map<String, Integer> FIGHTER_ATTRIBUTES   = attrs(2, 0, 1, 0, 0, 0); // +2 Str, +1 Con
+    private static final Map<String, Integer> MONK_ATTRIBUTES      = attrs(0, 2, 0, 0, 1, 0); // +2 Dex, +1 Wis
+    private static final Map<String, Integer> PALADIN_ATTRIBUTES   = attrs(1, 0, 0, 0, 0, 2); // +2 Cha, +1 Str
+    private static final Map<String, Integer> RANGER_ATTRIBUTES    = attrs(0, 2, 0, 0, 1, 0); // +2 Dex, +1 Wis
+    private static final Map<String, Integer> ROGUE_ATTRIBUTES     = attrs(0, 2, 1, 0, 0, 0); // +2 Dex, +1 Con
+    private static final Map<String, Integer> SORCERER_ATTRIBUTES  = attrs(0, 0, 1, 0, 0, 2); // +2 Cha, +1 Con
+    private static final Map<String, Integer> WARLOCK_ATTRIBUTES   = attrs(0, 0, 0, 0, 1, 2); // +2 Cha, +1 Wis
+    private static final Map<String, Integer> WIZARD_ATTRIBUTES    = attrs(0, 0, 1, 2, 0, 0); // +2 Int, +1 Con
     // ── PROFICIENCIES ──
     // Tag names that match your item tags under dnd:armor/* and dnd:weapons/*
     private static final String PROFICIENCYS_BARB  = "light_armor,medium_armor,shields,simple_weapons,war_weapons";
@@ -575,85 +580,85 @@ public class ClassRegistry {
     private static final List<String> ILLUSIONIST_LEVELING_DESCRIPTIONS     = List.of("Improved Illusions: Create sounds within illusion spells","Malleable Illusions: Change existing illusions as an action","Illusory Self: An illusory duplicate blocks one incoming attack","Illusory Reality: Make one component of your illusion real");
 
     static {
-        // BARBARIAN
-        CLASSES.add(new ClassDefinition("barbarian", "Barbarian", "A fierce warrior driven by primal rage.", CLASS_HEALTH_BARBARIAN, BARBARIAN_ATTRIBUTES, BARBARIAN_LEVELING_DESCRIPTIONS, BARBARIAN_ITEMS, PROFICIENCYS_BARB, NONE_S, NONE_P, EMPTY_SPELLS, false));
+        // BARBARIAN (+2 STR, +1 CON)
+        CLASSES.add(new ClassDefinition("barbarian", "Barbarian", "A fierce warrior driven by primal rage.", CLASS_HEALTH_BARBARIAN, BARBARIAN_ATTRIBUTES, BARBARIAN_LEVELING_DESCRIPTIONS, BARBARIAN_ITEMS, PROFICIENCYS_BARB, NONE_S, NONE_P, EMPTY_SPELLS, false, ""));
         SUBCLASSES.add(new SubclassDefinition("berserker", "barbarian", "Path of the Berserker", "Channels rage into devastating attacks.", BERSERKER_LEVELING_DESCRIPTIONS, PROFICIENCYS_BARB));
         SUBCLASSES.add(new SubclassDefinition("wild_heart", "barbarian", "Path of the Wild Heart", "Draws on the spirits of beasts.", WILD_HEART_LEVELING_DESCRIPTIONS, PROFICIENCYS_BARB));
         SUBCLASSES.add(new SubclassDefinition("world_tree", "barbarian", "Path of the World Tree", "Taps into the cosmic power of the World Tree.", WORLD_TREE_LEVELING_DESCRIPTIONS, PROFICIENCYS_BARB));
         SUBCLASSES.add(new SubclassDefinition("zealot", "barbarian", "Path of the Zealot", "Infuses rage with divine fury.", ZEALOT_LEVELING_DESCRIPTIONS, PROFICIENCYS_BARB));
 
-        // BARD
-        CLASSES.add(new ClassDefinition("bard", "Bard", "A master of music, magic, and inspiration.", CLASS_HEALTH_BARD, BARD_ATTRIBUTES, BARD_LEVELING_DESCRIPTIONS, BARD_ITEMS, PROFICIENCYS_BARD, BAR_S, BAR_MAX_SPELLS, BARD_SPELLS, true));
+        // BARD (+2 CHA, +1 DEX) - Spellcasting: Charisma
+        CLASSES.add(new ClassDefinition("bard", "Bard", "A master of music, magic, and inspiration.", CLASS_HEALTH_BARD, BARD_ATTRIBUTES, BARD_LEVELING_DESCRIPTIONS, BARD_ITEMS, PROFICIENCYS_BARD, BAR_S, BAR_MAX_SPELLS, BARD_SPELLS, true, "Charisma"));
         SUBCLASSES.add(new SubclassDefinition("college_dance", "bard", "College of Dance", "Uses movement as a spellcasting focus.", COLLEGE_DANCE_LEVELING_DESCRIPTIONS, PROFICIENCYS_BARD));
         SUBCLASSES.add(new SubclassDefinition("college_glamour", "bard", "College of Glamour", "Weaves enchantments of fey-touched beauty.", COLLEGE_GLAMOUR_LEVELING_DESCRIPTIONS, PROFICIENCYS_BARD));
-        SUBCLASSES.add(new SubclassDefinition("college_SPELLSore", "bard", "College of Lore", "Collects knowledge from every discipline.", COLLEGE_SPELLSORE_LEVELING_DESCRIPTIONS, PROFICIENCYS_BARD));
+        SUBCLASSES.add(new SubclassDefinition("college_lore", "bard", "College of Lore", "Collects knowledge from every discipline.", COLLEGE_SPELLSORE_LEVELING_DESCRIPTIONS, PROFICIENCYS_BARD));
         SUBCLASSES.add(new SubclassDefinition("college_valor", "bard", "College of Valor", "Combines combat with bardic inspiration.", COLLEGE_VALOR_LEVELING_DESCRIPTIONS, PROFICIENCYS_VALOR));
 
-        // CLERIC
-        CLASSES.add(new ClassDefinition("cleric", "Cleric", "A divine spellcaster empowered by their deity.", CLASS_HEALTH_CLERIC, CLERIC_ATTRIBUTES, CLERIC_LEVELING_DESCRIPTIONS, CLERIC_ITEMS, PROFICIENCYS_CLER, CLE_S, CLE_MAX_SPELLS, CLERIC_SPELLS, true));
+        // CLERIC (+2 WIS, +1 STR) - Spellcasting: Wisdom
+        CLASSES.add(new ClassDefinition("cleric", "Cleric", "A divine spellcaster empowered by their deity.", CLASS_HEALTH_CLERIC, CLERIC_ATTRIBUTES, CLERIC_LEVELING_DESCRIPTIONS, CLERIC_ITEMS, PROFICIENCYS_CLER, CLE_S, CLE_MAX_SPELLS, CLERIC_SPELLS, true, "Wisdom"));
         SUBCLASSES.add(new SubclassDefinition("life_domain", "cleric", "Life Domain", "Devoted to preserving and restoring life.", LIFE_DOMAIN_LEVELING_DESCRIPTIONS, PROFICIENCYS_CLER));
         SUBCLASSES.add(new SubclassDefinition("light_domain", "cleric", "Light Domain", "Channels the power of fire and radiance.", LIGHT_DOMAIN_LEVELING_DESCRIPTIONS, PROFICIENCYS_CLER));
         SUBCLASSES.add(new SubclassDefinition("trickery_domain", "cleric", "Trickery Domain", "A deity of deception blesses this cleric.", TRICKERY_DOMAIN_LEVELING_DESCRIPTIONS, PROFICIENCYS_CLER));
         SUBCLASSES.add(new SubclassDefinition("war_domain", "cleric", "War Domain", "Blessed for combat by a god of war.", WAR_DOMAIN_LEVELING_DESCRIPTIONS, PROFICIENCYS_WAR_D));
 
-        // DRUID
-        CLASSES.add(new ClassDefinition("druid", "Druid", "A guardian of nature and its cycles.", CLASS_HEALTH_DRUID, DRUID_ATTRIBUTES, DRUID_LEVELING_DESCRIPTIONS, DRUID_ITEMS, PROFICIENCYS_DRUI, DRU_S, DRU_MAX_SPELLS, DRUID_SPELLS, true));
-        SUBCLASSES.add(new SubclassDefinition("circle_SPELLSand", "druid", "Circle of the Land", "Draws magical power from the terrain.", CIRCLE_SPELLSAND_LEVELING_DESCRIPTIONS, PROFICIENCYS_DRUI));
-        SUBCLASSES.add(new SubclassDefinition("circle_moon", "druid", "Circle of the Moon", "Shapests into powerful beasts.", CIRCLE_MOON_LEVELING_DESCRIPTIONS, PROFICIENCYS_DRUI));
+        // DRUID (+2 WIS, +1 CON) - Spellcasting: Wisdom
+        CLASSES.add(new ClassDefinition("druid", "Druid", "A guardian of nature and its cycles.", CLASS_HEALTH_DRUID, DRUID_ATTRIBUTES, DRUID_LEVELING_DESCRIPTIONS, DRUID_ITEMS, PROFICIENCYS_DRUI, DRU_S, DRU_MAX_SPELLS, DRUID_SPELLS, true, "Wisdom"));
+        SUBCLASSES.add(new SubclassDefinition("circle_land", "druid", "Circle of the Land", "Draws magical power from the terrain.", CIRCLE_SPELLSAND_LEVELING_DESCRIPTIONS, PROFICIENCYS_DRUI));
+        SUBCLASSES.add(new SubclassDefinition("circle_moon", "druid", "Circle of the Moon", "Shapeshifts into powerful beasts.", CIRCLE_MOON_LEVELING_DESCRIPTIONS, PROFICIENCYS_DRUI));
         SUBCLASSES.add(new SubclassDefinition("circle_sea", "druid", "Circle of the Sea", "Commands the power of wind and wave.", CIRCLE_SEA_LEVELING_DESCRIPTIONS, PROFICIENCYS_DRUI));
         SUBCLASSES.add(new SubclassDefinition("circle_stars", "druid", "Circle of the Stars", "Reads power from the constellations.", CIRCLE_STARS_LEVELING_DESCRIPTIONS, PROFICIENCYS_DRUI));
 
-        // FIGHTER
-        CLASSES.add(new ClassDefinition("fighter", "Fighter", "A versatile master of weaponry and armor.", CLASS_HEALTH_FIGHTER, FIGHTER_ATTRIBUTES, FIGHTER_LEVELING_DESCRIPTIONS, FIGHTER_ITEMS, PROFICIENCYS_FIGH, NONE_S, NONE_P, EMPTY_SPELLS, false));
+        // FIGHTER (+2 STR, +1 CON)
+        CLASSES.add(new ClassDefinition("fighter", "Fighter", "A versatile master of weaponry and armor.", CLASS_HEALTH_FIGHTER, FIGHTER_ATTRIBUTES, FIGHTER_LEVELING_DESCRIPTIONS, FIGHTER_ITEMS, PROFICIENCYS_FIGH, NONE_S, NONE_P, EMPTY_SPELLS, false, ""));
         SUBCLASSES.add(new SubclassDefinition("battle_master", "fighter", "Battle Master", "Uses cunning maneuvers to control the battlefield.", BATTLE_MASTER_LEVELING_DESCRIPTIONS, PROFICIENCYS_FIGH));
         SUBCLASSES.add(new SubclassDefinition("champion", "fighter", "Champion", "An elite warrior of pure physical excellence.", CHAMPION_LEVELING_DESCRIPTIONS, PROFICIENCYS_FIGH));
         SUBCLASSES.add(new SubclassDefinition("eldritch_knight", "fighter", "Eldritch Knight", "Combines martial training with arcane magic.", ELDRITCH_KNIGHT_LEVELING_DESCRIPTIONS, PROFICIENCYS_ELDR));
         SUBCLASSES.add(new SubclassDefinition("psi_warrior", "fighter", "Psi Warrior", "Augments combat with psionic power.", PSI_WARRIOR_LEVELING_DESCRIPTIONS, PROFICIENCYS_FIGH));
 
-        // MONK
-        CLASSES.add(new ClassDefinition("monk", "Monk", "A master of martial arts and ki energy.", CLASS_HEALTH_MONK, MONK_ATTRIBUTES, MONK_LEVELING_DESCRIPTIONS, MONK_ITEMS, PROFICIENCYS_MONK, NONE_S, NONE_P, EMPTY_SPELLS, false));
+        // MONK (+2 DEX, +1 WIS)
+        CLASSES.add(new ClassDefinition("monk", "Monk", "A master of martial arts and ki energy.", CLASS_HEALTH_MONK, MONK_ATTRIBUTES, MONK_LEVELING_DESCRIPTIONS, MONK_ITEMS, PROFICIENCYS_MONK, NONE_S, NONE_P, EMPTY_SPELLS, false, ""));
         SUBCLASSES.add(new SubclassDefinition("warrior_mercy", "monk", "Warrior of Mercy", "Heals allies and debilitates foes.", WARRIOR_MERCY_LEVELING_DESCRIPTIONS, PROFICIENCYS_MONK));
         SUBCLASSES.add(new SubclassDefinition("warrior_shadow", "monk", "Warrior of Shadow", "Blends combat and shadow magic.", WARRIOR_SHADOW_LEVELING_DESCRIPTIONS, PROFICIENCYS_MONK));
         SUBCLASSES.add(new SubclassDefinition("warrior_elements", "monk", "Warrior of the Elements", "Channels elemental energy through strikes.", WARRIOR_ELEMENTS_LEVELING_DESCRIPTIONS, PROFICIENCYS_MONK));
         SUBCLASSES.add(new SubclassDefinition("warrior_open_hand", "monk", "Warrior of the Open Hand", "The purest expression of martial discipline.", WARRIOR_OPEN_LEVELING_DESCRIPTIONS, PROFICIENCYS_MONK));
 
-        // PALADIN
-        CLASSES.add(new ClassDefinition("paladin", "Paladin", "A holy warrior bound by a sacred oath.", CLASS_HEALTH_PALADIN, PALADIN_ATTRIBUTES, PALADIN_LEVELING_DESCRIPTIONS, PALADIN_ITEMS, PROFICIENCYS_PALA, PAL_S, PAL_MAX_SPELLS, PALADIN_SPELLS, true));
+        // PALADIN (+1 STR, +2 CHA) - Spellcasting: Charisma
+        CLASSES.add(new ClassDefinition("paladin", "Paladin", "A holy warrior bound by a sacred oath.", CLASS_HEALTH_PALADIN, PALADIN_ATTRIBUTES, PALADIN_LEVELING_DESCRIPTIONS, PALADIN_ITEMS, PROFICIENCYS_PALA, PAL_S, PAL_MAX_SPELLS, PALADIN_SPELLS, true, "Charisma"));
         SUBCLASSES.add(new SubclassDefinition("oath_devotion", "paladin", "Oath of Devotion", "Upholds the ideal of a shining knight.", OATH_DEVOTION_LEVELING_DESCRIPTIONS, PROFICIENCYS_PALA));
         SUBCLASSES.add(new SubclassDefinition("oath_glory", "paladin", "Oath of Glory", "Strives to reach the heights of heroic legend.", OATH_GLORY_LEVELING_DESCRIPTIONS, PROFICIENCYS_PALA));
         SUBCLASSES.add(new SubclassDefinition("oath_ancients", "paladin", "Oath of the Ancients", "Preserves the light of life against darkness.", OATH_ANCIENTS_LEVELING_DESCRIPTIONS, PROFICIENCYS_PALA));
         SUBCLASSES.add(new SubclassDefinition("oath_vengeance", "paladin", "Oath of Vengeance", "Pursues and punishes evildoers relentlessly.", OATH_VENGEANCE_LEVELING_DESCRIPTIONS, PROFICIENCYS_PALA));
 
-        // RANGER
-        CLASSES.add(new ClassDefinition("ranger", "Ranger", "A skilled hunter of the wilderness.", CLASS_HEALTH_RANGER, RANGER_ATTRIBUTES, RANGER_LEVELING_DESCRIPTIONS, RANGER_ITEMS, PROFICIENCYS_RANG, RAN_S, RAN_MAX_SPELLS, RANGER_SPELLS, true));
+        // RANGER (+2 DEX, +1 WIS) - Spellcasting: Wisdom
+        CLASSES.add(new ClassDefinition("ranger", "Ranger", "A skilled hunter of the wilderness.", CLASS_HEALTH_RANGER, RANGER_ATTRIBUTES, RANGER_LEVELING_DESCRIPTIONS, RANGER_ITEMS, PROFICIENCYS_RANG, RAN_S, RAN_MAX_SPELLS, RANGER_SPELLS, true, "Wisdom"));
         SUBCLASSES.add(new SubclassDefinition("beast_master", "ranger", "Beast Master", "Forms a deep bond with an animal companion.", BEAST_MASTER_LEVELING_DESCRIPTIONS, PROFICIENCYS_RANG));
         SUBCLASSES.add(new SubclassDefinition("fey_wanderer", "ranger", "Fey Wanderer", "Channels the magic of the Feywild.", FEY_WANDERER_LEVELING_DESCRIPTIONS, PROFICIENCYS_RANG));
         SUBCLASSES.add(new SubclassDefinition("gloom_stalker", "ranger", "Gloom Stalker", "Thrives in the darkest places of the world.", GLOOM_STALKER_LEVELING_DESCRIPTIONS, PROFICIENCYS_RANG));
         SUBCLASSES.add(new SubclassDefinition("hunter", "ranger", "Hunter", "Specializes in tracking and slaying prey.", HUNTER_LEVELING_DESCRIPTIONS, PROFICIENCYS_RANG));
 
-        // ROGUE
-        CLASSES.add(new ClassDefinition("rogue", "Rogue", "A cunning trickster who strikes from shadows.", CLASS_HEALTH_ROGUE, ROGUE_ATTRIBUTES, ROGUE_LEVELING_DESCRIPTIONS, ROGUE_ITEMS, PROFICIENCYS_ROGU, NONE_S, NONE_P, EMPTY_SPELLS, false));
+        // ROGUE (+2 DEX, +1 CON)
+        CLASSES.add(new ClassDefinition("rogue", "Rogue", "A cunning trickster who strikes from shadows.", CLASS_HEALTH_ROGUE, ROGUE_ATTRIBUTES, ROGUE_LEVELING_DESCRIPTIONS, ROGUE_ITEMS, PROFICIENCYS_ROGU, NONE_S, NONE_P, EMPTY_SPELLS, false, ""));
         SUBCLASSES.add(new SubclassDefinition("arcane_trickster", "rogue", "Arcane Trickster", "Enhances roguish talents with illusion magic.", ARCANE_TRICKSTER_LEVELING_DESCRIPTIONS, PROFICIENCYS_ROGU));
         SUBCLASSES.add(new SubclassDefinition("assassin", "rogue", "Assassin", "Trained to eliminate targets swiftly and silently.", ASSASSIN_LEVELING_DESCRIPTIONS, PROFICIENCYS_ROGU));
         SUBCLASSES.add(new SubclassDefinition("soulknife", "rogue", "Soulknife", "Focuses psionic energy into blade-like constructs.", SOULKNIFE_LEVELING_DESCRIPTIONS, PROFICIENCYS_ROGU));
         SUBCLASSES.add(new SubclassDefinition("thief", "rogue", "Thief", "Master of speed, stealth and sleight of hand.", THIEF_LEVELING_DESCRIPTIONS, PROFICIENCYS_ROGU));
 
-        // SORCERER
-        CLASSES.add(new ClassDefinition("sorcerer", "Sorcerer", "Born with innate magical power.", CLASS_HEALTH_SORCERER, SORCERER_ATTRIBUTES, SORCERER_LEVELING_DESCRIPTIONS, SORCERER_ITEMS, PROFICIENCYS_SORC, SOR_S, SOR_MAX_SPELLS, SORCERER_SPELLS, true));
+        // SORCERER (+2 CHA, +1 CON) - Spellcasting: Charisma
+        CLASSES.add(new ClassDefinition("sorcerer", "Sorcerer", "Born with innate magical power.", CLASS_HEALTH_SORCERER, SORCERER_ATTRIBUTES, SORCERER_LEVELING_DESCRIPTIONS, SORCERER_ITEMS, PROFICIENCYS_SORC, SOR_S, SOR_MAX_SPELLS, SORCERER_SPELLS, true, "Charisma"));
         SUBCLASSES.add(new SubclassDefinition("draconic_sorcery", "sorcerer", "Draconic Sorcery", "Dragon blood fuels your raw magical might.", DRACONIC_LEVELING_DESCRIPTIONS, PROFICIENCYS_SORC));
         SUBCLASSES.add(new SubclassDefinition("wild_magic", "sorcerer", "Wild Magic", "Magic surges with chaotic unpredictable power.", WILD_MAGIC_LEVELING_DESCRIPTIONS, PROFICIENCYS_SORC));
         SUBCLASSES.add(new SubclassDefinition("aberrant_sorcery", "sorcerer", "Aberrant Sorcery", "Touched by alien forces from beyond reality.", ABERRANT_LEVELING_DESCRIPTIONS, PROFICIENCYS_SORC));
         SUBCLASSES.add(new SubclassDefinition("clockwork_sorcery", "sorcerer", "Clockwork Sorcery", "Channels the ordered magic of clockwork planes.", CLOCKWORK_LEVELING_DESCRIPTIONS, PROFICIENCYS_SORC));
 
-        // WARLOCK
-        CLASSES.add(new ClassDefinition("warlock", "Warlock", "Gains power through a pact with a dark entity.", CLASS_HEALTH_WARLOCK, WARLOCK_ATTRIBUTES, WARLOCK_LEVELING_DESCRIPTIONS, WARLOCK_ITEMS, PROFICIENCYS_WARL, WAR_S, WAR_MAX_SPELLS, WARLOCK_SPELLS, true));
+        // WARLOCK (+2 CHA, +1 WIS) - Spellcasting: Charisma
+        CLASSES.add(new ClassDefinition("warlock", "Warlock", "Gains power through a pact with a dark entity.", CLASS_HEALTH_WARLOCK, WARLOCK_ATTRIBUTES, WARLOCK_LEVELING_DESCRIPTIONS, WARLOCK_ITEMS, PROFICIENCYS_WARL, WAR_S, WAR_MAX_SPELLS, WARLOCK_SPELLS, true, "Charisma"));
         SUBCLASSES.add(new SubclassDefinition("archfey_patron", "warlock", "Archfey Patron", "Pact with a powerful lord of the Feywild.", ARCHFEY_LEVELING_DESCRIPTIONS, PROFICIENCYS_WARL));
         SUBCLASSES.add(new SubclassDefinition("fiend_patron", "warlock", "Fiend Patron", "Pact made with a powerful devil for raw power.", FIEND_LEVELING_DESCRIPTIONS, PROFICIENCYS_WARL));
         SUBCLASSES.add(new SubclassDefinition("great_old_one", "warlock", "Great Old One Patron", "Bound to an unknowable cosmic entity.", GREAT_OLD_ONE_LEVELING_DESCRIPTIONS, PROFICIENCYS_WARL));
         SUBCLASSES.add(new SubclassDefinition("celestial_patron", "warlock", "Celestial Patron", "Pact with a being of the Upper Planes.", CELESTIAL_LEVELING_DESCRIPTIONS, PROFICIENCYS_WARL));
 
-        // WIZARD
-        CLASSES.add(new ClassDefinition("wizard", "Wizard", "Master of studied spellcasting.", CLASS_HEALTH_WIZARD, WIZARD_ATTRIBUTES, WIZARD_LEVELING_DESCRIPTIONS, WIZARD_ITEMS, PROFICIENCYS_WIZA, WIZ_S, WIZ_MAX_SPELLS, WIZARD_SPELLS, true));
+        // WIZARD (+2 INT, +1 CON) - Spellcasting: Intelligence
+        CLASSES.add(new ClassDefinition("wizard", "Wizard", "Master of studied spellcasting.", CLASS_HEALTH_WIZARD, WIZARD_ATTRIBUTES, WIZARD_LEVELING_DESCRIPTIONS, WIZARD_ITEMS, PROFICIENCYS_WIZA, WIZ_S, WIZ_MAX_SPELLS, WIZARD_SPELLS, true, "Intelligence"));
         SUBCLASSES.add(new SubclassDefinition("abjurer", "wizard", "Abjurer", "Specializes in protective and warding magic.", ABJURER_LEVELING_DESCRIPTIONS, PROFICIENCYS_WIZA));
         SUBCLASSES.add(new SubclassDefinition("diviner", "wizard", "Diviner", "Peers into the past, present and future.", DIVINER_LEVELING_DESCRIPTIONS, PROFICIENCYS_WIZA));
         SUBCLASSES.add(new SubclassDefinition("evoker", "wizard", "Evoker", "Channels raw elemental forces into destruction.", EVOKER_LEVELING_DESCRIPTIONS, PROFICIENCYS_WIZA));

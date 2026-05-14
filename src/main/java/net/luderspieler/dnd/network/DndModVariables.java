@@ -102,6 +102,13 @@ public class DndModVariables {
 		clone.PreparedSpellsLVL8 = original.PreparedSpellsLVL8;
 		clone.PreparedSpellsLVL9 = original.PreparedSpellsLVL9;
 		clone.ChoicesNeeded = original.ChoicesNeeded;
+		clone.Strength = original.Strength;
+		clone.Dexterity = original.Dexterity;
+		clone.Constitution = original.Constitution;
+		clone.Intelligence = original.Intelligence;
+		clone.Wisdom = original.Wisdom;
+		clone.Charisma = original.Charisma;
+		clone.ProficiencyBonus = original.ProficiencyBonus;
 		if (!event.isWasDeath()) {
 			clone.FinishedCharacterCreation = original.FinishedCharacterCreation;
 			clone.TargetingRange = original.TargetingRange;
@@ -298,6 +305,13 @@ public class DndModVariables {
 		public String grabber = "\"\"";
 		public String Decaying_Focus = "\"\"";
 		public String ChoicesNeeded = "\"\"";
+		public double Strength = 0.0;
+		public double Dexterity = 0.0;
+		public double Constitution = 0.0;
+		public double Intelligence = 0.0;
+		public double Wisdom = 0.0;
+		public double Charisma = 0.0;
+		public double ProficiencyBonus = 0.0;
 
 		@Override
 		public void serialize(ValueOutput output) {
@@ -335,6 +349,13 @@ public class DndModVariables {
 			output.putString("grabber", grabber);
 			output.putString("Decaying_Focus", Decaying_Focus);
 			output.putString("ChoicesNeeded", ChoicesNeeded);
+			output.putDouble("Strength", Strength);
+			output.putDouble("Dexterity", Dexterity);
+			output.putDouble("Constitution", Constitution);
+			output.putDouble("Intelligence", Intelligence);
+			output.putDouble("Wisdom", Wisdom);
+			output.putDouble("Charisma", Charisma);
+			output.putDouble("ProficiencyBonus", ProficiencyBonus);
 		}
 
 		@Override
@@ -373,6 +394,13 @@ public class DndModVariables {
 			grabber = input.getStringOr("grabber", "");
 			Decaying_Focus = input.getStringOr("Decaying_Focus", "");
 			ChoicesNeeded = input.getStringOr("ChoicesNeeded", "");
+			Strength = input.getDoubleOr("Strength", 0);
+			Dexterity = input.getDoubleOr("Dexterity", 0);
+			Constitution = input.getDoubleOr("Constitution", 0);
+			Intelligence = input.getDoubleOr("Intelligence", 0);
+			Wisdom = input.getDoubleOr("Wisdom", 0);
+			Charisma = input.getDoubleOr("Charisma", 0);
+			ProficiencyBonus = input.getDoubleOr("ProficiencyBonus", 0);
 		}
 
 		public void markSyncDirty() {

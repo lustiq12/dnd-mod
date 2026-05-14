@@ -7,46 +7,44 @@ import java.util.List;
 import java.util.Map;
 
 public class ClassDefinition {
-    // Grundlegende Identifikation & UI
     private final String id;
     private final String displayName;
     private final String description;
     private final ResourceLocation icon;
-
-    // Stats & Kampf
     private final int classHealth;
     private final String proficiencies;
-    private final Map<String, Double> attributeModifiers;
+    private final Map<String, Integer> abilityScoreIncrements;
     private final List<String> abilityLines;
     private final List<ItemStack> starterItems;
 
-    // Magie-System
     private final int[][] spellSlots;
     private final int[][] preparedAmount;
     private final List<Enum<?>> spellList;
-    private final boolean canUseMagic; // HINZUGEFÜGT
+    private final boolean canUseMagic;
+    private final String spellcastingAttribute;
 
     public ClassDefinition(String id, String displayName, String description, int classHealth,
-                           Map<String, Double> attributeModifiers, List<String> abilityLines,
+                           Map<String, Integer> abilityScoreIncrements, List<String> abilityLines,
                            List<ItemStack> starterItems, String proficiencies,
                            int[][] spellSlots, int[][] preparedAmount, List<Enum<?>> spellList,
-                           boolean canUseMagic) { // HINZUGEFÜGT
+                           boolean canUseMagic, String spellcastingAttribute) {
         this.id = id;
         this.displayName = displayName;
         this.description = description;
         this.classHealth = classHealth;
-        this.attributeModifiers = attributeModifiers;
+        this.abilityScoreIncrements = abilityScoreIncrements;
         this.abilityLines = abilityLines;
         this.starterItems = starterItems;
         this.proficiencies = proficiencies;
         this.spellSlots = spellSlots;
         this.preparedAmount = preparedAmount;
         this.spellList = spellList;
-        this.canUseMagic = canUseMagic; // HINZUGEFÜGT
+        this.canUseMagic = canUseMagic;
+        this.spellcastingAttribute = spellcastingAttribute;
         this.icon = ResourceLocation.fromNamespaceAndPath("dnd", "textures/screens/classiconplaceholder.png");
     }
 
-    // --- MAGIE LOGIK ---
+    // --- MAGIE LOGIK (VOLLSTÄNDIG) ---
 
     public int getMaxPreparedForGrade(int level, int grade) {
         if (level < 0 || level >= preparedAmount.length || grade < 0 || grade > 9) return 0;
@@ -64,9 +62,6 @@ public class ClassDefinition {
         return total;
     }
 
-    /**
-     * Prüft, ob basierend auf dem gespeicherten String noch Platz für einen Zauber dieses Grads ist.
-     */
     public boolean canPrepareMore(String currentSpellsString, int level, int grade) {
         int maxAllowed = getMaxPreparedForGrade(level, grade);
         if (maxAllowed <= 0) return false;
@@ -115,11 +110,12 @@ public class ClassDefinition {
     public int getClassHealth() { return classHealth; }
     public ResourceLocation getIcon() { return icon; }
     public String getProficiencies() { return proficiencies; }
-    public Map<String, Double> getAttributeModifiers() { return attributeModifiers; }
+    public Map<String, Integer> getAbilityScoreIncrements() { return abilityScoreIncrements; }
     public List<String> getAbilityLines() { return abilityLines; }
     public List<ItemStack> getStarterItems() { return starterItems; }
     public int[][] getSpellSlots() { return spellSlots; }
     public int[][] getPreparedAmount() { return preparedAmount; }
     public List<Enum<?>> getSpellList() { return spellList; }
-    public boolean canUseMagic() { return canUseMagic; } // HINZUGEFÜGT
+    public boolean canUseMagic() { return canUseMagic; }
+    public String getSpellcastingAttribute() { return spellcastingAttribute; }
 }
