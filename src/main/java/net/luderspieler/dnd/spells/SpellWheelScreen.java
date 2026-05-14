@@ -443,8 +443,8 @@ public class SpellWheelScreen extends Screen {
         if (classDef == null || classDef.getSpellSlots() == null) return "";
 
         int[][] allSlots = classDef.getSpellSlots();
-        int levelIdx = (int) vars.PlayerLevel - 1;
-        if (levelIdx < 0) levelIdx = 0;
+        int levelIdx = (int) vars.PlayerLevel;
+        if (levelIdx >= allSlots.length) levelIdx = allSlots.length - 1;
 
         int maxSlots = 0;
         // Falls dein Array Grade 1 an Index 1 hat, ist 'grade' richtig.
