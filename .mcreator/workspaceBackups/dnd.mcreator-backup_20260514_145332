@@ -1143,6 +1143,12 @@
       "type": "string",
       "scope": "player_lifetime",
       "value": "\"\""
+    },
+    {
+      "name": "BlocksToUpdate",
+      "type": "string",
+      "scope": "world",
+      "value": "\"\""
     }
   ],
   "sound_elements": [
@@ -1272,7 +1278,7 @@
       "item.dnd.medusa_spawn_egg": "Medusa Spawn Egg",
       "effect.dnd.petrified": "Petrified",
       "key.dnd.character_sheet": "Character Sheet",
-      "effect.dnd.hovering": "Charmed"
+      "effect.dnd.hovering": "Hovering"
     }
   },
   "metadata": {

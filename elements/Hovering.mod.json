@@ -3,7 +3,7 @@
   "_type": "potioneffect",
   "definition": {
     "effectName": "Hovering",
-    "icon": "charmed",
+    "icon": "floating",
     "color": {
       "value": -3355444,
       "falpha": 0.0
