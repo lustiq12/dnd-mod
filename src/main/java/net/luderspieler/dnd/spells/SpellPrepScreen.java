@@ -2,6 +2,7 @@ package net.luderspieler.dnd.spells;
 
 import net.luderspieler.dnd.character.definition.ClassDefinition;
 import net.luderspieler.dnd.character.registrys.ClassRegistry;
+import net.luderspieler.dnd.generalConfigs;
 import net.luderspieler.dnd.network.DndModVariables;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -154,17 +155,15 @@ public class SpellPrepScreen extends Screen {
 
     @Override
     public void render(GuiGraphics g, int mouseX, int mouseY, float partial) {
-        // Background
-        g.fill(0, 0, this.width, this.height, COL_BG);
+        // Hintergrund (Nutzt Overlay-Farbe statt COL_BG)
+        g.fill(0, 0, this.width, this.height, generalConfigs.COLOR_SCREEN_OVERLAY);
 
+        // Panels zeichnen (Nutzen intern generalConfigs)
         drawPanel(g, lx, ly, PANEL_W, PANEL_H, "Available Spells");
         drawPanel(g, rx, ry, PANEL_W, PANEL_H, "Prepared Spells");
 
         List<String> available = availableByGrade.get(selectedGrade);
         List<String> prepared  = preparedByGrade[selectedGrade];
-
-        // Farbe für unfertige Zauber (Orange)
-        int COL_TEXT_WIP = 0xFFFFA500;
 
         // ── Left panel rows (Available) ──
         hoveredLeft = -1;
@@ -176,7 +175,7 @@ public class SpellPrepScreen extends Screen {
 
             String spell = available.get(idx);
             boolean inPrep = prepared.contains(spell);
-            boolean isFinished = SpellCasters.FINISHED_SPELLS.contains(spell); // Check hier
+            boolean isFinished = SpellCasters.FINISHED_SPELLS.contains(spell);
             boolean canAdd = !inPrep && canPrepareMore(selectedGrade, prepared.size());
 
             int rowY = ly + 10 + i * ROW_H;
@@ -184,22 +183,28 @@ public class SpellPrepScreen extends Screen {
                     && mouseY >= rowY && mouseY < rowY + ROW_H;
             if (hov) hoveredLeft = idx;
 
-            int rowBg = inPrep ? 0x33FFFFFF : (hov && canAdd ? COL_ROW_HOVER : (!canAdd && !inPrep ? COL_ROW_FULL : 0));
+            // Zeilen-Hintergrund Logik
+            int rowBg = inPrep ? generalConfigs.COLOR_ROW_PREPARED :
+                    (hov && canAdd ? generalConfigs.COLOR_HOVER_BG :
+                            (!canAdd && !inPrep ? generalConfigs.COLOR_ROW_FULL : 0));
+
             if (rowBg != 0) g.fill(lx + 2, rowY, lx + PANEL_W - 2, rowY + ROW_H, rowBg);
 
-            // Farblogik: Vorrang hat "bereits vorbereitet" (grau), dann "unfertig" (orange)
+            // Text Farblogik
             int textCol;
             if (inPrep) {
-                textCol = COL_TEXT_DIM;
+                textCol = generalConfigs.TEXT_DARK_GRAY; // Ersetzt COL_TEXT_DIM
             } else if (!isFinished) {
-                textCol = COL_TEXT_WIP;
+                textCol = generalConfigs.COLOR_STATUS_WIP; // Das Orange
             } else {
-                textCol = hov ? COL_TEXT_HOV : COL_TEXT;
+                textCol = hov ? generalConfigs.TEXT_HOVER : generalConfigs.TEXT_WHITE;
             }
 
             g.drawString(this.font, formatId(spell), lx + 5, rowY + 2, textCol, false);
 
-            if (inPrep) g.drawString(this.font, "✓", lx + PANEL_W - 12, rowY + 2, 0xFF55FF55, false);
+            if (inPrep) {
+                g.drawString(this.font, "✓", lx + PANEL_W - 12, rowY + 2, generalConfigs.COLOR_STATUS_SUCCESS, false);
+            }
         }
         g.disableScissor();
 
@@ -212,35 +217,43 @@ public class SpellPrepScreen extends Screen {
             if (idx >= prepared.size()) break;
 
             String spell = prepared.get(idx);
-            boolean isFinished = SpellCasters.FINISHED_SPELLS.contains(spell); // Check hier
+            boolean isFinished = SpellCasters.FINISHED_SPELLS.contains(spell);
 
             int rowY = ry + 10 + i * ROW_H;
             boolean hov = mouseX >= rx + 2 && mouseX < rx + PANEL_W - 2
                     && mouseY >= rowY && mouseY < rowY + ROW_H;
             if (hov) hoveredRight = idx;
 
-            if (hov) g.fill(rx + 2, rowY, rx + PANEL_W - 2, rowY + ROW_H, 0x44FF4444);
+            if (hov) {
+                g.fill(rx + 2, rowY, rx + PANEL_W - 2, rowY + ROW_H, generalConfigs.COLOR_ROW_DANGER);
+            }
 
-            // Auch in der rechten Liste orange anzeigen, wenn nicht fertig
-            int textColR = isFinished ? COL_TEXT : COL_TEXT_WIP;
+            // Text Farbe rechts
+            int textColR = isFinished ? generalConfigs.TEXT_WHITE : generalConfigs.COLOR_STATUS_WIP;
 
             g.drawString(this.font, formatId(spell), rx + 5, rowY + 2, textColR, false);
-            if (hov) g.drawString(this.font, "✗", rx + PANEL_W - 12, rowY + 2, COL_REMOVE, false);
+
+            if (hov) {
+                g.drawString(this.font, "✗", rx + PANEL_W - 12, rowY + 2, generalConfigs.COLOR_STATUS_DANGER, false);
+            }
         }
         g.disableScissor();
 
         // ── Slot counter ──
         Player player = Minecraft.getInstance().player;
         if (player != null) {
-            DndModVariables.PlayerVariables vars = player.getData(DndModVariables.PLAYER_VARIABLES);
-            ClassDefinition cls = ClassRegistry.getClass(vars.PlayerClass);
+            var vars = player.getData(net.luderspieler.dnd.network.DndModVariables.PLAYER_VARIABLES);
+            var cls = net.luderspieler.dnd.character.registrys.ClassRegistry.getClass(vars.PlayerClass);
             if (cls != null) {
                 int max  = getMaxPrepared(cls, vars, selectedGrade);
                 int used = prepared.size();
                 String counter = used + " / " + max + " prepared";
+
+                int counterCol = used >= max ? generalConfigs.COLOR_STATUS_DANGER : generalConfigs.COLOR_STATUS_SUCCESS;
+
                 g.drawString(this.font, counter,
                         rx + PANEL_W / 2 - this.font.width(counter) / 2,
-                        ry + PANEL_H + 2, used >= max ? 0xFFFF5555 : 0xFF55FF55, false);
+                        ry + PANEL_H + 2, counterCol, false);
             }
         }
 
@@ -248,20 +261,21 @@ public class SpellPrepScreen extends Screen {
         String gradeLabel = selectedGrade == 0 ? "Cantrips" : "Grade " + selectedGrade + " Spells";
         g.drawString(this.font, gradeLabel,
                 lx + PANEL_W / 2 - this.font.width(gradeLabel) / 2,
-                ly - TAB_H - 10, 0xFFFFD700, false);
+                ly - 10 - 20, // TAB_H manuell eingerechnet falls variabel
+                generalConfigs.COLOR_ACCENT_GOLD, false);
 
         super.render(g, mouseX, mouseY, partial);
     }
 
     private void drawPanel(GuiGraphics g, int x, int y, int w, int h, String title) {
-        g.fill(x, y, x + w, y + h, COL_PANEL);
-        g.fill(x, y, x + w, y + 1, COL_PANEL_EDGE);
-        g.fill(x, y + h - 1, x + w, y + h, COL_PANEL_EDGE);
-        g.fill(x, y, x + 1, y + h, COL_PANEL_EDGE);
-        g.fill(x + w - 1, y, x + w, y + h, COL_PANEL_EDGE);
+        g.fill(x, y, x + w, y + h, generalConfigs.COLOR_PANEL_BG);
+
+        generalConfigs.renderGreenEdge(g, x, y, w, h);
+
         int tw = this.font.width(title);
-        g.drawString(this.font, title, x + w / 2 - tw / 2, y + 2, 0xFFFFD700, false);
-        g.fill(x + 1, y + 9, x + w - 1, y + 10, COL_PANEL_EDGE);
+        g.drawString(this.font, title, x + w / 2 - tw / 2, y + 2, generalConfigs.COLOR_ACCENT_GOLD, false);
+
+        g.fill(x + 1, y + 9, x + w - 1, y + 10, generalConfigs.COLOR_PANEL_EDGE);
     }
 
     // ════════════════════════════════════════════════════════════
@@ -340,7 +354,7 @@ public class SpellPrepScreen extends Screen {
         PrepareSpellsPacket.send(new PrepareSpellsPacket(
                 csvs[0], csvs[1], csvs[2], csvs[3], csvs[4],
                 csvs[5], csvs[6], csvs[7], csvs[8], csvs[9]
-        ));
+       ));
 
         // Kehrt zum LongRestScreen zurück
         if (this.minecraft != null && this.parent != null) {

@@ -3,6 +3,7 @@ package net.luderspieler.dnd.character.screens;
 import net.luderspieler.dnd.character.definition.RaceDefinition;
 import net.luderspieler.dnd.character.registrys.RaceRegistry;
 import net.luderspieler.dnd.character.definition.SubraceDefinition;
+import net.luderspieler.dnd.generalConfigs;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
@@ -64,44 +65,40 @@ public class RaceDetailScreen extends Screen {
 
     @Override
     public void render(GuiGraphics g, int mouseX, int mouseY, float partial) {
-        g.fillGradient(0, 0, this.width, this.height, 0xD0101010, 0xE0101010);
+        this.renderBackground(g, mouseX, mouseY, partial);
 
-        int leftPos = (this.width - this.imageWidth) / 2;
-        int topPos = (this.height - this.imageHeight) / 2;
+        int leftPos = (this.width - imageWidth) / 2;
+        int topPos = (this.height - imageHeight) / 2;
 
+        // Hintergrund-Textur
         g.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND, leftPos, topPos, 0, 0, this.imageWidth, this.imageHeight, this.imageWidth, this.imageHeight);
 
         super.render(g, mouseX, mouseY, partial);
 
-        // ── ICON ──
+        // Icon & Name
         g.blit(RenderPipelines.GUI_TEXTURED, race.getIcon(), leftPos + 10, topPos + 14, 0, 0, ICON_SIZE, ICON_SIZE, ICON_SIZE, ICON_SIZE);
+        g.drawString(this.font, race.getDisplayName(), leftPos + 50, topPos + 22, generalConfigs.TEXT_WHITE);
 
-        // ── NAME ──
-        g.drawString(this.font, race.getDisplayName(), leftPos + 50, topPos + 22, -1);
+        // Subrace Header
+        g.drawString(this.font, "Choose a Subrace:", leftPos + 220, topPos + 22, generalConfigs.COLOR_ACCENT_GOLD);
 
-        // ── SUBRACE HEADER ──
-        g.drawString(this.font, "Choose a Subrace:", leftPos + 220, topPos + 22, -1);
-
-        // ── ATTRIBUTES (Angepasst auf Integer & neue Methode) ──
+        // Attributes Sektion
         int attrY = topPos + 60;
-        g.drawString(this.font, "Attributes:", leftPos + 10, attrY, -1);
+        g.drawString(this.font, "Attributes:", leftPos + 10, attrY, generalConfigs.COLOR_ACCENT_GOLD);
         attrY += 12;
         for (Map.Entry<String, Integer> e : race.getAbilityScoreIncrements().entrySet()) {
             if (e.getValue() == 0) continue;
             String sign = e.getValue() > 0 ? "+" : "";
-            String line = e.getKey() + ": " + sign + formatVal(e.getKey(), e.getValue());
-            g.drawString(this.font, line, leftPos + 10, attrY, -1);
+            String line = e.getKey() + ": " + sign + e.getValue();
+            g.drawString(this.font, line, leftPos + 10, attrY, generalConfigs.TEXT_GRAY);
             attrY += 10;
         }
 
-        // ── RACIAL ABILITIES ──
+        // Traits Sektion
         attrY += 6;
-        g.drawString(this.font, "Traits:", leftPos + 10, attrY, -1);
+        g.drawString(this.font, "Traits:", leftPos + 10, attrY, generalConfigs.COLOR_ACCENT_GOLD);
         attrY += 12;
-        for (String line : race.getAbilityLines()) {
-            g.drawWordWrap(this.font, Component.literal("» " + line), leftPos + 10, attrY, 180, -1);
-            attrY += 18;
-        }
+        g.drawWordWrap(this.font, Component.literal(race.getDescription()), leftPos + 10, attrY, 180, generalConfigs.TEXT_GRAY);
     }
 
     // Formatierung für D&D Integer-Werte

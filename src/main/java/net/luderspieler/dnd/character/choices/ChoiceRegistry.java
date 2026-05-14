@@ -13,8 +13,45 @@ public class ChoiceRegistry {
     private static final Map<String, List<String>> REGISTRY = new HashMap<>();
 
     static {
-        // Hier definierst du deine Choices und deren Optionen
-        REGISTRY.put("Attribute Increase", List.of("Attack Damage + 1", "Attack Speed + 0.1", "Speed + 10%", "Max Health + 4",""));
+        // --- Basis / Gemeinsame Entscheidungen ---
+        REGISTRY.put("Attribute Increase", List.of(
+                "Strength + 2", "Dexterity + 2", "Constitution + 2",
+                "Intelligence + 2", "Wisdom + 2", "Charisma + 2"
+        ));
+
+        REGISTRY.put("Fighting Style", List.of(
+                "Archery", "Defense", "Dueling", "Great Weapon Fighting", "Protection", "Two-Weapon Fighting"
+        ));
+
+        REGISTRY.put("Expertise", List.of(
+                "Acrobatics", "Athletics", "Stealth", "Perception", "Insight", "Persuasion"
+        ));
+
+        REGISTRY.put("Epic Boon", List.of(
+                "Boon of Combat Prowess", "Boon of Dimensional Travel", "Boon of Fortitude", "Boon of Speed"
+        ));
+
+        // --- Klassen-Spezifische Entscheidungen ---
+        // Cleric & Druid Orders
+        REGISTRY.put("Divine Order", List.of("Protector", "Thaumaturge"));
+        REGISTRY.put("Primal Order", List.of("Magician", "Warden"));
+
+        // Warlock Pacts & Invocations
+        REGISTRY.put("Pact Boon", List.of("Pact of the Blade", "Pact of the Chain", "Pact of the Tome"));
+        REGISTRY.put("Eldritch Invocations", List.of("Agonizing Blast", "Armor of Shadows", "Eldritch Spear", "Fiendish Vigor"));
+
+        // Wizard Scholar
+        REGISTRY.put("Scholar", List.of("Arcana", "History", "Investigation", "Nature", "Religion"));
+
+        // Sorcerer Metamagic
+        REGISTRY.put("Metamagic", List.of("Careful Spell", "Distant Spell", "Empowered Spell", "Quickened Spell", "Twinned Spell"));
+
+        // Bard Secrets
+        REGISTRY.put("Magical Secrets", List.of("Learn any Spell from other Classes"));
+
+        // --- Subclass Trigger ---
+        // Dieser Key wird von SUBCLASS_FEATURE erzeugt
+        REGISTRY.put("Subclass Feature", List.of("Open Subclass Selection Menu"));
     }
 
     public static List<String> getOptionsFor(String choiceId) {
@@ -51,15 +88,21 @@ public class ChoiceRegistry {
     }
 
     private static String choiceIdForAbility(Ability ability) {
-        return switch (ability) {
-            case ATTRIBUTE_INCREASE -> "Attribute Increase";
-            // Add more when ChoiceRegistry has them, e.g.:
-            // case FIGHTING_STYLE   -> "Fighting Style";
-            // case EXPERTISE        -> "Expertise";
-            // case MAGICAL_SECRETS  -> "Magical Secrets";
-            // case METAMAGIC        -> "Metamagic";
-            default -> null;
-        };
+        if (ability == null) return null;
+
+
+        String name = ability.name().replace("_", " ").toLowerCase();
+
+        StringBuilder formatted = new StringBuilder();
+        for (String word : name.split(" ")) {
+            if (!word.isEmpty()) {
+                formatted.append(Character.toUpperCase(word.charAt(0)))
+                        .append(word.substring(1))
+                        .append(" ");
+            }
+        }
+
+        return formatted.toString().trim();
     }
 
 }

@@ -3,6 +3,7 @@ package net.luderspieler.dnd.character.screens;
 import net.luderspieler.dnd.character.CharacterCreationState;
 import net.luderspieler.dnd.character.definition.RaceDefinition;
 import net.luderspieler.dnd.character.definition.SubraceDefinition;
+import net.luderspieler.dnd.generalConfigs;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
@@ -56,18 +57,20 @@ public class SubraceDetailScreen extends Screen {
 
     @Override
     public void render(GuiGraphics g, int mouseX, int mouseY, float partial) {
-        // Hintergrund-Overlay
-        g.fillGradient(0, 0, this.width, this.height, 0xD0101010, 0xE0101010);
+        // 1. Hintergrund-Overlay (Nutzt jetzt die Death-Gradients für Konsistenz in Listen/Details)
+        g.fillGradient(0, 0, this.width, this.height,
+                generalConfigs.COLOR_DEATH_OVERLAY_TOP,
+                generalConfigs.COLOR_DEATH_OVERLAY_BOTTOM);
 
         int leftPos = (this.width - this.imageWidth) / 2;
         int topPos = (this.height - this.imageHeight) / 2;
 
-        // Hintergrund-Textur
+        // 2. Hintergrund-Textur
         g.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND, leftPos, topPos, 0, 0, this.imageWidth, this.imageHeight, this.imageWidth, this.imageHeight);
 
         super.render(g, mouseX, mouseY, partial);
 
-        // ── ICON (Anker: leftPos + 10) ──
+        // 3. ICON (Anker: leftPos + 10)
         g.blit(
                 RenderPipelines.GUI_TEXTURED,
                 subrace.getIcon(),
@@ -77,26 +80,30 @@ public class SubraceDetailScreen extends Screen {
                 ICON_SIZE, ICON_SIZE
         );
 
-        // ── NAME ──
-        g.drawString(this.font, subrace.getDisplayName(), leftPos + 50, topPos + 18, -1);
+        // 4. NAME (Weiß aus Config)
+        g.drawString(this.font, subrace.getDisplayName(), leftPos + 50, topPos + 18, generalConfigs.TEXT_WHITE);
 
-        // ── PARENT RACE (unter dem Namen) ──
-        g.drawString(this.font, "(" + race.getDisplayName() + ")", leftPos + 50, topPos + 30, 0x888888);
+        // 5. PARENT RACE (Dunkelgrau aus Config)
+        g.drawString(this.font, "(" + race.getDisplayName() + ")", leftPos + 50, topPos + 30, generalConfigs.TEXT_DARK_GRAY);
 
-        // ── DESCRIPTION (Linke Spalte) ──
+        // 6. DESCRIPTION (Linke Spalte, Grau aus Config)
         g.drawWordWrap(this.font,
                 Component.literal(subrace.getDescription()),
-                leftPos + 10, topPos + 52, COL_WIDTH, 0xAAAAAA);
+                leftPos + 10, topPos + 52, COL_WIDTH, generalConfigs.TEXT_GRAY);
 
-        // ── ABILITIES (Rechte Spalte oder tiefer, hier analog zum ClassScreen rechts) ──
+        // 7. ABILITIES (Rechte Spalte)
         int rightColX = leftPos + 210;
         int y = topPos + 30;
-        g.drawString(this.font, "Subrace Traits:", rightColX, y, -1);
+
+        // Überschrift in Gold
+        g.drawString(this.font, "Subrace Traits:", rightColX, y, generalConfigs.COLOR_ACCENT_GOLD);
+
         y += 14;
         for (String line : subrace.getAbilityLines()) {
+            // Trait-Inhalt in Weiß (oder Grau, falls dir das lieber ist)
             g.drawWordWrap(this.font,
                     Component.literal("» " + line),
-                    rightColX, y, COL_WIDTH, -1);
+                    rightColX, y, COL_WIDTH, generalConfigs.TEXT_WHITE);
             y += 20;
         }
     }

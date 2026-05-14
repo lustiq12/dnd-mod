@@ -4,6 +4,7 @@ import net.luderspieler.dnd.character.CharacterCreationState;
 import net.luderspieler.dnd.character.definition.ClassDefinition;
 import net.luderspieler.dnd.character.definition.RaceDefinition;
 import net.luderspieler.dnd.character.registrys.RaceRegistry;
+import net.luderspieler.dnd.generalConfigs;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
@@ -59,23 +60,27 @@ public class ClassDetailScreen extends Screen {
 
     @Override
     public void render(GuiGraphics g, int mouseX, int mouseY, float partial) {
-        g.fillGradient(0, 0, this.width, this.height, 0xD0101010, 0xE0101010);
+        // 1. Hintergrund-Overlay
+        g.fillGradient(0, 0, this.width, this.height,
+                generalConfigs.COLOR_DEATH_OVERLAY_TOP,
+                generalConfigs.COLOR_DEATH_OVERLAY_BOTTOM);
 
-        int leftPos = (this.width - imageWidth) / 2;
-        int topPos  = (this.height - imageHeight) / 2;
+        int leftPos = (this.width - this.imageWidth) / 2;
+        int topPos  = (this.height - this.imageHeight) / 2;
 
-        g.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND, leftPos, topPos, 0, 0,
-                imageWidth, imageHeight, imageWidth, imageHeight);
+        // 2. Hintergrund-Textur
+        g.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND, leftPos, topPos, 0, 0, this.imageWidth, this.imageHeight, this.imageWidth, this.imageHeight);
 
         super.render(g, mouseX, mouseY, partial);
 
         // ── ICON & NAME ──
         g.blit(RenderPipelines.GUI_TEXTURED, cls.getIcon(), leftPos + 20, topPos + 20, 0, 0, ICON_SIZE, ICON_SIZE, ICON_SIZE, ICON_SIZE);
-        g.drawString(this.font, cls.getDisplayName(), leftPos + 80, topPos + 35, -1, true);
+        g.drawString(this.font, cls.getDisplayName(), leftPos + 60, topPos + 24, generalConfigs.TEXT_WHITE);
 
         // ── STARTER ITEMS ──
         int itemRowY = topPos + 80;
-        g.drawString(this.font, "Starter Items:", leftPos + 20, itemRowY, -1, true);
+        // Überschrift in Gold
+        g.drawString(this.font, "Starter Items:", leftPos + 20, itemRowY, generalConfigs.COLOR_ACCENT_GOLD, true);
         itemRowY += 15;
         List<ItemStack> items = cls.getStarterItems();
         for (int i = 0; i < items.size(); i++) {
@@ -92,26 +97,28 @@ public class ClassDetailScreen extends Screen {
             }
         }
 
-        // ── STATS (Integer-basiert für D&D) ──
+        // ── STATS ──
         RaceDefinition race = RaceRegistry.getRace(CharacterCreationState.selectedRaceId);
         Map<String, Integer> combined = combinedAttrs(race, cls);
         int attrY = itemRowY + 30;
-        g.drawString(this.font, "Total Stats:", leftPos + 20, attrY, -1, true);
+        // Überschrift in Gold
+        g.drawString(this.font, "Total Stats:", leftPos + 20, attrY, generalConfigs.COLOR_ACCENT_GOLD, true);
         attrY += 15;
         for (Map.Entry<String, Integer> e : combined.entrySet()) {
             if (e.getValue() == 0) continue;
             String sign = e.getValue() > 0 ? "+" : "";
-            g.drawString(this.font, e.getKey() + ": " + sign + formatVal(e.getKey(), e.getValue()), leftPos + 20, attrY, -1, true);
+            // Attribut-Zeilen in Weiß
+            g.drawString(this.font, e.getKey() + ": " + sign + formatVal(e.getKey(), e.getValue()), leftPos + 20, attrY, generalConfigs.TEXT_WHITE, true);
             attrY += 12;
         }
 
-        // Health Increase Info
+        // Health Increase Info (In Gold hervorgehoben)
         attrY += 2;
-        g.drawString(this.font, "Level up health increase: " + cls.getClassHealth(), leftPos + 20, attrY, -1, true);
+        g.drawString(this.font, "Level up health increase: " + cls.getClassHealth(), leftPos + 20, attrY, generalConfigs.COLOR_ACCENT_GOLD, true);
         attrY += 15;
 
-        // ── DESCRIPTION ──
-        g.drawWordWrap(this.font, Component.literal(cls.getDescription()), leftPos + 20, attrY, 250, -1);
+        // ── DESCRIPTION (Grau aus Config) ──
+        g.drawWordWrap(this.font, Component.literal(cls.getDescription()), leftPos + 20, attrY, 250, generalConfigs.TEXT_GRAY);
 
         // ── CLASS PROGRESSION (Rechte Spalte) ──
         int rightColumnStart = leftPos + 300;
@@ -120,14 +127,14 @@ public class ClassDetailScreen extends Screen {
         int abYHeader = topPos + 40;
         int lineSpacing = 12;
 
-        g.drawString(this.font, "Class Progression (1-20):", rightColumnStart, abYHeader, -1, true);
+        // Header in Gold
+        g.drawString(this.font, "Class Progression (1-20):", rightColumnStart, abYHeader, generalConfigs.COLOR_ACCENT_GOLD, true);
 
         int currentYLeft = abYHeader + 20;
         int currentYRight = abYHeader + 20;
 
         List<String> abilities = cls.getAbilityLines();
         for (int i = 0; i < abilities.size(); i++) {
-            // Split 10/10 für zwei Spalten
             boolean isLeftColumn = i < 10;
             int x = isLeftColumn ? rightColumnStart : rightColumnStart + columnGap;
             int y = isLeftColumn ? currentYLeft : currentYRight;
@@ -135,10 +142,10 @@ public class ClassDetailScreen extends Screen {
             String rawText = abilities.get(i);
 
             if (this.font.width(rawText) <= columnWidth) {
-                g.drawString(this.font, rawText, x, y, -1, true);
+                // Zeilen in Weiß
+                g.drawString(this.font, rawText, x, y, generalConfigs.TEXT_WHITE, true);
                 y += lineSpacing;
             } else {
-                // Smart-Split an der Klammer für Spell Slots etc.
                 String[] parts = rawText.split("(?=\\()", 2);
                 for (String part : parts) {
                     String trimmed = part.trim();
@@ -146,7 +153,7 @@ public class ClassDetailScreen extends Screen {
 
                     List<FormattedCharSequence> wrapped = this.font.split(Component.literal(trimmed), columnWidth);
                     for (FormattedCharSequence line : wrapped) {
-                        g.drawString(this.font, line, x, y, -1, true);
+                        g.drawString(this.font, line, x, y, generalConfigs.TEXT_WHITE, true);
                         y += lineSpacing;
                     }
                 }

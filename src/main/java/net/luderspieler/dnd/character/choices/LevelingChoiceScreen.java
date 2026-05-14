@@ -1,8 +1,10 @@
 package net.luderspieler.dnd.character.choices;
 
+import net.luderspieler.dnd.generalConfigs;
 import net.luderspieler.dnd.network.DndModVariables;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 
@@ -32,6 +34,11 @@ public class LevelingChoiceScreen extends Screen {
             }
             initialized = true;
         }
+
+        // Zentrierter Back-Button am unteren Ende der Liste
+        this.addRenderableWidget(Button.builder(Component.literal("Back"), b -> {
+            Minecraft.getInstance().setScreen(this.parent);
+        }).bounds(this.width / 2 - 40, this.height / 2 + (choices.size() * 18) + 20, 80, 20).build());
     }
 
     public void removeChoiceLocally(String id) {
@@ -40,32 +47,42 @@ public class LevelingChoiceScreen extends Screen {
 
     @Override
     public void render(GuiGraphics g, int mouseX, int mouseY, float partial) {
-        // Parent im Hintergrund zeichnen
+        // 1. Hintergrund-Abdunklung
         if (this.parent != null) {
             this.parent.render(g, -1, -1, partial);
-            g.fill(0, 0, this.width, this.height, 0x88000000); // Einfache Abdunkelung
+            g.fill(0, 0, this.width, this.height, generalConfigs.COLOR_SCREEN_OVERLAY);
         }
 
-        // Dynamische Box-Größe berechnen
+        // 2. Box-Berechnung
         int boxWidth = 180;
         int rowH = 18;
-        int boxHeight = (choices.size() * rowH) + 30;
+        int boxHeight = (choices.size() * rowH) + 50;
         int x = (this.width - boxWidth) / 2;
         int y = (this.height - boxHeight) / 2;
 
-        g.fill(x, y, x + boxWidth, y + boxHeight, 0xEE0D1B2A);
-        g.drawCenteredString(this.font, "Ausstehende Wahlen", x + boxWidth / 2, y + 8, 0xFFFFD700);
+        // 3. Hintergrund & Rahmen aus Config
+        g.fill(x, y, x + boxWidth, y + boxHeight, generalConfigs.COLOR_PANEL_BG);
+        generalConfigs.renderGreenEdge(g, x, y, boxWidth, boxHeight);
 
+        // 4. Titel
+        g.drawCenteredString(this.font, "Pending Choices", x + boxWidth / 2, y + 8, generalConfigs.COLOR_ACCENT_GOLD);
+
+        // 5. Auswahl-Liste
         hoveredIdx = -1;
         for (int i = 0; i < choices.size(); i++) {
             int rowY = y + 25 + (i * rowH);
             boolean hov = mouseX >= x && mouseX <= x + boxWidth && mouseY >= rowY && mouseY < rowY + rowH;
+
             if (hov) {
                 hoveredIdx = i;
-                g.fill(x + 2, rowY, x + boxWidth - 2, rowY + rowH, 0x33FFFFFF);
+                g.fill(x + 2, rowY, x + boxWidth - 2, rowY + rowH, generalConfigs.COLOR_HOVER_BG);
             }
-            g.drawString(this.font, choices.get(i).replace("_", " "), x + 10, rowY + 4, hov ? 0xFF53D8FB : 0xFFFFFFFF);
+
+            // Textfarbe ändert sich bei Hover (alles über Config)
+            int textColor = hov ? generalConfigs.TEXT_HOVER : generalConfigs.TEXT_WHITE;
+            g.drawString(this.font, choices.get(i), x + 10, rowY + 4, textColor);
         }
+
         super.render(g, mouseX, mouseY, partial);
     }
 

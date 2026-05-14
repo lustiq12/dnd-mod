@@ -1,6 +1,7 @@
 package net.luderspieler.dnd.character.screens;
 
 import net.luderspieler.dnd.character.network.KeepCharacterPacket;
+import net.luderspieler.dnd.generalConfigs;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
@@ -38,14 +39,14 @@ public class DeathChoiceScreen extends Screen {
 
     @Override
     public void render(GuiGraphics g, int mouseX, int mouseY, float partial) {
-        g.fillGradient(0, 0, this.width, this.height, 0xD0101010, 0xE0101010);
+        g.fillGradient(0, 0, this.width, this.height,
+                generalConfigs.COLOR_DEATH_OVERLAY_TOP,
+                generalConfigs.COLOR_DEATH_OVERLAY_BOTTOM);
 
         super.render(g, mouseX, mouseY, partial);
 
-        g.drawCenteredString(this.font, this.title, this.width / 2, this.height / 2 - 20, -1);
-        g.drawCenteredString(this.font,
-                Component.literal("Do you wish to create a new character or continue as before?"),
-                this.width / 2, this.height / 2 - 6, -1);
+        g.drawCenteredString(this.font, this.title, this.width / 2, this.height / 2 - 40,
+                generalConfigs.COLOR_DANGER_RED);
     }
 
     @Override

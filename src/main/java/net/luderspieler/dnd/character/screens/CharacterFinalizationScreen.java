@@ -7,6 +7,7 @@ import net.luderspieler.dnd.character.definition.SubraceDefinition;
 import net.luderspieler.dnd.character.network.CharacterCreationPacket;
 import net.luderspieler.dnd.character.registrys.ClassRegistry;
 import net.luderspieler.dnd.character.registrys.RaceRegistry;
+import net.luderspieler.dnd.generalConfigs;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
@@ -85,38 +86,51 @@ public class CharacterFinalizationScreen extends Screen {
 
     @Override
     public void render(GuiGraphics g, int mouseX, int mouseY, float partial) {
+        // 1. Hintergrund & Overlay
         this.renderBackground(g, mouseX, mouseY, partial);
+        g.fill(0, 0, this.width, this.height, generalConfigs.COLOR_SCREEN_OVERLAY);
+
         super.render(g, mouseX, mouseY, partial);
 
         int centerX = this.width / 2;
         int rightX = centerX + 120;
         int currentRY = 40;
 
-        g.drawString(this.font, "Name:", centerX - 110, 30, -1);
-        g.drawString(this.font, "Backstory:", centerX - 110, 70, -1);
-        g.drawString(this.font, "Personality:", centerX - 110, 110, -1);
+        // 2. Linke Spalte (Eingabe-Labels) in Weiß
+        g.drawString(this.font, "Name:", centerX - 110, 30, generalConfigs.TEXT_WHITE);
+        g.drawString(this.font, "Backstory:", centerX - 110, 70, generalConfigs.TEXT_WHITE);
+        g.drawString(this.font, "Personality:", centerX - 110, 110, generalConfigs.TEXT_WHITE);
 
-        g.drawString(this.font, "Summary:", rightX, currentRY, -1, true);
+        // 3. Rechte Spalte (Summary) - Titel in Gold
+        g.drawString(this.font, "Summary:", rightX, currentRY, generalConfigs.COLOR_ACCENT_GOLD, true);
         currentRY += 15;
-        if (race != null) g.drawString(this.font, "Race: " + race.getDisplayName(), rightX, currentRY, 0xAAAAAA, true);
-        currentRY += 10;
-        if (subrace != null) g.drawString(this.font, "Subrace: " + subrace.getDisplayName(), rightX, currentRY, 0xAAAAAA, true);
-        currentRY += 10;
-        if (cls != null) g.drawString(this.font, "Class: " + cls.getDisplayName(), rightX, currentRY, 0xAAAAAA, true);
 
+        // Werte in Grau
+        if (race != null)
+            g.drawString(this.font, "Race: " + race.getDisplayName(), rightX, currentRY, generalConfigs.TEXT_GRAY, true);
+        currentRY += 10;
+        if (subrace != null)
+            g.drawString(this.font, "Subrace: " + subrace.getDisplayName(), rightX, currentRY, generalConfigs.TEXT_GRAY, true);
+        currentRY += 10;
+        if (cls != null)
+            g.drawString(this.font, "Class: " + cls.getDisplayName(), rightX, currentRY, generalConfigs.TEXT_GRAY, true);
+
+        // 4. Final Stats - Titel in Gold
         currentRY += 25;
-        g.drawString(this.font, "Final Stats:", rightX, currentRY, -1, true);
+        g.drawString(this.font, "Final Stats:", rightX, currentRY, generalConfigs.COLOR_ACCENT_GOLD, true);
         currentRY += 12;
 
+        // Stats in Weiß
         for (Map.Entry<String, Integer> e : buildCombinedAttrs().entrySet()) {
             if (e.getValue() == 0) continue;
             String sign = e.getValue() > 0 ? "+" : "";
-            g.drawString(this.font, e.getKey() + ": " + sign + formatVal(e.getKey(), e.getValue()), rightX, currentRY, -1, true);
+            g.drawString(this.font, e.getKey() + ": " + sign + formatVal(e.getKey(), e.getValue()), rightX, currentRY, generalConfigs.TEXT_WHITE, true);
             currentRY += 10;
         }
 
+        // 5. Equipment - Titel in Gold
         currentRY += 15;
-        g.drawString(this.font, "Starting Equipment:", rightX, currentRY, -1, true);
+        g.drawString(this.font, "Starting Equipment:", rightX, currentRY, generalConfigs.COLOR_ACCENT_GOLD, true);
         currentRY += 15;
 
         if (cls != null) {
@@ -128,14 +142,16 @@ public class CharacterFinalizationScreen extends Screen {
             }
         }
 
-        // Proficiencies Anzeige (War in deinem Original drin)
+        // 6. Proficiencies - Titel in Gold
         currentRY += 25;
-        g.drawString(this.font, "Proficiencies:", rightX, currentRY, -1, true);
+        g.drawString(this.font, "Proficiencies:", rightX, currentRY, generalConfigs.COLOR_ACCENT_GOLD, true);
         currentRY += 12;
+
+        // Proficiencies Text in Grau
         String profs = buildCombinedProfs();
         List<FormattedCharSequence> wrappedProfs = this.font.split(Component.literal(profs), 150);
         for (FormattedCharSequence line : wrappedProfs) {
-            g.drawString(this.font, line, rightX, currentRY, 0xAAAAAA, true);
+            g.drawString(this.font, line, rightX, currentRY, generalConfigs.TEXT_GRAY, true);
             currentRY += 10;
         }
     }

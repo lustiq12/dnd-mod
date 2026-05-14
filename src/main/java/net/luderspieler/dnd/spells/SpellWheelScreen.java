@@ -1,6 +1,7 @@
 package net.luderspieler.dnd.spells;
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.luderspieler.dnd.generalConfigs;
 import net.luderspieler.dnd.character.registrys.ClassRegistry;
 import net.luderspieler.dnd.character.definition.ClassDefinition;
 import net.luderspieler.dnd.network.DndModVariables;
@@ -30,25 +31,6 @@ public class SpellWheelScreen extends Screen {
     private static final int LABEL_RADIUS_OUTER = 68;
     private static final int LABEL_RADIUS_INNER = 62;
     private static final float HOVER_EXPAND = 6f;
-
-    // ── Colors ──
-    // Hintergrund-Segmente (Grautöne mit Transparenz)
-    private static final int COL_SEGMENT_IDLE = -1440546270; // 0xAA222222
-    private static final int COL_SEGMENT_HOVER = -869055693; // 0xCC333333
-    private static final int COL_SEGMENT_SEL = -297515964;   // 0xEE444444
-
-    // Konturen & Zentrum (Voll deckend / Opaque)
-    private static final int COL_OUTLINE = -15658735; // 0xFF111111
-    private static final int COL_HUB = -14540254;     // 0xFF222222
-
-    // Texte & Highlights
-    private static final int COL_TEXT = -1;           // 0xFFFFFFFF (Reinweiß)
-    private static final int COL_TEXT_HOVER = -171;    // 0xFFFFFF55 (MC-Gelb)
-    private static final int COL_TEXT_DIM = -5592406;  // 0xFFAAAAAA (Standard-Grau)
-
-    // Cantrips (Gold-Kontrast)
-    private static final int COL_CANTRIP = -1426093568;       // 0xAAFFAA00
-    private static final int COL_CANTRIP_HOVER = -855610317;  // 0xCCFFCC33
 
     // ── State ──
     private enum Stage { LEVEL_SELECT, SPELL_SELECT }
@@ -83,8 +65,8 @@ public class SpellWheelScreen extends Screen {
 
     @Override
     public void render(GuiGraphics g, int mouseX, int mouseY, float partial) {
-        // dim background slightly
-        g.fill(0, 0, this.width, this.height, 1426063360);
+        // dim background slightly (Nutzt jetzt Config)
+        g.fill(0, 0, this.width, this.height, generalConfigs.COLOR_SCREEN_OVERLAY);
 
         if (stage == Stage.LEVEL_SELECT) {
             renderLevelWheel(g, mouseX, mouseY);
@@ -99,9 +81,8 @@ public class SpellWheelScreen extends Screen {
 
     private void renderLevelWheel(GuiGraphics g, int mouseX, int mouseY) {
         int segments = 10;
-        float scale = 1.5f; // Dein gewünschter Scale-Faktor
+        float scale = 1.5f;
 
-        // Skalierte Radien berechnen
         int currentOuterRadius = (int) (OUTER_RADIUS * scale);
         int currentHubRadius = (int) (HUB_RADIUS * scale);
         int currentLabelRadius = (int) (LABEL_RADIUS_OUTER * scale);
@@ -112,7 +93,6 @@ public class SpellWheelScreen extends Screen {
         hoveredSegment = -1;
         double dist = Math.sqrt((mouseX - cx) * (mouseX - cx) + (mouseY - cy) * (mouseY - cy));
 
-        // Maus-Abfrage an neuen Radius anpassen
         if (dist > currentHubRadius && dist < currentOuterRadius + HOVER_EXPAND) {
             double angle = mouseAngle + Math.PI / 2;
             if (angle < 0) angle += 2 * Math.PI;
@@ -124,13 +104,13 @@ public class SpellWheelScreen extends Screen {
             double end = start + sliceAngle;
             boolean hovered = i == hoveredSegment;
 
-            // Radius bei Hover leicht vergrößern
             int outerR = hovered ? currentOuterRadius + (int) HOVER_EXPAND : currentOuterRadius;
 
-            int color = (i == 0) ? (hovered ? COL_CANTRIP_HOVER : COL_CANTRIP) : (hovered ? COL_SEGMENT_HOVER : COL_SEGMENT_IDLE);
+            // Farbe direkt aus Config berechnen
+            int color = (i == 0) ? (hovered ? generalConfigs.WHEEL_CANTRIP_HOVER : generalConfigs.WHEEL_CANTRIP)
+                    : (hovered ? generalConfigs.WHEEL_SEGMENT_HOVER : generalConfigs.WHEEL_SEGMENT_IDLE);
 
-            // Zeichnen mit skalierten Werten
-            drawSegment(g, cx, cy, currentHubRadius, outerR, start, end, color, COL_OUTLINE);
+            drawSegment(g, cx, cy, currentHubRadius, outerR, start, end, color, generalConfigs.WHEEL_OUTLINE);
 
             double mid = (start + end) / 2;
             int lx = cx + (int) (currentLabelRadius * Math.cos(mid));
@@ -140,15 +120,15 @@ public class SpellWheelScreen extends Screen {
             String label = (i == 0) ? "Cantrip" : "Grade " + i + slotInfo;
 
             boolean hasContent = hasSpellsAtLevel(i);
-            int textColor = hasContent ? (hovered ? COL_TEXT_HOVER : COL_TEXT) : COL_TEXT_DIM;
+            int textColor = hasContent ? (hovered ? generalConfigs.TEXT_HOVER : generalConfigs.TEXT_WHITE) : generalConfigs.TEXT_GRAY;
 
             drawCenteredShadow(g, label, lx, ly, textColor);
         }
 
-        // Zentraler Hub ebenfalls skaliert
-        drawCircle(g, cx, cy, currentHubRadius, COL_HUB, COL_OUTLINE);
-        drawCenteredShadow(g, "Spells", cx, cy - 4, COL_TEXT);
+        drawCircle(g, cx, cy, currentHubRadius, generalConfigs.WHEEL_HUB, generalConfigs.WHEEL_OUTLINE);
+        drawCenteredShadow(g, "Spells", cx, cy - 4, generalConfigs.TEXT_WHITE);
     }
+
     // ── STAGE 2: Spell selector ──────────────────────────
 
     private void renderSpellWheel(GuiGraphics g, int mouseX, int mouseY) {
@@ -171,31 +151,29 @@ public class SpellWheelScreen extends Screen {
         }
 
         if (currentSpells.isEmpty()) {
-            drawSegment(g, cx, cy, currentHubRadius, currentOuterRadius, -Math.PI / 2, Math.PI * 1.5, COL_SEGMENT_IDLE, COL_OUTLINE);
-            drawCenteredShadow(g, "No spells prepared", cx, cy + 16, COL_TEXT_DIM);
+            drawSegment(g, cx, cy, currentHubRadius, currentOuterRadius, -Math.PI / 2, Math.PI * 1.5, generalConfigs.WHEEL_SEGMENT_IDLE, generalConfigs.WHEEL_OUTLINE);
+            drawCenteredShadow(g, "No spells prepared", cx, cy + 16, generalConfigs.TEXT_GRAY);
         } else {
             for (int i = 0; i < segments; i++) {
                 double start = -Math.PI / 2 + i * sliceAngle;
                 double end = start + sliceAngle;
                 boolean hovered = i == hoveredSpell;
                 int outerR = hovered ? currentOuterRadius + (int) HOVER_EXPAND : currentOuterRadius;
-                int color = hovered ? COL_SEGMENT_HOVER : COL_SEGMENT_IDLE;
-                drawSegment(g, cx, cy, currentHubRadius, outerR, start, end, color, COL_OUTLINE);
+                int color = hovered ? generalConfigs.WHEEL_SEGMENT_HOVER : generalConfigs.WHEEL_SEGMENT_IDLE;
+                drawSegment(g, cx, cy, currentHubRadius, outerR, start, end, color, generalConfigs.WHEEL_OUTLINE);
 
                 double mid = (start + end) / 2;
                 int lx = cx + (int) (currentLabelRadius * Math.cos(mid));
                 int ly = cy + (int) (currentLabelRadius * Math.sin(mid));
-                drawCenteredShadow(g, formatSpellId(currentSpells.get(i)), lx, ly, hovered ? COL_TEXT_HOVER : COL_TEXT);
+                drawCenteredShadow(g, formatSpellId(currentSpells.get(i)), lx, ly, hovered ? generalConfigs.TEXT_HOVER : generalConfigs.TEXT_WHITE);
             }
         }
 
-        drawCircle(g, cx, cy, currentHubRadius, COL_HUB, COL_OUTLINE);
+        drawCircle(g, cx, cy, currentHubRadius, generalConfigs.WHEEL_HUB, generalConfigs.WHEEL_OUTLINE);
 
-        // Label im Hub mit Slots
         String levelLabel = (selectedLevel == 0) ? "Cantrip" : "Grade " + selectedLevel + getSlotInfo(selectedLevel);
-        drawCenteredShadow(g, levelLabel, cx, cy - 8
-                , COL_TEXT);
-        drawCenteredShadow(g, "Back", cx, cy + 8, -1);
+        drawCenteredShadow(g, levelLabel, cx, cy - 8, generalConfigs.TEXT_WHITE);
+        drawCenteredShadow(g, "Back", cx, cy + 8, generalConfigs.TEXT_WHITE);
     }
 
     // ══════════════════════════════════════════════════════
@@ -208,10 +186,9 @@ public class SpellWheelScreen extends Screen {
         double dy = mouseY - cy;
         double dist = Math.sqrt(dx * dx + dy * dy);
 
-        if (button == 0) { // left click
+        if (button == 0) {
             if (stage == Stage.LEVEL_SELECT) {
                 if (dist <= HUB_RADIUS) {
-                    // hub click — close
                     this.onClose();
                     return true;
                 }
@@ -222,7 +199,6 @@ public class SpellWheelScreen extends Screen {
                 }
             } else {
                 if (dist <= HUB_RADIUS) {
-                    // back to level wheel
                     stage = Stage.LEVEL_SELECT;
                     hoveredSegment = -1;
                     return true;
@@ -234,7 +210,7 @@ public class SpellWheelScreen extends Screen {
             }
         }
 
-        if (button == 1) { // right click = back / close
+        if (button == 1) {
             if (stage == Stage.SPELL_SELECT) {
                 stage = Stage.LEVEL_SELECT;
             } else {
@@ -248,7 +224,6 @@ public class SpellWheelScreen extends Screen {
 
     @Override
     public boolean keyPressed(int key, int b, int c) {
-        // ESC or the hotkey closes
         if (key == 256) {
             this.onClose();
             return true;
@@ -280,7 +255,6 @@ public class SpellWheelScreen extends Screen {
         }
     }
 
-    /** Read PreparedSpellsLVL1 through PreparedSpellsLVL9 */
     private String getPreparedSpellsForLevel(DndModVariables.PlayerVariables vars, int level) {
         return switch (level) {
             case 1 -> vars.PreparedSpellsLVL1;
@@ -305,12 +279,10 @@ public class SpellWheelScreen extends Screen {
     }
 
     private void castSpell(String spellId, int level) {
-        // Wir müssen die Namen benutzen, die oben in (String spellId, int level) stehen!
         CastSpellPacket.send(spellId, level);
         this.onClose();
     }
 
-    /** "fire_bolt" → "Fire Bolt" */
     private String formatSpellId(String id) {
         if (id == null || id.isBlank()) return "";
         String[] parts = id.trim().split("_");
@@ -327,10 +299,6 @@ public class SpellWheelScreen extends Screen {
     // DRAWING PRIMITIVES
     // ══════════════════════════════════════════════════════
 
-    /**
-     * Draws a pie-slice segment between innerR and outerR.
-     * Uses triangle-fan approximation with N steps.
-     */
     private void drawSegment(GuiGraphics g, int ox, int oy,
                              int innerR, int outerR,
                              double startAngle, double endAngle,
@@ -343,9 +311,7 @@ public class SpellWheelScreen extends Screen {
         int gr = (fillColor >> 8) & 0xFF;
         int b = fillColor & 0xFF;
 
-        // Wir bleiben bei debugQuads, da dies bei dir erkannt wird
         VertexConsumer buffer = net.minecraft.client.Minecraft.getInstance().renderBuffers().bufferSource().getBuffer(RenderType.debugQuads());
-
         org.joml.Matrix3x2f matrix = g.pose();
 
         for (int i = 0; i < steps; i++) {
@@ -367,11 +333,9 @@ public class SpellWheelScreen extends Screen {
             addRawVertex(buffer, matrix, ix2, iy2, r, gr, b, a);
         }
 
-        // Das hier ist der eigentliche "Hintergrund-Bringer":
         net.minecraft.client.Minecraft.getInstance().renderBuffers().bufferSource().endBatch();
     }
 
-    // Angepasste Hilfsmethode für Matrix3x2f (1.21 Standard)
     private void addRawVertex(VertexConsumer buffer, org.joml.Matrix3x2f matrix, float x, float y, int r, int g, int b, int a) {
         float tx = matrix.m00() * x + matrix.m10() * y + matrix.m20();
         float ty = matrix.m01() * x + matrix.m11() * y + matrix.m21();
@@ -398,7 +362,6 @@ public class SpellWheelScreen extends Screen {
         } else if (y1 == y2) {
             g.fill(Math.min(x1, x2), y1, Math.max(x1, x2) + 1, y1 + 1, color);
         } else {
-            // Bresenham
             int dx = Math.abs(x2 - x1), sx = x1 < x2 ? 1 : -1;
             int dy = -Math.abs(y2 - y1), sy = y1 < y2 ? 1 : -1;
             int err = dx + dy;
@@ -427,8 +390,8 @@ public class SpellWheelScreen extends Screen {
         int w = this.font.width(text);
         int tx = x - w / 2;
         int ty = y - this.font.lineHeight / 2;
-        // shadow
-        g.drawString(this.font, text, tx + 1, ty + 1, 0xFF000000, false);
+        // Nutzt jetzt die Schattenfarbe aus der Config
+        g.drawString(this.font, text, tx + 1, ty + 1, generalConfigs.COLOR_TEXT_SHADOW, false);
         g.drawString(this.font, text, tx, ty, color, false);
     }
 
@@ -448,13 +411,10 @@ public class SpellWheelScreen extends Screen {
         if (levelIdx >= allSlots.length) levelIdx = allSlots.length - 1;
 
         int maxSlots = 0;
-        // Falls dein Array Grade 1 an Index 1 hat, ist 'grade' richtig.
-        // Falls Grade 1 an Index 0 liegt, müsstest du hier 'grade - 1' nutzen.
         if (levelIdx < allSlots.length && grade < allSlots[levelIdx].length) {
             maxSlots = allSlots[levelIdx][grade];
         }
 
-        // Wenn keine Slots möglich sind (Max = 0), zeigen wir gar nichts an
         if (maxSlots <= 0) return "";
 
         int currentSlots = 0;

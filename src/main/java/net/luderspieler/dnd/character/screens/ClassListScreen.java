@@ -5,6 +5,7 @@ import net.luderspieler.dnd.character.definition.ClassDefinition;
 import net.luderspieler.dnd.character.registrys.ClassRegistry;
 import net.luderspieler.dnd.character.definition.RaceDefinition;
 import net.luderspieler.dnd.character.registrys.RaceRegistry;
+import net.luderspieler.dnd.generalConfigs;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
@@ -71,8 +72,10 @@ public class ClassListScreen extends Screen {
 
     @Override
     public void render(GuiGraphics g, int mouseX, int mouseY, float partial) {
-        g.fillGradient(0, 0, this.width, this.height, 0xD0101010, 0xE0101010);
-        g.drawCenteredString(this.font, this.title, this.width / 2, 20, -1);
+        g.fillGradient(0, 0, this.width, this.height,
+                generalConfigs.COLOR_DEATH_OVERLAY_TOP,
+                generalConfigs.COLOR_DEATH_OVERLAY_BOTTOM);
+        g.drawCenteredString(this.font, this.title, this.width / 2, 20, generalConfigs.COLOR_ACCENT_GOLD);
 
         List<ClassDefinition> classes = ClassRegistry.CLASSES;
         int totalW = COLS * BUTTON_WIDTH + (COLS - 1) * H_GAP;

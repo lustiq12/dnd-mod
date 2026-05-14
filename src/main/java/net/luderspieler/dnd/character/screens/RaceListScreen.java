@@ -3,6 +3,7 @@ package net.luderspieler.dnd.character.screens;
 import net.luderspieler.dnd.character.CharacterCreationState;
 import net.luderspieler.dnd.character.definition.RaceDefinition;
 import net.luderspieler.dnd.character.registrys.RaceRegistry;
+import net.luderspieler.dnd.generalConfigs;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
@@ -58,8 +59,13 @@ public class RaceListScreen extends Screen {
 
     @Override
     public void render(GuiGraphics g, int mouseX, int mouseY, float partial) {
-        g.fillGradient(0, 0, this.width, this.height, 0xD0101010, 0xE0101010);
-        g.drawCenteredString(this.font, this.title, this.width / 2, 20, -1);
+        // 1. Hintergrund-Overlay (Dunkler Gradient aus der Config)
+        g.fillGradient(0, 0, this.width, this.height,
+                generalConfigs.COLOR_DEATH_OVERLAY_TOP,
+                generalConfigs.COLOR_DEATH_OVERLAY_BOTTOM);
+
+        // 2. Titel (Zentriert in Gold)
+        g.drawCenteredString(this.font, this.title, this.width / 2, 20, generalConfigs.COLOR_ACCENT_GOLD);
 
         List<RaceDefinition> races = RaceRegistry.RACES;
         int totalW = COLS * BUTTON_WIDTH + (COLS - 1) * H_GAP;
@@ -67,14 +73,23 @@ public class RaceListScreen extends Screen {
         int rows = (int) Math.ceil((double) races.size() / COLS);
         int startY = (this.height - (rows * BUTTON_HEIGHT + (rows - 1) * V_GAP)) / 2;
 
+        // 3. Icons zeichnen
         for (int i = 0; i < races.size(); i++) {
             RaceDefinition race = races.get(i);
             int col = i % COLS;
             int row = i / COLS;
             int bx = startX + col * (BUTTON_WIDTH + H_GAP);
             int by = startY + row * (BUTTON_HEIGHT + V_GAP);
-            g.blit(RenderPipelines.GUI_TEXTURED, race.getIcon(), bx + 2, by + 2, 0, 0, ICON_SIZE, ICON_SIZE, ICON_SIZE, ICON_SIZE);
+
+            // Icon-Rendering
+            g.blit(RenderPipelines.GUI_TEXTURED,
+                    race.getIcon(),
+                    bx + 2, by + 2,
+                    0, 0,
+                    ICON_SIZE, ICON_SIZE,
+                    ICON_SIZE, ICON_SIZE);
         }
+
         super.render(g, mouseX, mouseY, partial);
     }
 
