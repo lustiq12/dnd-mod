@@ -101,6 +101,7 @@ public class DndModVariables {
 		clone.PreparedSpellsLVL7 = original.PreparedSpellsLVL7;
 		clone.PreparedSpellsLVL8 = original.PreparedSpellsLVL8;
 		clone.PreparedSpellsLVL9 = original.PreparedSpellsLVL9;
+		clone.ChoicesNeeded = original.ChoicesNeeded;
 		if (!event.isWasDeath()) {
 			clone.FinishedCharacterCreation = original.FinishedCharacterCreation;
 			clone.TargetingRange = original.TargetingRange;
@@ -296,6 +297,7 @@ public class DndModVariables {
 		public String Charmer = "\"\"";
 		public String grabber = "\"\"";
 		public String Decaying_Focus = "\"\"";
+		public String ChoicesNeeded = "\"\"";
 
 		@Override
 		public void serialize(ValueOutput output) {
@@ -332,6 +334,7 @@ public class DndModVariables {
 			output.putString("Charmer", Charmer);
 			output.putString("grabber", grabber);
 			output.putString("Decaying_Focus", Decaying_Focus);
+			output.putString("ChoicesNeeded", ChoicesNeeded);
 		}
 
 		@Override
@@ -369,6 +372,7 @@ public class DndModVariables {
 			Charmer = input.getStringOr("Charmer", "");
 			grabber = input.getStringOr("grabber", "");
 			Decaying_Focus = input.getStringOr("Decaying_Focus", "");
+			ChoicesNeeded = input.getStringOr("ChoicesNeeded", "");
 		}
 
 		public void markSyncDirty() {

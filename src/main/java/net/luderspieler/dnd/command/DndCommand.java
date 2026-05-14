@@ -29,7 +29,6 @@ import java.util.stream.Stream;
 @EventBusSubscriber
 public class DndCommand {
 
-    // Erstellt die Liste der Vorschläge aus allen Enums + "*"
     private static final SuggestionProvider<CommandSourceStack> SPELL_SUGGESTIONS = (context, builder) -> {
         List<String> allSpells = new ArrayList<>();
         allSpells.add("*");
@@ -50,31 +49,27 @@ public class DndCommand {
 
         LiteralArgumentBuilder<CommandSourceStack> spellsNode = Commands.literal("spells");
 
-        // 1. LEARN
         spellsNode.then(Commands.literal("learn")
                 .then(Commands.argument("target", EntityArgument.player())
                         .then(Commands.argument("spellname", StringArgumentType.greedyString())
-                                .suggests(SPELL_SUGGESTIONS) // Vorschau hinzugefügt
+                                .suggests(SPELL_SUGGESTIONS)
                                 .executes(c -> handleSpellAction(c.getSource(), EntityArgument.getPlayer(c, "target"),
                                         StringArgumentType.getString(c, "spellname"), "learn")))));
 
-        // 2. FORCELEARN
         spellsNode.then(Commands.literal("forceLearn")
                 .then(Commands.argument("target", EntityArgument.player())
                         .then(Commands.argument("spellname", StringArgumentType.greedyString())
-                                .suggests(SPELL_SUGGESTIONS) // Vorschau hinzugefügt
+                                .suggests(SPELL_SUGGESTIONS)
                                 .executes(c -> handleSpellAction(c.getSource(), EntityArgument.getPlayer(c, "target"),
                                         StringArgumentType.getString(c, "spellname"), "force")))));
 
-        // 3. UNLEARN
         spellsNode.then(Commands.literal("unlearn")
                 .then(Commands.argument("target", EntityArgument.player())
                         .then(Commands.argument("spellname", StringArgumentType.greedyString())
-                                .suggests(SPELL_SUGGESTIONS) // Vorschau hinzugefügt
+                                .suggests(SPELL_SUGGESTIONS)
                                 .executes(c -> handleSpellAction(c.getSource(), EntityArgument.getPlayer(c, "target"),
                                         StringArgumentType.getString(c, "spellname"), "unlearn")))));
 
-        // 4. CLEAR
         var targetArg = Commands.argument("target", EntityArgument.player())
                 .then(Commands.literal("all").executes(c -> clearSpells(c.getSource(), EntityArgument.getPlayer(c, "target"), "all")))
                 .then(Commands.literal("Cantrip").executes(c -> clearSpells(c.getSource(), EntityArgument.getPlayer(c, "target"), "0")));
@@ -197,7 +192,15 @@ public class DndCommand {
     }
 
     private static void setupVariableNode(LiteralArgumentBuilder<CommandSourceStack> node) {
-        String[] strings = {"PlayerClass", "Spellslots", "PlayerSubrace", "PlayerName", "PlayerStory", "PlayerPersonality", "PlayerRace", "PlayerSubclass", "Proficiencys", "PreparedCantrips", "PreparedSpellsLVL1", "PreparedSpellsLVL2", "PreparedSpellsLVL3", "PreparedSpellsLVL4", "PreparedSpellsLVL5", "PreparedSpellsLVL6", "PreparedSpellsLVL7", "PreparedSpellsLVL8", "PreparedSpellsLVL9"};
+        // Alle String-Variablen (inklusive der neuen wie TargetingSpell, targetUUIDS, etc.)
+        String[] strings = {
+                "PlayerClass", "Spellslots", "PlayerSubrace", "PlayerName", "PlayerStory",
+                "PlayerPersonality", "PlayerRace", "PlayerSubclass", "Proficiencys",
+                "PreparedCantrips", "PreparedSpellsLVL1", "PreparedSpellsLVL2", "PreparedSpellsLVL3",
+                "PreparedSpellsLVL4", "PreparedSpellsLVL5", "PreparedSpellsLVL6", "PreparedSpellsLVL7",
+                "PreparedSpellsLVL8", "PreparedSpellsLVL9", "TargetingSpell", "targetUUIDS",
+                "TargetingModeType", "AbilityData", "Charmer", "grabber", "Decaying_Focus", "ChoicesNeeded"
+        };
         for (String f : strings) {
             node.then(Commands.literal(f)
                     .executes(c -> readVariable(c.getSource().getPlayerOrException(), f))
@@ -205,7 +208,8 @@ public class DndCommand {
                             .executes(c -> updateVariable(c.getSource().getPlayerOrException(), f, StringArgumentType.getString(c, "v")))));
         }
 
-        String[] doubles = {"PlayerLevel", "PlayerXP"};
+        // Alle Double-Variablen (inklusive TargetingRange und TargetingAmount)
+        String[] doubles = {"PlayerLevel", "PlayerXP", "TargetingRange", "TargetingAmount"};
         for (String f : doubles) {
             node.then(Commands.literal(f)
                     .executes(c -> readVariable(c.getSource().getPlayerOrException(), f))
@@ -213,7 +217,8 @@ public class DndCommand {
                             .executes(c -> updateVariable(c.getSource().getPlayerOrException(), f, DoubleArgumentType.getDouble(c, "v")))));
         }
 
-        String[] bools = {"FinishedCharacterCreation", "CanUseMagic"};
+        // Alle Boolean-Variablen (inklusive TargetingMode)
+        String[] bools = {"FinishedCharacterCreation", "CanUseMagic", "TargetingMode"};
         for (String f : bools) {
             node.then(Commands.literal(f)
                     .executes(c -> readVariable(c.getSource().getPlayerOrException(), f))

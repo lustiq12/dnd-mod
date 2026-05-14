@@ -1,6 +1,9 @@
 package net.luderspieler.dnd.classes;
 
+import net.luderspieler.dnd.classes.choices.GenericChoicePopup;
+import net.luderspieler.dnd.classes.choices.LevelingChoiceScreen;
 import net.luderspieler.dnd.network.DndModVariables;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
@@ -54,7 +57,8 @@ public class CharacterSheetScreen extends Screen {
         int centerX = this.width / 2;
 
         // Button oben rechts
-        this.addRenderableWidget(Button.builder(Component.literal("Character Advancement"), btn -> {})
+        this.addRenderableWidget(Button.builder(Component.literal("Character Advancement"),
+                        btn -> Minecraft.getInstance().setScreen(new LevelingChoiceScreen(this))) // 'this' übergeben!
                 .bounds(this.width - 170, 10, 160, 20).build());
 
         // Back Button unten Mitte
