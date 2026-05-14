@@ -90,7 +90,6 @@ public record CharacterCreationPacket(
             }
             clearAllSpellLists(vars);
 
-            vars.FinishedCharacterCreation = true;
             vars.markSyncDirty();
             applyAttrs(player, null, false);
         });

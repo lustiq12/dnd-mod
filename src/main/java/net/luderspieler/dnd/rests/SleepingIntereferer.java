@@ -28,10 +28,10 @@ public class SleepingIntereferer {
                 if (isActuallyDay) {
                     // ── LANGE RAST ERFOLGREICH ──
                     this.applyLongRestBenefits(serverPlayer);
-                    serverPlayer.displayClientMessage(Component.literal("Deine lange Rast war erfolgreich!"), false);
+                    serverPlayer.displayClientMessage(Component.literal("Your long rest was successful!"), false);
                 } else {
                     // ── RAST UNTERBROCHEN ──
-                    serverPlayer.displayClientMessage(Component.literal("Die Rast wurde unterbrochen. Deine Kräfte sind noch nicht regeneriert."), false);
+                    serverPlayer.displayClientMessage(Component.literal("Your Rest was interrupted, you didnt gain the benefits."), false);
                 }
             }
         }

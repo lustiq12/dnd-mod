@@ -21,15 +21,7 @@ public class CharacterCreationEventHandler {
     // ── DEATH: reset the flag so the GUI opens after respawn ──
     @SubscribeEvent
     public void onPlayerDeath(LivingDeathEvent event) {
-        if (!(event.getEntity() instanceof ServerPlayer player)) return;
 
-
-
-        DndModVariables.PlayerVariables vars = player.getData(DndModVariables.PLAYER_VARIABLES);
-        vars.FinishedCharacterCreation = false;
-        vars.markSyncDirty();
-        // Do NOT open any GUI here — player is still dying, death screen is showing.
-        // The GUI will open in onPlayerRespawn once the player is alive again.
     }
 
     // ── FIRST JOIN: open immediately if they haven't created a character ──

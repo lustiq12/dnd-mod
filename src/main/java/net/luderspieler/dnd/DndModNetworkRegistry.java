@@ -23,9 +23,6 @@ public class DndModNetworkRegistry {
 
     public static void register(IEventBus modEventBus) {
         modEventBus.addListener(DndModNetworkRegistry::onRegisterPayloads);
-
-        // Server-side game events (join, respawn, death)
-        NeoForge.EVENT_BUS.register(new CharacterCreationEventHandler());
     }
 
     private static void onRegisterPayloads(RegisterPayloadHandlersEvent event) {

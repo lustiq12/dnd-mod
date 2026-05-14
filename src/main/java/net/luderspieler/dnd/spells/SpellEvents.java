@@ -109,36 +109,25 @@ public class SpellEvents {
         if (event.getEntity() instanceof LargeFireball fireball) {
             CompoundTag nbt = fireball.getPersistentData();
             if (nbt.contains("spell_max_range")) {
-                // Optionals müssen mit .orElse() entpackt werden
                 double maxRange = nbt.getDouble("spell_max_range").orElse(0.0);
-
                 double startX = nbt.getDouble("spell_start_x").orElse(0.0);
                 double startY = nbt.getDouble("spell_start_y").orElse(0.0);
                 double startZ = nbt.getDouble("spell_start_z").orElse(0.0);
-
                 Vec3 startPos = new Vec3(startX, startY, startZ);
-
                 if (fireball.position().distanceTo(startPos) >= maxRange) {
                     fireball.discard();
                 }
             }
-            else if (event.getEntity() instanceof AbstractArrow arrow) { // AbstractArrow deckt normale, Tipped & Spectral Arrows ab
-                CompoundTag nbt2 = arrow.getPersistentData();
-
-                if (nbt.contains("spell_max_range")) {
-                    // Direktes Auslesen (nbt.getDouble gibt 0.0 zurück, falls der Tag fehlt)
-                    double maxRange = nbt2.getDouble("spell_max_range").orElse(0.0);
-
-                    double startX = nbt2.getDouble("spell_start_x").orElse(0.0);
-                    double startY = nbt2.getDouble("spell_start_y").orElse(0.0);
-                    double startZ = nbt2.getDouble("spell_start_z").orElse(0.0);
-
-                    Vec3 startPos = new Vec3(startX, startY, startZ);
-
-                    // Prüfen, ob die Distanz überschritten ist
-                    if (arrow.position().distanceTo(startPos) >= maxRange) {
-                        arrow.discard();
-                    }
+        } else if (event.getEntity() instanceof AbstractArrow arrow) {
+            CompoundTag nbt = arrow.getPersistentData();
+            if (nbt.contains("spell_max_range")) {
+                double maxRange = nbt.getDouble("spell_max_range").orElse(0.0);
+                double startX = nbt.getDouble("spell_start_x").orElse(0.0);
+                double startY = nbt.getDouble("spell_start_y").orElse(0.0);
+                double startZ = nbt.getDouble("spell_start_z").orElse(0.0);
+                Vec3 startPos = new Vec3(startX, startY, startZ);
+                if (arrow.position().distanceTo(startPos) >= maxRange) {
+                    arrow.discard();
                 }
             }
         }
