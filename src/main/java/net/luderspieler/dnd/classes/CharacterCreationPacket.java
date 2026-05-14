@@ -2,6 +2,7 @@ package net.luderspieler.dnd.classes;
 
 import net.luderspieler.dnd.network.DndModVariables;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -96,20 +97,25 @@ public record CharacterCreationPacket(
     }
 
     private static void resetStats(DndModVariables.PlayerVariables vars) {
-        vars.Strength = 0; vars.Dexterity = 0; vars.Constitution = 0;
-        vars.Intelligence = 0; vars.Wisdom = 0; vars.Charisma = 0;
+        vars.Strength = 10;
+        vars.Dexterity = 10;
+        vars.Constitution = 10;
+        vars.Intelligence = 10;
+        vars.Wisdom = 10;
+        vars.Charisma = 10;
     }
 
     private static void applyDndStats(DndModVariables.PlayerVariables vars, Map<String, Integer> increments) {
         if (increments == null) return;
+
         for (Map.Entry<String, Integer> e : increments.entrySet()) {
-            switch (e.getKey()) {
-                case "Strength"     -> vars.Strength += e.getValue();
-                case "Dexterity"    -> vars.Dexterity += e.getValue();
-                case "Constitution" -> vars.Constitution += e.getValue();
-                case "Intelligence" -> vars.Intelligence += e.getValue();
-                case "Wisdom"       -> vars.Wisdom += e.getValue();
-                case "Charisma"     -> vars.Charisma += e.getValue();
+            switch (e.getKey().toLowerCase()) {
+                case "strength"     -> vars.Strength += e.getValue();
+                case "dexterity"    -> vars.Dexterity += e.getValue();
+                case "constitution" -> vars.Constitution += e.getValue();
+                case "intelligence" -> vars.Intelligence += e.getValue();
+                case "wisdom"       -> vars.Wisdom += e.getValue();
+                case "charisma"     -> vars.Charisma += e.getValue();
             }
         }
     }
@@ -130,13 +136,11 @@ public record CharacterCreationPacket(
     }
 
     public static void applyAttrs(ServerPlayer player, Map<String, Double> attrs, boolean isRace) {
-        player.sendSystemMessage(net.minecraft.network.chat.Component.literal("§aDEBUG: Wende Attribute an..."));
 
         DndModVariables.PlayerVariables vars = player.getData(DndModVariables.PLAYER_VARIABLES);
 
         int level = (int) vars.PlayerLevel;
 
-        // Hilfsfunktion für Modifier: (Wert - 10) / 2
         int strM = (int) Math.floor((vars.Strength - 10) / 2.0);
         int dexM = (int) Math.floor((vars.Dexterity - 10) / 2.0);
         int conM = (int) Math.floor((vars.Constitution - 10) / 2.0);
@@ -145,45 +149,45 @@ public record CharacterCreationPacket(
         int chaM = (int) Math.floor((vars.Charisma - 10) / 2.0);
 
         ClassDefinition cls = ClassRegistry.getClass(vars.PlayerClass);
-        int hpPerLvl = (cls != null) ? cls.getClassHealth() : 0;
+        // No x2 here as you stated the values are already doubled
+        int hpPerLvl = (cls != null) ? cls.getClassHealth() : 16;
 
         // --- STRENGTH ---
-        updateMod(player, Attributes.ATTACK_DAMAGE, "dnd:str_dmg", strM);
-        updateMod(player, Attributes.BLOCK_BREAK_SPEED, "dnd:str_mining", Math.max(-0.5, strM * 0.1));
-        updateMod(player, Attributes.ATTACK_KNOCKBACK, "dnd:str_kb", Math.max(0, strM * 0.5));
+        updateMod(player, Attributes.ATTACK_DAMAGE, "dnd:str_dmg", strM * 1.5);
+        updateMod(player, Attributes.BLOCK_BREAK_SPEED, "dnd:str_mining", Math.max(-0.5, strM * 0.15));
+        updateMod(player, Attributes.ATTACK_KNOCKBACK, "dnd:str_kb", Math.max(0, strM * 0.3));
         updateMod(player, Attributes.KNOCKBACK_RESISTANCE, "dnd:str_kb_res", Math.max(0, strM * 0.1));
 
         // --- DEXTERITY ---
-        updateMod(player, Attributes.MOVEMENT_SPEED, "dnd:dex_speed", dexM * 0.005);
-        updateMod(player, Attributes.ATTACK_SPEED, "dnd:dex_ats", dexM * 0.2);
+        updateMod(player, Attributes.MOVEMENT_SPEED, "dnd:dex_speed", dexM * 0.01);
+        updateMod(player, Attributes.ATTACK_SPEED, "dnd:dex_ats", dexM * 0.15);
         updateMod(player, Attributes.SNEAKING_SPEED, "dnd:dex_sneak", dexM * 0.05);
-        updateMod(player, Attributes.JUMP_STRENGTH, "dnd:dex_jump", dexM * 0.02);
+        updateMod(player, Attributes.JUMP_STRENGTH, "dnd:dex_jump", dexM * 0.03);
         updateMod(player, net.neoforged.neoforge.common.NeoForgeMod.SWIM_SPEED, "dnd:dex_swim", dexM * 0.1);
 
         // --- CONSTITUTION ---
-        double maxHP = (conM * level) + (hpPerLvl * (level - 1));
-        updateMod(player, Attributes.MAX_HEALTH, "dnd:con_hp", maxHP);
-        updateMod(player, Attributes.OXYGEN_BONUS, "dnd:con_oxy", conM * 10.0);
-        updateMod(player, Attributes.SAFE_FALL_DISTANCE, "dnd:con_fall_dist", conM * 0.5);
-        updateMod(player, Attributes.BURNING_TIME, "dnd:con_burn", Math.max(-0.8, conM * -0.05));
+        // Bonus HP from Con (x2 for Hearts) + Class HP for levels above 1
+        double bonusHP = (conM * 2.0 * level) + (hpPerLvl * (level - 1));
+        updateMod(player, Attributes.MAX_HEALTH, "dnd:con_hp", bonusHP);
+        updateMod(player, Attributes.OXYGEN_BONUS, "dnd:con_oxy", conM * 20.0);
+        updateMod(player, Attributes.SAFE_FALL_DISTANCE, "dnd:con_fall_dist", conM * 1.5);
+        updateMod(player, Attributes.BURNING_TIME, "dnd:con_burn", conM * -0.1);
 
         // --- INTELLIGENCE ---
-        updateMod(player, Attributes.MINING_EFFICIENCY, "dnd:int_eff", intM * 1.0);
+        updateMod(player, Attributes.MINING_EFFICIENCY, "dnd:int_eff", intM * 2.0);
         updateMod(player, Attributes.BLOCK_INTERACTION_RANGE, "dnd:int_reach", intM * 0.2);
-        updateMod(player, Attributes.SUBMERGED_MINING_SPEED, "dnd:int_sub_mining", intM * 0.1);
+        updateMod(player, Attributes.SUBMERGED_MINING_SPEED, "dnd:int_sub_mining", intM * 0.2);
 
         // --- WISDOM ---
-        updateMod(player, Attributes.ENTITY_INTERACTION_RANGE, "dnd:wis_ent_reach", wisM * 0.2);
-        updateMod(player, Attributes.STEP_HEIGHT, "dnd:wis_step", Math.max(0, wisM * 0.1));
-        updateMod(player, Attributes.FALL_DAMAGE_MULTIPLIER, "dnd:wis_fall_dmg", wisM * -0.05);
+        updateMod(player, Attributes.ENTITY_INTERACTION_RANGE, "dnd:wis_ent_reach", wisM * 0.3);
+        updateMod(player, Attributes.STEP_HEIGHT, "dnd:wis_step", (wisM >= 2) ? 0.5 : 0.0);
+        updateMod(player, Attributes.FALL_DAMAGE_MULTIPLIER, "dnd:wis_fall_dmg", wisM * -0.06);
 
         // --- CHARISMA ---
         updateMod(player, Attributes.LUCK, "dnd:cha_luck", (double) chaM);
-        updateMod(player, Attributes.TEMPT_RANGE, "dnd:cha_tempt", chaM * 2.0);
+        updateMod(player, Attributes.TEMPT_RANGE, "dnd:cha_tempt", chaM * 3.0);
         updateMod(player, net.neoforged.neoforge.common.NeoForgeMod.NAMETAG_DISTANCE, "dnd:cha_name", chaM * 2.0);
 
-        // Sync & Heal
-        player.sendSystemMessage(net.minecraft.network.chat.Component.literal("§aDEBUG: Max HP Bonus: " + maxHP));
         player.setHealth(player.getMaxHealth());
     }
 

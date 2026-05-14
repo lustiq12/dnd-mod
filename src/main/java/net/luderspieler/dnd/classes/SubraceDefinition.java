@@ -9,12 +9,10 @@ public class SubraceDefinition {
     private final String id, parentRaceId, displayName, description, proficiencies;
     private final ResourceLocation icon;
     private final List<String> abilityLines;
-    // NEU: Hier werden die Stats (Strength, Dexterity etc.) gespeichert
-    private final Map<String, Integer> abilityScoreIncrements;
 
     public SubraceDefinition(String id, String parentRaceId, String displayName,
                              String description, List<String> abilityLines,
-                             String proficiencies, Map<String, Integer> stats) {
+                             String proficiencies) { // Keine Stats mehr im Konstruktor
         this.id = id;
         this.parentRaceId = parentRaceId;
         this.displayName = displayName;
@@ -22,17 +20,10 @@ public class SubraceDefinition {
         this.proficiencies = proficiencies;
         this.icon = ResourceLocation.parse("dnd:textures/screens/classiconplaceholder.png");
         this.abilityLines = abilityLines;
-        // Falls stats null ist, erstellen wir eine leere Map, um Fehler zu vermeiden
-        this.abilityScoreIncrements = stats != null ? stats : new HashMap<>();
     }
 
-    // Das Packet ruft diese Methode auf:
+    // Damit buildCombinedAttrs() im Screen nicht crashed, geben wir einfach leer zurück
     public Map<String, Integer> getAbilityScoreIncrements() {
-        return abilityScoreIncrements;
-    }
-
-    // Diese Methode löschen wir oder lassen sie leer, da du keine Doubles mehr nutzt
-    public Map<String, Double> getAttributeModifiers() {
         return new HashMap<>();
     }
 

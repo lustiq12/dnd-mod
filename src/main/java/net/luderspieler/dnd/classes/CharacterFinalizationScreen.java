@@ -11,6 +11,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -59,7 +60,19 @@ public class CharacterFinalizationScreen extends Screen {
                 .bounds(centerX - 110, this.height - 40, 100, 20).build());
 
         this.addRenderableWidget(Button.builder(Component.literal("Finish"), b -> {
-            // Hier müsstest du die Daten an dein Packet übergeben
+            // Paket mit allen Auswahlen und den Texten aus den Boxen senden
+            ClientPacketDistributor.sendToServer(new CharacterCreationPacket(
+                    CharacterCreationState.selectedRaceId,
+                    CharacterCreationState.selectedSubraceId,
+                    CharacterCreationState.selectedClassId,
+                    nameBox.getValue(),
+                    storyBox.getValue(),
+                    personalityBox.getValue()
+            ));
+
+            // WICHTIG: Danach den State resetten
+            CharacterCreationState.reset();
+
             this.onClose();
         }).bounds(centerX + 10, this.height - 40, 100, 20).build());
     }
@@ -133,10 +146,25 @@ public class CharacterFinalizationScreen extends Screen {
     }
 
     private Map<String, Integer> buildCombinedAttrs() {
-        Map<String, Integer> result = new LinkedHashMap<>();
-        // Nutzt jetzt die korrekten D&D Getter
-        if (race != null) race.getAbilityScoreIncrements().forEach((k, v) -> result.merge(k, v, Integer::sum));
-        if (cls != null) cls.getAbilityScoreIncrements().forEach((k, v) -> result.merge(k, v, Integer::sum));
+        // 1. Start with the base values (Default 10 or rolled values) from the State
+        Map<String, Integer> result = new LinkedHashMap<>(CharacterCreationState.baseAttributes);
+
+        // 2. Add Race bonuses
+        if (race != null) {
+            race.getAbilityScoreIncrements().forEach((k, v) -> result.merge(k, v, Integer::sum));
+        }
+
+        // 3. Add Subrace bonuses
+        if (subrace != null) {
+            subrace.getAbilityScoreIncrements().forEach((k, v) -> result.merge(k, v, Integer::sum));
+        }
+
+        // Note: Usually classes in D&D don't give Ability Score Increments at level 1,
+        // but if yours does, keep this line:
+        if (cls != null) {
+            cls.getAbilityScoreIncrements().forEach((k, v) -> result.merge(k, v, Integer::sum));
+        }
+
         return result;
     }
 
