@@ -1,11 +1,10 @@
 package net.luderspieler.dnd.potion;
 
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.effect.MobEffectCategory;
-import net.minecraft.world.effect.MobEffect;
-import net.minecraft.server.level.ServerLevel;
-
 import net.luderspieler.dnd.procedures.DecayingStareOnEffectActiveTickProcedure;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectCategory;
+import net.minecraft.world.entity.LivingEntity;
 
 public class DecayingStareMobEffect extends MobEffect {
 	public DecayingStareMobEffect() {

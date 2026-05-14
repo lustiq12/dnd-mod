@@ -1,9 +1,10 @@
 package net.luderspieler.dnd.classes;
 
 import net.minecraft.resources.ResourceLocation;
+
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
 
 public class SubraceDefinition {
     private final String id, parentRaceId, displayName, description, proficiencies;

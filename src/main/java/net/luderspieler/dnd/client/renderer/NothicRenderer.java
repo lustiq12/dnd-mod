@@ -1,20 +1,18 @@
 package net.luderspieler.dnd.client.renderer;
 
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
-import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.animation.KeyframeAnimation;
-import net.minecraft.client.animation.AnimationDefinition;
-
-import net.luderspieler.dnd.entity.NothicEntity;
-import net.luderspieler.dnd.client.model.animations.nothicAnimation;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.luderspieler.dnd.client.model.Modelnothic;
+import net.luderspieler.dnd.client.model.animations.nothicAnimation;
+import net.luderspieler.dnd.entity.NothicEntity;
+import net.minecraft.client.animation.AnimationDefinition;
+import net.minecraft.client.animation.KeyframeAnimation;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.MobRenderer;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.Map;
-
-import com.mojang.blaze3d.vertex.PoseStack;
 
 public class NothicRenderer extends MobRenderer<NothicEntity, LivingEntityRenderState, Modelnothic> {
 	private NothicEntity entity = null;

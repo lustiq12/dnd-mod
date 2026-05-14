@@ -8,6 +8,7 @@ import com.mojang.brigadier.suggestion.SuggestionProvider;
 import net.luderspieler.dnd.classes.CharacterCreationPacket;
 import net.luderspieler.dnd.classes.ClassDefinition;
 import net.luderspieler.dnd.classes.ClassRegistry;
+import net.luderspieler.dnd.classes.LevelEvents;
 import net.luderspieler.dnd.network.DndModVariables;
 import net.luderspieler.dnd.spells.SpellCasters;
 import net.luderspieler.dnd.spells.Spells;
@@ -26,6 +27,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static net.luderspieler.dnd.classes.choices.ChoiceRegistry.addChoicesForLevel;
 
 @EventBusSubscriber
 public class DndCommand {
@@ -236,25 +239,36 @@ public class DndCommand {
     private static int setPlayerLevel(ServerPlayer p, double newLevel, CommandSourceStack source) {
         DndModVariables.PlayerVariables vars = p.getData(DndModVariables.PLAYER_VARIABLES);
 
-        int level = (int) newLevel;
+        int oldLevel = (int) vars.PlayerLevel;
+        int targetLevel = (int) newLevel;
+
+        // 1. Level setzen
         vars.PlayerLevel = newLevel;
 
-        // Update proficiency bonus per D&D 5e table
-        vars.ProficiencyBonus = getProficiencyBonus(level);
+        // 2. XP auf das Minimum für dieses Level setzen (via LevelEvents Helper)
+        vars.PlayerXP = LevelEvents.getRequiredXP(targetLevel);
 
-        // Re-apply all attribute modifiers for the new level
+        // 3. Proficiency Bonus aktualisieren
+        vars.ProficiencyBonus = LevelEvents.getProficiencyBonus(targetLevel);
+
+        // 4. Choices hinzufügen, falls man Level aufsteigt (nicht bei Downlevel)
+        if (targetLevel > oldLevel) {
+            for (int lvl = oldLevel + 1; lvl <= targetLevel; lvl++) {
+                addChoicesForLevel(vars, vars.PlayerClass, lvl);
+            }
+        }
+
+        // 5. Attribute neu berechnen
         CharacterCreationPacket.applyAttrs(p, null, false);
 
         vars.markSyncDirty();
 
         source.sendSuccess(() -> Component.literal(
-                "§aSet §ePlayerLevel §ato §f" + level +
-                        " §7(ProfBonus: +" + (int) vars.ProficiencyBonus + ")"
+                "§aSet §ePlayerLevel §ato §f" + targetLevel +
+                        " §7(XP: " + vars.PlayerXP + ", ProfBonus: +" + (int) vars.ProficiencyBonus + ")"
         ), true);
 
-        p.displayClientMessage(Component.literal(
-                "§6§lLevel set to " + level + "!"
-        ), false);
+        p.displayClientMessage(Component.literal("§6§lLevel set to " + targetLevel + "!"), false);
 
         return 1;
     }

@@ -1,8 +1,9 @@
 package net.luderspieler.dnd.spells;
 
 import net.luderspieler.dnd.spells.targeting.SpellCasterHelper;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+
 import static net.luderspieler.dnd.spells.SpellCasters.*;
 
 /**

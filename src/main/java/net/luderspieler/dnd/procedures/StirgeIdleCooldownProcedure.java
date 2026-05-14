@@ -1,8 +1,7 @@
 package net.luderspieler.dnd.procedures;
 
-import net.minecraft.world.entity.Entity;
-
 import net.luderspieler.dnd.entity.StirgeEntity;
+import net.minecraft.world.entity.Entity;
 
 public class StirgeIdleCooldownProcedure {
 	public static void execute(Entity entity) {

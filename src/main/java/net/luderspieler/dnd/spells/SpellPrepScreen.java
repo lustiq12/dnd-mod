@@ -1,7 +1,7 @@
 package net.luderspieler.dnd.spells;
 
-import net.luderspieler.dnd.classes.ClassRegistry;
 import net.luderspieler.dnd.classes.ClassDefinition;
+import net.luderspieler.dnd.classes.ClassRegistry;
 import net.luderspieler.dnd.network.DndModVariables;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -10,7 +10,8 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Spell Preparation GUI

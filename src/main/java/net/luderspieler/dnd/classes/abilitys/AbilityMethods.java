@@ -1,14 +1,14 @@
 package net.luderspieler.dnd.classes.abilitys;
 
 import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.tags.TagKey;
 
 public class AbilityMethods {
 
@@ -53,6 +53,9 @@ public class AbilityMethods {
             }
         }
     }
+
+
+
 
     /**
      * Universeller Attribut-Getter für alle D&D Modifier

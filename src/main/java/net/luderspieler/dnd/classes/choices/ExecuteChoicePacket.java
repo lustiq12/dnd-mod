@@ -1,6 +1,5 @@
 package net.luderspieler.dnd.classes.choices;
 
-import net.luderspieler.dnd.network.DndModVariables;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -9,7 +8,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public record ExecuteChoicePacket(String choiceId, String selectedValue) implements CustomPacketPayload {

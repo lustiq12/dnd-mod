@@ -1,5 +1,6 @@
 package net.luderspieler.dnd.network;
 
+import net.luderspieler.dnd.DndMod;
 import net.luderspieler.dnd.spells.targeting.TargetingEvents;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -8,7 +9,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
-import net.luderspieler.dnd.DndMod;
 
 public record AirClickPacket() implements CustomPacketPayload {
     public static final Type<AirClickPacket> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(DndMod.MODID, "air_click"));

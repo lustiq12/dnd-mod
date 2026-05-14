@@ -1,17 +1,16 @@
 package net.luderspieler.dnd.client.renderer;
 
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
-import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.animation.KeyframeAnimation;
-import net.minecraft.client.animation.AnimationDefinition;
-
-import net.luderspieler.dnd.entity.ScarecrowEntity;
-import net.luderspieler.dnd.client.model.animations.scarecrowAnimation;
-import net.luderspieler.dnd.client.model.animations.StirgeAnimation;
 import net.luderspieler.dnd.client.model.Modelscarecrow;
+import net.luderspieler.dnd.client.model.animations.StirgeAnimation;
+import net.luderspieler.dnd.client.model.animations.scarecrowAnimation;
+import net.luderspieler.dnd.entity.ScarecrowEntity;
+import net.minecraft.client.animation.AnimationDefinition;
+import net.minecraft.client.animation.KeyframeAnimation;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.MobRenderer;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.Map;
 

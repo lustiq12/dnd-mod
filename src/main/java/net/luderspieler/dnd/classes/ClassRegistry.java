@@ -3,7 +3,10 @@ package net.luderspieler.dnd.classes;
 import net.luderspieler.dnd.spells.Spells;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import java.util.*;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class ClassRegistry {
 

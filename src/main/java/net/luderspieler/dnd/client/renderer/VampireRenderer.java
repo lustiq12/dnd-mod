@@ -1,16 +1,15 @@
 package net.luderspieler.dnd.client.renderer;
 
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
-import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.animation.KeyframeAnimation;
-import net.minecraft.client.animation.AnimationDefinition;
-
-import net.luderspieler.dnd.entity.VampireEntity;
-import net.luderspieler.dnd.client.model.animations.vampireAnimation;
 import net.luderspieler.dnd.client.model.Modelvampire;
+import net.luderspieler.dnd.client.model.animations.vampireAnimation;
+import net.luderspieler.dnd.entity.VampireEntity;
+import net.minecraft.client.animation.AnimationDefinition;
+import net.minecraft.client.animation.KeyframeAnimation;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.MobRenderer;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.Map;
 

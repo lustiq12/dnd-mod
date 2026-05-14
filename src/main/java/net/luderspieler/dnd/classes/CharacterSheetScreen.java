@@ -1,6 +1,5 @@
 package net.luderspieler.dnd.classes;
 
-import net.luderspieler.dnd.classes.choices.GenericChoicePopup;
 import net.luderspieler.dnd.classes.choices.LevelingChoiceScreen;
 import net.luderspieler.dnd.network.DndModVariables;
 import net.minecraft.client.Minecraft;
@@ -8,17 +7,16 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.ai.attributes.Attribute;
-import net.minecraft.world.entity.ai.attributes.AttributeInstance;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.core.Holder;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 
 public class CharacterSheetScreen extends Screen {
 

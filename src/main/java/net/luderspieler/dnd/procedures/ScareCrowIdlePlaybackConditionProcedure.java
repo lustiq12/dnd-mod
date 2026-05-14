@@ -1,8 +1,7 @@
 package net.luderspieler.dnd.procedures;
 
-import net.minecraft.world.entity.Entity;
-
 import net.luderspieler.dnd.entity.ScarecrowEntity;
+import net.minecraft.world.entity.Entity;
 
 public class ScareCrowIdlePlaybackConditionProcedure {
 	public static boolean execute(Entity entity) {

@@ -1,6 +1,7 @@
 package net.luderspieler.dnd.classes;
 
 import net.minecraft.resources.ResourceLocation;
+
 import java.util.List;
 import java.util.Map;
 

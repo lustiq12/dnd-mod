@@ -3,6 +3,7 @@ package net.luderspieler.dnd.classes;
 import net.luderspieler.dnd.spells.Spells;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+
 import java.util.List;
 import java.util.Map;
 

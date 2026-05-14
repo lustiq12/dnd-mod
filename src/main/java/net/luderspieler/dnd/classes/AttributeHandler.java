@@ -3,8 +3,6 @@ package net.luderspieler.dnd.classes;
 import net.luderspieler.dnd.network.DndModVariables;
 import net.minecraft.world.entity.player.Player;
 
-import java.util.Map;
-
 public class AttributeHandler {
 
     /**

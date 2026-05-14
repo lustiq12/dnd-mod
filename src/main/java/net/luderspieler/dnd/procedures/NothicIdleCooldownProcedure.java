@@ -1,16 +1,15 @@
 package net.luderspieler.dnd.procedures;
 
-import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.phys.AABB;
-import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.effect.MobEffectInstance;
-
-import net.luderspieler.dnd.network.DndModVariables;
-import net.luderspieler.dnd.init.DndModMobEffects;
 import net.luderspieler.dnd.entity.NothicEntity;
+import net.luderspieler.dnd.init.DndModMobEffects;
+import net.luderspieler.dnd.network.DndModVariables;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.Comparator;
 

@@ -1,25 +1,23 @@
 package net.luderspieler.dnd.potion;
 
-import net.neoforged.neoforge.event.ModifyDefaultComponentsEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.bus.api.SubscribeEvent;
-
-import net.minecraft.world.item.consume_effects.RemoveStatusEffectsConsumeEffect;
-import net.minecraft.world.item.consume_effects.ConsumeEffect;
-import net.minecraft.world.item.component.Consumable;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.effect.MobEffectCategory;
-import net.minecraft.world.effect.MobEffect;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.core.component.DataComponents;
-
-import net.luderspieler.dnd.init.DndModMobEffects;
 import net.luderspieler.dnd.DndMod;
+import net.luderspieler.dnd.init.DndModMobEffects;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectCategory;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.Consumable;
+import net.minecraft.world.item.consume_effects.ConsumeEffect;
+import net.minecraft.world.item.consume_effects.RemoveStatusEffectsConsumeEffect;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.ModifyDefaultComponentsEvent;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 @EventBusSubscriber
 public class PetrifiedMobEffect extends MobEffect {
