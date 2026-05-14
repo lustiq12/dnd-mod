@@ -1,7 +1,8 @@
 package net.luderspieler.dnd.spells;
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.luderspieler.dnd.classes.ClassRegistry;
+import net.luderspieler.dnd.character.registrys.ClassRegistry;
+import net.luderspieler.dnd.character.screens.ClassDefinition;
 import net.luderspieler.dnd.network.DndModVariables;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -438,7 +439,7 @@ public class SpellWheelScreen extends Screen {
         if (player == null) return "";
 
         DndModVariables.PlayerVariables vars = player.getData(DndModVariables.PLAYER_VARIABLES);
-        net.luderspieler.dnd.classes.ClassDefinition classDef = ClassRegistry.getClass(vars.PlayerClass.replace("\"", ""));
+        ClassDefinition classDef = ClassRegistry.getClass(vars.PlayerClass.replace("\"", ""));
 
         if (classDef == null || classDef.getSpellSlots() == null) return "";
 

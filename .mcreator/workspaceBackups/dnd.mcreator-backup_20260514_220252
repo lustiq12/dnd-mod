@@ -1,0 +1,1416 @@
+{
+  "mod_elements": [
+    {
+      "name": "PreviewGUI",
+      "type": "gui",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "preview_gui",
+      "metadata": {
+        "files": [
+          "src/main/java/net/luderspieler/dnd/client/gui/PreviewGUIScreen.java",
+          "src/main/java/net/luderspieler/dnd/world/inventory/PreviewGUIMenu.java"
+        ]
+      }
+    },
+    {
+      "name": "Stirge",
+      "type": "livingentity",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "stirge",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/dnd/models/item/stirge_spawn_egg.json",
+          "src/main/resources/assets/dnd/items/stirge_spawn_egg.json",
+          "src/main/java/net/luderspieler/dnd/entity/StirgeEntity.java",
+          "src/main/java/net/luderspieler/dnd/client/renderer/StirgeRenderer.java",
+          "src/main/resources/data/dnd/neoforge/biome_modifier/stirge_biome_modifier.json"
+        ]
+      },
+      "path": "~/Monsters"
+    },
+    {
+      "name": "StirgeIdleCooldown",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "stirge_idle_cooldown",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/StirgeIdleCooldownProcedure.java"
+        ]
+      },
+      "path": "~/Monsters/Stirge"
+    },
+    {
+      "name": "StirgeAnimSync",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "stirge_anim_sync",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "damagesource",
+            "type": "damagesource"
+          },
+          {
+            "name": "entity",
+            "type": "entity"
+          },
+          {
+            "name": "immediatesourceentity",
+            "type": "entity"
+          },
+          {
+            "name": "amount",
+            "type": "number"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/StirgeAnimSyncProcedure.java"
+        ]
+      },
+      "path": "~/Monsters/Stirge"
+    },
+    {
+      "name": "StirgeAttackPlaybackCondition",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "stirge_attack_playback_condition",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "return_type": "logic",
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/StirgeAttackPlaybackConditionProcedure.java"
+        ]
+      },
+      "path": "~/Monsters/Stirge"
+    },
+    {
+      "name": "ClassGUI",
+      "type": "gui",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "class_gui",
+      "metadata": {
+        "files": [
+          "src/main/java/net/luderspieler/dnd/world/inventory/ClassGUIMenu.java",
+          "src/main/java/net/luderspieler/dnd/client/gui/ClassGUIScreen.java"
+        ]
+      }
+    },
+    {
+      "name": "CastSpell",
+      "type": "keybind",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "cast_spell",
+      "metadata": {
+        "files": [
+          "src/main/java/net/luderspieler/dnd/network/CastSpellMessage.java"
+        ]
+      }
+    },
+    {
+      "name": "Dnd",
+      "type": "command",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "dnd",
+      "metadata": {
+        "files": [
+          "src/main/java/net/luderspieler/dnd/command/DndCommand.java"
+        ]
+      }
+    },
+    {
+      "name": "PrepareSpells",
+      "type": "keybind",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "prepare_spells",
+      "metadata": {
+        "files": [
+          "src/main/java/net/luderspieler/dnd/network/PrepareSpellsMessage.java"
+        ]
+      }
+    },
+    {
+      "name": "ScareCrowIdleCooldown",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "scare_crow_idle_cooldown",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/ScareCrowIdleCooldownProcedure.java"
+        ]
+      },
+      "path": "~/Monsters/Scarecrow"
+    },
+    {
+      "name": "ScareCrowAnimSync",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "scare_crow_anim_sync",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "damagesource",
+            "type": "damagesource"
+          },
+          {
+            "name": "entity",
+            "type": "entity"
+          },
+          {
+            "name": "immediatesourceentity",
+            "type": "entity"
+          },
+          {
+            "name": "amount",
+            "type": "number"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/ScareCrowAnimSyncProcedure.java"
+        ]
+      },
+      "path": "~/Monsters/Scarecrow"
+    },
+    {
+      "name": "ScareCrowAttackPlaybackCondition",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "scare_crow_attack_playback_condition",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "return_type": "logic",
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/ScareCrowAttackPlaybackConditionProcedure.java"
+        ]
+      },
+      "path": "~/Monsters/Scarecrow"
+    },
+    {
+      "name": "Scarecrow",
+      "type": "livingentity",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "scarecrow",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/dnd/neoforge/biome_modifier/scarecrow_biome_modifier.json",
+          "src/main/resources/assets/dnd/items/scarecrow_spawn_egg.json",
+          "src/main/java/net/luderspieler/dnd/entity/ScarecrowEntity.java",
+          "src/main/java/net/luderspieler/dnd/client/renderer/ScarecrowRenderer.java",
+          "src/main/resources/assets/dnd/models/item/scarecrow_spawn_egg.json"
+        ]
+      },
+      "path": "~/Monsters"
+    },
+    {
+      "name": "ScareCrowIdlePlaybackCondition",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "scare_crow_idle_playback_condition",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "return_type": "logic",
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/ScareCrowIdlePlaybackConditionProcedure.java"
+        ]
+      },
+      "path": "~/Monsters/Scarecrow"
+    },
+    {
+      "name": "ScareCrowAttackCondition",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "scare_crow_attack_condition",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "return_type": "logic",
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/ScareCrowAttackConditionProcedure.java"
+        ]
+      },
+      "path": "~/Monsters/Scarecrow"
+    },
+    {
+      "name": "Harpy",
+      "type": "livingentity",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "harpy",
+      "metadata": {
+        "files": [
+          "src/main/java/net/luderspieler/dnd/entity/HarpyEntity.java",
+          "src/main/resources/data/dnd/neoforge/biome_modifier/harpy_biome_modifier.json",
+          "src/main/resources/assets/dnd/models/item/harpy_spawn_egg.json",
+          "src/main/java/net/luderspieler/dnd/client/renderer/HarpyRenderer.java",
+          "src/main/resources/assets/dnd/items/harpy_spawn_egg.json"
+        ]
+      },
+      "path": "~/Monsters"
+    },
+    {
+      "name": "HarpyIdleCooldown",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "harpy_idle_cooldown",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          },
+          {
+            "name": "x",
+            "type": "number"
+          },
+          {
+            "name": "y",
+            "type": "number"
+          },
+          {
+            "name": "z",
+            "type": "number"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/HarpyIdleCooldownProcedure.java"
+        ]
+      },
+      "path": "~/Monsters/Harpy"
+    },
+    {
+      "name": "HarpyAnimSync",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "harpy_anim_sync",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "damagesource",
+            "type": "damagesource"
+          },
+          {
+            "name": "entity",
+            "type": "entity"
+          },
+          {
+            "name": "immediatesourceentity",
+            "type": "entity"
+          },
+          {
+            "name": "amount",
+            "type": "number"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/HarpyAnimSyncProcedure.java"
+        ]
+      },
+      "path": "~/Monsters/Harpy"
+    },
+    {
+      "name": "HarpyAttackPlaybackCondition",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "harpy_attack_playback_condition",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "return_type": "logic",
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/HarpyAttackPlaybackConditionProcedure.java"
+        ]
+      },
+      "path": "~/Monsters/Harpy"
+    },
+    {
+      "name": "HarpyIdlePlaybackCondition",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "harpy_idle_playback_condition",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "return_type": "logic",
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/HarpyIdlePlaybackConditionProcedure.java"
+        ]
+      },
+      "path": "~/Monsters/Harpy"
+    },
+    {
+      "name": "HarpyRizzPlaybackCondition",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "harpy_rizz_playback_condition",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "return_type": "logic",
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/HarpyRizzPlaybackConditionProcedure.java"
+        ]
+      },
+      "path": "~/Monsters/Harpy"
+    },
+    {
+      "name": "Charmed",
+      "type": "potioneffect",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "charmed",
+      "metadata": {
+        "files": [
+          "src/main/java/net/luderspieler/dnd/potion/CharmedMobEffect.java"
+        ]
+      },
+      "path": "~/Potions"
+    },
+    {
+      "name": "CharmedOnEffectActiveTick",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "charmed_on_effect_active_tick",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          },
+          {
+            "name": "x",
+            "type": "number"
+          },
+          {
+            "name": "y",
+            "type": "number"
+          },
+          {
+            "name": "z",
+            "type": "number"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/CharmedOnEffectActiveTickProcedure.java"
+        ]
+      },
+      "path": "~/Potions"
+    },
+    {
+      "name": "Nothic",
+      "type": "livingentity",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "nothic",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/dnd/items/nothic_spawn_egg.json",
+          "src/main/resources/assets/dnd/models/item/nothic_spawn_egg.json",
+          "src/main/java/net/luderspieler/dnd/client/renderer/NothicRenderer.java",
+          "src/main/resources/data/dnd/neoforge/biome_modifier/nothic_biome_modifier.json",
+          "src/main/java/net/luderspieler/dnd/entity/NothicEntity.java"
+        ]
+      },
+      "path": "~/Monsters"
+    },
+    {
+      "name": "NothicIdleCooldown",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "nothic_idle_cooldown",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          },
+          {
+            "name": "x",
+            "type": "number"
+          },
+          {
+            "name": "y",
+            "type": "number"
+          },
+          {
+            "name": "z",
+            "type": "number"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/NothicIdleCooldownProcedure.java"
+        ]
+      },
+      "path": "~/Monsters/Nothic"
+    },
+    {
+      "name": "NothicAnimSync",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "nothic_anim_sync",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "damagesource",
+            "type": "damagesource"
+          },
+          {
+            "name": "entity",
+            "type": "entity"
+          },
+          {
+            "name": "immediatesourceentity",
+            "type": "entity"
+          },
+          {
+            "name": "amount",
+            "type": "number"
+          }
+        ],
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/NothicAnimSyncProcedure.java"
+        ]
+      },
+      "path": "~/Monsters/Nothic"
+    },
+    {
+      "name": "NothicIdlePlaybackCondition",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "nothic_idle_playback_condition",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "return_type": "logic",
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/NothicIdlePlaybackConditionProcedure.java"
+        ]
+      },
+      "path": "~/Monsters/Nothic"
+    },
+    {
+      "name": "Vampire",
+      "type": "livingentity",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "vampire",
+      "metadata": {
+        "files": [
+          "src/main/java/net/luderspieler/dnd/entity/VampireEntity.java",
+          "src/main/java/net/luderspieler/dnd/client/renderer/VampireRenderer.java",
+          "src/main/resources/assets/dnd/models/item/vampire_spawn_egg.json",
+          "src/main/resources/assets/dnd/items/vampire_spawn_egg.json",
+          "src/main/resources/data/dnd/neoforge/biome_modifier/vampire_biome_modifier.json"
+        ]
+      },
+      "path": "~/Monsters"
+    },
+    {
+      "name": "VampireIdleCooldown",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "vampire_idle_cooldown",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          },
+          {
+            "name": "x",
+            "type": "number"
+          },
+          {
+            "name": "y",
+            "type": "number"
+          },
+          {
+            "name": "z",
+            "type": "number"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/VampireIdleCooldownProcedure.java"
+        ]
+      },
+      "path": "~/Monsters/Vampire"
+    },
+    {
+      "name": "VampireAnimSync",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "vampire_anim_sync",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "damagesource",
+            "type": "damagesource"
+          },
+          {
+            "name": "entity",
+            "type": "entity"
+          },
+          {
+            "name": "immediatesourceentity",
+            "type": "entity"
+          },
+          {
+            "name": "amount",
+            "type": "number"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/VampireAnimSyncProcedure.java"
+        ]
+      },
+      "path": "~/Monsters/Vampire"
+    },
+    {
+      "name": "VampireAttackPlaybackCondition",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "vampire_attack_playback_condition",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "return_type": "logic",
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/VampireAttackPlaybackConditionProcedure.java"
+        ]
+      },
+      "path": "~/Monsters/Vampire"
+    },
+    {
+      "name": "VampireIdlePlaybackCondition",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "vampire_idle_playback_condition",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "return_type": "logic",
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/VampireIdlePlaybackConditionProcedure.java"
+        ]
+      },
+      "path": "~/Monsters/Vampire"
+    },
+    {
+      "name": "VampireRizzPlaybackCondition",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "vampire_rizz_playback_condition",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "return_type": "logic",
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/VampireRizzPlaybackConditionProcedure.java"
+        ]
+      },
+      "path": "~/Monsters/Vampire"
+    },
+    {
+      "name": "Grabbed",
+      "type": "potioneffect",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "grabbed",
+      "metadata": {
+        "files": [
+          "src/main/java/net/luderspieler/dnd/potion/GrabbedMobEffect.java"
+        ]
+      },
+      "path": "~/Potions"
+    },
+    {
+      "name": "GrabbedOnEffectActiveTick",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "grabbed_on_effect_active_tick",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          },
+          {
+            "name": "x",
+            "type": "number"
+          },
+          {
+            "name": "y",
+            "type": "number"
+          },
+          {
+            "name": "z",
+            "type": "number"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/GrabbedOnEffectActiveTickProcedure.java"
+        ]
+      },
+      "path": "~/Potions"
+    },
+    {
+      "name": "Stunned",
+      "type": "potioneffect",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "stunned",
+      "metadata": {
+        "files": [
+          "src/main/java/net/luderspieler/dnd/potion/StunnedMobEffect.java"
+        ]
+      },
+      "path": "~/Potions"
+    },
+    {
+      "name": "DecayingStareOnEffectActiveTick",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "decaying_stare_on_effect_active_tick",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/DecayingStareOnEffectActiveTickProcedure.java"
+        ]
+      },
+      "path": "~/Potions"
+    },
+    {
+      "name": "DecayingStare",
+      "type": "potioneffect",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "decaying_stare",
+      "metadata": {
+        "files": [
+          "src/main/java/net/luderspieler/dnd/potion/DecayingStareMobEffect.java"
+        ]
+      },
+      "path": "~/Potions"
+    },
+    {
+      "name": "MedusaIdleCooldown",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "medusa_idle_cooldown",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/MedusaIdleCooldownProcedure.java"
+        ]
+      },
+      "path": "~/Monsters/Medusa"
+    },
+    {
+      "name": "Medusa",
+      "type": "livingentity",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "medusa",
+      "metadata": {
+        "files": [
+          "src/main/java/net/luderspieler/dnd/entity/MedusaEntity.java",
+          "src/main/resources/assets/dnd/models/item/medusa_spawn_egg.json",
+          "src/main/java/net/luderspieler/dnd/client/renderer/MedusaRenderer.java",
+          "src/main/resources/assets/dnd/items/medusa_spawn_egg.json",
+          "src/main/resources/data/dnd/neoforge/biome_modifier/medusa_biome_modifier.json"
+        ]
+      },
+      "path": "~/Monsters"
+    },
+    {
+      "name": "MedusaIdlePlaybackCondition",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "medusa_idle_playback_condition",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "return_type": "logic",
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/MedusaIdlePlaybackConditionProcedure.java"
+        ]
+      },
+      "path": "~/Monsters/Medusa"
+    },
+    {
+      "name": "MedusaStonePlaybackCondition",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "medusa_stone_playback_condition",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "return_type": "logic",
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/MedusaStonePlaybackConditionProcedure.java"
+        ]
+      },
+      "path": "~/Monsters/Medusa"
+    },
+    {
+      "name": "Petrified",
+      "type": "potioneffect",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "petrified",
+      "metadata": {
+        "files": [
+          "src/main/java/net/luderspieler/dnd/potion/PetrifiedMobEffect.java"
+        ]
+      },
+      "path": "~/Potions"
+    },
+    {
+      "name": "CharacterSheet",
+      "type": "keybind",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "character_sheet",
+      "metadata": {
+        "files": [
+          "src/main/java/net/luderspieler/dnd/network/CharacterSheetMessage.java"
+        ]
+      }
+    },
+    {
+      "name": "Hovering",
+      "type": "potioneffect",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "hovering",
+      "metadata": {
+        "files": [
+          "src/main/java/net/luderspieler/dnd/potion/HoveringMobEffect.java"
+        ]
+      },
+      "path": "~/Potions"
+    }
+  ],
+  "variable_elements": [
+    {
+      "name": "PlayerClass",
+      "type": "string",
+      "scope": "player_persistent",
+      "value": "\"\""
+    },
+    {
+      "name": "PlayerLevel",
+      "type": "number",
+      "scope": "player_persistent",
+      "value": "0"
+    },
+    {
+      "name": "Spellslots",
+      "type": "string",
+      "scope": "player_persistent",
+      "value": "\"\""
+    },
+    {
+      "name": "PlayerSubrace",
+      "type": "string",
+      "scope": "player_persistent",
+      "value": "\"\""
+    },
+    {
+      "name": "PlayerName",
+      "type": "string",
+      "scope": "player_persistent",
+      "value": "\"\""
+    },
+    {
+      "name": "PlayerStory",
+      "type": "string",
+      "scope": "player_persistent",
+      "value": "\"\""
+    },
+    {
+      "name": "PlayerPersonality",
+      "type": "string",
+      "scope": "player_persistent",
+      "value": "\"\""
+    },
+    {
+      "name": "FinishedCharacterCreation",
+      "type": "logic",
+      "scope": "player_lifetime",
+      "value": "false"
+    },
+    {
+      "name": "PlayerRace",
+      "type": "string",
+      "scope": "player_persistent",
+      "value": "\"\""
+    },
+    {
+      "name": "PlayerSubclass",
+      "type": "string",
+      "scope": "player_persistent",
+      "value": "\"\""
+    },
+    {
+      "name": "PlayerXP",
+      "type": "number",
+      "scope": "player_persistent",
+      "value": "0"
+    },
+    {
+      "name": "Proficiencys",
+      "type": "string",
+      "scope": "player_persistent",
+      "value": "\"\""
+    },
+    {
+      "name": "CanUseMagic",
+      "type": "logic",
+      "scope": "player_persistent",
+      "value": "false"
+    },
+    {
+      "name": "PreparedCantrips",
+      "type": "string",
+      "scope": "player_persistent",
+      "value": "\"\""
+    },
+    {
+      "name": "PreparedSpellsLVL1",
+      "type": "string",
+      "scope": "player_persistent",
+      "value": "\"\""
+    },
+    {
+      "name": "PreparedSpellsLVL2",
+      "type": "string",
+      "scope": "player_persistent",
+      "value": "\"\""
+    },
+    {
+      "name": "PreparedSpellsLVL3",
+      "type": "string",
+      "scope": "player_persistent",
+      "value": "\"\""
+    },
+    {
+      "name": "PreparedSpellsLVL4",
+      "type": "string",
+      "scope": "player_persistent",
+      "value": "\"\""
+    },
+    {
+      "name": "PreparedSpellsLVL5",
+      "type": "string",
+      "scope": "player_persistent",
+      "value": "\"\""
+    },
+    {
+      "name": "PreparedSpellsLVL6",
+      "type": "string",
+      "scope": "player_persistent",
+      "value": "\"\""
+    },
+    {
+      "name": "PreparedSpellsLVL7",
+      "type": "string",
+      "scope": "player_persistent",
+      "value": "\"\""
+    },
+    {
+      "name": "PreparedSpellsLVL8",
+      "type": "string",
+      "scope": "player_persistent",
+      "value": "\"\""
+    },
+    {
+      "name": "PreparedSpellsLVL9",
+      "type": "string",
+      "scope": "player_persistent",
+      "value": "\"\""
+    },
+    {
+      "name": "TargetingRange",
+      "type": "number",
+      "scope": "player_lifetime",
+      "value": "0"
+    },
+    {
+      "name": "TargetingMode",
+      "type": "logic",
+      "scope": "player_lifetime",
+      "value": "false"
+    },
+    {
+      "name": "TargetingAmount",
+      "type": "number",
+      "scope": "player_lifetime",
+      "value": "0"
+    },
+    {
+      "name": "TargetingSpell",
+      "type": "string",
+      "scope": "player_lifetime",
+      "value": "\"\""
+    },
+    {
+      "name": "targetUUIDS",
+      "type": "string",
+      "scope": "player_lifetime",
+      "value": "\"\""
+    },
+    {
+      "name": "TargetingModeType",
+      "type": "string",
+      "scope": "player_lifetime",
+      "value": "\"\""
+    },
+    {
+      "name": "AbilityData",
+      "type": "string",
+      "scope": "player_lifetime",
+      "value": "\"\""
+    },
+    {
+      "name": "Charmer",
+      "type": "string",
+      "scope": "player_lifetime",
+      "value": "\"\""
+    },
+    {
+      "name": "grabber",
+      "type": "string",
+      "scope": "player_lifetime",
+      "value": "\"\""
+    },
+    {
+      "name": "Decaying_Focus",
+      "type": "string",
+      "scope": "player_lifetime",
+      "value": "\"\""
+    },
+    {
+      "name": "BlocksToUpdate",
+      "type": "string",
+      "scope": "world",
+      "value": "\"\""
+    },
+    {
+      "name": "ChoicesNeeded",
+      "type": "string",
+      "scope": "player_persistent",
+      "value": "\"\""
+    },
+    {
+      "name": "Strength",
+      "type": "number",
+      "scope": "player_persistent",
+      "value": "0.0"
+    },
+    {
+      "name": "Dexterity",
+      "type": "number",
+      "scope": "player_persistent",
+      "value": "0.0"
+    },
+    {
+      "name": "Constitution",
+      "type": "number",
+      "scope": "player_persistent",
+      "value": "0.0"
+    },
+    {
+      "name": "Intelligence",
+      "type": "number",
+      "scope": "player_persistent",
+      "value": "0.0"
+    },
+    {
+      "name": "Wisdom",
+      "type": "number",
+      "scope": "player_persistent",
+      "value": "0.0"
+    },
+    {
+      "name": "Charisma",
+      "type": "number",
+      "scope": "player_persistent",
+      "value": "0.0"
+    },
+    {
+      "name": "ProficiencyBonus",
+      "type": "number",
+      "scope": "player_persistent",
+      "value": "0.0"
+    }
+  ],
+  "sound_elements": [
+    {
+      "name": "harpy_rizz",
+      "files": [
+        "harpy_rizz"
+      ],
+      "category": "hostile",
+      "subtitle": ""
+    }
+  ],
+  "tag_elements": {
+    "ITEMS:mod:light_armor": [
+      "Items.LEATHER_HELMET",
+      "Items.LEATHER_CHESTPLATE",
+      "Items.LEATHER_LEGGINGS",
+      "Items.LEATHER_BOOTS",
+      "Items.CHAINMAIL_HELMET",
+      "Items.CHAINMAIL_CHESTPLATE",
+      "Items.CHAINMAIL_LEGGINGS",
+      "Items.CHAINMAIL_BOOTS"
+    ],
+    "ITEMS:mod:medium_armor": [
+      "Items.IRON_HELMET",
+      "Items.IRON_CHESTPLATE",
+      "Items.IRON_LEGGINGS",
+      "Items.IRON_BOOTS",
+      "Items.GOLDEN_HELMET",
+      "Items.GOLDEN_CHESTPLATE",
+      "Items.GOLDEN_LEGGINGS",
+      "Items.GOLDEN_BOOTS"
+    ],
+    "ITEMS:mod:heavy_armor": [
+      "Items.DIAMOND_HELMET",
+      "Items.DIAMOND_CHESTPLATE",
+      "Items.DIAMOND_LEGGINGS",
+      "Items.DIAMOND_BOOTS",
+      "Items.NETHERITE_HELMET",
+      "Items.NETHERITE_CHESTPLATE",
+      "Items.NETHERITE_LEGGINGS",
+      "Items.NETHERITE_BOOTS"
+    ],
+    "ITEMS:mod:simple_weapons": [
+      "Items.STONE_SWORD",
+      "Items.STONE_AXE",
+      "Items.GOLDEN_SWORD",
+      "Items.GOLDEN_AXE"
+    ],
+    "ITEMS:mod:war_weapons": [
+      "Items.IRON_SWORD",
+      "Items.DIAMOND_SWORD",
+      "Items.NETHERITE_SWORD",
+      "Items.IRON_AXE",
+      "Items.DIAMOND_AXE",
+      "Items.NETHERITE_AXE"
+    ],
+    "ITEMS:mod:shields": [
+      "Items.SHIELD"
+    ]
+  },
+  "tab_element_order": {},
+  "language_map": {
+    "en_us": {
+      "gui.dnd.preview_gui.label_fahigkeit8": "fähigkeit",
+      "gui.dnd.preview_gui.label_fahigkeit9": "fähigkeit",
+      "gui.dnd.preview_gui.label_fahigkeit4": "fähigkeit",
+      "gui.dnd.preview_gui.label_fahigkeit5": "fähigkeit",
+      "gui.dnd.preview_gui.label_fahigkeit6": "fähigkeit",
+      "gui.dnd.preview_gui.label_attribute": "Attribute:",
+      "gui.dnd.preview_gui.label_fahigkeit7": "fähigkeit",
+      "gui.dnd.preview_gui.label_attribute2": "Attribute:",
+      "gui.dnd.preview_gui.label_classname": "ClassName",
+      "gui.dnd.preview_gui.label_attribute3": "Attribute:",
+      "gui.dnd.preview_gui.label_fahigkeit": "fähigkeit",
+      "gui.dnd.preview_gui.label_attribute1": "Attribute:",
+      "gui.dnd.preview_gui.label_attribute6": "attribute",
+      "gui.dnd.preview_gui.label_attribute7": "attribute",
+      "gui.dnd.preview_gui.label_attribute4": "Attribute:",
+      "gui.dnd.preview_gui.label_attribute5": "attribute",
+      "gui.dnd.preview_gui.label_fahigkeit1": "fähigkeit",
+      "gui.dnd.preview_gui.label_fahigkeit2": "fähigkeit",
+      "gui.dnd.preview_gui.label_attribute8": "attribute",
+      "gui.dnd.preview_gui.label_fahigkeit3": "fähigkeit",
+      "gui.dnd.preview_gui.label_attribute9": "attribute",
+      "entity.dnd.stirge": "Stirge",
+      "item.dnd.stirge_spawn_egg": "Stirge Spawn Egg",
+      "gui.dnd.preview_gui.button_subclass1": "Subclass1",
+      "gui.dnd.class_gui.label_fahigkeit8": "fähigkeit",
+      "gui.dnd.class_gui.label_fahigkeit9": "fähigkeit",
+      "gui.dnd.class_gui.label_fahigkeit4": "fähigkeit",
+      "gui.dnd.class_gui.label_classname": "ClassName",
+      "gui.dnd.class_gui.label_fahigkeit5": "fähigkeit",
+      "gui.dnd.class_gui.label_fahigkeit6": "fähigkeit",
+      "gui.dnd.class_gui.label_fahigkeit": "fähigkeit",
+      "gui.dnd.class_gui.label_fahigkeit7": "fähigkeit",
+      "gui.dnd.class_gui.label_attribute9": "attribute",
+      "gui.dnd.class_gui.label_fahigkeit1": "fähigkeit",
+      "gui.dnd.class_gui.label_attribute8": "attribute",
+      "gui.dnd.class_gui.label_fahigkeit2": "fähigkeit",
+      "gui.dnd.class_gui.label_fahigkeit3": "fähigkeit",
+      "gui.dnd.class_gui.button_subclass1": "Subclass1",
+      "gui.dnd.class_gui.label_attribute1": "Attribute:",
+      "gui.dnd.class_gui.label_attribute": "Attribute:",
+      "gui.dnd.class_gui.label_attribute3": "Attribute:",
+      "gui.dnd.class_gui.label_attribute2": "Attribute:",
+      "gui.dnd.class_gui.label_attribute5": "attribute",
+      "gui.dnd.class_gui.label_attribute4": "Attribute:",
+      "gui.dnd.class_gui.label_attribute7": "attribute",
+      "gui.dnd.class_gui.label_attribute6": "attribute",
+      "key.dnd.cast_spell": "Cast Spell",
+      "key.dnd.prepare_spells": "Cast Spell",
+      "entity.dnd.scarecrow": "Scarecrow",
+      "item.dnd.scarecrow_spawn_egg": "Scarecrow Spawn Egg",
+      "item.dnd.harpy_spawn_egg": "Harpy Spawn Egg",
+      "entity.dnd.harpy": "Harpy",
+      "subtitles.harpy_rizz": "",
+      "effect.dnd.charmed": "Charmed",
+      "item.dnd.nothic_spawn_egg": "Nothic Spawn Egg",
+      "entity.dnd.nothic": "Nothic",
+      "entity.dnd.vampire": "Vampire",
+      "item.dnd.vampire_spawn_egg": "Vampire Spawn Egg",
+      "effect.dnd.grabbed": "Charmed",
+      "effect.dnd.stunned": "Stunned",
+      "effect.dnd.decaying_stare": "Decaying Stare",
+      "entity.dnd.medusa": "Medusa",
+      "item.dnd.medusa_spawn_egg": "Medusa Spawn Egg",
+      "effect.dnd.petrified": "Petrified",
+      "key.dnd.character_sheet": "Character Sheet",
+      "effect.dnd.hovering": "Hovering"
+    }
+  },
+  "metadata": {
+    "files": [
+      "src/main/java/net/luderspieler/dnd/init/DndModMenus.java",
+      "src/main/java/net/luderspieler/dnd/network/MenuStateUpdateMessage.java",
+      "src/main/java/net/luderspieler/dnd/init/DndModScreens.java",
+      "src/main/java/net/luderspieler/dnd/init/DndModKeyMappings.java",
+      "src/main/java/net/luderspieler/dnd/init/DndModMobEffects.java",
+      "src/main/java/net/luderspieler/dnd/init/DndModItems.java",
+      "src/main/java/net/luderspieler/dnd/init/DndModEntities.java",
+      "src/main/java/net/luderspieler/dnd/init/DndModEntityRenderers.java",
+      "src/main/java/net/luderspieler/dnd/DndMod.java",
+      "src/main/resources/assets/dnd/sounds.json",
+      "src/main/java/net/luderspieler/dnd/network/DndModVariables.java",
+      "src/main/resources/META-INF/neoforge.mods.toml",
+      "src/main/java/net/luderspieler/dnd/init/DndModSounds.java",
+      "src/main/java/net/luderspieler/dnd/init/DndModTabs.java",
+      "src/main/resources/pack.mcmeta",
+      "src/main/java/net/luderspieler/dnd/init/DndModModels.java"
+    ]
+  },
+  "foldersRoot": {
+    "name": "~",
+    "children": [
+      {
+        "name": "Weapons",
+        "children": []
+      },
+      {
+        "name": "Potions",
+        "children": []
+      },
+      {
+        "name": "Class_Species_System",
+        "children": []
+      },
+      {
+        "name": "Monsters",
+        "children": [
+          {
+            "name": "Stirge",
+            "children": []
+          },
+          {
+            "name": "Scarecrow",
+            "children": []
+          },
+          {
+            "name": "Harpy",
+            "children": []
+          },
+          {
+            "name": "Nothic",
+            "children": []
+          },
+          {
+            "name": "Vampire",
+            "children": []
+          },
+          {
+            "name": "Medusa",
+            "children": []
+          }
+        ]
+      }
+    ]
+  },
+  "workspaceSettings": {
+    "modid": "dnd",
+    "modName": "D\u0026D",
+    "version": "1.0.0",
+    "description": "D\u0026D in minecraft.",
+    "author": "Luderspieler, Miherrma",
+    "websiteURL": "https://mcreator.net",
+    "license": "All Rights Reserved",
+    "serverSideOnly": false,
+    "requiredMods": [],
+    "dependencies": [],
+    "dependants": [],
+    "mcreatorDependencies": [],
+    "currentGenerator": "neoforge-1.21.8",
+    "credits": "Made using Skill.",
+    "modElementsPackage": "net.luderspieler.dnd"
+  },
+  "mcreatorVersion": 202600114619
+}

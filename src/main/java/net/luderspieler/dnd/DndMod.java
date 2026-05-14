@@ -25,10 +25,10 @@ import net.luderspieler.dnd.spells.BlockUpdater;
 import net.luderspieler.dnd.rests.SleepingIntereferer;
 import net.luderspieler.dnd.network.DndModVariables;
 import net.luderspieler.dnd.init.*;
-import net.luderspieler.dnd.classes.abilitys.AbilityPassiveTriggers;
-import net.luderspieler.dnd.classes.ProficiencyCheckProcedure;
-import net.luderspieler.dnd.classes.LevelEvents;
-import net.luderspieler.dnd.classes.CharacterCreationEventHandler;
+import net.luderspieler.dnd.character.abilitys.AbilityPassiveTriggers;
+import net.luderspieler.dnd.character.ProficiencyCheckProcedure;
+import net.luderspieler.dnd.character.LevelEvents;
+import net.luderspieler.dnd.character.CharacterCreationEventHandler;
 
 import javax.annotation.Nullable;
 

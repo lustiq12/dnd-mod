@@ -1,7 +1,7 @@
 package net.luderspieler.dnd.network;
 
 import net.luderspieler.dnd.DndMod;
-import net.luderspieler.dnd.classes.CharacterSheetScreen;
+import net.luderspieler.dnd.character.screens.CharacterSheetScreen;
 import net.minecraft.core.SectionPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;

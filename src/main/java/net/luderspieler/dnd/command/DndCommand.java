@@ -5,10 +5,10 @@ import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
-import net.luderspieler.dnd.classes.CharacterCreationPacket;
-import net.luderspieler.dnd.classes.ClassDefinition;
-import net.luderspieler.dnd.classes.ClassRegistry;
-import net.luderspieler.dnd.classes.LevelEvents;
+import net.luderspieler.dnd.character.network.CharacterCreationPacket;
+import net.luderspieler.dnd.character.screens.ClassDefinition;
+import net.luderspieler.dnd.character.registrys.ClassRegistry;
+import net.luderspieler.dnd.character.LevelEvents;
 import net.luderspieler.dnd.network.DndModVariables;
 import net.luderspieler.dnd.spells.SpellCasters;
 import net.luderspieler.dnd.spells.Spells;
@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static net.luderspieler.dnd.classes.choices.ChoiceRegistry.addChoicesForLevel;
+import static net.luderspieler.dnd.character.choices.ChoiceRegistry.addChoicesForLevel;
 
 @EventBusSubscriber
 public class DndCommand {

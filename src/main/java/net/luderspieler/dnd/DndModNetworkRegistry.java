@@ -1,15 +1,13 @@
 package net.luderspieler.dnd;
 
-import net.luderspieler.dnd.classes.CharacterCreationEventHandler;
-import net.luderspieler.dnd.classes.CharacterCreationPacket;
-import net.luderspieler.dnd.classes.KeepCharacterPacket;
-import net.luderspieler.dnd.classes.OpenCreationGuiPacket;
-import net.luderspieler.dnd.classes.choices.ExecuteChoicePacket;
+import net.luderspieler.dnd.character.network.CharacterCreationPacket;
+import net.luderspieler.dnd.character.network.KeepCharacterPacket;
+import net.luderspieler.dnd.character.network.OpenCreationGuiPacket;
+import net.luderspieler.dnd.character.choices.ExecuteChoicePacket;
 import net.luderspieler.dnd.network.AirClickPacket;
 import net.luderspieler.dnd.spells.CastSpellPacket;
 import net.luderspieler.dnd.spells.PrepareSpellsPacket;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 

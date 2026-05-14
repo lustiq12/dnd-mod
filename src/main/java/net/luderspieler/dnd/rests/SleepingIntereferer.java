@@ -1,7 +1,7 @@
 package net.luderspieler.dnd.rests;
 
-import net.luderspieler.dnd.classes.ClassDefinition;
-import net.luderspieler.dnd.classes.ClassRegistry;
+import net.luderspieler.dnd.character.screens.ClassDefinition;
+import net.luderspieler.dnd.character.registrys.ClassRegistry;
 import net.luderspieler.dnd.network.DndModVariables;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
