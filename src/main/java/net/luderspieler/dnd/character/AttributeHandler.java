@@ -3,7 +3,7 @@ package net.luderspieler.dnd.character;
 import net.luderspieler.dnd.character.definition.RaceDefinition;
 import net.luderspieler.dnd.character.registrys.ClassRegistry;
 import net.luderspieler.dnd.character.registrys.RaceRegistry;
-import net.luderspieler.dnd.character.screens.ClassDefinition;
+import net.luderspieler.dnd.character.definition.ClassDefinition;
 import net.luderspieler.dnd.network.DndModVariables;
 import net.minecraft.world.entity.player.Player;
 

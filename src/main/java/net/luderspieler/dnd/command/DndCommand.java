@@ -6,7 +6,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 import net.luderspieler.dnd.character.network.CharacterCreationPacket;
-import net.luderspieler.dnd.character.screens.ClassDefinition;
+import net.luderspieler.dnd.character.definition.ClassDefinition;
 import net.luderspieler.dnd.character.registrys.ClassRegistry;
 import net.luderspieler.dnd.character.LevelEvents;
 import net.luderspieler.dnd.network.DndModVariables;

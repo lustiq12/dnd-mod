@@ -1,4 +1,4 @@
-package net.luderspieler.dnd.character.screens;
+package net.luderspieler.dnd.character.definition;
 
 import net.luderspieler.dnd.spells.Spells;
 import net.minecraft.resources.ResourceLocation;

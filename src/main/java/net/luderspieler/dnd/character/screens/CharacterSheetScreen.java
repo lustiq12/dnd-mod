@@ -1,5 +1,6 @@
 package net.luderspieler.dnd.character.screens;
 
+import net.luderspieler.dnd.character.definition.ClassDefinition;
 import net.luderspieler.dnd.character.registrys.ClassRegistry;
 import net.luderspieler.dnd.character.definition.RaceDefinition;
 import net.luderspieler.dnd.character.registrys.RaceRegistry;

@@ -1,6 +1,6 @@
 package net.luderspieler.dnd.rests;
 
-import net.luderspieler.dnd.character.screens.ClassDefinition;
+import net.luderspieler.dnd.character.definition.ClassDefinition;
 import net.luderspieler.dnd.character.registrys.ClassRegistry;
 import net.luderspieler.dnd.network.DndModVariables;
 import net.minecraft.network.chat.Component;

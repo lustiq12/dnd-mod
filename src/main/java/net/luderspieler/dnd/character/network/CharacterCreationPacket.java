@@ -4,7 +4,7 @@ import net.luderspieler.dnd.character.definition.RaceDefinition;
 import net.luderspieler.dnd.character.definition.SubraceDefinition;
 import net.luderspieler.dnd.character.registrys.ClassRegistry;
 import net.luderspieler.dnd.character.registrys.RaceRegistry;
-import net.luderspieler.dnd.character.screens.ClassDefinition;
+import net.luderspieler.dnd.character.definition.ClassDefinition;
 import net.luderspieler.dnd.network.DndModVariables;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;

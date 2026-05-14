@@ -1,7 +1,7 @@
 package net.luderspieler.dnd.character.registrys;
 
 import net.luderspieler.dnd.character.definition.SubclassDefinition;
-import net.luderspieler.dnd.character.screens.ClassDefinition;
+import net.luderspieler.dnd.character.definition.ClassDefinition;
 import net.luderspieler.dnd.spells.Spells;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;

@@ -1,6 +1,7 @@
 package net.luderspieler.dnd.character.screens;
 
 import net.luderspieler.dnd.character.*;
+import net.luderspieler.dnd.character.definition.ClassDefinition;
 import net.luderspieler.dnd.character.definition.RaceDefinition;
 import net.luderspieler.dnd.character.definition.SubraceDefinition;
 import net.luderspieler.dnd.character.network.CharacterCreationPacket;
@@ -36,7 +37,7 @@ public class CharacterFinalizationScreen extends Screen {
 
     private RaceDefinition race;
     private SubraceDefinition subrace;
-    private ClassDefinition   cls;
+    private ClassDefinition cls;
 
     public CharacterFinalizationScreen(boolean isNewCharacter) {
         super(Component.literal("Character Finalization"));

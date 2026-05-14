@@ -3,7 +3,7 @@ package net.luderspieler.dnd.character;
 import net.luderspieler.dnd.character.abilitys.Ability;
 import net.luderspieler.dnd.character.network.CharacterCreationPacket;
 import net.luderspieler.dnd.character.registrys.ClassRegistry;
-import net.luderspieler.dnd.character.screens.ClassDefinition;
+import net.luderspieler.dnd.character.definition.ClassDefinition;
 import net.luderspieler.dnd.network.DndModVariables;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
