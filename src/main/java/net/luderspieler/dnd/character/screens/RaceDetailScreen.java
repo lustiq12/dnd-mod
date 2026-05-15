@@ -16,7 +16,6 @@ import java.util.Map;
 
 public class RaceDetailScreen extends Screen {
 
-    private static final ResourceLocation BACKGROUND = ResourceLocation.parse("dnd:textures/screens/preview_gui.png");
     private static final int ICON_SIZE       = 32;
     private final int imageWidth = 400;
     private final int imageHeight = 230;
@@ -43,7 +42,6 @@ public class RaceDetailScreen extends Screen {
         int leftPos = (this.width - this.imageWidth) / 2;
         int topPos = (this.height - this.imageHeight) / 2;
 
-        // ── SUBRACE BUTTONS (Rechte Spalte) ──
         int subraceStartX = leftPos + 220;
         int subraceStartY = topPos + 40;
         int count = Math.min(subraces.size(), 6);
@@ -56,7 +54,6 @@ public class RaceDetailScreen extends Screen {
             ).bounds(subraceStartX, by, SUBRACE_BTN_W, SUBRACE_BTN_H).build());
         }
 
-        // ── BACK BUTTON ──
         this.addRenderableWidget(Button.builder(
                 Component.literal("Back"),
                 btn -> this.minecraft.setScreen(new RaceListScreen(this.isNewCharacter))
@@ -65,13 +62,17 @@ public class RaceDetailScreen extends Screen {
 
     @Override
     public void render(GuiGraphics g, int mouseX, int mouseY, float partial) {
-        this.renderBackground(g, mouseX, mouseY, partial);
+        // 1. Full Screen Overlay
+        g.fillGradient(0, 0, this.width, this.height,
+                generalConfigs.COLOR_DEATH_OVERLAY_TOP,
+                generalConfigs.COLOR_DEATH_OVERLAY_BOTTOM);
 
         int leftPos = (this.width - imageWidth) / 2;
         int topPos = (this.height - imageHeight) / 2;
 
-        // Hintergrund-Textur
-        g.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND, leftPos, topPos, 0, 0, this.imageWidth, this.imageHeight, this.imageWidth, this.imageHeight);
+        // 2. Main Panel Background & Edge
+        g.fill(leftPos, topPos, leftPos + imageWidth, topPos + imageHeight, generalConfigs.COLOR_PANEL_BG);
+        generalConfigs.renderGreenEdge(g, leftPos, topPos, imageWidth, imageHeight);
 
         super.render(g, mouseX, mouseY, partial);
 
@@ -79,10 +80,8 @@ public class RaceDetailScreen extends Screen {
         g.blit(RenderPipelines.GUI_TEXTURED, race.getIcon(), leftPos + 10, topPos + 14, 0, 0, ICON_SIZE, ICON_SIZE, ICON_SIZE, ICON_SIZE);
         g.drawString(this.font, race.getDisplayName(), leftPos + 50, topPos + 22, generalConfigs.TEXT_WHITE);
 
-        // Subrace Header
         g.drawString(this.font, "Choose a Subrace:", leftPos + 220, topPos + 22, generalConfigs.COLOR_ACCENT_GOLD);
 
-        // Attributes Sektion
         int attrY = topPos + 60;
         g.drawString(this.font, "Attributes:", leftPos + 10, attrY, generalConfigs.COLOR_ACCENT_GOLD);
         attrY += 12;
@@ -94,16 +93,10 @@ public class RaceDetailScreen extends Screen {
             attrY += 10;
         }
 
-        // Traits Sektion
         attrY += 6;
         g.drawString(this.font, "Traits:", leftPos + 10, attrY, generalConfigs.COLOR_ACCENT_GOLD);
         attrY += 12;
         g.drawWordWrap(this.font, Component.literal(race.getDescription()), leftPos + 10, attrY, 180, generalConfigs.TEXT_GRAY);
-    }
-
-    // Formatierung für D&D Integer-Werte
-    private String formatVal(String key, int val) {
-        return String.valueOf(val);
     }
 
     @Override
