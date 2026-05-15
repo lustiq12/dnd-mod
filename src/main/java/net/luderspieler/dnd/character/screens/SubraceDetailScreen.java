@@ -70,17 +70,17 @@ public class SubraceDetailScreen extends Screen {
         g.blit(
                 RenderPipelines.GUI_TEXTURED,
                 subrace.getIcon(),
-                leftPos + 10, topPos + 12,
+                leftPos + 10, topPos + 14,
                 0, 0,
                 ICON_SIZE, ICON_SIZE,
                 ICON_SIZE, ICON_SIZE
         );
 
         // 4. NAME
-        g.drawString(this.font, subrace.getDisplayName(), leftPos + 50, topPos + 18, generalConfigs.TEXT_WHITE);
+        g.drawString(this.font, subrace.getDisplayName(), leftPos + 50, topPos + 22, generalConfigs.TEXT_WHITE);
 
         // 5. PARENT RACE
-        g.drawString(this.font, "(" + race.getDisplayName() + ")", leftPos + 50, topPos + 30, generalConfigs.TEXT_DARK_GRAY);
+        g.drawString(this.font, "(" + race.getDisplayName() + ")", leftPos + 50, topPos + 34, generalConfigs.TEXT_DARK_GRAY);
 
         // 6. DESCRIPTION
         g.drawWordWrap(this.font,

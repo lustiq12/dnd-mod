@@ -73,7 +73,7 @@ public class ClassDetailScreen extends Screen {
 
         // ICON & NAME
         g.blit(RenderPipelines.GUI_TEXTURED, cls.getIcon(), leftPos + 20, topPos + 20, 0, 0, ICON_SIZE, ICON_SIZE, ICON_SIZE, ICON_SIZE);
-        g.drawString(this.font, cls.getDisplayName(), leftPos + 60, topPos + 24, generalConfigs.TEXT_WHITE);
+        g.drawString(this.font, cls.getDisplayName(), leftPos + 76, topPos + 24, generalConfigs.TEXT_WHITE);
 
         // STARTER ITEMS (Logik unverändert)
         int itemRowY = topPos + 80;
