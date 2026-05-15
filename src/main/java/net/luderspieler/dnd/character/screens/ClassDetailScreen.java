@@ -24,7 +24,6 @@ import java.util.Optional;
 
 public class ClassDetailScreen extends Screen {
 
-    private static final ResourceLocation BACKGROUND = ResourceLocation.parse("dnd:textures/screens/preview_gui.png");
     private static final int ICON_SIZE  = 48;
     private static final int ITEM_SIZE  = 16;
     private final int imageWidth  = 637;
@@ -46,13 +45,11 @@ public class ClassDetailScreen extends Screen {
         int topPos  = (this.height - imageHeight) / 2;
         int centerX = this.width / 2;
 
-        // "Choose" Button -> Finalization
         this.addRenderableWidget(Button.builder(Component.literal("Choose"), btn -> {
             CharacterCreationState.selectedClassId = cls.getId();
             this.minecraft.setScreen(new CharacterFinalizationScreen(isNewCharacter));
         }).bounds(centerX - 100, topPos + imageHeight - 35, 90, 20).build());
 
-        // "Back" Button -> Zurück zur Liste (gefixt)
         this.addRenderableWidget(Button.builder(Component.literal("Back"), btn ->
                 this.minecraft.setScreen(new ClassListScreen(isNewCharacter))
         ).bounds(centerX + 10, topPos + imageHeight - 35, 90, 20).build());
@@ -60,7 +57,7 @@ public class ClassDetailScreen extends Screen {
 
     @Override
     public void render(GuiGraphics g, int mouseX, int mouseY, float partial) {
-        // 1. Hintergrund-Overlay
+        // 1. Full Screen Overlay
         g.fillGradient(0, 0, this.width, this.height,
                 generalConfigs.COLOR_DEATH_OVERLAY_TOP,
                 generalConfigs.COLOR_DEATH_OVERLAY_BOTTOM);
@@ -68,18 +65,18 @@ public class ClassDetailScreen extends Screen {
         int leftPos = (this.width - this.imageWidth) / 2;
         int topPos  = (this.height - this.imageHeight) / 2;
 
-        // 2. Hintergrund-Textur
-        g.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND, leftPos, topPos, 0, 0, this.imageWidth, this.imageHeight, this.imageWidth, this.imageHeight);
+        // 2. Main Panel & Green Edge
+        g.fill(leftPos, topPos, leftPos + imageWidth, topPos + imageHeight, generalConfigs.COLOR_PANEL_BG);
+        generalConfigs.renderGreenEdge(g, leftPos, topPos, imageWidth, imageHeight);
 
         super.render(g, mouseX, mouseY, partial);
 
-        // ── ICON & NAME ──
+        // ICON & NAME
         g.blit(RenderPipelines.GUI_TEXTURED, cls.getIcon(), leftPos + 20, topPos + 20, 0, 0, ICON_SIZE, ICON_SIZE, ICON_SIZE, ICON_SIZE);
         g.drawString(this.font, cls.getDisplayName(), leftPos + 60, topPos + 24, generalConfigs.TEXT_WHITE);
 
-        // ── STARTER ITEMS ──
+        // STARTER ITEMS (Logik unverändert)
         int itemRowY = topPos + 80;
-        // Überschrift in Gold
         g.drawString(this.font, "Starter Items:", leftPos + 20, itemRowY, generalConfigs.COLOR_ACCENT_GOLD, true);
         itemRowY += 15;
         List<ItemStack> items = cls.getStarterItems();
@@ -87,7 +84,6 @@ public class ClassDetailScreen extends Screen {
             ItemStack stack = items.get(i);
             int ix = leftPos + 20 + i * (ITEM_SIZE + 5);
             g.renderItem(stack, ix, itemRowY);
-
             if (mouseX >= ix && mouseX < ix + ITEM_SIZE && mouseY >= itemRowY && mouseY < itemRowY + ITEM_SIZE && !stack.isEmpty()) {
                 List<Component> textLines = Screen.getTooltipFromItem(this.minecraft, stack);
                 Optional<TooltipComponent> tooltipImage = stack.getTooltipImage();
@@ -97,52 +93,42 @@ public class ClassDetailScreen extends Screen {
             }
         }
 
-        // ── STATS ──
+        // STATS
         RaceDefinition race = RaceRegistry.getRace(CharacterCreationState.selectedRaceId);
         Map<String, Integer> combined = combinedAttrs(race, cls);
         int attrY = itemRowY + 30;
-        // Überschrift in Gold
         g.drawString(this.font, "Total Stats:", leftPos + 20, attrY, generalConfigs.COLOR_ACCENT_GOLD, true);
         attrY += 15;
         for (Map.Entry<String, Integer> e : combined.entrySet()) {
             if (e.getValue() == 0) continue;
             String sign = e.getValue() > 0 ? "+" : "";
-            // Attribut-Zeilen in Weiß
-            g.drawString(this.font, e.getKey() + ": " + sign + formatVal(e.getKey(), e.getValue()), leftPos + 20, attrY, generalConfigs.TEXT_WHITE, true);
+            g.drawString(this.font, e.getKey() + ": " + sign + e.getValue(), leftPos + 20, attrY, generalConfigs.TEXT_WHITE, true);
             attrY += 12;
         }
 
-        // Health Increase Info (In Gold hervorgehoben)
         attrY += 2;
         g.drawString(this.font, "Level up health increase: " + cls.getClassHealth(), leftPos + 20, attrY, generalConfigs.COLOR_ACCENT_GOLD, true);
         attrY += 15;
-
-        // ── DESCRIPTION (Grau aus Config) ──
         g.drawWordWrap(this.font, Component.literal(cls.getDescription()), leftPos + 20, attrY, 250, generalConfigs.TEXT_GRAY);
 
-        // ── CLASS PROGRESSION (Rechte Spalte) ──
+        // CLASS PROGRESSION
         int rightColumnStart = leftPos + 300;
         int columnWidth = 150;
         int columnGap = 165;
         int abYHeader = topPos + 40;
         int lineSpacing = 12;
 
-        // Header in Gold
         g.drawString(this.font, "Class Progression (1-20):", rightColumnStart, abYHeader, generalConfigs.COLOR_ACCENT_GOLD, true);
 
         int currentYLeft = abYHeader + 20;
         int currentYRight = abYHeader + 20;
-
         List<String> abilities = cls.getAbilityLines();
         for (int i = 0; i < abilities.size(); i++) {
             boolean isLeftColumn = i < 10;
             int x = isLeftColumn ? rightColumnStart : rightColumnStart + columnGap;
             int y = isLeftColumn ? currentYLeft : currentYRight;
-
             String rawText = abilities.get(i);
-
             if (this.font.width(rawText) <= columnWidth) {
-                // Zeilen in Weiß
                 g.drawString(this.font, rawText, x, y, generalConfigs.TEXT_WHITE, true);
                 y += lineSpacing;
             } else {
@@ -150,7 +136,6 @@ public class ClassDetailScreen extends Screen {
                 for (String part : parts) {
                     String trimmed = part.trim();
                     if (trimmed.isEmpty()) continue;
-
                     List<FormattedCharSequence> wrapped = this.font.split(Component.literal(trimmed), columnWidth);
                     for (FormattedCharSequence line : wrapped) {
                         g.drawString(this.font, line, x, y, generalConfigs.TEXT_WHITE, true);
@@ -158,15 +143,12 @@ public class ClassDetailScreen extends Screen {
                     }
                 }
             }
-
-            if (isLeftColumn) currentYLeft = y;
-            else currentYRight = y;
+            if (isLeftColumn) currentYLeft = y; else currentYRight = y;
         }
     }
 
     private Map<String, Integer> combinedAttrs(RaceDefinition race, ClassDefinition cls) {
         Map<String, Integer> result = new LinkedHashMap<>();
-        // Nutzt jetzt die korrekte Methode getAbilityScoreIncrements und Integer
         for (Map.Entry<String, Integer> e : cls.getAbilityScoreIncrements().entrySet()) {
             result.put(e.getKey(), e.getValue());
         }
@@ -176,10 +158,6 @@ public class ClassDetailScreen extends Screen {
             }
         }
         return result;
-    }
-
-    private String formatVal(String key, int val) {
-        return String.valueOf(val);
     }
 
     @Override

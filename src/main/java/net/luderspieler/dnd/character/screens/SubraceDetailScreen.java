@@ -13,11 +13,10 @@ import net.minecraft.resources.ResourceLocation;
 
 public class SubraceDetailScreen extends Screen {
 
-    private static final ResourceLocation BACKGROUND = ResourceLocation.parse("dnd:textures/screens/preview_gui.png");
     private static final int ICON_SIZE = 32;
     private final int imageWidth = 400;
     private final int imageHeight = 230;
-    private final int COL_WIDTH = 180; // Breite für die Textspalten innerhalb des GUIs
+    private final int COL_WIDTH = 180;
 
     private final RaceDefinition race;
     private final SubraceDefinition subrace;
@@ -33,12 +32,9 @@ public class SubraceDetailScreen extends Screen {
     @Override
     protected void init() {
         super.init();
-
-        int leftPos = (this.width - this.imageWidth) / 2;
         int topPos = (this.height - this.imageHeight) / 2;
         int centerX = this.width / 2;
 
-        // ── CHOOSE BUTTON ──
         this.addRenderableWidget(Button.builder(
                 Component.literal("Choose"),
                 btn -> {
@@ -48,7 +44,6 @@ public class SubraceDetailScreen extends Screen {
                 }
         ).bounds(centerX - 65, topPos + imageHeight - 28, 60, 20).build());
 
-        // ── BACK BUTTON ──
         this.addRenderableWidget(Button.builder(
                 Component.literal("Back"),
                 btn -> this.minecraft.setScreen(new RaceDetailScreen(race, this.isNewCharacter))
@@ -57,7 +52,7 @@ public class SubraceDetailScreen extends Screen {
 
     @Override
     public void render(GuiGraphics g, int mouseX, int mouseY, float partial) {
-        // 1. Hintergrund-Overlay (Nutzt jetzt die Death-Gradients für Konsistenz in Listen/Details)
+        // 1. Hintergrund-Overlay
         g.fillGradient(0, 0, this.width, this.height,
                 generalConfigs.COLOR_DEATH_OVERLAY_TOP,
                 generalConfigs.COLOR_DEATH_OVERLAY_BOTTOM);
@@ -65,12 +60,13 @@ public class SubraceDetailScreen extends Screen {
         int leftPos = (this.width - this.imageWidth) / 2;
         int topPos = (this.height - this.imageHeight) / 2;
 
-        // 2. Hintergrund-Textur
-        g.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND, leftPos, topPos, 0, 0, this.imageWidth, this.imageHeight, this.imageWidth, this.imageHeight);
+        // 2. Main Panel Background & Edge
+        g.fill(leftPos, topPos, leftPos + imageWidth, topPos + imageHeight, generalConfigs.COLOR_PANEL_BG);
+        generalConfigs.renderGreenEdge(g, leftPos, topPos, imageWidth, imageHeight);
 
         super.render(g, mouseX, mouseY, partial);
 
-        // 3. ICON (Anker: leftPos + 10)
+        // 3. ICON
         g.blit(
                 RenderPipelines.GUI_TEXTURED,
                 subrace.getIcon(),
@@ -80,27 +76,25 @@ public class SubraceDetailScreen extends Screen {
                 ICON_SIZE, ICON_SIZE
         );
 
-        // 4. NAME (Weiß aus Config)
+        // 4. NAME
         g.drawString(this.font, subrace.getDisplayName(), leftPos + 50, topPos + 18, generalConfigs.TEXT_WHITE);
 
-        // 5. PARENT RACE (Dunkelgrau aus Config)
+        // 5. PARENT RACE
         g.drawString(this.font, "(" + race.getDisplayName() + ")", leftPos + 50, topPos + 30, generalConfigs.TEXT_DARK_GRAY);
 
-        // 6. DESCRIPTION (Linke Spalte, Grau aus Config)
+        // 6. DESCRIPTION
         g.drawWordWrap(this.font,
                 Component.literal(subrace.getDescription()),
                 leftPos + 10, topPos + 52, COL_WIDTH, generalConfigs.TEXT_GRAY);
 
-        // 7. ABILITIES (Rechte Spalte)
+        // 7. ABILITIES
         int rightColX = leftPos + 210;
         int y = topPos + 30;
 
-        // Überschrift in Gold
         g.drawString(this.font, "Subrace Traits:", rightColX, y, generalConfigs.COLOR_ACCENT_GOLD);
 
         y += 14;
         for (String line : subrace.getAbilityLines()) {
-            // Trait-Inhalt in Weiß (oder Grau, falls dir das lieber ist)
             g.drawWordWrap(this.font,
                     Component.literal("» " + line),
                     rightColX, y, COL_WIDTH, generalConfigs.TEXT_WHITE);
