@@ -24,7 +24,11 @@ import net.luderspieler.dnd.spells.SpellEvents;
 import net.luderspieler.dnd.spells.BlockUpdater;
 import net.luderspieler.dnd.rests.SleepingIntereferer;
 import net.luderspieler.dnd.network.DndModVariables;
-import net.luderspieler.dnd.init.*;
+import net.luderspieler.dnd.init.DndModTabs;
+import net.luderspieler.dnd.init.DndModSounds;
+import net.luderspieler.dnd.init.DndModMobEffects;
+import net.luderspieler.dnd.init.DndModItems;
+import net.luderspieler.dnd.init.DndModEntities;
 import net.luderspieler.dnd.character.abilitys.AbilityPassiveTriggers;
 import net.luderspieler.dnd.character.ProficiencyCheckProcedure;
 import net.luderspieler.dnd.character.LevelEvents;
@@ -62,7 +66,6 @@ public class DndMod {
 		DndModTabs.REGISTRY.register(modEventBus);
 		DndModVariables.ATTACHMENT_TYPES.register(modEventBus);
 		DndModMobEffects.REGISTRY.register(modEventBus);
-		DndModMenus.REGISTRY.register(modEventBus);
 		// Start of user code block mod init
 		DndModNetworkRegistry.register(modEventBus);
 		NeoForge.EVENT_BUS.register(new CharacterCreationEventHandler());
