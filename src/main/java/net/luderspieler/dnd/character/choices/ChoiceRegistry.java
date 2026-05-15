@@ -47,7 +47,7 @@ public class ChoiceRegistry {
         REGISTRY.put("Metamagic", List.of("Careful Spell", "Distant Spell", "Empowered Spell", "Quickened Spell", "Twinned Spell"));
 
         // Bard Secrets
-        REGISTRY.put("Magical Secrets", List.of("Learn any Spell from other Classes"));
+        REGISTRY.put("Magical Secrets", List.of("Learn any Spell"));
 
         // --- Subclass Trigger ---
         // Dieser Key wird von SUBCLASS_FEATURE erzeugt

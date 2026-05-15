@@ -44,8 +44,7 @@ public record ExecuteChoicePacket(String choiceId, String selectedValue) impleme
             }
             vars.ChoicesNeeded = String.join(",", list);
 
-            // TODO: Hier deine Choice-Logik-Klasse aufrufen
-            // ChoiceExecutor.apply(player, data.choiceId(), data.selectedValue());
+            ChoiceExecutor.apply(player, data.choiceId(), data.selectedValue());
 
             vars.markSyncDirty();
         });
