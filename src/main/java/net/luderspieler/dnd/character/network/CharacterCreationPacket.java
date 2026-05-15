@@ -70,6 +70,7 @@ public record CharacterCreationPacket(
             vars.PlayerLevel = 1;
             vars.FinishedCharacterCreation = true;
             vars.CanUseMagic = cls.canUseMagic();
+            vars.ChoicesNeeded = "";
 
             // 2. Proficiencies
             LinkedHashSet<String> profSet = new LinkedHashSet<>();
@@ -81,8 +82,7 @@ public record CharacterCreationPacket(
             // 3. Stats
             resetStats(vars);
             applyDndStats(vars, race.getAbilityScoreIncrements());
-            // FIX: Da SubraceDefinition evtl. die Methode nicht hat, nutzen wir getAttributeModifiers
-            // oder stellen sicher, dass sie existiert. Falls Subrace nur Double nutzt: (int) (double)
+
             if (subrace != null) applyDndStats(vars, subrace.getAbilityScoreIncrements());
             applyDndStats(vars, cls.getAbilityScoreIncrements());
 
@@ -91,6 +91,7 @@ public record CharacterCreationPacket(
                 player.addItem(stack.copy());
             }
             clearAllSpellLists(vars);
+            resetSpellSlots(cls, (int)vars.PlayerLevel);
 
             vars.markSyncDirty();
             applyAttrs(player, null, false);
@@ -134,6 +135,25 @@ public record CharacterCreationPacket(
         v.PreparedSpellsLVL3 = ""; v.PreparedSpellsLVL4 = ""; v.PreparedSpellsLVL5 = "";
         v.PreparedSpellsLVL6 = ""; v.PreparedSpellsLVL7 = ""; v.PreparedSpellsLVL8 = "";
         v.PreparedSpellsLVL9 = "";
+    }
+
+    public static String resetSpellSlots(ClassDefinition cls, int level) {
+        // Falls die Klasse keine Magie hat (NONE_S), wird ein leerer Slot-String geliefert
+        int[][] slotTable = cls.getSpellSlots(); // Holt z.B. WIZ_S
+
+        if (slotTable == null || level < 0 || level >= slotTable.length) {
+            return "000000000";
+        }
+
+        int[] slotsAtLevel = slotTable[level];
+        StringBuilder sb = new StringBuilder();
+
+        // D&D Spell-Levels 1 bis 9 (Index 1-9 im Array)
+        for (int i = 1; i <= 9; i++) {
+            sb.append(slotsAtLevel[i]);
+        }
+
+        return sb.toString();
     }
 
     public static void applyAttrs(ServerPlayer player, Map<String, Double> attrs, boolean isRace) {

@@ -237,39 +237,11 @@ public class DndCommand {
     // ── PlayerLevel with side effects ────────────────────────────────────────────
 
     private static int setPlayerLevel(ServerPlayer p, double newLevel, CommandSourceStack source) {
-        DndModVariables.PlayerVariables vars = p.getData(DndModVariables.PLAYER_VARIABLES);
+        // Ruft einfach die zentrale Logik auf
+        LevelEvents.updatePlayerLevel(p, (int)newLevel, false);
 
-        int oldLevel = (int) vars.PlayerLevel;
-        int targetLevel = (int) newLevel;
-
-        // 1. Level setzen
-        vars.PlayerLevel = newLevel;
-
-        // 2. XP auf das Minimum für dieses Level setzen (via LevelEvents Helper)
-        vars.PlayerXP = LevelEvents.getRequiredXP(targetLevel);
-
-        // 3. Proficiency Bonus aktualisieren
-        vars.ProficiencyBonus = LevelEvents.getProficiencyBonus(targetLevel);
-
-        // 4. Choices hinzufügen, falls man Level aufsteigt (nicht bei Downlevel)
-        if (targetLevel > oldLevel) {
-            for (int lvl = oldLevel + 1; lvl <= targetLevel; lvl++) {
-                addChoicesForLevel(vars, vars.PlayerClass, lvl);
-            }
-        }
-
-        // 5. Attribute neu berechnen
-        CharacterCreationPacket.applyAttrs(p, null, false);
-
-        vars.markSyncDirty();
-
-        source.sendSuccess(() -> Component.literal(
-                "§aSet §ePlayerLevel §ato §f" + targetLevel +
-                        " §7(XP: " + vars.PlayerXP + ", ProfBonus: +" + (int) vars.ProficiencyBonus + ")"
-        ), true);
-
-        p.displayClientMessage(Component.literal("§6§lLevel set to " + targetLevel + "!"), false);
-
+        // Nur die Rückmeldung für die Konsole/Admin-Chat
+        source.sendSuccess(() -> Component.literal("§aLevel set to " + (int)newLevel), true);
         return 1;
     }
 

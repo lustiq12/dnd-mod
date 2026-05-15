@@ -21,44 +21,33 @@ public class LevelEvents {
 
     @SubscribeEvent
     public void onXpChange(PlayerXpEvent.XpChange event) {
-        Player player = event.getEntity();
-        if (!(player instanceof ServerPlayer serverPlayer)) return;
+        if (!(event.getEntity() instanceof ServerPlayer serverPlayer)) return;
 
         int amount = event.getAmount();
         if (amount <= 0) return;
 
-        DndModVariables.PlayerVariables vars = player.getData(DndModVariables.PLAYER_VARIABLES);
+        DndModVariables.PlayerVariables vars = serverPlayer.getData(DndModVariables.PLAYER_VARIABLES);
         vars.PlayerXP += amount;
 
-        int previousLevel = (int) vars.PlayerLevel;
-        int currentLevel  = previousLevel;
-        boolean leveledUp = false;
+        int currentLevel = (int) vars.PlayerLevel;
+        int nextLevel = currentLevel;
 
-        while (currentLevel < 20 && vars.PlayerXP >= getRequiredXP(currentLevel + 1)) {
-            currentLevel++;
-            leveledUp = true;
+        // Berechne wie viele Level aufgestiegen wurde
+        while (nextLevel < 20 && vars.PlayerXP >= getRequiredXP(nextLevel + 1)) {
+            nextLevel++;
         }
 
-        if (leveledUp) {
-            vars.PlayerLevel      = currentLevel;
-            vars.ProficiencyBonus = getProficiencyBonus(currentLevel);
+        if (nextLevel > currentLevel) {
+            // Nutze die gruppierte Methode für das Level-Up
+            updatePlayerLevel(serverPlayer, nextLevel, false);
 
-            // Add choices for every level gained (handles multi-level-ups)
-            for (int lvl = previousLevel + 1; lvl <= currentLevel; lvl++) {
-                addChoicesForLevel(vars, vars.PlayerClass, lvl);
-            }
-
-            player.displayClientMessage(
-                    Component.literal("§6§lLEVEL UP! §fYou are now Level " + currentLevel),
+            serverPlayer.displayClientMessage(
+                    Component.literal("§6§lLEVEL UP! §fYou are now Level " + nextLevel),
                     false);
-
-            ClassDefinition cls = ClassRegistry.getClass(vars.PlayerClass);
-            if (cls != null) {
-                CharacterCreationPacket.applyAttrs(serverPlayer, null, false);
-            }
+        } else {
+            // Falls kein Level-Up, nur XP synchronisieren
+            vars.markSyncDirty();
         }
-
-        vars.markSyncDirty();
     }
 
     // ════════════════════════════════════════════════════════════════════════════
@@ -80,6 +69,41 @@ public class LevelEvents {
      * Extend this switch as you add more entries to ChoiceRegistry.
      */
 
+
+    /**
+     * Update player level by setting proficiency bonus, setting xp if needed when set manually, applying attributes and
+     * adding the character advancement choices needed
+     */
+    public static void updatePlayerLevel(ServerPlayer player, int targetLevel, boolean silent) {
+        // Variablen intern abrufen
+        DndModVariables.PlayerVariables vars = player.getData(DndModVariables.PLAYER_VARIABLES);
+        int oldLevel = (int) vars.PlayerLevel;
+
+        // 1. Werte setzen
+        vars.PlayerLevel = targetLevel;
+        vars.PlayerXP = getRequiredXP(targetLevel);
+        vars.ProficiencyBonus = getProficiencyBonus(targetLevel);
+
+        // 2. Choices hinzufügen (nur bei Aufstieg)
+        if (targetLevel > oldLevel) {
+            for (int lvl = oldLevel + 1; lvl <= targetLevel; lvl++) {
+                addChoicesForLevel(vars, vars.PlayerClass, lvl);
+            }
+        }
+
+        // 3. Stats & HP aktualisieren (nutzt das Packet-Backend)
+        CharacterCreationPacket.applyAttrs(player, null, false);
+
+        // 4. Speichern & Sync
+        vars.markSyncDirty();
+
+        if (!silent) {
+            player.displayClientMessage(
+                    Component.literal("§6§lLevel set to " + targetLevel + "!"),
+                    false
+            );
+        }
+    }
     /**
      * Standard D&D 5e proficiency bonus by character level.
      * Public so DndCommand can reuse it.
