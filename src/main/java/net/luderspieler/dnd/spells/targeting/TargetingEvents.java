@@ -7,6 +7,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.*;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -18,6 +19,9 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
+
+import static net.luderspieler.dnd.spells.targeting.SpellCasterHelper.sendGlowPacket;
 
 @EventBusSubscriber
 public class TargetingEvents {
@@ -26,7 +30,7 @@ public class TargetingEvents {
     public static void onLeftClickEmpty(PlayerInteractEvent.LeftClickEmpty event) {
         if (event.getEntity() instanceof ServerPlayer player && player.isShiftKeyDown()) {
             var vars = player.getData(DndModVariables.PLAYER_VARIABLES);
-            resetTargeting(vars);
+            SpellCasterHelper.resetTargeting(player);
         }
     }
 
@@ -34,7 +38,7 @@ public class TargetingEvents {
     public static void onLeftClickBlock(PlayerInteractEvent.LeftClickBlock event) {
         if (event.getEntity() instanceof ServerPlayer player && player.isShiftKeyDown()) {
             var vars = player.getData(DndModVariables.PLAYER_VARIABLES);
-            resetTargeting(vars);
+            SpellCasterHelper.resetTargeting(player);
         }
     }
 
@@ -81,7 +85,7 @@ public class TargetingEvents {
                     uuidList.add(uuid);
                     vars.targetUUIDS = String.join(",", uuidList);
                     vars.markSyncDirty();
-                    SpellCasterHelper.sendGlowPacket(player, player, true);
+                    sendGlowPacket(player, player, true);
                     player.displayClientMessage(Component.literal("§6Target chosen! (" + uuidList.size() + "/" + (int)vars.TargetingAmount + ")"), true);
                 }
 
@@ -97,7 +101,7 @@ public class TargetingEvents {
             // FreeAim-Mode
             if ("FREE_AIM".equals(vars.TargetingModeType)) {
                 castSelectedSpell(player, vars, null);
-                resetTargeting(vars);
+                SpellCasterHelper.resetTargeting(player);
             }
             else if ("ENTITY".equals(vars.TargetingModeType))
             {
@@ -107,7 +111,7 @@ public class TargetingEvents {
                         for (LivingEntity target : targets) {
                             castSelectedSpell(player, vars, target);
                         }
-                        resetTargeting(vars);
+                        SpellCasterHelper.resetTargeting(player);
                     } else if (lookingAtAnything) {
                         confirmAndCast(player, vars);
                     }
@@ -134,12 +138,12 @@ public class TargetingEvents {
                     // Entity angeklickt -> Nutze dessen Füße als Position
                     BlockPos entityPos = target.blockPosition();
                     castBlockSpell(player, vars.TargetingSpell, entityPos, entityPos);
-                    resetTargeting(vars);
+                    SpellCasterHelper.resetTargeting(player);
                 } else if (blockHit.getType() == HitResult.Type.BLOCK) {
                     // Block angeklickt
                     BlockHitResult bHit = (BlockHitResult) blockHit;
                     castBlockSpell(player, vars.TargetingSpell, bHit.getBlockPos(), bHit.getBlockPos().relative(bHit.getDirection()));
-                    resetTargeting(vars);
+                    SpellCasterHelper.resetTargeting(player);
                 }
             }
 
@@ -154,7 +158,7 @@ public class TargetingEvents {
                     castSelectedSpell(player, vars, target);
                 }
             }
-            resetTargeting(vars);
+            SpellCasterHelper.resetTargeting(player);
         });
     }
 
@@ -187,10 +191,14 @@ public class TargetingEvents {
         }
     }
 
-    private static void resetTargeting(DndModVariables.PlayerVariables vars) {
-        vars.TargetingMode = false;
-        vars.TargetingModeType = "";
-        vars.targetUUIDS = "";
-        vars.markSyncDirty();
+    public static void sendCastMessage(ServerPlayer player, String spellName, List<Entity> targets) {
+        if (targets.isEmpty()) return;
+
+        StringBuilder sb = new StringBuilder("§7You casted §6" + spellName + " §7on ");
+        for (int i = 0; i < targets.size(); i++) {
+            sb.append("§f").append(targets.get(i).getDisplayName().getString());
+            if (i < targets.size() - 1) sb.append("§7, ");
+        }
+        player.displayClientMessage(Component.literal(sb.toString()), false);
     }
 }

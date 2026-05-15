@@ -240,8 +240,6 @@ public class DndCommand {
         // Ruft einfach die zentrale Logik auf
         LevelEvents.updatePlayerLevel(p, (int)newLevel, false);
 
-        // Nur die Rückmeldung für die Konsole/Admin-Chat
-        source.sendSuccess(() -> Component.literal("§aLevel set to " + (int)newLevel), true);
         return 1;
     }
 

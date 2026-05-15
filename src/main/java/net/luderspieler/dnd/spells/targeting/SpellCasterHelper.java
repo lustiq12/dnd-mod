@@ -168,6 +168,31 @@ public class SpellCasterHelper {
         return (hit != null && hit.getEntity() instanceof LivingEntity living) ? living : null;
     }
 
+    public static void resetTargeting(ServerPlayer player) {
+        var vars = player.getData(DndModVariables.PLAYER_VARIABLES);
+        if (!vars.targetUUIDS.isEmpty()) {
+            for (String uuidStr : vars.targetUUIDS.split(",")) {
+                try {
+                    // Wir casten player.level() zu ServerLevel, um getEntity nutzen zu können
+                    if (player.level() instanceof net.minecraft.server.level.ServerLevel serverLevel) {
+                        net.minecraft.world.entity.Entity target = serverLevel.getEntity(java.util.UUID.fromString(uuidStr.trim()));
+                        if (target != null) {
+                            sendGlowPacket(player, target, false);
+                        }
+                    }
+                } catch (Exception ignored) {}
+            }
+        }
+
+        // 2. Variablen zurücksetzen
+        vars.TargetingMode = false;
+        vars.TargetingModeType = "";
+        vars.TargetingRange = 0;
+        vars.TargetingSpell = "";
+        vars.targetUUIDS = ""; // Hier umbenannt
+        vars.markSyncDirty();
+    }
+
     public static void sendGlowPacket(ServerPlayer caster, Entity target, boolean active) {
         byte flags = target.getEntityData().get(net.minecraft.network.syncher.EntityDataSerializers.BYTE.createAccessor(0));
         byte newFlags = active ? (byte)(flags | 0x40) : (byte)(flags & ~0x40);
