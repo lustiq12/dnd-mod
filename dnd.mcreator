@@ -106,7 +106,7 @@
     {
       "name": "Dnd",
       "type": "command",
-      "compiles": true,
+      "compiles": false,
       "locked_code": true,
       "registry_name": "dnd",
       "metadata": {
@@ -1171,6 +1171,12 @@
       "type": "number",
       "scope": "player_persistent",
       "value": "0.0"
+    },
+    {
+      "name": "Abilities",
+      "type": "string",
+      "scope": "player_persistent",
+      "value": "\"\""
     }
   ],
   "sound_elements": [

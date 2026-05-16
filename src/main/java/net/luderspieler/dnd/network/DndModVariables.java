@@ -22,6 +22,7 @@ import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.entity.player.Abilities;
 import net.minecraft.util.ProblemReporter;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.ServerLevel;
@@ -109,6 +110,7 @@ public class DndModVariables {
 		clone.Wisdom = original.Wisdom;
 		clone.Charisma = original.Charisma;
 		clone.ProficiencyBonus = original.ProficiencyBonus;
+		clone.Abilities = original.Abilities;
 		if (!event.isWasDeath()) {
 			clone.FinishedCharacterCreation = original.FinishedCharacterCreation;
 			clone.TargetingRange = original.TargetingRange;
@@ -312,6 +314,7 @@ public class DndModVariables {
 		public double Wisdom = 0.0;
 		public double Charisma = 0.0;
 		public double ProficiencyBonus = 0.0;
+		public String Abilities = "\"\"";
 
 		@Override
 		public void serialize(ValueOutput output) {
@@ -356,6 +359,7 @@ public class DndModVariables {
 			output.putDouble("Wisdom", Wisdom);
 			output.putDouble("Charisma", Charisma);
 			output.putDouble("ProficiencyBonus", ProficiencyBonus);
+			output.putString("Abilities", Abilities);
 		}
 
 		@Override
@@ -401,6 +405,7 @@ public class DndModVariables {
 			Wisdom = input.getDoubleOr("Wisdom", 0);
 			Charisma = input.getDoubleOr("Charisma", 0);
 			ProficiencyBonus = input.getDoubleOr("ProficiencyBonus", 0);
+			Abilities = input.getStringOr("Abilities", "");
 		}
 
 		public void markSyncDirty() {

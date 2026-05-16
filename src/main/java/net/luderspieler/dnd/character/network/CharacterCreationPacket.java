@@ -1,5 +1,6 @@
 package net.luderspieler.dnd.character.network;
 
+import net.luderspieler.dnd.character.abilitys.AbilityUtils;
 import net.luderspieler.dnd.character.definition.RaceDefinition;
 import net.luderspieler.dnd.character.definition.SubraceDefinition;
 import net.luderspieler.dnd.character.registrys.ClassRegistry;
@@ -60,13 +61,14 @@ public record CharacterCreationPacket(
 
             DndModVariables.PlayerVariables vars = player.getData(DndModVariables.PLAYER_VARIABLES);
 
-            // 1. Stammdaten (Namen an deine PlayerVariables angepasst)
+            // 1. Stammdaten
             vars.PlayerRace = pkt.raceId();
             vars.PlayerSubrace = pkt.subraceId();
             vars.PlayerClass = pkt.classId();
-            vars.PlayerName = pkt.name();      // FIX: hieß vorher CharacterName
-            vars.PlayerStory = pkt.story();    // FIX: hieß vorher Backstory
-            vars.PlayerPersonality = pkt.personality(); // FIX: hieß vorher Personality
+            vars.PlayerSubclass = "";
+            vars.PlayerName = pkt.name();
+            vars.PlayerStory = pkt.story();
+            vars.PlayerPersonality = pkt.personality();
             vars.PlayerLevel = 1;
             vars.FinishedCharacterCreation = true;
             vars.CanUseMagic = cls.canUseMagic();
@@ -82,9 +84,12 @@ public record CharacterCreationPacket(
             // 3. Stats
             resetStats(vars);
             applyDndStats(vars, race.getAbilityScoreIncrements());
-
             if (subrace != null) applyDndStats(vars, subrace.getAbilityScoreIncrements());
             applyDndStats(vars, cls.getAbilityScoreIncrements());
+
+            // 3.5 Abilities
+            AbilityUtils.addRaceAbilities(player);
+            AbilityUtils.updateClassAbilities(player);
 
             // 4. Items & Spells
             for (ItemStack stack : cls.getStarterItems()) {

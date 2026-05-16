@@ -1,19 +1,6 @@
 {
   "mod_elements": [
     {
-      "name": "PreviewGUI",
-      "type": "gui",
-      "compiles": true,
-      "locked_code": false,
-      "registry_name": "preview_gui",
-      "metadata": {
-        "files": [
-          "src/main/java/net/luderspieler/dnd/client/gui/PreviewGUIScreen.java",
-          "src/main/java/net/luderspieler/dnd/world/inventory/PreviewGUIMenu.java"
-        ]
-      }
-    },
-    {
       "name": "Stirge",
       "type": "livingentity",
       "compiles": true,
@@ -103,19 +90,6 @@
         ]
       },
       "path": "~/Monsters/Stirge"
-    },
-    {
-      "name": "ClassGUI",
-      "type": "gui",
-      "compiles": true,
-      "locked_code": false,
-      "registry_name": "class_gui",
-      "metadata": {
-        "files": [
-          "src/main/java/net/luderspieler/dnd/world/inventory/ClassGUIMenu.java",
-          "src/main/java/net/luderspieler/dnd/client/gui/ClassGUIScreen.java"
-        ]
-      }
     },
     {
       "name": "CastSpell",
@@ -1261,52 +1235,8 @@
   "tab_element_order": {},
   "language_map": {
     "en_us": {
-      "gui.dnd.preview_gui.label_fahigkeit8": "fähigkeit",
-      "gui.dnd.preview_gui.label_fahigkeit9": "fähigkeit",
-      "gui.dnd.preview_gui.label_fahigkeit4": "fähigkeit",
-      "gui.dnd.preview_gui.label_fahigkeit5": "fähigkeit",
-      "gui.dnd.preview_gui.label_fahigkeit6": "fähigkeit",
-      "gui.dnd.preview_gui.label_attribute": "Attribute:",
-      "gui.dnd.preview_gui.label_fahigkeit7": "fähigkeit",
-      "gui.dnd.preview_gui.label_attribute2": "Attribute:",
-      "gui.dnd.preview_gui.label_classname": "ClassName",
-      "gui.dnd.preview_gui.label_attribute3": "Attribute:",
-      "gui.dnd.preview_gui.label_fahigkeit": "fähigkeit",
-      "gui.dnd.preview_gui.label_attribute1": "Attribute:",
-      "gui.dnd.preview_gui.label_attribute6": "attribute",
-      "gui.dnd.preview_gui.label_attribute7": "attribute",
-      "gui.dnd.preview_gui.label_attribute4": "Attribute:",
-      "gui.dnd.preview_gui.label_attribute5": "attribute",
-      "gui.dnd.preview_gui.label_fahigkeit1": "fähigkeit",
-      "gui.dnd.preview_gui.label_fahigkeit2": "fähigkeit",
-      "gui.dnd.preview_gui.label_attribute8": "attribute",
-      "gui.dnd.preview_gui.label_fahigkeit3": "fähigkeit",
-      "gui.dnd.preview_gui.label_attribute9": "attribute",
       "entity.dnd.stirge": "Stirge",
       "item.dnd.stirge_spawn_egg": "Stirge Spawn Egg",
-      "gui.dnd.preview_gui.button_subclass1": "Subclass1",
-      "gui.dnd.class_gui.label_fahigkeit8": "fähigkeit",
-      "gui.dnd.class_gui.label_fahigkeit9": "fähigkeit",
-      "gui.dnd.class_gui.label_fahigkeit4": "fähigkeit",
-      "gui.dnd.class_gui.label_classname": "ClassName",
-      "gui.dnd.class_gui.label_fahigkeit5": "fähigkeit",
-      "gui.dnd.class_gui.label_fahigkeit6": "fähigkeit",
-      "gui.dnd.class_gui.label_fahigkeit": "fähigkeit",
-      "gui.dnd.class_gui.label_fahigkeit7": "fähigkeit",
-      "gui.dnd.class_gui.label_attribute9": "attribute",
-      "gui.dnd.class_gui.label_fahigkeit1": "fähigkeit",
-      "gui.dnd.class_gui.label_attribute8": "attribute",
-      "gui.dnd.class_gui.label_fahigkeit2": "fähigkeit",
-      "gui.dnd.class_gui.label_fahigkeit3": "fähigkeit",
-      "gui.dnd.class_gui.button_subclass1": "Subclass1",
-      "gui.dnd.class_gui.label_attribute1": "Attribute:",
-      "gui.dnd.class_gui.label_attribute": "Attribute:",
-      "gui.dnd.class_gui.label_attribute3": "Attribute:",
-      "gui.dnd.class_gui.label_attribute2": "Attribute:",
-      "gui.dnd.class_gui.label_attribute5": "attribute",
-      "gui.dnd.class_gui.label_attribute4": "Attribute:",
-      "gui.dnd.class_gui.label_attribute7": "attribute",
-      "gui.dnd.class_gui.label_attribute6": "attribute",
       "key.dnd.cast_spell": "Cast Spell",
       "key.dnd.prepare_spells": "Cast Spell",
       "entity.dnd.scarecrow": "Scarecrow",
@@ -1331,9 +1261,6 @@
   },
   "metadata": {
     "files": [
-      "src/main/java/net/luderspieler/dnd/init/DndModMenus.java",
-      "src/main/java/net/luderspieler/dnd/network/MenuStateUpdateMessage.java",
-      "src/main/java/net/luderspieler/dnd/init/DndModScreens.java",
       "src/main/java/net/luderspieler/dnd/init/DndModKeyMappings.java",
       "src/main/java/net/luderspieler/dnd/init/DndModMobEffects.java",
       "src/main/java/net/luderspieler/dnd/init/DndModItems.java",

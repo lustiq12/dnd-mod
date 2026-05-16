@@ -11,8 +11,6 @@ import net.minecraft.world.entity.player.Player;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerXpEvent;
 
-import static net.luderspieler.dnd.character.choices.ChoiceRegistry.addChoicesForLevel;
-
 public class LevelEvents {
 
     // ════════════════════════════════════════════════════════════════════════════
@@ -84,12 +82,6 @@ public class LevelEvents {
         vars.PlayerXP = getRequiredXP(targetLevel);
         vars.ProficiencyBonus = getProficiencyBonus(targetLevel);
 
-        // 2. Choices hinzufügen (nur bei Aufstieg)
-        if (targetLevel > oldLevel) {
-            for (int lvl = oldLevel + 1; lvl <= targetLevel; lvl++) {
-                addChoicesForLevel(vars, vars.PlayerClass, lvl);
-            }
-        }
 
         // 3. Stats & HP aktualisieren (nutzt das Packet-Backend)
         CharacterCreationPacket.applyAttrs(player, null, false);

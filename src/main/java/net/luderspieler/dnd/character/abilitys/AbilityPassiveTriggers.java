@@ -11,7 +11,7 @@ public class AbilityPassiveTriggers {
         Player player = event.getEntity();
         if (player.level().isClientSide()) return;
 
-        AbilityMethods.handleUnarmoredDefense(player);
+        //AbilityMethods.handleUnarmoredDefense(player);
 
     }
 }
