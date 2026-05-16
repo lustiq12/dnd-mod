@@ -544,23 +544,35 @@ public class DndCommand {
 
     private static int setSpellSlot(CommandSourceStack source, ServerPlayer player, int grade, int value) {
         DndModVariables.PlayerVariables vars = player.getData(DndModVariables.PLAYER_VARIABLES);
-        String[] slots = parseSpellSlots(vars.Spellslots);
+        String currentSlots = vars.Spellslots;
 
         if (grade < 1 || grade > 9) {
             source.sendFailure(Component.literal("§cGrade must be between 1 and 9!"));
             return 0;
         }
 
-        slots[grade - 1] = String.valueOf(value);
-        vars.Spellslots = String.join(",", slots);
+        // Falls die Variable noch leer, im alten Format oder kaputt ist, setze sie auf 9 Nullen zurück
+        if (currentSlots == null || currentSlots.length() != 9 || currentSlots.contains(",")) {
+            currentSlots = "000000000";
+        }
+
+        // Wert auf maximal 9 und minimal 0 begrenzen
+        int finalValue = Math.min(9, Math.max(0, value));
+
+        // String in ein char-Array umwandeln, um die Stelle gezielt auszutauschen
+        char[] slotsChars = currentSlots.toCharArray();
+        slotsChars[grade - 1] = Character.forDigit(finalValue, 10);
+
+        vars.Spellslots = new String(slotsChars);
         vars.markSyncDirty();
-        source.sendSuccess(() -> Component.literal("§aSet spell slot Grade_" + grade + " to §f" + value), true);
+
+        source.sendSuccess(() -> Component.literal("§aSet spell slot Grade_" + grade + " to §f" + finalValue), true);
         return 1;
     }
 
     private static int resetSpellSlots(CommandSourceStack source, ServerPlayer player) {
         DndModVariables.PlayerVariables vars = player.getData(DndModVariables.PLAYER_VARIABLES);
-        vars.Spellslots = "0,0,0,0,0,0,0,0,0";
+        vars.Spellslots = "000000000";
         vars.markSyncDirty();
         source.sendSuccess(() -> Component.literal("§aReset all spell slots to 0."), true);
         return 1;
@@ -584,12 +596,15 @@ public class DndCommand {
         }
 
         int[] currentLevelSlots = spellSlots[level];
-        String[] slots = new String[9];
+        StringBuilder sb = new StringBuilder(9);
+
         for (int i = 0; i < 9; i++) {
-            slots[i] = String.valueOf(currentLevelSlots[i + 1]); // +1 weil Cantrip bei index 0 ist
+            int val = currentLevelSlots[i + 1]; // +1 weil Cantrip bei index 0 ist
+            val = Math.min(9, Math.max(0, val)); // Auch hier sicherheitshalber auf 9 deckeln
+            sb.append(val);
         }
 
-        vars.Spellslots = String.join(",", slots);
+        vars.Spellslots = sb.toString();
         vars.markSyncDirty();
         source.sendSuccess(() -> Component.literal("§aRefilled spell slots for level " + level), true);
         return 1;
@@ -597,7 +612,7 @@ public class DndCommand {
 
     private static int clearSpellSlots(CommandSourceStack source, ServerPlayer player) {
         DndModVariables.PlayerVariables vars = player.getData(DndModVariables.PLAYER_VARIABLES);
-        vars.Spellslots = "";
+        vars.Spellslots = "000000000"; // Auch hier direkt auf 9 Nullen setzen statt auf ""
         vars.markSyncDirty();
         source.sendSuccess(() -> Component.literal("§aCleared spell slots."), true);
         return 1;
@@ -606,17 +621,6 @@ public class DndCommand {
     // ════════════════════════════════════════════════════════════════════════════
     //  HELPERS
     // ════════════════════════════════════════════════════════════════════════════
-
-    private static String[] parseSpellSlots(String spellslotsString) {
-        if (spellslotsString == null || spellslotsString.isEmpty() || spellslotsString.equals("\"\"")) {
-            return new String[]{"0", "0", "0", "0", "0", "0", "0", "0", "0"};
-        }
-        String[] slots = spellslotsString.split(",");
-        if (slots.length != 9) {
-            return new String[]{"0", "0", "0", "0", "0", "0", "0", "0", "0"};
-        }
-        return slots;
-    }
 
     private static String getListByGrade(DndModVariables.PlayerVariables v, int g) {
         return switch (g) {
