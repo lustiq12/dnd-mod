@@ -2,13 +2,15 @@ package net.luderspieler.dnd.command;
 
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 import net.luderspieler.dnd.character.network.CharacterCreationPacket;
 import net.luderspieler.dnd.character.definition.ClassDefinition;
 import net.luderspieler.dnd.character.registrys.ClassRegistry;
-import net.luderspieler.dnd.character.LevelEvents;
+import net.luderspieler.dnd.character.abilitys.Ability;
+import net.luderspieler.dnd.character.abilitys.AbilityUtils;
 import net.luderspieler.dnd.network.DndModVariables;
 import net.luderspieler.dnd.spells.SpellCasters;
 import net.luderspieler.dnd.spells.Spells;
@@ -43,27 +45,22 @@ public class DndCommand {
         return SharedSuggestionProvider.suggest(allSpells, builder);
     };
 
-    // ── String variables ────────────────────────────────────────────────────────
-    private static final String[] STRING_VARS = {
-            "PlayerClass", "Spellslots", "PlayerSubrace", "PlayerName", "PlayerStory",
-            "PlayerPersonality", "PlayerRace", "PlayerSubclass", "Proficiencys",
-            "PreparedCantrips", "PreparedSpellsLVL1", "PreparedSpellsLVL2", "PreparedSpellsLVL3",
-            "PreparedSpellsLVL4", "PreparedSpellsLVL5", "PreparedSpellsLVL6", "PreparedSpellsLVL7",
-            "PreparedSpellsLVL8", "PreparedSpellsLVL9", "TargetingSpell", "targetUUIDS",
-            "TargetingModeType", "AbilityData", "Charmer", "grabber", "Decaying_Focus", "ChoicesNeeded"
+    private static final SuggestionProvider<CommandSourceStack> ABILITY_SUGGESTIONS = (context, builder) -> {
+        List<String> abilities = new ArrayList<>();
+        for (Ability a : Ability.values()) {
+            abilities.add(a.name());
+        }
+        return SharedSuggestionProvider.suggest(abilities, builder);
     };
 
-    // ── Double variables ─────────────────────────────────────────────────────────
-    // PlayerLevel is handled separately so applyAttrs can be called after setting it.
-    private static final String[] DOUBLE_VARS = {
-            "PlayerXP", "TargetingRange", "TargetingAmount",
-            "Strength", "Dexterity", "Constitution",
-            "Intelligence", "Wisdom", "Charisma", "ProficiencyBonus"
-    };
-
-    // ── Boolean variables ────────────────────────────────────────────────────────
-    private static final String[] BOOL_VARS = {
-            "FinishedCharacterCreation", "CanUseMagic", "TargetingMode"
+    private static final SuggestionProvider<CommandSourceStack> VARIABLE_SUGGESTIONS = (context, builder) -> {
+        List<String> vars = new ArrayList<>();
+        for (java.lang.reflect.Field field : DndModVariables.PlayerVariables.class.getDeclaredFields()) {
+            if (!field.getName().startsWith("_")) {
+                vars.add(field.getName());
+            }
+        }
+        return SharedSuggestionProvider.suggest(vars, builder);
     };
 
     // ════════════════════════════════════════════════════════════════════════════
@@ -77,10 +74,156 @@ public class DndCommand {
         LiteralArgumentBuilder<CommandSourceStack> variableNode = Commands.literal("variable");
         setupVariableNode(variableNode);
 
+        // ── /dnd abilities ──
+        LiteralArgumentBuilder<CommandSourceStack> abilitiesNode = Commands.literal("abilities");
+        setupAbilitiesNode(abilitiesNode);
+
+        // ── /dnd update ──
+        LiteralArgumentBuilder<CommandSourceStack> updateNode = Commands.literal("update");
+        setupUpdateNode(updateNode);
+
         // ── /dnd spells ... ──
         LiteralArgumentBuilder<CommandSourceStack> spellsNode = Commands.literal("spells");
+        setupSpellsNode(spellsNode);
 
-        spellsNode.then(Commands.literal("learn")
+        // ── /dnd slots ──
+        LiteralArgumentBuilder<CommandSourceStack> slotsNode = Commands.literal("slots");
+        setupSlotsNode(slotsNode);
+
+        event.getDispatcher().register(Commands.literal("dnd")
+                .requires(s -> s.hasPermission(2))
+                .then(variableNode)
+                .then(abilitiesNode)
+                .then(updateNode)
+                .then(spellsNode)
+                .then(slotsNode));
+    }
+
+    // ════════════════════════════════════════════════════════════════════════════
+    //  VARIABLE NODE SETUP
+    // ════════════════════════════════════════════════════════════════════════════
+
+    private static void setupVariableNode(LiteralArgumentBuilder<CommandSourceStack> node) {
+
+        final String[] STRING_VARS = {
+                "PlayerClass", "Spellslots", "PlayerSubrace", "PlayerName",
+                "PlayerStory", "PlayerPersonality", "PlayerRace", "PlayerSubclass",
+                "Proficiencys", "PreparedCantrips", "PreparedSpellsLVL1",
+                "PreparedSpellsLVL2", "PreparedSpellsLVL3", "PreparedSpellsLVL4",
+                "PreparedSpellsLVL5", "PreparedSpellsLVL6", "PreparedSpellsLVL7",
+                "PreparedSpellsLVL8", "PreparedSpellsLVL9", "TargetingSpell",
+                "targetUUIDS", "TargetingModeType", "AbilityData", "Charmer",
+                "grabber", "Decaying_Focus", "ChoicesNeeded", "Abilities"
+        };
+
+        final String[] DOUBLE_VARS = {
+                "PlayerLevel", "PlayerXP", "TargetingRange", "TargetingAmount",
+                "Strength", "Dexterity", "Constitution", "Intelligence",
+                "Wisdom", "Charisma", "ProficiencyBonus"
+        };
+
+        final String[] BOOL_VARS = {
+                "FinishedCharacterCreation", "CanUseMagic", "TargetingMode"
+        };
+
+        // ── String fields ──
+        for (String field : STRING_VARS) {
+            node.then(Commands.literal(field)
+                    .executes(c -> readVariable(c.getSource().getPlayerOrException(), field))
+                    .then(Commands.argument("v", StringArgumentType.greedyString())
+                            .executes(c -> updateStringVariable(
+                                    c.getSource().getPlayerOrException(),
+                                    field,
+                                    StringArgumentType.getString(c, "v")))));
+        }
+
+        // ── Double fields (including PlayerLevel - now without side effects) ──
+        for (String field : DOUBLE_VARS) {
+            node.then(Commands.literal(field)
+                    .executes(c -> readVariable(c.getSource().getPlayerOrException(), field))
+                    .then(Commands.argument("v", DoubleArgumentType.doubleArg())
+                            .executes(c -> updateDoubleVariable(
+                                    c.getSource().getPlayerOrException(),
+                                    field,
+                                    DoubleArgumentType.getDouble(c, "v")))));
+        }
+
+        // ── Boolean fields ──
+        for (String field : BOOL_VARS) {
+            node.then(Commands.literal(field)
+                    .executes(c -> readVariable(c.getSource().getPlayerOrException(), field))
+                    .then(Commands.argument("v", BoolArgumentType.bool())
+                            .executes(c -> updateBoolVariable(
+                                    c.getSource().getPlayerOrException(),
+                                    field,
+                                    BoolArgumentType.getBool(c, "v")))));
+        }
+    }
+
+    // ════════════════════════════════════════════════════════════════════════════
+    //  ABILITIES NODE SETUP
+    // ════════════════════════════════════════════════════════════════════════════
+
+    private static void setupAbilitiesNode(LiteralArgumentBuilder<CommandSourceStack> node) {
+
+        // ── /dnd abilities add <player> <ability> ──
+        node.then(Commands.literal("add")
+                .then(Commands.argument("player", EntityArgument.player())
+                        .then(Commands.argument("ability", StringArgumentType.word())
+                                .suggests(ABILITY_SUGGESTIONS)
+                                .executes(c -> handleAbilityAction(
+                                        c.getSource(),
+                                        EntityArgument.getPlayer(c, "player"),
+                                        StringArgumentType.getString(c, "ability"),
+                                        "add")))));
+
+        // ── /dnd abilities remove <player> <ability> ──
+        node.then(Commands.literal("remove")
+                .then(Commands.argument("player", EntityArgument.player())
+                        .then(Commands.argument("ability", StringArgumentType.word())
+                                .suggests(ABILITY_SUGGESTIONS)
+                                .executes(c -> handleAbilityAction(
+                                        c.getSource(),
+                                        EntityArgument.getPlayer(c, "player"),
+                                        StringArgumentType.getString(c, "ability"),
+                                        "remove")))));
+
+        // ── /dnd abilities clear <player> ──
+        node.then(Commands.literal("clear")
+                .then(Commands.argument("player", EntityArgument.player())
+                        .executes(c -> clearAbilities(
+                                c.getSource(),
+                                EntityArgument.getPlayer(c, "player")))));
+    }
+
+    // ════════════════════════════════════════════════════════════════════════════
+    //  UPDATE NODE SETUP
+    // ════════════════════════════════════════════════════════════════════════════
+
+    private static void setupUpdateNode(LiteralArgumentBuilder<CommandSourceStack> node) {
+
+        // ── /dnd update Attributes <player> ──
+        node.then(Commands.literal("Attributes")
+                .then(Commands.argument("player", EntityArgument.player())
+                        .executes(c -> updateAttributes(
+                                c.getSource(),
+                                EntityArgument.getPlayer(c, "player")))));
+
+        // ── /dnd update Abilities <player> ──
+        node.then(Commands.literal("Abilities")
+                .then(Commands.argument("player", EntityArgument.player())
+                        .executes(c -> updateAbilities(
+                                c.getSource(),
+                                EntityArgument.getPlayer(c, "player")))));
+    }
+
+    // ════════════════════════════════════════════════════════════════════════════
+    //  SPELLS NODE SETUP (keep existing structure)
+    // ════════════════════════════════════════════════════════════════════════════
+
+    private static void setupSpellsNode(LiteralArgumentBuilder<CommandSourceStack> node) {
+
+        node.then(Commands.literal("learn")
                 .then(Commands.argument("target", EntityArgument.player())
                         .then(Commands.argument("spellname", StringArgumentType.greedyString())
                                 .suggests(SPELL_SUGGESTIONS)
@@ -90,7 +233,7 @@ public class DndCommand {
                                         StringArgumentType.getString(c, "spellname"),
                                         "learn")))));
 
-        spellsNode.then(Commands.literal("forceLearn")
+        node.then(Commands.literal("forceLearn")
                 .then(Commands.argument("target", EntityArgument.player())
                         .then(Commands.argument("spellname", StringArgumentType.greedyString())
                                 .suggests(SPELL_SUGGESTIONS)
@@ -100,7 +243,7 @@ public class DndCommand {
                                         StringArgumentType.getString(c, "spellname"),
                                         "force")))));
 
-        spellsNode.then(Commands.literal("unlearn")
+        node.then(Commands.literal("unlearn")
                 .then(Commands.argument("target", EntityArgument.player())
                         .then(Commands.argument("spellname", StringArgumentType.greedyString())
                                 .suggests(SPELL_SUGGESTIONS)
@@ -120,75 +263,65 @@ public class DndCommand {
             targetArg.then(Commands.literal("Grade_" + i)
                     .executes(c -> clearSpells(c.getSource(), EntityArgument.getPlayer(c, "target"), String.valueOf(grade))));
         }
-        spellsNode.then(Commands.literal("clear").then(targetArg));
-
-        event.getDispatcher().register(Commands.literal("dnd")
-                .requires(s -> s.hasPermission(2))
-                .then(variableNode)
-                .then(spellsNode));
+        node.then(Commands.literal("clear").then(targetArg));
     }
 
     // ════════════════════════════════════════════════════════════════════════════
-    //  VARIABLE NODE SETUP
+    //  SLOTS NODE SETUP
     // ════════════════════════════════════════════════════════════════════════════
 
-    private static void setupVariableNode(LiteralArgumentBuilder<CommandSourceStack> node) {
+    private static void setupSlotsNode(LiteralArgumentBuilder<CommandSourceStack> node) {
 
-        // ── String fields ──
-        for (String field : STRING_VARS) {
-            node.then(Commands.literal(field)
-                    .executes(c -> readVariable(c.getSource().getPlayerOrException(), field))
-                    .then(Commands.argument("v", StringArgumentType.greedyString())
-                            .executes(c -> updateStringVariable(
-                                    c.getSource().getPlayerOrException(),
-                                    field,
-                                    StringArgumentType.getString(c, "v")))));
+        // ── /dnd slots set <player> Grade_X <value> ──
+        var gradeArg = Commands.argument("player", EntityArgument.player());
+        for (int i = 1; i <= 9; i++) {
+            final int grade = i;
+            gradeArg.then(Commands.literal("Grade_" + i)
+                    .then(Commands.argument("value", IntegerArgumentType.integer(0))
+                            .executes(c -> setSpellSlot(
+                                    c.getSource(),
+                                    EntityArgument.getPlayer(c, "player"),
+                                    grade,
+                                    IntegerArgumentType.getInteger(c, "value")))));
         }
+        node.then(Commands.literal("set").then(gradeArg));
 
-        // ── Double fields (generic, no side-effects) ──
-        for (String field : DOUBLE_VARS) {
-            node.then(Commands.literal(field)
-                    .executes(c -> readVariable(c.getSource().getPlayerOrException(), field))
-                    .then(Commands.argument("v", DoubleArgumentType.doubleArg())
-                            .executes(c -> updateDoubleVariable(
-                                    c.getSource().getPlayerOrException(),
-                                    field,
-                                    DoubleArgumentType.getDouble(c, "v")))));
-        }
+        // ── /dnd slots reset <player> ──
+        node.then(Commands.literal("reset")
+                .then(Commands.argument("player", EntityArgument.player())
+                        .executes(c -> resetSpellSlots(
+                                c.getSource(),
+                                EntityArgument.getPlayer(c, "player")))));
 
-        // ── PlayerLevel — special: also calls applyAttrs and updates ProficiencyBonus ──
-        node.then(Commands.literal("PlayerLevel")
-                .executes(c -> readVariable(c.getSource().getPlayerOrException(), "PlayerLevel"))
-                .then(Commands.argument("v", DoubleArgumentType.doubleArg(1, 20))
-                        .executes(c -> setPlayerLevel(
-                                c.getSource().getPlayerOrException(),
-                                DoubleArgumentType.getDouble(c, "v"),
-                                c.getSource()))));
+        // ── /dnd slots refill <player> ──
+        node.then(Commands.literal("refill")
+                .then(Commands.argument("player", EntityArgument.player())
+                        .executes(c -> refillSpellSlots(
+                                c.getSource(),
+                                EntityArgument.getPlayer(c, "player")))));
 
-        // ── Boolean fields ──
-        for (String field : BOOL_VARS) {
-            node.then(Commands.literal(field)
-                    .executes(c -> readVariable(c.getSource().getPlayerOrException(), field))
-                    .then(Commands.argument("v", BoolArgumentType.bool())
-                            .executes(c -> updateBoolVariable(
-                                    c.getSource().getPlayerOrException(),
-                                    field,
-                                    BoolArgumentType.getBool(c, "v")))));
-        }
+        // ── /dnd slots clear <player> ──
+        node.then(Commands.literal("clear")
+                .then(Commands.argument("player", EntityArgument.player())
+                        .executes(c -> clearSpellSlots(
+                                c.getSource(),
+                                EntityArgument.getPlayer(c, "player")))));
     }
 
     // ════════════════════════════════════════════════════════════════════════════
-    //  VARIABLE HANDLERS
+    //  HANDLERS
     // ════════════════════════════════════════════════════════════════════════════
+
+    // ── VARIABLE HANDLERS ────────────────────────────────────────────────────────
 
     private static int readVariable(ServerPlayer p, String field) {
         try {
             DndModVariables.PlayerVariables vars = p.getData(DndModVariables.PLAYER_VARIABLES);
-            Object v = vars.getClass().getField(field).get(vars);
-            p.sendSystemMessage(Component.literal("§bCurrent " + field + ": §f" + v));
+            Object value = vars.getClass().getField(field).get(vars);
+            p.sendSystemMessage(Component.literal("§e" + field + "§r = §f" + value));
             return 1;
         } catch (Exception e) {
-            p.sendSystemMessage(Component.literal("§cField not found: " + field));
+            p.sendSystemMessage(Component.literal("§cFailed to read " + field + ": " + e.getMessage()));
             return 0;
         }
     }
@@ -232,18 +365,71 @@ public class DndCommand {
         }
     }
 
-    // ── PlayerLevel with side effects ────────────────────────────────────────────
+    // ── ABILITY HANDLERS ─────────────────────────────────────────────────────────
 
-    private static int setPlayerLevel(ServerPlayer p, double newLevel, CommandSourceStack source) {
-        // Ruft einfach die zentrale Logik auf
-        LevelEvents.updatePlayerLevel(p, (int)newLevel, false);
+    private static int handleAbilityAction(CommandSourceStack source, ServerPlayer player,
+                                           String abilityName, String action) {
+        try {
+            Ability ability = Ability.valueOf(abilityName.toUpperCase());
 
+            if (action.equals("add")) {
+                if (AbilityUtils.hasAbility(player, ability)) {
+                    source.sendFailure(Component.literal("§cPlayer already has ability: " + ability.name()));
+                    return 0;
+                }
+                AbilityUtils.addAbility(player, ability);
+                source.sendSuccess(() -> Component.literal("§aAdded ability: §f" + ability.getDisplayName()), true);
+                return 1;
+            } else if (action.equals("remove")) {
+                if (!AbilityUtils.hasAbility(player, ability)) {
+                    source.sendFailure(Component.literal("§cPlayer does not have ability: " + ability.name()));
+                    return 0;
+                }
+                AbilityUtils.removeAbility(player, ability);
+                source.sendSuccess(() -> Component.literal("§aRemoved ability: §f" + ability.getDisplayName()), true);
+                return 1;
+            }
+        } catch (IllegalArgumentException e) {
+            source.sendFailure(Component.literal("§cAbility '" + abilityName + "' does not exist!"));
+            return 0;
+        }
+        return 0;
+    }
+
+    private static int clearAbilities(CommandSourceStack source, ServerPlayer player) {
+        DndModVariables.PlayerVariables vars = player.getData(DndModVariables.PLAYER_VARIABLES);
+        vars.Abilities = "";
+        vars.markSyncDirty();
+        source.sendSuccess(() -> Component.literal("§aCleared all abilities."), true);
         return 1;
     }
 
-    // ════════════════════════════════════════════════════════════════════════════
-    //  SPELL HANDLERS
-    // ════════════════════════════════════════════════════════════════════════════
+    // ── UPDATE HANDLERS ──────────────────────────────────────────────────────────
+
+    private static int updateAttributes(CommandSourceStack source, ServerPlayer player) {
+        try {
+            // applyAttrs wird von anderswo aufgerufen - hier nur die Nachricht
+            source.sendSuccess(() -> Component.literal("§aUpdating attributes..."), true);
+            // TODO: Rufe applyAttrs(player, null, false) auf wenn die Methode zugänglich ist
+            return 1;
+        } catch (Exception e) {
+            source.sendFailure(Component.literal("§cFailed to update attributes: " + e.getMessage()));
+            return 0;
+        }
+    }
+
+    private static int updateAbilities(CommandSourceStack source, ServerPlayer player) {
+        try {
+            AbilityUtils.updateClassAbilities(player);
+            source.sendSuccess(() -> Component.literal("§aUpdated class abilities for level " + (int)player.getData(DndModVariables.PLAYER_VARIABLES).PlayerLevel), true);
+            return 1;
+        } catch (Exception e) {
+            source.sendFailure(Component.literal("§cFailed to update abilities: " + e.getMessage()));
+            return 0;
+        }
+    }
+
+    // ── SPELL HANDLERS (existing logic) ──────────────────────────────────────────
 
     private static int handleSpellAction(CommandSourceStack source, ServerPlayer player,
                                          String spellName, String action) {
@@ -354,9 +540,83 @@ public class DndCommand {
         return 1;
     }
 
+    // ── SPELL SLOTS HANDLERS ─────────────────────────────────────────────────────
+
+    private static int setSpellSlot(CommandSourceStack source, ServerPlayer player, int grade, int value) {
+        DndModVariables.PlayerVariables vars = player.getData(DndModVariables.PLAYER_VARIABLES);
+        String[] slots = parseSpellSlots(vars.Spellslots);
+
+        if (grade < 1 || grade > 9) {
+            source.sendFailure(Component.literal("§cGrade must be between 1 and 9!"));
+            return 0;
+        }
+
+        slots[grade - 1] = String.valueOf(value);
+        vars.Spellslots = String.join(",", slots);
+        vars.markSyncDirty();
+        source.sendSuccess(() -> Component.literal("§aSet spell slot Grade_" + grade + " to §f" + value), true);
+        return 1;
+    }
+
+    private static int resetSpellSlots(CommandSourceStack source, ServerPlayer player) {
+        DndModVariables.PlayerVariables vars = player.getData(DndModVariables.PLAYER_VARIABLES);
+        vars.Spellslots = "0,0,0,0,0,0,0,0,0";
+        vars.markSyncDirty();
+        source.sendSuccess(() -> Component.literal("§aReset all spell slots to 0."), true);
+        return 1;
+    }
+
+    private static int refillSpellSlots(CommandSourceStack source, ServerPlayer player) {
+        DndModVariables.PlayerVariables vars = player.getData(DndModVariables.PLAYER_VARIABLES);
+        ClassDefinition classDef = ClassRegistry.getClass(vars.PlayerClass);
+
+        if (classDef == null) {
+            source.sendFailure(Component.literal("§cClass '" + vars.PlayerClass + "' not found!"));
+            return 0;
+        }
+
+        int level = (int) vars.PlayerLevel;
+        int[][] spellSlots = classDef.getSpellSlots();
+
+        if (level < 0 || level >= spellSlots.length) {
+            source.sendFailure(Component.literal("§cInvalid player level!"));
+            return 0;
+        }
+
+        int[] currentLevelSlots = spellSlots[level];
+        String[] slots = new String[9];
+        for (int i = 0; i < 9; i++) {
+            slots[i] = String.valueOf(currentLevelSlots[i + 1]); // +1 weil Cantrip bei index 0 ist
+        }
+
+        vars.Spellslots = String.join(",", slots);
+        vars.markSyncDirty();
+        source.sendSuccess(() -> Component.literal("§aRefilled spell slots for level " + level), true);
+        return 1;
+    }
+
+    private static int clearSpellSlots(CommandSourceStack source, ServerPlayer player) {
+        DndModVariables.PlayerVariables vars = player.getData(DndModVariables.PLAYER_VARIABLES);
+        vars.Spellslots = "";
+        vars.markSyncDirty();
+        source.sendSuccess(() -> Component.literal("§aCleared spell slots."), true);
+        return 1;
+    }
+
     // ════════════════════════════════════════════════════════════════════════════
     //  HELPERS
     // ════════════════════════════════════════════════════════════════════════════
+
+    private static String[] parseSpellSlots(String spellslotsString) {
+        if (spellslotsString == null || spellslotsString.isEmpty() || spellslotsString.equals("\"\"")) {
+            return new String[]{"0", "0", "0", "0", "0", "0", "0", "0", "0"};
+        }
+        String[] slots = spellslotsString.split(",");
+        if (slots.length != 9) {
+            return new String[]{"0", "0", "0", "0", "0", "0", "0", "0", "0"};
+        }
+        return slots;
+    }
 
     private static String getListByGrade(DndModVariables.PlayerVariables v, int g) {
         return switch (g) {

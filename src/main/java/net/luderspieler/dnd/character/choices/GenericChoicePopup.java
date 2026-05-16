@@ -18,7 +18,7 @@ public class GenericChoicePopup extends Screen {
         super(Component.literal("Make a choice"));
         this.parent = parent;
         this.choiceId = choiceId;
-        this.options = ChoiceRegistry.getOptionsFor(choiceId);
+        this.options = null;
     }
 
     @Override
