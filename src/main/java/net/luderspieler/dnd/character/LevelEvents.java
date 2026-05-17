@@ -1,13 +1,10 @@
 package net.luderspieler.dnd.character;
 
-import net.luderspieler.dnd.character.abilitys.Ability;
+import net.luderspieler.dnd.character.AbilitysAndFeats.management.Ability;
 import net.luderspieler.dnd.character.network.CharacterCreationPacket;
-import net.luderspieler.dnd.character.registrys.ClassRegistry;
-import net.luderspieler.dnd.character.definition.ClassDefinition;
 import net.luderspieler.dnd.network.DndModVariables;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.player.Player;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerXpEvent;
 

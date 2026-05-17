@@ -1,4 +1,4 @@
-package net.luderspieler.dnd.character.abilitys;
+package net.luderspieler.dnd.character.AbilitysAndFeats.management;
 
 import java.util.*;
 

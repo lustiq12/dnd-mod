@@ -1,12 +1,10 @@
-package net.luderspieler.dnd.character.abilitys;
+package net.luderspieler.dnd.character.AbilitysAndFeats.management;
 
 import net.luderspieler.dnd.network.DndModVariables;
 import net.minecraft.server.level.ServerPlayer;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Utility-Klasse für Ability-Operationen

@@ -29,7 +29,7 @@ import net.luderspieler.dnd.init.DndModSounds;
 import net.luderspieler.dnd.init.DndModMobEffects;
 import net.luderspieler.dnd.init.DndModItems;
 import net.luderspieler.dnd.init.DndModEntities;
-import net.luderspieler.dnd.character.abilitys.AbilityPassiveTriggers;
+import net.luderspieler.dnd.character.AbilitysAndFeats.AbilityPassiveTriggers;
 import net.luderspieler.dnd.character.ProficiencyCheckProcedure;
 import net.luderspieler.dnd.character.LevelEvents;
 import net.luderspieler.dnd.character.CharacterCreationEventHandler;

@@ -1,6 +1,6 @@
 package net.luderspieler.dnd.character.network;
 
-import net.luderspieler.dnd.character.abilitys.AbilityUtils;
+import net.luderspieler.dnd.character.AbilitysAndFeats.management.AbilityUtils;
 import net.luderspieler.dnd.character.definition.RaceDefinition;
 import net.luderspieler.dnd.character.definition.SubraceDefinition;
 import net.luderspieler.dnd.character.registrys.ClassRegistry;
