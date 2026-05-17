@@ -271,41 +271,27 @@ public class DndCommand {
     // ════════════════════════════════════════════════════════════════════════════
 
     private static void setupSlotsNode(LiteralArgumentBuilder<CommandSourceStack> node) {
+        var playerArg = Commands.argument("player", EntityArgument.player());
 
-        // ── /dnd slots set <player> Grade_X <value> ──
-        var gradeArg = Commands.argument("player", EntityArgument.player());
+        // /dnd slots set <player> Grade_1 <value>
         for (int i = 1; i <= 9; i++) {
             final int grade = i;
-            gradeArg.then(Commands.literal("Grade_" + i)
-                    .then(Commands.argument("value", IntegerArgumentType.integer(0))
-                            .executes(c -> setSpellSlot(
-                                    c.getSource(),
-                                    EntityArgument.getPlayer(c, "player"),
-                                    grade,
-                                    IntegerArgumentType.getInteger(c, "value")))));
+            playerArg.then(Commands.literal("Grade_" + i)
+                    .then(Commands.argument("value", IntegerArgumentType.integer(0, 9))
+                            .executes(c -> setSpellSlot(c.getSource(), EntityArgument.getPlayer(c, "player"), grade, IntegerArgumentType.getInteger(c, "value")))));
         }
-        node.then(Commands.literal("set").then(gradeArg));
 
-        // ── /dnd slots reset <player> ──
-        node.then(Commands.literal("reset")
-                .then(Commands.argument("player", EntityArgument.player())
-                        .executes(c -> resetSpellSlots(
-                                c.getSource(),
-                                EntityArgument.getPlayer(c, "player")))));
+        node.then(Commands.literal("set").then(playerArg));
 
-        // ── /dnd slots refill <player> ──
+        // /dnd slots refill <player> -> Macht die Slots VOLL (Maximum)
         node.then(Commands.literal("refill")
                 .then(Commands.argument("player", EntityArgument.player())
-                        .executes(c -> refillSpellSlots(
-                                c.getSource(),
-                                EntityArgument.getPlayer(c, "player")))));
+                        .executes(c -> refillSpellSlots(c.getSource(), EntityArgument.getPlayer(c, "player")))));
 
-        // ── /dnd slots clear <player> ──
+        // /dnd slots clear <player> -> Macht die Slots LEER (Null)
         node.then(Commands.literal("clear")
                 .then(Commands.argument("player", EntityArgument.player())
-                        .executes(c -> clearSpellSlots(
-                                c.getSource(),
-                                EntityArgument.getPlayer(c, "player")))));
+                        .executes(c -> clearSpellSlots(c.getSource(), EntityArgument.getPlayer(c, "player")))));
     }
 
     // ════════════════════════════════════════════════════════════════════════════
@@ -546,20 +532,20 @@ public class DndCommand {
         DndModVariables.PlayerVariables vars = player.getData(DndModVariables.PLAYER_VARIABLES);
         String currentSlots = vars.Spellslots;
 
+        // Validierung: Grad 1 bis 9
         if (grade < 1 || grade > 9) {
             source.sendFailure(Component.literal("§cGrade must be between 1 and 9!"));
             return 0;
         }
 
-        // Falls die Variable noch leer, im alten Format oder kaputt ist, setze sie auf 9 Nullen zurück
+        // Falls String ungültig: Initialisiere 9 Nullen
         if (currentSlots == null || currentSlots.length() != 9 || currentSlots.contains(",")) {
             currentSlots = "000000000";
         }
 
-        // Wert auf maximal 9 und minimal 0 begrenzen
+        // Wert auf maximal 9 deckeln
         int finalValue = Math.min(9, Math.max(0, value));
 
-        // String in ein char-Array umwandeln, um die Stelle gezielt auszutauschen
         char[] slotsChars = currentSlots.toCharArray();
         slotsChars[grade - 1] = Character.forDigit(finalValue, 10);
 
@@ -570,51 +556,43 @@ public class DndCommand {
         return 1;
     }
 
-    private static int resetSpellSlots(CommandSourceStack source, ServerPlayer player) {
-        DndModVariables.PlayerVariables vars = player.getData(DndModVariables.PLAYER_VARIABLES);
-        vars.Spellslots = "000000000";
-        vars.markSyncDirty();
-        source.sendSuccess(() -> Component.literal("§aReset all spell slots to 0."), true);
-        return 1;
-    }
-
     private static int refillSpellSlots(CommandSourceStack source, ServerPlayer player) {
         DndModVariables.PlayerVariables vars = player.getData(DndModVariables.PLAYER_VARIABLES);
-        ClassDefinition classDef = ClassRegistry.getClass(vars.PlayerClass);
+        ClassDefinition classDef = ClassRegistry.getClass(vars.PlayerClass.replace("\"", ""));
 
         if (classDef == null) {
-            source.sendFailure(Component.literal("§cClass '" + vars.PlayerClass + "' not found!"));
+            source.sendFailure(Component.literal("§cClass not found!"));
             return 0;
         }
 
+        // Nutzt die Slot-Tabelle der Klasse für das aktuelle Level
         int level = (int) vars.PlayerLevel;
-        int[][] spellSlots = classDef.getSpellSlots();
+        int[][] table = classDef.getSpellSlots();
 
-        if (level < 0 || level >= spellSlots.length) {
-            source.sendFailure(Component.literal("§cInvalid player level!"));
-            return 0;
+        if (level < 0 || level >= table.length) {
+            vars.Spellslots = "000000000";
+        } else {
+            int[] maxSlots = table[level];
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < 9; i++) {
+                sb.append(Math.min(9, maxSlots[i]));
+            }
+            vars.Spellslots = sb.toString();
         }
 
-        int[] currentLevelSlots = spellSlots[level];
-        StringBuilder sb = new StringBuilder(9);
-
-        for (int i = 0; i < 9; i++) {
-            int val = currentLevelSlots[i + 1]; // +1 weil Cantrip bei index 0 ist
-            val = Math.min(9, Math.max(0, val)); // Auch hier sicherheitshalber auf 9 deckeln
-            sb.append(val);
-        }
-
-        vars.Spellslots = sb.toString();
         vars.markSyncDirty();
-        source.sendSuccess(() -> Component.literal("§aRefilled spell slots for level " + level), true);
+        source.sendSuccess(() -> Component.literal("§aRefilled spell slots to maximum."), true);
         return 1;
     }
 
     private static int clearSpellSlots(CommandSourceStack source, ServerPlayer player) {
         DndModVariables.PlayerVariables vars = player.getData(DndModVariables.PLAYER_VARIABLES);
-        vars.Spellslots = "000000000"; // Auch hier direkt auf 9 Nullen setzen statt auf ""
+
+        // Einfach alles auf 0 setzen
+        vars.Spellslots = "000000000";
+
         vars.markSyncDirty();
-        source.sendSuccess(() -> Component.literal("§aCleared spell slots."), true);
+        source.sendSuccess(() -> Component.literal("§6All spell slots cleared to 0."), true);
         return 1;
     }
 

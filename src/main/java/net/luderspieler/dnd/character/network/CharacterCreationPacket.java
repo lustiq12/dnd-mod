@@ -143,18 +143,19 @@ public record CharacterCreationPacket(
     }
 
     public static String resetSpellSlots(ClassDefinition cls, int level) {
-        // Falls die Klasse keine Magie hat (NONE_S), wird ein leerer Slot-String geliefert
-        int[][] slotTable = cls.getSpellSlots(); // Holt z.B. WIZ_S
+        int[][] slotTable = cls.getSpellSlots();
 
+        // Sicherheitsscheck: Falls keine Tabelle da ist oder das Level ungültig ist
         if (slotTable == null || level < 0 || level >= slotTable.length) {
             return "000000000";
         }
 
-        int[] slotsAtLevel = slotTable[level];
+        int[] slotsAtLevel = slotTable[level]; // Das Array hat die Länge 9 (Indizes 0-8)
         StringBuilder sb = new StringBuilder();
 
-        // D&D Spell-Levels 1 bis 9 (Index 1-9 im Array)
-        for (int i = 1; i <= 9; i++) {
+        // Wir laufen von 0 bis 8 (entspricht Grade 1 bis 9)
+        for (int i = 0; i < 9; i++) {
+            // slotsAtLevel[0] ist Grade 1, slotsAtLevel[1] ist Grade 2, etc.
             sb.append(slotsAtLevel[i]);
         }
 

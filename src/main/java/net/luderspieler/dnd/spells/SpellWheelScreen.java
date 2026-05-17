@@ -396,6 +396,7 @@ public class SpellWheelScreen extends Screen {
     }
 
     private String getSlotInfo(int grade) {
+        // Cantrips (Grad 0) haben keine Slots
         if (grade <= 0) return "";
 
         Player player = Minecraft.getInstance().player;
@@ -406,19 +407,24 @@ public class SpellWheelScreen extends Screen {
 
         if (classDef == null || classDef.getSpellSlots() == null) return "";
 
-        int[][] allSlots = classDef.getSpellSlots();
+        int[][] allSlots = classDef.getSpellSlots(); // int[21][9]
         int levelIdx = (int) vars.PlayerLevel;
         if (levelIdx >= allSlots.length) levelIdx = allSlots.length - 1;
+        if (levelIdx < 0) levelIdx = 0;
 
         int maxSlots = 0;
-        if (levelIdx < allSlots.length && grade < allSlots[levelIdx].length) {
-            maxSlots = allSlots[levelIdx][grade];
+        // FIX: Da Index 0 in der Tabelle Grad 1 ist, nutzen wir grade - 1
+        if (grade - 1 < allSlots[levelIdx].length) {
+            maxSlots = allSlots[levelIdx][grade - 1];
         }
 
+        // Wenn die Klasse auf diesem Level keine Slots für diesen Grad hat, nichts anzeigen
         if (maxSlots <= 0) return "";
 
         int currentSlots = 0;
-        String rawSlots = vars.Spellslots.replace("\"", "");
+        String rawSlots = vars.Spellslots != null ? vars.Spellslots.replace("\"", "") : "000000000";
+
+        // FIX: Auch im 9-stelligen String ist Grad 1 an Index 0 (grade - 1)
         if (rawSlots.length() >= grade) {
             currentSlots = Character.getNumericValue(rawSlots.charAt(grade - 1));
         }

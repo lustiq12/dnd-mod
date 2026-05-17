@@ -44,16 +44,18 @@ public record CastSpellPacket(String spellId, int level) implements CustomPacket
             String prepared = level == 0 ? vars.PreparedCantrips : levelVar(vars, level);
             if (prepared == null || !prepared.contains(pkt.spellId())) return;
 
-            // 2. Slot-Management (Übersprungen im Kreativmodus oder bei Cantrips)
+            // 2. Slot-Management (Übersprungen im Kreativmodus oder bei Cantrips/Grad 0)
             if (level > 0 && !player.isCreative()) {
-                String slots = vars.Spellslots;
+                String slots = vars.Spellslots != null ? vars.Spellslots.replace("\"", "") : "000000000";
 
-                // FIXED: Explizitere Prüfung
-                if (slots == null || slots.isEmpty() || slots.length() < level) return;
+                // Da der String 9-stellig ist (Index 0 = Grad 1), ist der Index immer level - 1
+                int slotIndex = level - 1;
 
-                int slotCount = slots.charAt(level - 1) - '0';
+                if (slots.length() <= slotIndex) return;
 
-                // FIXED: Explizit prüfen ob Slots vorhanden sind
+                int slotCount = slots.charAt(slotIndex) - '0';
+
+                // Prüfen ob Slots vorhanden sind
                 if (slotCount < 1) {
                     player.displayClientMessage(Component.literal("§cNo spell slots available!"), true);
                     return;
@@ -61,7 +63,7 @@ public record CastSpellPacket(String spellId, int level) implements CustomPacket
 
                 // Slot abziehen
                 char[] arr = slots.toCharArray();
-                arr[level - 1] = (char)('0' + (slotCount - 1));
+                arr[slotIndex] = (char) ('0' + (slotCount - 1));
                 vars.Spellslots = new String(arr);
                 vars.markSyncDirty();
             }
