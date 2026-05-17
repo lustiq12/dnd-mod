@@ -1,6 +1,7 @@
 package net.luderspieler.dnd.character.network;
 
 import net.luderspieler.dnd.character.AbilitysAndFeats.management.AbilityUtils;
+import net.luderspieler.dnd.character.choices.ChoiceUpdateSystem;
 import net.luderspieler.dnd.character.definition.RaceDefinition;
 import net.luderspieler.dnd.character.definition.SubraceDefinition;
 import net.luderspieler.dnd.character.registrys.ClassRegistry;
@@ -90,6 +91,7 @@ public record CharacterCreationPacket(
             // 3.5 Abilities
             AbilityUtils.addRaceAbilities(player);
             AbilityUtils.updateClassAbilities(player);
+            ChoiceUpdateSystem.updateChoices(player);
 
             // 4. Items & Spells
             for (ItemStack stack : cls.getStarterItems()) {

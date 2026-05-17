@@ -80,7 +80,9 @@ public class LevelingChoiceScreen extends Screen {
 
             // Textfarbe ändert sich bei Hover (alles über Config)
             int textColor = hov ? generalConfigs.TEXT_HOVER : generalConfigs.TEXT_WHITE;
-            g.drawString(this.font, choices.get(i), x + 10, rowY + 4, textColor);
+            String displayName = choices.get(i).replace("_", " ").toLowerCase();
+            displayName = displayName.substring(0, 1).toUpperCase() + displayName.substring(1);
+            g.drawString(this.font, displayName, x + 10, rowY + 4, textColor);
         }
 
         super.render(g, mouseX, mouseY, partial);

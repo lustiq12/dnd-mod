@@ -6,6 +6,7 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
+import net.luderspieler.dnd.character.choices.ChoiceUpdateSystem;
 import net.luderspieler.dnd.character.definition.ClassDefinition;
 import net.luderspieler.dnd.character.registrys.ClassRegistry;
 import net.luderspieler.dnd.character.AbilitysAndFeats.management.Ability;
@@ -89,13 +90,20 @@ public class DndCommand {
         LiteralArgumentBuilder<CommandSourceStack> slotsNode = Commands.literal("slots");
         setupSlotsNode(slotsNode);
 
+        LiteralArgumentBuilder<CommandSourceStack> levelNode = Commands.literal("Level")
+                .then(Commands.argument("player", EntityArgument.player())
+                        .then(Commands.argument("value", IntegerArgumentType.integer(1, 20))
+                                .executes(c -> setLevelAndSync(c.getSource(), EntityArgument.getPlayer(c, "player"), IntegerArgumentType.getInteger(c, "value")))));
+
+
         event.getDispatcher().register(Commands.literal("dnd")
                 .requires(s -> s.hasPermission(2))
                 .then(variableNode)
                 .then(abilitiesNode)
                 .then(updateNode)
                 .then(spellsNode)
-                .then(slotsNode));
+                .then(slotsNode)
+                .then(levelNode));
     }
 
     // ════════════════════════════════════════════════════════════════════════════
@@ -199,23 +207,6 @@ public class DndCommand {
     //  UPDATE NODE SETUP
     // ════════════════════════════════════════════════════════════════════════════
 
-    private static void setupUpdateNode(LiteralArgumentBuilder<CommandSourceStack> node) {
-
-        // ── /dnd update Attributes <player> ──
-        node.then(Commands.literal("Attributes")
-                .then(Commands.argument("player", EntityArgument.player())
-                        .executes(c -> updateAttributes(
-                                c.getSource(),
-                                EntityArgument.getPlayer(c, "player")))));
-
-        // ── /dnd update Abilities <player> ──
-        node.then(Commands.literal("Abilities")
-                .then(Commands.argument("player", EntityArgument.player())
-                        .executes(c -> updateAbilities(
-                                c.getSource(),
-                                EntityArgument.getPlayer(c, "player")))));
-    }
-
     // ════════════════════════════════════════════════════════════════════════════
     //  SPELLS NODE SETUP (keep existing structure)
     // ════════════════════════════════════════════════════════════════════════════
@@ -293,9 +284,54 @@ public class DndCommand {
                         .executes(c -> clearSpellSlots(c.getSource(), EntityArgument.getPlayer(c, "player")))));
     }
 
+
+    private static void setupUpdateNode(LiteralArgumentBuilder<CommandSourceStack> node) {
+        // /dnd update Choices <player>
+        node.then(Commands.literal("Choices")
+                .then(Commands.argument("player", EntityArgument.player())
+                        .executes(c -> {
+                            ServerPlayer player = EntityArgument.getPlayer(c, "player");
+                            ChoiceUpdateSystem.updateChoices(player);
+                            c.getSource().sendSuccess(() -> Component.literal("§aChoices for " + player.getName().getString() + " recalculated."), true);
+                            return 1;
+                        })));
+
+        // /dnd update Abilities <player>
+        node.then(Commands.literal("Abilities")
+                .then(Commands.argument("player", EntityArgument.player())
+                        .executes(c -> {
+                            ServerPlayer player = EntityArgument.getPlayer(c, "player");
+                            AbilityUtils.updateClassAbilities(player);
+                            c.getSource().sendSuccess(() -> Component.literal("§aAbilities for " + player.getName().getString() + " updated."), true);
+                            return 1;
+                        })));
+
+        node.then(Commands.literal("Choices")
+                .then(Commands.argument("player", EntityArgument.player())
+                        .executes(c -> {
+                            ChoiceUpdateSystem.updateChoices(EntityArgument.getPlayer(c, "player"));
+                            c.getSource().sendSuccess(() -> Component.literal("§aChoices updated."), true);
+                            return 1;
+                        })));
+    }
+
     // ════════════════════════════════════════════════════════════════════════════
     //  HANDLERS
     // ════════════════════════════════════════════════════════════════════════════
+
+
+    private static int setLevelAndSync(CommandSourceStack source, ServerPlayer player, int level) {
+        var vars = player.getData(DndModVariables.PLAYER_VARIABLES);
+        vars.PlayerLevel = (double) level;
+        vars.markSyncDirty();
+
+        // Alles synchronisieren
+        AbilityUtils.updateClassAbilities(player);
+        ChoiceUpdateSystem.updateChoices(player);
+
+        source.sendSuccess(() -> Component.literal("§aLevel set to " + level + " and systems synced."), true);
+        return 1;
+    }
 
     // ── VARIABLE HANDLERS ────────────────────────────────────────────────────────
 

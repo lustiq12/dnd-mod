@@ -33,17 +33,26 @@ public record ExecuteChoicePacket(String choiceId, String selectedValue) impleme
             var player = context.player();
             var vars = player.getData(net.luderspieler.dnd.network.DndModVariables.PLAYER_VARIABLES);
 
-            // Eintrag aus der Liste entfernen
-            List<String> list = new ArrayList<>();
+            // 1. Aus Needed entfernen
+            List<String> neededList = new ArrayList<>();
             if (!vars.ChoicesNeeded.isBlank()) {
                 for (String s : vars.ChoicesNeeded.split(",")) {
                     if (!s.trim().equals(data.choiceId())) {
-                        list.add(s.trim());
+                        neededList.add(s.trim());
                     }
                 }
             }
-            vars.ChoicesNeeded = String.join(",", list);
+            vars.ChoicesNeeded = String.join(",", neededList);
 
+            // 2. In ChoicesMade registrieren (Format "ID:Value")
+            String newMadeEntry = data.choiceId() + ":" + data.selectedValue();
+            if (vars.ChoicesMade.isBlank()) {
+                vars.ChoicesMade = newMadeEntry;
+            } else {
+                vars.ChoicesMade += "," + newMadeEntry;
+            }
+
+            // 3. Effekt ausführen
             ChoiceExecutor.apply(player, data.choiceId(), data.selectedValue());
 
             vars.markSyncDirty();

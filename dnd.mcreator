@@ -106,7 +106,7 @@
     {
       "name": "Dnd",
       "type": "command",
-      "compiles": false,
+      "compiles": true,
       "locked_code": true,
       "registry_name": "dnd",
       "metadata": {
@@ -1174,6 +1174,12 @@
     },
     {
       "name": "Abilities",
+      "type": "string",
+      "scope": "player_persistent",
+      "value": "\"\""
+    },
+    {
+      "name": "ChoicesMade",
       "type": "string",
       "scope": "player_persistent",
       "value": "\"\""

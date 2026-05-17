@@ -1,6 +1,7 @@
 package net.luderspieler.dnd.character;
 
 import net.luderspieler.dnd.character.AbilitysAndFeats.management.Ability;
+import net.luderspieler.dnd.character.choices.ChoiceUpdateSystem;
 import net.luderspieler.dnd.character.network.CharacterCreationPacket;
 import net.luderspieler.dnd.network.DndModVariables;
 import net.minecraft.network.chat.Component;
@@ -82,6 +83,7 @@ public class LevelEvents {
 
         // 3. Stats & HP aktualisieren (nutzt das Packet-Backend)
         CharacterCreationPacket.applyAttrs(player, null, false);
+        ChoiceUpdateSystem.updateChoices(player);
 
         // 4. Speichern & Sync
         vars.markSyncDirty();

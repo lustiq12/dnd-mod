@@ -111,6 +111,7 @@ public class DndModVariables {
 		clone.Charisma = original.Charisma;
 		clone.ProficiencyBonus = original.ProficiencyBonus;
 		clone.Abilities = original.Abilities;
+		clone.ChoicesMade = original.ChoicesMade;
 		if (!event.isWasDeath()) {
 			clone.FinishedCharacterCreation = original.FinishedCharacterCreation;
 			clone.TargetingRange = original.TargetingRange;
@@ -315,6 +316,7 @@ public class DndModVariables {
 		public double Charisma = 0.0;
 		public double ProficiencyBonus = 0.0;
 		public String Abilities = "\"\"";
+		public String ChoicesMade = "\"\"";
 
 		@Override
 		public void serialize(ValueOutput output) {
@@ -360,6 +362,7 @@ public class DndModVariables {
 			output.putDouble("Charisma", Charisma);
 			output.putDouble("ProficiencyBonus", ProficiencyBonus);
 			output.putString("Abilities", Abilities);
+			output.putString("ChoicesMade", ChoicesMade);
 		}
 
 		@Override
@@ -406,6 +409,7 @@ public class DndModVariables {
 			Charisma = input.getDoubleOr("Charisma", 0);
 			ProficiencyBonus = input.getDoubleOr("ProficiencyBonus", 0);
 			Abilities = input.getStringOr("Abilities", "");
+			ChoicesMade = input.getStringOr("ChoicesMade", "");
 		}
 
 		public void markSyncDirty() {
