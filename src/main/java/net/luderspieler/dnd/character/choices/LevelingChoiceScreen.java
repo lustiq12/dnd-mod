@@ -38,7 +38,7 @@ public class LevelingChoiceScreen extends Screen {
         // Zentrierter Back-Button am unteren Ende der Liste
         this.addRenderableWidget(Button.builder(Component.literal("Back"), b -> {
             Minecraft.getInstance().setScreen(this.parent);
-        }).bounds(this.width / 2 - 40, this.height / 2 + (choices.size() * 18) + 20, 80, 20).build());
+        }).bounds(this.width / 2 - 40, this.height / 2 + (choices.size() * 9) + 4, 80, 20).build());
     }
 
     public void removeChoiceLocally(String id) {

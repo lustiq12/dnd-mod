@@ -27,7 +27,7 @@ public class CharacterFinalizationScreen extends Screen {
 
     // ── Unveränderte Sizing-Konstanten ──────────────────────────────────────
     private static final int BOX_WIDTH    = 220;
-    private static final int ICON_SIZE    = 16;
+    private static final int ICON_SIZE    = 32;
     private static final int ITEM_SIZE    = 16;
     private static final int COLUMN_WIDTH = 180;
 
@@ -76,6 +76,7 @@ public class CharacterFinalizationScreen extends Screen {
     private final RaceDefinition    race;
     private final SubraceDefinition subrace;
     private final ClassDefinition   cls;
+    private int rpW;
 
     // ============================================================
     //  Konstruktor – identische Logik wie original
@@ -158,12 +159,12 @@ public class CharacterFinalizationScreen extends Screen {
 
         // Rassen-Icon-Slot (links vom Zentrum)
         int raceSlotX = centerX - ICON_SIZE - 3;
-        g.fill(raceSlotX, ICON_Y, raceSlotX + ICON_SIZE, ICON_Y + ICON_SIZE, 0xFF3A3A3A);
+        g.fill(raceSlotX, ICON_Y, raceSlotX + ICON_SIZE, ICON_Y + ICON_SIZE, generalConfigs.TEXT_DARK_GRAY);
         generalConfigs.renderGreenEdge(g, raceSlotX, ICON_Y, ICON_SIZE, ICON_SIZE);
 
         // Klassen-Icon-Slot (rechts vom Zentrum)
         int clsSlotX = centerX + 3;
-        g.fill(clsSlotX, ICON_Y, clsSlotX + ICON_SIZE, ICON_Y + ICON_SIZE, 0xFF3A3A3A);
+        g.fill(clsSlotX, ICON_Y, clsSlotX + ICON_SIZE, ICON_Y + ICON_SIZE, generalConfigs.TEXT_DARK_GRAY);
         generalConfigs.renderGreenEdge(g, clsSlotX, ICON_Y, ICON_SIZE, ICON_SIZE);
 
         // ── Charaktername: zentriert, Gold, mit Schlagschatten ───────────────
@@ -174,7 +175,7 @@ public class CharacterFinalizationScreen extends Screen {
 
         // ── Infoleiste: Subrace Race | Class | Lvl 1 ─────────────────────────
         String racePart  = (subrace != null ? subrace.getDisplayName() + " " : "")
-                + (race != null ? race.getDisplayName() : "?");
+                + (race != null ? "("+race.getDisplayName()+")" : "?");
         String classPart = cls != null ? cls.getDisplayName() : "?";
         String infoText  = racePart + " | " + classPart + " | Lvl 1";
         g.drawCenteredString(this.font, infoText, centerX, INFO_Y, generalConfigs.TEXT_GRAY);
@@ -186,9 +187,9 @@ public class CharacterFinalizationScreen extends Screen {
         //  LINKE SPALTE – nur Labels (Widgets rendern über super.render)
         // ══════════════════════════════════════════════════════════
 
-        g.drawString(this.font, "CHARACTER NAME", leftX, LBL_NAME_Y,  generalConfigs.TEXT_WHITE);
-        g.drawString(this.font, "BACKSTORY",      leftX, LBL_STORY_Y, generalConfigs.TEXT_WHITE);
-        g.drawString(this.font, "PERSONALITY",    leftX, LBL_PERS_Y,  generalConfigs.TEXT_WHITE);
+        g.drawString(this.font, "Character Name", leftX, LBL_NAME_Y,  generalConfigs.TEXT_WHITE);
+        g.drawString(this.font, "Backstory",      leftX, LBL_STORY_Y, generalConfigs.TEXT_WHITE);
+        g.drawString(this.font, "Personality",    leftX, LBL_PERS_Y,  generalConfigs.TEXT_WHITE);
 
         // ══════════════════════════════════════════════════════════
         //  RECHTES PANEL – dunkler Hintergrund mit grünem Rahmen
@@ -247,7 +248,7 @@ public class CharacterFinalizationScreen extends Screen {
                 int slotSize = ITEM_SIZE + 4;   // 2 px extra auf jeder Seite
                 int ix = rx + i * (slotSize + 3);
                 // Slot-Hintergrund + Rahmen
-                g.fill(ix, ry, ix + slotSize, ry + slotSize, 0xFF555555);
+                g.fill(ix, ry, ix + slotSize, ry + slotSize, generalConfigs.TEXT_DARK_GRAY);
                 generalConfigs.renderGreenEdge(g, ix, ry, slotSize, slotSize);
                 g.renderItem(items.get(i), ix + 2, ry + 2);
                 renderMyTooltip(g, items.get(i), ix, ry, mouseX, mouseY);

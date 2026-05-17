@@ -190,7 +190,6 @@ public class CharacterSheetScreen extends Screen {
     private void renderStatLine(GuiGraphics g, int centerX, int y, String label) {
         if (vars == null) return;
 
-        // Wert aus den Variablen holen
         double value = switch (label) {
             case "Strength" -> vars.Strength;
             case "Dexterity" -> vars.Dexterity;
@@ -202,13 +201,21 @@ public class CharacterSheetScreen extends Screen {
         };
 
         int total = (int) value;
-        // D&D Modifier berechnen: (Score - 10) / 2
         int modifier = Math.floorDiv(total - 10, 2);
         String bonusStr = (modifier >= 0 ? "+" : "") + modifier;
+        int statX = centerX + 8;
+        String namePart = "§7" + label + ": ";
+        String valuePart = "§f" + total + " §a(" + bonusStr + ")";
 
-        // Anzeige: "Strength: 15 (+2)"
-        String fullLine = "§7" + label + ": §f" + total + " §a(" + bonusStr + ")";
-        g.drawCenteredString(this.font, fullLine, centerX, y, generalConfigs.TEXT_WHITE);
+        // Set the gap between the label's end and the value's start
+        int gap = 0;
+
+        // Draw label ending at (centerX - gap)
+        int labelWidth = this.font.width(namePart);
+        g.drawString(this.font, namePart, statX - labelWidth - gap, y, generalConfigs.TEXT_WHITE, false);
+
+        // Draw values starting at (centerX + gap)
+        g.drawString(this.font, valuePart, statX + gap, y, generalConfigs.TEXT_WHITE, false);
     }
 
     private String formatVal(String label, double val) {
