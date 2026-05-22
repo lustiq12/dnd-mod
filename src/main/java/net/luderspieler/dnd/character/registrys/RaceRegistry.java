@@ -80,59 +80,64 @@ public class RaceRegistry {
     private static final List<String> INFERNAL_TIEFLING_AB     = List.of("Legacy of Avernus: Know Hellish Rebuke and Darkness spells","Infernal Constitution: Resistant to cold fire and poison");
 
     static {
-        // Aasimar
-        RACES.add(new RaceDefinition("aasimar", "Aasimar", "Touched by the divine...", AASIMAR_ATTRS, AASIMAR_AB, P_NONE));
-        SUBRACES.add(new SubraceDefinition("celestial_revelation", "aasimar", "Celestial Revelation", "Unleashes...", CELESTIAL_REVELATION_AB, P_NONE));
+        RACES.add(new RaceDefinition("aasimar", "Aasimar", "Touched by the divine...", AASIMAR_ATTRS, AASIMAR_AB, P_NONE, false));
 
-        // Dragonborn
-        RACES.add(new RaceDefinition("dragonborn", "Dragonborn", "Proud...", DRAGONBORN_ATTRS, DRAGONBORN_AB, P_NONE));
-        SUBRACES.add(new SubraceDefinition("chromatic_dragonborn", "dragonborn", "Chromatic Dragonborn", "Descended...", CHROMATIC_DRAGONBORN_AB, P_NONE));
-        SUBRACES.add(new SubraceDefinition("metallic_dragonborn", "dragonborn", "Metallic Dragonborn", "Noble...", METALLIC_DRAGONBORN_AB, P_NONE));
-        SUBRACES.add(new SubraceDefinition("gem_dragonborn", "dragonborn", "Gem Dragonborn", "Descended...", GEM_DRAGONBORN_AB, P_NONE));
+// Dragonborn: hat Subtype (Chromatic / Metallic / Gem)
+        RACES.add(new RaceDefinition("dragonborn", "Dragonborn", "Proud...", DRAGONBORN_ATTRS, DRAGONBORN_AB, P_NONE, true));
 
-        // Dwarf
-        RACES.add(new RaceDefinition("dwarf", "Dwarf", "Stout...", DWARF_ATTRS, DWARF_AB, P_DWARF));
-        SUBRACES.add(new SubraceDefinition("hill_dwarf", "dwarf", "Hill Dwarf", "Hardy and wise...", HILL_DWARF_AB, P_DWARF));
-        SUBRACES.add(new SubraceDefinition("mountain_dwarf", "dwarf", "Mountain Dwarf", "Trained for war...", MOUNTAIN_DWARF_AB, P_MOUNTAIN_D));
+// Dwarf: kein Subtype in 2024
+        RACES.add(new RaceDefinition("dwarf", "Dwarf", "Stout...", DWARF_ATTRS, DWARF_AB, P_DWARF, false));
 
-        // Elf
-        RACES.add(new RaceDefinition("elf", "Elf", "Ancient...", ELF_ATTRS, ELF_AB, P_NONE));
-        SUBRACES.add(new SubraceDefinition("drow", "elf", "Drow", "Dark elves...", DROW_AB, P_NONE));
-        SUBRACES.add(new SubraceDefinition("high_elf", "elf", "High Elf", "Devoted...", HIGH_ELF_AB, P_NONE));
-        SUBRACES.add(new SubraceDefinition("wood_elf", "elf", "Wood Elf", "Swift hunters...", WOOD_ELF_AB, P_NONE));
+// Elf: hat Subtype (Elven Lineage)
+        RACES.add(new RaceDefinition("elf", "Elf", "Ancient...", ELF_ATTRS, ELF_AB, P_NONE, true));
 
-        // Gnome
-        RACES.add(new RaceDefinition("gnome", "Gnome", "Curious...", GNOME_ATTRS, GNOME_AB, P_NONE));
-        SUBRACES.add(new SubraceDefinition("forest_gnome", "gnome", "Forest Gnome", "Friends...", FOREST_GNOME_AB, P_NONE));
-        SUBRACES.add(new SubraceDefinition("rock_gnome", "gnome", "Rock Gnome", "Tinkerers...", ROCK_GNOME_AB, P_NONE));
+// Gnome: hat Subtype (Gnomish Lineage)
+        RACES.add(new RaceDefinition("gnome", "Gnome", "Curious...", GNOME_ATTRS, GNOME_AB, P_NONE, true));
 
-        // Goliath
-        RACES.add(new RaceDefinition("goliath", "Goliath", "Towering...", GOLIATH_ATTRS, GOLIATH_AB, P_NONE));
-        SUBRACES.add(new SubraceDefinition("cloud_giant", "goliath", "Cloud Giant Ancestry", "Born of the sky...", CLOUD_GIANT_AB, P_NONE));
-        SUBRACES.add(new SubraceDefinition("fire_giant", "goliath", "Fire Giant Ancestry", "Forged in flame...", FIRE_GIANT_AB, P_NONE));
-        SUBRACES.add(new SubraceDefinition("frost_giant", "goliath", "Frost Giant Ancestry", "Born of the north...", FROST_GIANT_AB, P_NONE));
-        SUBRACES.add(new SubraceDefinition("hill_giant", "goliath", "Hill Giant Ancestry", "Massive...", HILL_GIANT_AB, P_NONE));
-        SUBRACES.add(new SubraceDefinition("stone_giant", "goliath", "Stone Giant Ancestry", "Still as stone...", STONE_GIANT_AB, P_NONE));
-        SUBRACES.add(new SubraceDefinition("storm_giant", "goliath", "Storm Giant Ancestry", "Commands thunder...", STORM_GIANT_AB, P_NONE));
+// Goliath: hat Subtype (Giant Ancestry)
+        RACES.add(new RaceDefinition("goliath", "Goliath", "Towering...", GOLIATH_ATTRS, GOLIATH_AB, P_NONE, true));
 
-        // Halfling
-        RACES.add(new RaceDefinition("halfling", "Halfling", "Small...", HALFLING_ATTRS, HALFLING_AB, P_NONE));
-        SUBRACES.add(new SubraceDefinition("lightfoot", "halfling", "Lightfoot Halfling", "Nimble...", LIGHTFOOT_AB, P_NONE));
-        SUBRACES.add(new SubraceDefinition("stout_halfling", "halfling", "Stout Halfling", "Tougher...", STOUT_AB, P_NONE));
+// Halfling: kein Subtype in 2024
+        RACES.add(new RaceDefinition("halfling", "Halfling", "Small...", HALFLING_ATTRS, HALFLING_AB, P_NONE, false));
 
-        // Human
-        RACES.add(new RaceDefinition("human", "Human", "Adaptable...", HUMAN_ATTRS, HUMAN_AB, P_NONE));
-        SUBRACES.add(new SubraceDefinition("versatile_human", "human", "Versatile Human", "Masters...", VERSATILE_HUMAN_AB, P_NONE));
+// Human: kein Subtype in 2024
+        RACES.add(new RaceDefinition("human", "Human", "Adaptable...", HUMAN_ATTRS, HUMAN_AB, P_NONE, false));
 
-        // Orc
-        RACES.add(new RaceDefinition("orc", "Orc", "Powerful...", ORC_ATTRS, ORC_AB, P_NONE));
-        SUBRACES.add(new SubraceDefinition("adrenaline_rush", "orc", "Adrenaline Rush", "Pushes beyond limits...", ADRENALINE_RUSH_AB, P_NONE));
+// Orc: kein Subtype in 2024 (Adrenaline Rush ist ein Feature, keine Subrace)
+        RACES.add(new RaceDefinition("orc", "Orc", "Powerful...", ORC_ATTRS, ORC_AB, P_NONE, false));
 
-        // Tiefling
-        RACES.add(new RaceDefinition("tiefling", "Tiefling", "Bearing...", TIEFLING_ATTRS, TIEFLING_AB, P_NONE));
-        SUBRACES.add(new SubraceDefinition("abyssal_tiefling", "tiefling", "Abyssal Tiefling", "Touched by demon...", ABYSSAL_TIEFLING_AB, P_NONE));
-        SUBRACES.add(new SubraceDefinition("chthonic_tiefling", "tiefling", "Chthonic Tiefling", "Marked by underworld...", CHTHONIC_TIEFLING_AB, P_NONE));
-        SUBRACES.add(new SubraceDefinition("infernal_tiefling", "tiefling", "Infernal Tiefling", "Descended from devils...", INFERNAL_TIEFLING_AB, P_NONE));
+// Tiefling: hat Subtype (Fiendish Legacy)
+        RACES.add(new RaceDefinition("tiefling", "Tiefling", "Bearing...", TIEFLING_ATTRS, TIEFLING_AB, P_NONE, true));
+
+        // ── REGISTRIERUNG DER SUBRACES ──
+
+        // Dragonborn Lineages
+        SUBRACES.add(new SubraceDefinition("chromatic", "dragonborn", "Chromatic Dragonborn", "With chromatic ancestry, you gain destructive elemental energy.", CHROMATIC_DRAGONBORN_AB, P_NONE));
+        SUBRACES.add(new SubraceDefinition("metallic", "dragonborn", "Metallic Dragonborn", "Metallic ancestry grants unique protective scales and breath options.", METALLIC_DRAGONBORN_AB, P_NONE));
+        SUBRACES.add(new SubraceDefinition("gem", "dragonborn", "Gem Dragonborn", "Gem ancestry infuses your mind with psionic energy and flight.", GEM_DRAGONBORN_AB, P_NONE));
+
+        // Elf Lineages
+        SUBRACES.add(new SubraceDefinition("drow", "elf", "Drow", "Adapted to the Underdark with superior darkvision and specialized magic.", DROW_AB, P_NONE));
+        SUBRACES.add(new SubraceDefinition("high_elf", "elf", "High Elf", "Infused with the ambient magic of the Feywild, granting arcane cantrips.", HIGH_ELF_AB, P_NONE));
+        SUBRACES.add(new SubraceDefinition("wood_elf", "elf", "Wood Elf", "Quick-footed and inherently stealthy within natural surroundings.", WOOD_ELF_AB, P_NONE));
+
+        // Gnome Lineages
+        SUBRACES.add(new SubraceDefinition("forest_gnome", "gnome", "Forest Gnome", "Natural illusionists who share a rare bond with small forest beasts.", FOREST_GNOME_AB, P_NONE));
+        SUBRACES.add(new SubraceDefinition("rock_gnome", "gnome", "Rock Gnome", "Natural inventors adept at tinkering with clockwork devices.", ROCK_GNOME_AB, P_NONE));
+
+        // Goliath Lineages (Giant Ancestry)
+        SUBRACES.add(new SubraceDefinition("cloud_giant", "goliath", "Cloud Giant", "Descended from cloud giants, allowing short-range teleportation.", CLOUD_GIANT_AB, P_NONE));
+        SUBRACES.add(new SubraceDefinition("fire_giant", "goliath", "Fire Giant", "Bearing the fiery might of forge masters to ignite your strikes.", FIRE_GIANT_AB, P_NONE));
+        SUBRACES.add(new SubraceDefinition("frost_giant", "goliath", "Frost Giant", "Infused with glacial chill, slowing enemies with your attacks.", FROST_GIANT_AB, P_NONE));
+        SUBRACES.add(new SubraceDefinition("hill_giant", "goliath", "Hill Giant", "Boasting massive build capable of toppling foes prone.", HILL_GIANT_AB, P_NONE));
+        SUBRACES.add(new SubraceDefinition("stone_giant", "goliath", "Stone Giant", "Blessed with stony skin to shrug off incoming damage.", STONE_GIANT_AB, P_NONE));
+        SUBRACES.add(new SubraceDefinition("storm_giant", "goliath", "Storm Giant", "Carrying the tempest's wrath with powerful lightning magic.", STORM_GIANT_AB, P_NONE));
+
+        // Tiefling Lineages
+        SUBRACES.add(new SubraceDefinition("abyssal", "tiefling", "Abyssal Tiefling", "Tethered to the chaotic and unpredictable magic of the Abyss.", ABYSSAL_TIEFLING_AB, P_NONE));
+        SUBRACES.add(new SubraceDefinition("chthonic", "tiefling", "Chthonic Tiefling", "Bound to the underworld, drawing resilience from death itself.", CHTHONIC_TIEFLING_AB, P_NONE));
+        SUBRACES.add(new SubraceDefinition("infernal", "tiefling", "Infernal Tiefling", "Marked by the fires of Avernus, granting standard hellish legacy.", INFERNAL_TIEFLING_AB, P_NONE));
+
     }
 
     public static List<SubraceDefinition> getSubracesFor(String parentId) {

@@ -1,0 +1,957 @@
+{
+  "version": "2024_PHB",
+  "note": "Implementation reference. All effects listed as-is from 2024 PHB. Implement active effects in AbilityMethods.java, passive effects in AbilityPassiveTriggers.java.",
+
+  "classAbilities": {
+
+    "BARBARIAN": {
+      "RAGE": {
+        "level": 1, "action": "BonusAction", "recovery": "LongRest",
+        "uses": "per_level_table",
+        "effects": [
+          "Resistance to Bludgeoning, Piercing, Slashing damage",
+          "Bonus damage on Strength-based weapon attacks (per Rage Damage table: +2 at lvl1, +3 at lvl9, +4 at lvl16)",
+          "Advantage on Strength checks and Strength saving throws",
+          "Cannot maintain Concentration or cast spells",
+          "Duration: persists until end of turn where you neither attacked an enemy nor took damage — extended by attacking/taking damage"
+        ]
+      },
+      "UNARMORED_DEFENSE": {
+        "level": 1, "action": "Passive",
+        "effects": ["AC = 10 + DEX modifier + CON modifier when wearing no armor and no shield"]
+      },
+      "WEAPON_MASTERY": {
+        "level": 1, "action": "Passive",
+        "effects": ["Use Mastery property of two weapon types per long rest (choose on weapon pick-up)", "Number of eligible weapon types increases at higher levels"]
+      },
+      "DANGER_SENSE": {
+        "level": 2, "action": "Passive",
+        "effects": ["Advantage on DEX saves against effects you can see (traps, spells)", "Does not apply if Blinded, Deafened, or Incapacitated"]
+      },
+      "RECKLESS_ATTACK": {
+        "level": 2, "action": "Free (on attack)",
+        "effects": ["Before first attack on your turn: gain Advantage on Strength-based attacks this turn", "Enemies have Advantage on attacks against you until start of your next turn"]
+      },
+      "PRIMAL_KNOWLEDGE": {
+        "level": 3, "action": "Passive",
+        "effects": ["Gain proficiency in one of: Acrobatics, Animal Handling, Athletics, Intimidation, Nature, Perception, Survival"]
+      },
+      "EXTRA_ATTACK_BARBARIAN": {
+        "level": 5, "action": "Passive",
+        "effects": ["Attack twice instead of once on Attack action"]
+      },
+      "FAST_MOVEMENT": {
+        "level": 5, "action": "Passive",
+        "effects": ["+10 ft. to walking speed when not wearing Heavy armor"]
+      },
+      "FERAL_INSTINCT": {
+        "level": 7, "action": "Passive",
+        "effects": ["Advantage on Initiative rolls", "If surprised, you can still act normally on first turn if you enter Rage before doing anything else"]
+      },
+      "INSTINCTIVE_POUNCE": {
+        "level": 7, "action": "Passive",
+        "effects": ["When entering Rage as part of your turn, move up to half your speed as part of same Bonus Action"]
+      },
+      "BRUTAL_STRIKE": {
+        "level": 9, "action": "Passive",
+        "effects": ["When you hit with Reckless Attack, deal one of: Forceful (push 15ft or prone), Hamstring (speed halved), Staggering (disadvantage on next attack/save)", "Extra 1d10 damage of weapon type"]
+      },
+      "RELENTLESS_RAGE": {
+        "level": 11, "action": "Passive",
+        "effects": ["When reduced to 0 HP while Raging, DC 10 CON save (DC increases by 5 each use, resets on short/long rest) to drop to 1 HP instead"]
+      },
+      "IMPROVED_BRUTAL_STRIKE_ONE": {
+        "level": 13, "action": "Passive",
+        "effects": ["Brutal Strike damage increases to 2d10", "Can use two Brutal Strike effects instead of one"]
+      },
+      "PERSISTENT_RAGE": {
+        "level": 15, "action": "Passive",
+        "effects": ["Rage no longer ends early unless you choose to end it or fall Unconscious"]
+      },
+      "IMPROVED_BRUTAL_STRIKE_TWO": {
+        "level": 17, "action": "Passive",
+        "effects": ["Brutal Strike damage increases to 3d10"]
+      },
+      "INDOMITABLE_MIGHT": {
+        "level": 18, "action": "Passive",
+        "effects": ["Minimum result for Strength check = Strength score (before modifiers)"]
+      },
+      "PRIMAL_CHAMPION": {
+        "level": 20, "action": "Passive",
+        "effects": ["STR +4, CON +4 (can exceed 20)"]
+      }
+    },
+
+    "BARD": {
+      "BARDIC_INSPIRATION": {
+        "level": 1, "action": "BonusAction", "recovery": "LongRest (Short at lvl5+)",
+        "uses": "CHA modifier (min 1)",
+        "effects": [
+          "Give one creature you can see within 60ft a Bardic Inspiration die (d6, scales with level)",
+          "Recipient can add it to one ability check, attack roll, or saving throw within 10 min",
+          "Die size: d6 (lvl1), d8 (lvl5), d10 (lvl10), d12 (lvl15)"
+        ]
+      },
+      "JACK_OF_ALL_TRADES": {
+        "level": 2, "action": "Passive",
+        "effects": ["Add half proficiency bonus (round down) to any ability check you aren't proficient in"]
+      },
+      "EXPERTISE": {
+        "level": 2, "action": "Passive",
+        "effects": ["Double proficiency bonus for two chosen skills or tools you are proficient with"]
+      },
+      "FONT_OF_INSPIRATION": {
+        "level": 5, "action": "Passive",
+        "effects": ["Regain all Bardic Inspiration uses on Short or Long Rest"]
+      },
+      "COUNTERCHARM": {
+        "level": 7, "action": "Action",
+        "effects": ["Use Action to start performance lasting until start of next turn", "Allies within 30ft who can hear you have Advantage on saves vs. Frightened and Charmed until performance ends"]
+      },
+      "IMPROVED_EXPERTISE_ONE": {
+        "level": 9, "action": "Passive",
+        "effects": ["Choose two more skills or tools to apply Expertise to"]
+      },
+      "MAGICAL_SECRETS": {
+        "level": 10, "action": "Passive",
+        "effects": ["Learn two spells from any class spell list", "These count as Bard spells for you"]
+      },
+      "PEERLESS_SKILL": {
+        "level": 15, "action": "Passive",
+        "effects": ["Add Bardic Inspiration die to your own ability checks (expends the die)"]
+      },
+      "SUPERIOR_INSPIRATION": {
+        "level": 18, "action": "Passive",
+        "effects": ["When rolling Initiative with no Bardic Inspiration uses left, regain one use"]
+      },
+      "WORDS_OF_CREATION": {
+        "level": 20, "action": "Passive",
+        "effects": ["Always have Power Word Heal and Power Word Kill prepared", "When you cast either, target one additional creature within 10ft of the primary target with the same spell"]
+      }
+    },
+
+    "CLERIC": {
+      "DIVINE_ORDER": {
+        "level": 1, "action": "Passive",
+        "effects": ["Choose Protector (proficiency with Martial weapons and Heavy armor) or Thaumaturge (one extra Cleric cantrip + double proficiency on Arcana/Religion with holy symbol)"]
+      },
+      "SPELLCASTING_CLERIC": {
+        "level": 1, "action": "Passive",
+        "effects": ["Spellcasting ability: Wisdom", "Prepare spells from Cleric list equal to WIS mod + level", "Holy symbol as spellcasting focus"]
+      },
+      "CHANNEL_DIVINITY": {
+        "level": 2, "action": "Action or BonusAction (varies)", "recovery": "ShortRest",
+        "uses": "1 (increases at lvl6: 2, lvl18: 3)",
+        "effects": [
+          "Turn Undead: Each undead within 30ft that can see/hear you makes WIS save (DC = spell save DC) or is Turned for 1 minute",
+          "Divine Spark: Choose one creature within 30ft — roll 1d8 per Channel Divinity use (max 3) and either heal or deal Radiant/Necrotic"
+        ]
+      },
+      "SMITE_UNDEAD": {
+        "level": 5, "action": "Passive",
+        "effects": ["When Turn Undead affects undead, deal extra Radiant damage = 2d8 + WIS modifier to each affected creature"]
+      },
+      "BLESSED_STRIKES": {
+        "level": 7, "action": "Passive",
+        "effects": ["Choose one per long rest: Deadly Strike (weapon attacks deal +1d8 Necrotic or Radiant once per turn) OR Potent Spellcasting (add WIS modifier to Cleric cantrip damage)"]
+      },
+      "DIVINE_INTERVENTION": {
+        "level": 10, "action": "Action", "recovery": "LongRest",
+        "effects": ["Call on your deity to intervene — DM chooses effect (equivalent to any Cleric spell of 5th level or lower)", "No components required"]
+      },
+      "IMPROVED_BLESSED_STRIKES_ONE": {
+        "level": 14, "action": "Passive",
+        "effects": ["Deadly Strike bonus increases to 2d8", "Potent Spellcasting: if cantrip misses, deal WIS modifier Radiant/Necrotic to one target in range"]
+      },
+      "IMPROVED_DIVINE_INTERVENTION_ONE": {
+        "level": 20, "action": "Action", "recovery": "LongRest",
+        "effects": ["Greater Divine Intervention: equivalent to any Cleric spell regardless of level", "Replaces standard Divine Intervention"]
+      }
+    },
+
+    "DRUID": {
+      "DRUIDIC": {
+        "level": 1, "action": "Passive",
+        "effects": ["Know Druidic secret language", "Can leave hidden messages in nature recognizable only by Druids"]
+      },
+      "PRIMAL_ORDER": {
+        "level": 1, "action": "Passive",
+        "effects": ["Magician: one extra Druid cantrip + double proficiency on INT (Arcana/Nature) with spell focus", "Warden: proficiency with Martial weapons and Medium armor"]
+      },
+      "SPELLCASTING_DRUID": {
+        "level": 1, "action": "Passive",
+        "effects": ["Spellcasting ability: Wisdom", "Druidic focus as spellcasting focus"]
+      },
+      "WILD_SHAPE": {
+        "level": 2, "action": "BonusAction", "recovery": "ShortRest",
+        "uses": "2",
+        "effects": [
+          "Transform into Beast with CR ≤ 1/4 (no fly/swim until lvl4+)",
+          "Retain mental stats, gain beast's physical stats",
+          "HP = beast's HP; revert when HP reaches 0",
+          "Available CR increases with level"
+        ]
+      },
+      "WILD_COMPANION": {
+        "level": 2, "action": "Passive",
+        "effects": ["Expend a Wild Shape use to cast Find Familiar without material components", "Familiar takes Fey type instead of normal"]
+      },
+      "WILD_RESURGENCE": {
+        "level": 5, "action": "Passive",
+        "effects": ["If out of Wild Shape uses, expend a 1st-level spell slot to regain one use", "If out of 1st-level slots, expend a Wild Shape use to regain one 1st-level slot"]
+      },
+      "ELEMENTAL_FURY": {
+        "level": 7, "action": "Passive",
+        "effects": ["Potent Spellcasting: add WIS modifier to damage of one Druid cantrip per turn", "OR Primal Strike: once per turn weapon/unarmed strike deals extra 1d8 Cold/Fire/Lightning/Thunder"]
+      },
+      "IMPROVED_ELEMENTAL_FURY_ONE": {
+        "level": 15, "action": "Passive",
+        "effects": ["Potent Spellcasting bonus increases to 2× WIS modifier", "Primal Strike increases to 2d8"]
+      },
+      "BEAST_SPELLS": {
+        "level": 18, "action": "Passive",
+        "effects": ["Can cast Druid spells with Verbal/Somatic components while in Wild Shape form"]
+      },
+      "ARCHDRUID": {
+        "level": 20, "action": "Passive",
+        "effects": [
+          "Unlimited Wild Shape uses",
+          "When rolling Initiative with no Wild Shape uses, regain two uses",
+          "Ignore verbal/somatic components of Druid spells (material still required)"
+        ]
+      }
+    },
+
+    "FIGHTER": {
+      "FIGHTING_STYLE": {
+        "level": 1, "action": "Passive",
+        "effects": ["Choose one: Archery (+2 ranged attack rolls), Defense (+1 AC in armor), Dueling (+2 melee damage with one-handed weapon), Great Weapon Fighting (reroll 1/2 on two-handed weapon damage), Protection (use Reaction to impose Disadvantage on attack against adjacent ally), Two-Weapon Fighting (add ability modifier to off-hand attack damage)"]
+      },
+      "SECOND_WIND": {
+        "level": 1, "action": "BonusAction", "recovery": "ShortRest",
+        "uses": "2 (increases with level)",
+        "effects": ["Regain HP = 1d10 + Fighter level"]
+      },
+      "ACTION_SURGE": {
+        "level": 2, "action": "Free", "recovery": "ShortRest",
+        "uses": "1 (2 at lvl17)",
+        "effects": ["Take one additional Action on your turn (cannot be used twice in same turn)"]
+      },
+      "TACTICAL_MIND": {
+        "level": 2, "action": "Passive",
+        "effects": ["When you fail an ability check, expend a Second Wind use to add 1d10 to the roll"]
+      },
+      "EXTRA_ATTACK_FIGHTER": {
+        "level": 5, "action": "Passive",
+        "effects": ["Attack twice on Attack action"]
+      },
+      "TACTICAL_SHIFT": {
+        "level": 5, "action": "Passive",
+        "effects": ["When using Action Surge, move up to half your speed without provoking opportunity attacks"]
+      },
+      "INDOMITABLE": {
+        "level": 9, "action": "Passive", "recovery": "LongRest",
+        "uses": "1 (2 at lvl13, 3 at lvl17)",
+        "effects": ["Reroll a failed saving throw — must use the new result"]
+      },
+      "TACTICAL_MASTER": {
+        "level": 9, "action": "Passive",
+        "effects": ["When using a weapon with a Mastery property, you can substitute its Mastery for Push, Sap, or Slow Mastery"]
+      },
+      "STUDIED_ATTACKS": {
+        "level": 13, "action": "Passive",
+        "effects": ["When you miss with an attack, gain Advantage on next attack against the same creature before end of next turn"]
+      },
+      "IMPROVED_EXTRA_ATTACK_FIGHTER_ONE": {
+        "level": 11, "action": "Passive",
+        "effects": ["Attack three times on Attack action"]
+      },
+      "IMPROVED_EXTRA_ATTACK_FIGHTER_TWO": {
+        "level": 20, "action": "Passive",
+        "effects": ["Attack four times on Attack action"]
+      }
+    },
+
+    "MONK": {
+      "MARTIAL_ARTS": {
+        "level": 1, "action": "Passive",
+        "effects": [
+          "Unarmed strikes and Monk weapons use DEX or STR for attack/damage",
+          "Roll Martial Arts die instead of weapon damage die (d6 at lvl1, scaling)",
+          "After attacking with Monk weapon or unarmed, make one unarmed strike as Bonus Action",
+          "Martial Arts die: d6(1-4), d8(5-10), d10(11-16), d12(17-20)"
+        ]
+      },
+      "FOCUS_POINTS": {
+        "level": 2, "action": "Passive",
+        "uses": "equals Monk level, recovery: ShortRest",
+        "effects": [
+          "Flurry of Blows (1 point): two unarmed strikes as Bonus Action after attacking",
+          "Patient Defense (1 point): Dodge as Bonus Action",
+          "Step of the Wind (1 point): Dash or Disengage as Bonus Action, jump distance doubled"
+        ]
+      },
+      "UNARMORED_MOVEMENT": {
+        "level": 2, "action": "Passive",
+        "effects": ["+10 ft. to speed when not wearing armor or shield (increases with level: +15 at lvl6, +20 at lvl10, +25 at lvl14, +30 at lvl18)"]
+      },
+      "UNCANNY_METABOLISM": {
+        "level": 2, "action": "Passive",
+        "effects": ["When rolling Initiative, regain Focus Points equal to Proficiency Bonus", "Roll Martial Arts die and regain HP equal to result + WIS modifier"]
+      },
+      "DEFLECT_ATTACKS": {
+        "level": 3, "action": "Reaction",
+        "effects": [
+          "When hit by attack: reduce damage by 1d10 + DEX + Monk level",
+          "If damage reduced to 0: spend 1 Focus Point to redirect attack — ranged attack at attacker (range 20/60) dealing Martial Arts die + DEX damage"
+        ]
+      },
+      "SLOW_FALL": {
+        "level": 4, "action": "Reaction",
+        "effects": ["Reduce fall damage by 5 × Monk level"]
+      },
+      "EXTRA_ATTACK_MONK": {
+        "level": 5, "action": "Passive",
+        "effects": ["Attack twice on Attack action"]
+      },
+      "STUNNING_STRIKE": {
+        "level": 5, "action": "Free (after hit)", "cost": "1 Focus Point",
+        "effects": ["After hitting with attack: target makes CON save or is Stunned until start of your next turn"]
+      },
+      "EMPOWERED_STRIKES": {
+        "level": 6, "action": "Passive",
+        "effects": ["Unarmed strikes count as magical for overcoming resistance and immunity"]
+      },
+      "EVASION": {
+        "level": 7, "action": "Passive",
+        "effects": ["On DEX save for half damage: take no damage on success, half damage on failure", "Does not work if Incapacitated"]
+      },
+      "ACROBATIC_MOVEMENT": {
+        "level": 9, "action": "Passive",
+        "effects": ["Move along vertical surfaces and across liquids without falling during the move"]
+      },
+      "HEIGHTENED_FOCUS": {
+        "level": 10, "action": "Passive",
+        "effects": [
+          "Flurry of Blows: targets must succeed on DEX save or be Blinded, Pushed 15ft, or Prone (your choice)",
+          "Patient Defense: gain temporary HP equal to two Martial Arts dice rolls",
+          "Step of the Wind: movement does not provoke opportunity attacks until end of turn"
+        ]
+      },
+      "SELF_RESTORATION": {
+        "level": 10, "action": "Free (end of turn)",
+        "effects": ["At end of each turn, choose one: end Charmed or Frightened condition, or ignore Exhaustion level until end of next turn"]
+      },
+      "DEFLECT_ENERGY": {
+        "level": 13, "action": "Passive",
+        "effects": ["Deflect Attacks can now reduce damage from elemental attacks (Acid, Cold, Fire, Force, Lightning, Radiant, Thunder) in addition to physical"]
+      },
+      "DISCIPLINED_SURVIVOR": {
+        "level": 14, "action": "Passive",
+        "effects": ["Proficiency in all saving throws", "When you fail a saving throw, spend 1 Focus Point to reroll — must use new result"]
+      },
+      "PERFECT_FOCUS": {
+        "level": 15, "action": "Passive",
+        "effects": ["When rolling Initiative with 0 Focus Points, regain Focus Points equal to Proficiency Bonus"]
+      },
+      "SUPERIOR_DEFENSE": {
+        "level": 18, "action": "Free (start of turn)", "cost": "3 Focus Points",
+        "effects": ["Gain resistance to all damage except Force until start of next turn"]
+      },
+      "BODY_AND_MIND": {
+        "level": 20, "action": "Passive",
+        "effects": ["DEX and WIS each increase by 4 (can exceed 20)"]
+      }
+    },
+
+    "PALADIN": {
+      "LAY_ON_HANDS": {
+        "level": 1, "action": "Action", "recovery": "LongRest",
+        "pool": "5 × Paladin level HP",
+        "effects": [
+          "Touch a creature and restore HP from pool (any amount up to remaining pool)",
+          "Alternatively spend 5 HP from pool to cure one disease or neutralize one poison"
+        ]
+      },
+      "PALADINS_SMITE": {
+        "level": 2, "action": "BonusAction (after hit)",
+        "effects": [
+          "Expend a spell slot to deal extra Radiant damage: 2d8 (1st slot) + 1d8 per slot level above 1st",
+          "+1d8 if target is Undead or Fiend",
+          "Triggers on any melee attack, including unarmed"
+        ]
+      },
+      "CHANNEL_DIVINITY_PALADIN": {
+        "level": 3, "action": "Action or BonusAction", "recovery": "ShortRest",
+        "uses": "2",
+        "effects": ["Sacred Weapon: one weapon becomes magical, glows (20ft bright/20ft dim), +CHA to attack rolls, 1 minute duration"]
+      },
+      "EXTRA_ATTACK_PALADIN": {
+        "level": 5, "action": "Passive",
+        "effects": ["Attack twice on Attack action"]
+      },
+      "FAITHFUL_STEED": {
+        "level": 5, "action": "Passive",
+        "effects": [
+          "Always have Find Steed prepared (doesn't count against prepared spells)",
+          "Cast Find Steed without expending a spell slot (once per long rest)"
+        ]
+      },
+      "AURA_OF_PROTECTION": {
+        "level": 6, "action": "Passive",
+        "effects": ["You and friendly creatures within 10ft add your CHA modifier (min +1) to all saving throws while you are conscious", "Aura range increases to 30ft at level 18"]
+      },
+      "ABJURE_FOES": {
+        "level": 9, "action": "Action", "recovery": "LongRest",
+        "effects": [
+          "Up to (CHA modifier, min 1) creatures within 60ft make WIS save or are Frightened + Incapacitated for 1 minute",
+          "Save ends at end of each of their turns"
+        ]
+      },
+      "AURA_OF_COURAGE": {
+        "level": 10, "action": "Passive",
+        "effects": ["You and friendly creatures within 10ft can't be Frightened while you are conscious"]
+      },
+      "RADIANT_STRIKES": {
+        "level": 11, "action": "Passive",
+        "effects": ["Melee and unarmed strikes deal extra 1d8 Radiant damage on hit"]
+      },
+      "RESTORING_TOUCH": {
+        "level": 14, "action": "Passive",
+        "effects": ["When using Lay on Hands to restore HP, also remove one of: Blinded, Charmed, Deafened, Frightened, Paralyzed, Stunned (without spending extra HP)"]
+      },
+      "AURA_EXPANSION": {
+        "level": 18, "action": "Passive",
+        "effects": ["Aura of Protection and Aura of Courage radius expands from 10ft to 30ft"]
+      }
+    },
+
+    "RANGER": {
+      "FAVORED_ENEMY": {
+        "level": 1, "action": "Passive",
+        "effects": ["Always have Hunter's Mark prepared (doesn't count against prepared spells)", "Cast Hunter's Mark without expending a spell slot (uses = Proficiency Bonus per long rest)"]
+      },
+      "DEFT_EXPLORER": {
+        "level": 2, "action": "Passive",
+        "effects": ["Expertise in one skill you are proficient in", "Know one extra language"]
+      },
+      "EXTRA_ATTACK_RANGER": {
+        "level": 5, "action": "Passive",
+        "effects": ["Attack twice on Attack action"]
+      },
+      "ROVING": {
+        "level": 6, "action": "Passive",
+        "effects": ["+10ft walking speed", "Gain Climb speed equal to walking speed", "Gain Swim speed equal to walking speed"]
+      },
+      "IMPROVED_DEFT_EXPLORER_ONE": {
+        "level": 9, "action": "Passive",
+        "effects": ["Expertise in another skill you are proficient in (total two Expertise skills from this feature)"]
+      },
+      "TIRELESS": {
+        "level": 10, "action": "Action", "recovery": "LongRest",
+        "uses": "Proficiency Bonus",
+        "effects": ["Gain Temporary HP = 1d8 + WIS modifier", "Reduce your Exhaustion level by 1"]
+      },
+      "RELENTLESS_HUNTER": {
+        "level": 13, "action": "Passive",
+        "effects": ["Hunter's Mark does not require Concentration"]
+      },
+      "NATURES_VEIL": {
+        "level": 14, "action": "BonusAction", "recovery": "LongRest",
+        "uses": "Proficiency Bonus",
+        "effects": ["Turn Invisible until start of your next turn"]
+      },
+      "PRECISE_HUNTER": {
+        "level": 17, "action": "Passive",
+        "effects": ["You have Advantage on attack rolls against the creature currently marked by Hunter's Mark"]
+      },
+      "FERAL_SENSES": {
+        "level": 18, "action": "Passive",
+        "effects": ["Sense invisible creatures within 30ft when using Hunter's Mark (no Advantage on attacks against them unless you could see them normally)"]
+      },
+      "FOE_SLAYER": {
+        "level": 20, "action": "Passive",
+        "effects": ["Add WIS modifier to attack rolls against Hunter's Mark target (in addition to all other bonuses)"]
+      }
+    },
+
+    "ROGUE": {
+      "SNEAK_ATTACK": {
+        "level": 1, "action": "Passive",
+        "uses": "Once per turn",
+        "effects": [
+          "On hit with finesse or ranged weapon: deal extra damage if you have Advantage on attack OR a non-incapacitated ally is adjacent to target",
+          "Damage: 1d6 at lvl1, +1d6 per two levels (10d6 at lvl19)"
+        ]
+      },
+      "THIEVES_CANT": {
+        "level": 1, "action": "Passive",
+        "effects": ["Know Thieves' Cant secret language", "Recognize signals and symbols used by thieves' guilds"]
+      },
+      "CUNNING_ACTION": {
+        "level": 2, "action": "BonusAction",
+        "effects": ["Dash, Disengage, or Hide as Bonus Action"]
+      },
+      "STEADY_AIM": {
+        "level": 3, "action": "BonusAction",
+        "effects": ["Gain Advantage on your next attack this turn", "Your speed becomes 0 until end of turn"]
+      },
+      "CUNNING_STRIKE": {
+        "level": 5, "action": "Passive",
+        "effects": [
+          "When dealing Sneak Attack damage, forgo 1d6 of Sneak Attack dice to apply one effect:",
+          "Disarm: target makes DEX save or drops one held item",
+          "Poison: target makes CON save or Poisoned until end of your next turn",
+          "Trip: target makes DEX save or falls Prone (if Large or smaller)",
+          "Withdraw: move up to half your speed without provoking opportunity attacks"
+        ]
+      },
+      "UNCANNY_DODGE": {
+        "level": 5, "action": "Reaction",
+        "effects": ["When attacker you can see hits you: halve the attack's damage"]
+      },
+      "EVASION": {
+        "level": 7, "action": "Passive",
+        "effects": ["DEX save for half damage: no damage on success, half on failure"]
+      },
+      "RELIABLE_TALENT": {
+        "level": 7, "action": "Passive",
+        "effects": ["When making ability check using proficiency: treat any roll of 9 or lower as a 10"]
+      },
+      "IMPROVED_CUNNING_STRIKE_ONE": {
+        "level": 11, "action": "Passive",
+        "effects": ["Apply two Cunning Strike effects per Sneak Attack (each costs 1d6 separately)"]
+      },
+      "DEVIOUS_STRIKES": {
+        "level": 14, "action": "Passive",
+        "effects": [
+          "New Cunning Strike options (each costs 2d6 Sneak Attack dice):",
+          "Knock Out: target makes CON save or falls Unconscious for 1 minute (ends on taking damage or failed save)",
+          "Obscure: target makes DEX save or Blinded until end of your next turn"
+        ]
+      },
+      "SLIPPERY_MIND": {
+        "level": 15, "action": "Passive",
+        "effects": ["Proficiency in WIS and CHA saving throws"]
+      },
+      "ELUSIVE": {
+        "level": 18, "action": "Passive",
+        "effects": ["No attack roll has Advantage against you unless you are Incapacitated"]
+      },
+      "STROKE_OF_LUCK": {
+        "level": 20, "action": "Passive", "recovery": "ShortRest",
+        "uses": "1",
+        "effects": [
+          "When you fail an ability check: treat the d20 roll as a 20",
+          "When you miss an attack: the attack hits instead"
+        ]
+      }
+    },
+
+    "SORCERER": {
+      "INNATE_SORCERY": {
+        "level": 1, "action": "BonusAction", "recovery": "LongRest",
+        "uses": "2",
+        "effects": ["For 1 minute: advantage on spell attack rolls, enemies have disadvantage on saves against your Sorcerer spells"]
+      },
+      "SORCEROUS_BURST": {
+        "level": 1, "action": "Passive (cantrip)",
+        "effects": ["Cantrip: 1 target within 120ft, roll 1d8 per scaling level, choose damage type (Acid/Cold/Fire/Lightning/Poison/Psychic/Thunder)", "If any dice show 8, roll that die again and add to total"]
+      },
+      "FONT_OF_MAGIC": {
+        "level": 2, "action": "BonusAction", "recovery": "LongRest",
+        "uses": "Sorcery Points = Sorcerer level",
+        "effects": [
+          "Convert Sorcery Points to spell slots (2=1st, 3=2nd, 5=3rd, 6=4th, 7=5th)",
+          "Convert spell slots to Sorcery Points (level of slot = points gained)"
+        ]
+      },
+      "METAMAGIC": {
+        "level": 2, "action": "Passive",
+        "effects": [
+          "Learn 2 Metamagic options (more at lvl10, 17):",
+          "Careful: spend 1 SP — up to CHA mod creatures auto-succeed save",
+          "Distant: spend 1 SP — double spell range (touch becomes 30ft)",
+          "Empowered: spend 1 SP — reroll up to CHA mod damage dice, must keep new results",
+          "Extended: spend 1 SP — double spell duration (max 24h)",
+          "Heightened: spend 2 SP — one target has Disadvantage on first save against spell",
+          "Quickened: spend 2 SP — change casting time from Action to Bonus Action",
+          "Seeking: spend 1 SP — reroll missed spell attack",
+          "Subtle: spend 1 SP — cast without Verbal or Somatic components",
+          "Transmuted: spend 1 SP — change spell damage type (Acid/Cold/Fire/Lightning/Poison/Thunder)",
+          "Twinned: spend 1 SP — target a second creature with single-target spell"
+        ]
+      },
+      "SORCEROUS_RESTORATION": {
+        "level": 5, "action": "Passive", "recovery": "ShortRest",
+        "effects": ["Regain 4 expended Sorcery Points on Short Rest"]
+      },
+      "SORCEROUS_INCARNATION": {
+        "level": 7, "action": "Passive",
+        "effects": ["While Innate Sorcery is active, can apply one Metamagic option (that costs 1 SP) for free each turn"]
+      },
+      "ARCANE_APOTHEOSIS": {
+        "level": 20, "action": "Passive",
+        "effects": ["While Innate Sorcery is active, apply one Metamagic option without spending Sorcery Points each turn"]
+      }
+    },
+
+    "WARLOCK": {
+      "PACT_MAGIC": {
+        "level": 1, "action": "Passive",
+        "effects": ["Short-Rest spell slots (see Warlock table for count and level)", "CHA-based spellcasting", "All slots at same level — all slots regained on Short or Long Rest"]
+      },
+      "ELDRITCH_INVOCATIONS": {
+        "level": 1, "action": "Passive",
+        "effects": ["Learn 2 Eldritch Invocations, gain more at higher levels (see table)", "Invocations grant permanent spell-like abilities or modify Eldritch Blast", "Can replace one Invocation when gaining a Warlock level"]
+      },
+      "MAGICAL_CUNNING": {
+        "level": 2, "action": "Action", "recovery": "LongRest",
+        "uses": "1",
+        "effects": ["Regain expended Pact Magic spell slots up to half your total (rounded up)"]
+      },
+      "CONTACT_PATRON": {
+        "level": 9, "action": "Action", "recovery": "LongRest",
+        "uses": "1",
+        "effects": ["Cast Commune without using a spell slot (doesn't require Ritual tag)", "Contact your patron directly for up to three questions"]
+      },
+      "MYSTIC_ARCANUM": {
+        "level": 11, "action": "Passive",
+        "effects": ["Learn one 6th-level Warlock spell (Arcanum)", "Cast it once per long rest without using a spell slot", "Additional Arcana at levels 13 (7th), 15 (8th), 17 (9th)"]
+      },
+      "ELDRITCH_MASTER": {
+        "level": 20, "action": "Action", "recovery": "LongRest",
+        "effects": ["Spend 1 minute in communion with patron to regain all Pact Magic spell slots"]
+      }
+    },
+
+    "WIZARD": {
+      "ARCANE_RECOVERY": {
+        "level": 1, "action": "Free (Short Rest)", "recovery": "LongRest",
+        "uses": "1",
+        "effects": ["After Short Rest: regain spell slots totaling up to half Wizard level (rounded up)", "Cannot recover slots of 6th level or higher"]
+      },
+      "RITUAL_ADEPT": {
+        "level": 1, "action": "Passive",
+        "effects": ["Cast any spell with Ritual tag as a Ritual (10 min extra cast time, no spell slot)", "Spell must be in your spellbook (doesn't need to be prepared)"]
+      },
+      "SCHOLAR": {
+        "level": 2, "action": "Passive",
+        "effects": ["Choose Arcana, History, Nature, or Religion — double proficiency for checks in that skill", "Recall lore about any spell you see cast (know what school it is from)"]
+      },
+      "MEMORIZE_SPELLS": {
+        "level": 5, "action": "Action (after Short Rest)",
+        "uses": "Proficiency Bonus per long rest",
+        "effects": ["After Short Rest: replace prepared spells with equal number of spells from your spellbook"]
+      },
+      "SPELL_MASTERY": {
+        "level": 18, "action": "Passive",
+        "effects": ["Choose one 1st-level and one 2nd-level Wizard spell: cast each at their lowest level without expending a spell slot", "Can change choices after 8 hours of study"]
+      },
+      "SIGNATURE_SPELLS": {
+        "level": 20, "action": "Passive",
+        "effects": ["Choose two 3rd-level Wizard spells as Signature Spells", "Always have them prepared; cast each once per Short Rest without expending a spell slot"]
+      }
+    }
+  },
+
+  "speciesAbilities": {
+    "DARKVISION_60": { "range": 60, "effects": ["See in dim light as bright light, darkness as dim light within range"] },
+    "DARKVISION_120": { "range": 120, "effects": ["See in dim light as bright light, darkness as dim light within 120ft"] },
+
+    "AASIMAR": {
+      "CELESTIAL_RESISTANCE": { "effects": ["Resistance to Necrotic and Radiant damage"] },
+      "HEALING_HANDS": { "action": "Action", "recovery": "LongRest", "effects": ["Touch a creature: heal HP equal to your Proficiency Bonus"] },
+      "LIGHT_BEARER": { "effects": ["Know the Light cantrip (CHA-based)"] },
+      "CELESTIAL_REVELATION": {
+        "level": 3, "action": "BonusAction", "recovery": "LongRest",
+        "note": "Choose one form permanently at level 3",
+        "forms": {
+          "Healing Radiance": ["Wings appear, fly speed equals walk speed for 1 minute", "At start of each turn while active: you and each creature within 10ft regain HP = PB"],
+          "Necrotic Shroud": ["Eyes go dark, shadowy wings appear for 1 minute", "Creatures within 10ft (other than allies) make CHA save (DC = 8+PB+CHA) or Frightened until end of your next turn", "Once per turn on hit: +PB Necrotic damage"],
+          "Radiant Consumption": ["Searing light radiates from body for 1 minute", "You and each creature within 10ft take Radiant damage = PB at start of your turns", "Once per turn on hit: +PB Radiant damage"]
+        }
+      }
+    },
+
+    "DRAGONBORN": {
+      "DRACONIC_ANCESTRY": { "effects": ["Choose one dragon type — determines Breath Weapon damage type and Damage Resistance"] },
+      "BREATH_WEAPON": { "action": "Action", "recovery": "ShortRest", "effects": ["15ft cone or 30ft×5ft line (depends on ancestry)", "1d10 per 5 levels (2d10 at 5, 3d10 at 10, 4d10 at 15, 5d10 at 20)", "Targets make DEX or CON save (DC = 8+CON+PB) for half damage"] },
+      "DAMAGE_RESISTANCE_DRAGONBORN": { "effects": ["Resistance to damage type matching your Draconic Ancestry"] },
+      "DARKVISION_DRAGONBORN": { "range": 60 },
+      "FLIGHT": { "level": 5, "effects": ["Fly speed equals walking speed"] }
+    },
+
+    "DWARF": {
+      "DWARVEN_RESILIENCE": { "effects": ["Advantage on saving throws against Poison", "Resistance to Poison damage"] },
+      "DWARVEN_TOUGHNESS": { "effects": ["HP maximum increases by 1 per level"] },
+      "STONE_CUNNING": { "action": "BonusAction", "recovery": "LongRest", "uses": "ProficiencyBonus", "effects": ["Gain Tremorsense 60ft for 10 minutes (sense vibrations through solid surfaces)"] }
+    },
+
+    "ELF": {
+      "FEY_ANCESTRY": { "effects": ["Advantage on saves against Charmed", "Immune to magical sleep"] },
+      "KEEN_SENSES": { "effects": ["Proficiency in Perception"] },
+      "TRANCE": { "effects": ["Elves don't sleep — 4 hours of meditation = Long Rest benefit"] },
+      "ELVEN_LINEAGE": {
+        "note": "Choose one lineage at character creation",
+        "HIGH_ELF_LINEAGE": { "effects": ["Know one Wizard cantrip (INT-based)", "Know Common plus one extra language", "At lvl3: Detect Magic 1/LR without spell slot", "At lvl5: Misty Step 1/LR without spell slot"] },
+        "WOOD_ELF_LINEAGE": { "effects": ["+5ft to walking speed (35ft total)", "At lvl3: Longstrider 1/LR without spell slot", "At lvl5: Pass Without Trace 1/LR without spell slot"] },
+        "DROW_LINEAGE": { "effects": ["Darkvision 120ft", "Know Dancing Lights cantrip", "At lvl3: Faerie Fire 1/LR without spell slot", "At lvl5: Darkness 1/LR without spell slot"] }
+      }
+    },
+
+    "GNOME": {
+      "GNOME_CUNNING": { "effects": ["Advantage on INT, WIS, CHA saves against magic"] },
+      "GNOMISH_LINEAGE": {
+        "note": "Choose one lineage at character creation",
+        "FOREST_GNOME_LINEAGE": { "effects": ["Know Minor Illusion cantrip (INT-based)", "Communicate simple ideas with Beasts within 30ft"] },
+        "ROCK_GNOME_LINEAGE": { "effects": ["Advantage on History checks about magical/alchemical items", "Construct tiny clockwork devices (tinker's tools proficiency)"] }
+      }
+    },
+
+    "GOLIATH": {
+      "GIANT_ANCESTRY": {
+        "note": "Choose one ancestry — determines Giant's Legacy power",
+        "LARGE_FORM": { "level": 5, "action": "BonusAction", "recovery": "ShortRest", "effects": ["Become Large size for 10 minutes — weapon dice increase to next size"] },
+        "POWERFUL_BUILD": { "effects": ["Count as one size larger for carry weight and push/drag/lift limits"] },
+        "SPEED_GOLIATH": { "effects": ["35ft walking speed"] },
+        "CLOUDS_JAUNT": { "action": "BonusAction", "recovery": "LongRest", "effects": ["Teleport up to 30ft to an unoccupied space you can see"] },
+        "FIRES_BURN": { "uses": "ProficiencyBonus per LongRest", "effects": ["After hitting with attack: deal extra 1d10 Fire damage"] },
+        "FROSTS_CHILL": { "uses": "ProficiencyBonus per LongRest", "effects": ["After hitting with attack: target's speed reduced 10ft until start of your next turn, deal extra 1d6 Cold"] },
+        "HILLS_TUMBLE": { "uses": "ProficiencyBonus per LongRest", "effects": ["After hitting with attack: target makes STR save or falls Prone (Large or smaller only)"] },
+        "STONES_ENDURANCE": { "action": "Reaction", "uses": "ProficiencyBonus per LongRest", "effects": ["When taking damage: roll 1d12 + CON modifier, reduce damage by result"] },
+        "STORMS_THUNDER": { "action": "Reaction", "uses": "ProficiencyBonus per LongRest", "effects": ["When hit by attack: deal 1d8 Thunder damage to attacker"] }
+      }
+    },
+
+    "HALFLING": {
+      "LUCKY": { "effects": ["When rolling 1 on d20 for attack/check/save: reroll, must use new result"] },
+      "BRAVE": { "effects": ["Advantage on saves against Frightened"] },
+      "HALFLING_NIMBLENESS": { "effects": ["Move through space of any creature one size larger than you"] },
+      "NATURALLY_STEALTHY": { "effects": ["Can attempt to Hide when behind a creature one size larger than you"] }
+    },
+
+    "HUMAN": {
+      "RESOURCEFUL": { "effects": ["Gain Heroic Inspiration after each Long Rest"] },
+      "VERSATILE": { "effects": ["Gain one Origin feat at character creation"] }
+    },
+
+    "ORC": {
+      "ADRENALINE_RUSH": { "action": "BonusAction", "uses": "ProficiencyBonus per LongRest", "effects": ["Dash as Bonus Action", "Gain Temporary HP equal to your Proficiency Bonus"] },
+      "RELENTLESS_ENDURANCE": { "action": "Passive", "recovery": "LongRest", "uses": "1", "effects": ["When reduced to 0 HP but not killed outright: drop to 1 HP instead"] },
+      "POWERFUL_BUILD_ORC": { "effects": ["Count as one size larger for carry weight and push/drag/lift limits"] }
+    },
+
+    "TIEFLING": {
+      "FIENDISH_RESISTANCE": { "effects": ["Resistance to Fire damage"] },
+      "OTHERWORLDLY_GIFT": { "effects": ["Know Thaumaturgy cantrip (CHA-based)"] },
+      "ABYSSAL_LINEAGE": { "effects": ["Abyssal Arcana: roll 1d6 at dawn for a random 1st-level spell usable once (no slot required)", "At lvl3: Ray of Sickness 1/LR", "At lvl5: Hold Person 1/LR"] },
+      "CHTHONIC_LINEAGE": { "effects": ["Know Chill Touch cantrip", "At lvl3: False Life 1/LR", "At lvl5: Ray of Enfeeblement 1/LR"] },
+      "INFERNAL_LINEAGE": { "effects": ["Know Fire Bolt cantrip (CHA-based)", "At lvl3: Hellish Rebuke 1/LR", "At lvl5: Darkness 1/LR"] }
+    }
+  },
+
+  "feats": {
+    "categories": ["Origin", "General", "FightingStyle", "EpicBoon"],
+
+    "ALERT": {
+      "category": "Origin",
+      "displayName": "Alert",
+      "effects": ["+5 to Initiative", "Cannot be Surprised while conscious", "Creatures you can't see don't gain Advantage on attacks against you (from being Hidden)"]
+    },
+    "CRAFTER": {
+      "category": "Origin",
+      "displayName": "Crafter",
+      "effects": ["Proficiency in 3 Artisan's Tools of your choice", "When completing Long Rest in city: craft any Common magic item from DMG (materials cost half normal)", "+2 to relevant tool checks"]
+    },
+    "HEALER": {
+      "category": "Origin",
+      "displayName": "Healer",
+      "effects": ["Battle Medic: use Healer's Kit as Action to stabilize creature and restore 1d8 + PB HP", "Healing Technique: when using a Healer's Kit, also give d6 Temp HP"]
+    },
+    "LUCKY": {
+      "category": "Origin",
+      "displayName": "Lucky",
+      "uses": "3 per LongRest",
+      "effects": ["After rolling a d20 for attack/check/save: roll an additional d20, choose which result to use", "After another creature rolls d20 for attack against you: impose Disadvantage by using a luck point"]
+    },
+    "MAGIC_INITIATE": {
+      "category": "Origin",
+      "displayName": "Magic Initiate",
+      "effects": ["Choose a class spell list: learn 2 cantrips + 1 1st-level spell from that list", "Cast the 1st-level spell once per Long Rest without a slot (can also cast with slots if you have them)", "Spellcasting ability = INT/WIS/CHA (your choice when taking feat)"]
+    },
+    "SAVAGE_ATTACKER": {
+      "category": "Origin",
+      "displayName": "Savage Attacker",
+      "uses": "Once per turn",
+      "effects": ["When rolling weapon damage dice: roll twice and use either result"]
+    },
+    "SKILLED": {
+      "category": "Origin",
+      "displayName": "Skilled",
+      "effects": ["Gain proficiency in any combination of 3 skills or tools"]
+    },
+    "TAVERN_BRAWLER": {
+      "category": "Origin",
+      "displayName": "Tavern Brawler",
+      "effects": ["Unarmed strike damage die is d4", "When hitting with unarmed strike or improvised weapon: can push target 5ft or grapple them (free as part of same attack)", "Reroll 1s on unarmed/improvised weapon damage dice"]
+    },
+    "TOUGH": {
+      "category": "Origin",
+      "displayName": "Tough",
+      "effects": ["HP maximum increases by 2 per character level (retroactive)", "+2 HP per level gained hereafter"]
+    },
+    "ABILITY_SCORE_IMPROVEMENT": {
+      "category": "General",
+      "displayName": "Ability Score Improvement",
+      "note": "Available instead of this feat: +2 to one score, OR +1 to two different scores",
+      "effects": ["Increase one ability score by 2, OR increase two different ability scores by 1 each", "Cannot exceed 20 with this feat"]
+    },
+    "ACTOR": {
+      "category": "General",
+      "displayName": "Actor",
+      "prerequisites": "CHA 13+",
+      "effects": ["+1 CHA (to max 20)", "Advantage on Deception and Performance checks when pretending to be another person", "Mimic voice of any humanoid you've heard for at least 1 minute (Insight DC 16 to detect)"]
+    },
+    "ATHLETE": {
+      "category": "General",
+      "displayName": "Athlete",
+      "effects": ["+1 STR or DEX (to max 20)", "Climbing costs no extra movement", "Running jump: only 5ft run-up needed instead of 10ft", "Stand from prone costs only 5ft movement"]
+    },
+    "CHARGER": {
+      "category": "General",
+      "displayName": "Charger",
+      "effects": ["+1 STR or CON (to max 20)", "After Dashing at least 10ft in straight line: +1d8 melee damage OR push target 10ft on hit", "Bonus: Shove as Bonus Action after Dash"]
+    },
+    "CROSSBOW_EXPERT": {
+      "category": "General",
+      "displayName": "Crossbow Expert",
+      "prerequisites": "ProficiencyWith crossbow",
+      "effects": ["+1 DEX (to max 20)", "Ignore loading property of crossbows", "No disadvantage for firing hand crossbow in melee range", "Bonus Attack with hand crossbow after attacking with one-handed weapon"]
+    },
+    "DEFENSIVE_DUELIST": {
+      "category": "General",
+      "displayName": "Defensive Duelist",
+      "prerequisites": "DEX 13+",
+      "effects": ["+1 DEX (to max 20)", "Reaction: when hit with melee attack while holding finesse weapon: add PB to AC until start of next turn (may cause miss)"]
+    },
+    "DUAL_WIELDER": {
+      "category": "General",
+      "displayName": "Dual Wielder",
+      "effects": ["+1 STR or DEX (to max 20)", "One-handed weapons used in Two-Weapon Fighting don't need Light property", "+1 AC while wielding a weapon in each hand", "Draw or stow two weapons in the time it takes to normally do one"]
+    },
+    "DURABLE": {
+      "category": "General",
+      "displayName": "Durable",
+      "effects": ["+1 CON (to max 20)", "When rolling Hit Dice for HP recovery: minimum result = 2 × CON modifier (if higher than rolled)"]
+    },
+    "ELEMENTAL_ADEPT": {
+      "category": "General",
+      "displayName": "Elemental Adept",
+      "prerequisites": "SpellcastingAbility",
+      "effects": ["Choose Acid, Cold, Fire, Lightning, or Thunder", "Spells ignoring resistance/immunity to chosen damage type", "Treat damage rolls of 1 for chosen type as 2"]
+    },
+    "FEY_TOUCHED": {
+      "category": "General",
+      "displayName": "Fey Touched",
+      "effects": ["+1 INT/WIS/CHA (to max 20)", "Learn Misty Step and one 1st-level Divination or Enchantment spell of your choice", "Cast each once per Long Rest without a spell slot"]
+    },
+    "GREAT_WEAPON_MASTER": {
+      "category": "General",
+      "displayName": "Great Weapon Master",
+      "effects": ["+1 STR (to max 20)", "When scoring Critical Hit or reducing creature to 0 HP with heavy melee weapon: make one extra melee weapon attack as Bonus Action", "Heavy weapon attacks: can take -5 to attack roll to add +10 to damage (decide before rolling)"]
+    },
+    "INSPIRING_LEADER": {
+      "category": "General",
+      "displayName": "Inspiring Leader",
+      "prerequisites": "CHA 13+",
+      "effects": ["+1 WIS or CHA (to max 20)", "10-min speech to up to 6 willing creatures who can see/hear you: each gains Temp HP = PB + CHA modifier (once per Short/Long Rest per creature)"]
+    },
+    "MAGE_SLAYER": {
+      "category": "General",
+      "displayName": "Mage Slayer",
+      "effects": ["+1 STR or CON (to max 20)", "Reaction: when a creature within 5ft casts a spell, make a melee attack against them", "Targets of your melee attacks within 5ft have Disadvantage on Concentration saves", "Advantage on saves against spells cast by creatures within 5ft"]
+    },
+    "MOBILE": {
+      "category": "General",
+      "displayName": "Mobile",
+      "effects": ["+10ft walking speed", "When using Dash, difficult terrain costs no extra movement", "After making melee attack, no opportunity attack from that creature for rest of turn"]
+    },
+    "POLEARM_MASTER": {
+      "category": "General",
+      "displayName": "Polearm Master",
+      "prerequisites": "ProficiencyWith polearm",
+      "effects": ["+1 STR or CON (to max 20)", "Bonus melee attack with opposite end of polearm (1d4 Bludgeoning, not Heavy)", "Creatures entering your reach provoke opportunity attacks"]
+    },
+    "RESILIENT": {
+      "category": "General",
+      "displayName": "Resilient",
+      "effects": ["+1 to one ability score of your choice (to max 20)", "Gain proficiency in saving throws using that ability"]
+    },
+    "SENTINEL": {
+      "category": "General",
+      "displayName": "Sentinel",
+      "effects": ["+1 STR or DEX (to max 20)", "Opportunity attacks on hit reduce target's speed to 0 for the rest of the turn", "Targets using Disengage still provoke opportunity attacks from you", "Reaction: when a creature within 5ft attacks a creature other than you, make a melee attack against the attacker"]
+    },
+    "SHADOW_TOUCHED": {
+      "category": "General",
+      "displayName": "Shadow Touched",
+      "effects": ["+1 INT/WIS/CHA (to max 20)", "Learn Invisibility and one 1st-level Illusion or Necromancy spell", "Cast each once per Long Rest without a spell slot"]
+    },
+    "SHARPSHOOTER": {
+      "category": "General",
+      "displayName": "Sharpshooter",
+      "prerequisites": "ProficiencyWith ranged weapon",
+      "effects": ["+1 DEX (to max 20)", "No Disadvantage on ranged attacks at long range", "No Disadvantage on ranged attacks against targets with three-quarters or half cover", "Ranged attacks: can take -5 to attack to add +10 to damage"]
+    },
+    "SHIELD_MASTER": {
+      "category": "General",
+      "displayName": "Shield Master",
+      "prerequisites": "ProficiencyWith shields",
+      "effects": ["+1 STR (to max 20)", "Bonus Action to Shove after Attack action when holding shield", "+2 to DEX saves when wearing shield", "On DEX save for half damage: take no damage on success (Evasion-like while holding shield)"]
+    },
+    "SKILL_EXPERT": {
+      "category": "General",
+      "displayName": "Skill Expert",
+      "effects": ["+1 to any ability score (to max 20)", "Proficiency in one skill", "Expertise in one skill you are already proficient in"]
+    },
+    "TELEKINETIC": {
+      "category": "General",
+      "displayName": "Telekinetic",
+      "effects": ["+1 INT/WIS/CHA (to max 20)", "Learn Mage Hand cantrip (invisible hand, no components, +30ft range)", "Bonus Action: move one creature within 30ft 5ft toward or away from you (STR save, DC = 8+PB+spellcasting mod)"]
+    },
+    "TELEPATHIC": {
+      "category": "General",
+      "displayName": "Telepathic",
+      "effects": ["+1 INT/WIS/CHA (to max 20)", "Telepathically speak to one creature within 60ft (any language)", "Cast Detect Thoughts once per Long Rest without a slot (same ability as feat)"]
+    },
+    "WAR_CASTER": {
+      "category": "General",
+      "displayName": "War Caster",
+      "prerequisites": "SpellcastingAbility",
+      "effects": ["Advantage on CON saves to maintain Concentration", "Perform somatic components while holding weapons or shield", "Reaction: cast a spell (casting time Action or less) as an opportunity attack"]
+    },
+
+    "ARCHERY":              { "category": "FightingStyle", "effects": ["+2 to ranged attack rolls"] },
+    "BLIND_FIGHTING":       { "category": "FightingStyle", "effects": ["Blindsight 10ft — see Invisible creatures within range"] },
+    "DEFENSE":              { "category": "FightingStyle", "effects": ["+1 AC while wearing armor"] },
+    "DUELING":              { "category": "FightingStyle", "effects": ["+2 damage with one-handed melee weapon when no other weapons in hand"] },
+    "GREAT_WEAPON_FIGHTING":{ "category": "FightingStyle", "effects": ["Reroll 1 or 2 on damage dice for two-handed/versatile weapons, must use new result"] },
+    "INTERCEPTION":         { "category": "FightingStyle", "effects": ["Reaction: when adjacent ally is hit, reduce damage by 1d10 + PB (must have weapon or shield)"] },
+    "PROTECTION":           { "category": "FightingStyle", "effects": ["Reaction: impose Disadvantage on attack roll against adjacent ally when you hold a shield"] },
+    "TWO_WEAPON_FIGHTING":  { "category": "FightingStyle", "effects": ["Add ability modifier to damage of off-hand weapon attacks"] },
+    "UNARMED_FIGHTING":     { "category": "FightingStyle", "effects": ["Unarmed: 1d6+STR Bludgeoning (1d8 with both hands free)", "Grappled target: deal 1d4 Bludgeoning at start of your turns"] },
+
+    "EPIC_BOON_COMBAT_PROWESS":     { "category": "EpicBoon", "level": 19, "effects": ["+1 STR/DEX/CON/INT/WIS/CHA (to max 30)", "When you miss with attack: deal half damage to target"] },
+    "EPIC_BOON_DIMENSIONAL_TRAVEL": { "category": "EpicBoon", "level": 19, "effects": ["+1 to any ability (to max 30)", "Bonus Action: Misty Step or Teleport 30ft (PB uses per Long Rest)"] },
+    "EPIC_BOON_ENERGY_RESISTANCE":  { "category": "EpicBoon", "level": 19, "effects": ["+1 to any ability (to max 30)", "Resistance to two damage types of your choice (change on Long Rest)"] },
+    "EPIC_BOON_FORTITUDE":          { "category": "EpicBoon", "level": 19, "effects": ["+1 CON (to max 30)", "HP maximum +40", "Regain 1d4+4 HP when rolling Initiative with 0 HP or less"] },
+    "EPIC_BOON_IRRESISTIBLE_OFFENSE":{ "category": "EpicBoon", "level": 19, "effects": ["+1 STR or DEX (to max 30)", "Your attacks ignore Resistance to Bludgeoning/Piercing/Slashing damage"] },
+    "EPIC_BOON_LUCK":               { "category": "EpicBoon", "level": 19, "effects": ["+1 to any ability (to max 30)", "Reroll any die (d20 or damage die) once per turn; PB uses per Long Rest"] },
+    "EPIC_BOON_OF_RECOVERY":        { "category": "EpicBoon", "level": 19, "effects": ["+1 CON (to max 30)", "Regain PB uses of 1d10+CON HP as Bonus Action per Long Rest", "Stable at 0 HP automatically"] },
+    "EPIC_BOON_SPEED":              { "category": "EpicBoon", "level": 19, "effects": ["+1 DEX (to max 30)", "+30ft all movement speeds", "Can Disengage as Bonus Action"] },
+    "EPIC_BOON_SPELL_RECALL":       { "category": "EpicBoon", "level": 19, "effects": ["+1 INT/WIS/CHA (to max 30)", "Regain one expended spell slot of 3rd level or lower once per Short Rest"] },
+    "EPIC_BOON_TRUE_SIGHT":         { "category": "EpicBoon", "level": 19, "effects": ["+1 INT/WIS/CHA (to max 30)", "Truesight 60ft (see through magical darkness, invisibility, illusions, polymorphs, true forms)"] },
+    "EPIC_BOON_UNDETECTABILITY":    { "category": "EpicBoon", "level": 19, "effects": ["+1 DEX or CHA (to max 30)", "Cannot be detected by divination magic or scrying sensors", "Advantage on saves vs. spells and effects from Undead"] }
+  }
+}

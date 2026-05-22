@@ -11,12 +11,14 @@ public class RaceDefinition {
     private final String description;
     private final String proficiencies;
     private final ResourceLocation icon;
-    private final Map<String, Integer> abilityScoreIncrements; // Die Boni der Rasse
+    private final Map<String, Integer> abilityScoreIncrements;
     private final List<String> abilityLines;
+    /** True if this species has lineage/ancestry choices at character creation (e.g. Elf → Drow/High/Wood). */
+    private final boolean hasSubtype;
 
     public RaceDefinition(String id, String displayName, String description,
                           Map<String, Integer> abilityScoreIncrements, List<String> abilityLines,
-                          String proficiencies) {
+                          String proficiencies, boolean hasSubtype) {
         this.id = id;
         this.displayName = displayName;
         this.description = description;
@@ -24,28 +26,21 @@ public class RaceDefinition {
         this.icon = ResourceLocation.parse("dnd:textures/screens/classiconplaceholder.png");
         this.abilityScoreIncrements = abilityScoreIncrements;
         this.abilityLines = abilityLines;
+        this.hasSubtype = hasSubtype;
     }
 
-    /**
-     * Statische Hilfsmethode zur Berechnung des D&D Modifiers.
-     * Formel: floor((Score - 10) / 2)
-     */
+    /** Standard D&D modifier formula: floor((score - 10) / 2). */
     public static int getModifier(int score) {
         return Math.floorDiv(score - 10, 2);
     }
 
-    public String getId() { return id; }
-    public String getDisplayName() { return displayName; }
-    public String getDescription() { return description; }
-    public ResourceLocation getIcon() { return icon; }
-
-    /**
-     * Gibt die Attribut-Boni der Rasse zurück.
-     */
-    public Map<String, Integer> getAbilityScoreIncrements() {
-        return abilityScoreIncrements;
-    }
-
-    public List<String> getAbilityLines() { return abilityLines; }
-    public String getProficiencies() { return proficiencies; }
+    public String getId()                                    { return id; }
+    public String getDisplayName()                           { return displayName; }
+    public String getDescription()                           { return description; }
+    public ResourceLocation getIcon()                        { return icon; }
+    public Map<String, Integer> getAbilityScoreIncrements()  { return abilityScoreIncrements; }
+    public List<String> getAbilityLines()                    { return abilityLines; }
+    public String getProficiencies()                         { return proficiencies; }
+    /** Returns true if this species requires a lineage/ancestry selection at character creation. */
+    public boolean hasSubtype()                              { return hasSubtype; }
 }

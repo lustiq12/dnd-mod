@@ -36,9 +36,16 @@ public record ExecuteChoicePacket(String choiceId, String selectedValue) impleme
             // 1. Aus Needed entfernen
             List<String> neededList = new ArrayList<>();
             if (!vars.ChoicesNeeded.isBlank()) {
+                boolean removed = false; // Merkt sich, ob wir schon EIN Element gelöscht haben
+
                 for (String s : vars.ChoicesNeeded.split(",")) {
-                    if (!s.trim().equals(data.choiceId())) {
-                        neededList.add(s.trim());
+                    String trimmed = s.trim();
+
+                    // Wenn es das gesuchte Element ist UND wir noch keins gelöscht haben: Überspringen (löschen)
+                    if (!removed && trimmed.equals(data.choiceId())) {
+                        removed = true; // Setzen, damit nachfolgende gleiche Elemente behalten werden
+                    } else {
+                        neededList.add(trimmed);
                     }
                 }
             }
