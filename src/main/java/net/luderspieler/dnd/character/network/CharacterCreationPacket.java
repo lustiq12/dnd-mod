@@ -196,7 +196,6 @@ public record CharacterCreationPacket(
         updateMod(player, Attributes.KNOCKBACK_RESISTANCE, "dnd:str_kb_res", Math.max(0, strM * 0.1));
 
         // --- DEXTERITY ---
-        updateMod(player, Attributes.MOVEMENT_SPEED, "dnd:dex_speed", dexM * 0.01);
         updateMod(player, Attributes.ATTACK_SPEED, "dnd:dex_ats", dexM * 0.15);
         updateMod(player, Attributes.SNEAKING_SPEED, "dnd:dex_sneak", dexM * 0.05);
         updateMod(player, Attributes.JUMP_STRENGTH, "dnd:dex_jump", dexM * 0.03);
