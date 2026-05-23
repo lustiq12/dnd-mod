@@ -6,8 +6,10 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
+import net.luderspieler.dnd.character.LevelEvents;
 import net.luderspieler.dnd.character.choices.ChoiceUpdateSystem;
 import net.luderspieler.dnd.character.definition.ClassDefinition;
+import net.luderspieler.dnd.character.network.CharacterCreationPacket;
 import net.luderspieler.dnd.character.registrys.ClassRegistry;
 import net.luderspieler.dnd.character.AbilitysAndFeats.management.Ability;
 import net.luderspieler.dnd.character.AbilitysAndFeats.management.AbilityUtils;
@@ -321,15 +323,18 @@ public class DndCommand {
 
 
     private static int setLevelAndSync(CommandSourceStack source, ServerPlayer player, int level) {
-        var vars = player.getData(DndModVariables.PLAYER_VARIABLES);
-        vars.PlayerLevel = (double) level;
+        DndModVariables.PlayerVariables vars = player.getData(DndModVariables.PLAYER_VARIABLES);
+
+        vars.PlayerLevel     = (double) level;
+        vars.PlayerXP        = LevelEvents.getRequiredXP(level);
+        vars.ProficiencyBonus = LevelEvents.getProficiencyBonus(level);
         vars.markSyncDirty();
 
-        // Alles synchronisieren
         AbilityUtils.updateClassAbilities(player);
         ChoiceUpdateSystem.updateChoices(player);
+        CharacterCreationPacket.applyAttrs(player, null, false); // recalculate HP/speed/attributes
 
-        source.sendSuccess(() -> Component.literal("§aLevel set to " + level + " and systems synced."), true);
+        source.sendSuccess(() -> Component.literal("§aLevel set to " + level + " — stats and choices updated."), true);
         return 1;
     }
 

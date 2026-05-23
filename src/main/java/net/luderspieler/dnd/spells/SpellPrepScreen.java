@@ -390,7 +390,7 @@ public class SpellPrepScreen extends Screen {
      * Adjust the method call if your ClassDefinition uses a different getter.
      */
     private int getMaxPrepared(ClassDefinition cls, DndModVariables.PlayerVariables vars, int grade) {
-        int level = Math.max(0, Math.min(19, (int) vars.PlayerLevel)); // 0-indexed
+        int level = (int) Math.max(1, Math.min(20, vars.PlayerLevel)); // 0-indexed
         int[][] pa = cls.getPreparedAmount(); // int[20][10]
         if (pa == null || level >= pa.length || grade >= pa[level].length) return 0;
         return pa[level][grade];

@@ -74,6 +74,12 @@ public record CharacterCreationPacket(
             vars.FinishedCharacterCreation = true;
             vars.CanUseMagic = cls.canUseMagic();
             vars.ChoicesNeeded = "";
+            vars.ChoicesMade = "";
+            vars.Abilities = "";
+
+            clearAllSpellLists(vars);
+            resetSpellSlots(cls, (int)vars.PlayerLevel);
+
 
             // 2. Proficiencies
             LinkedHashSet<String> profSet = new LinkedHashSet<>();
@@ -97,8 +103,6 @@ public record CharacterCreationPacket(
             for (ItemStack stack : cls.getStarterItems()) {
                 player.addItem(stack.copy());
             }
-            clearAllSpellLists(vars);
-            resetSpellSlots(cls, (int)vars.PlayerLevel);
 
             vars.markSyncDirty();
             applyAttrs(player, null, false);
