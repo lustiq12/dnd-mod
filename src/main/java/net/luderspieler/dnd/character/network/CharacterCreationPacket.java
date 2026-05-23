@@ -182,8 +182,12 @@ public record CharacterCreationPacket(
         int chaM = (int) Math.floor((vars.Charisma - 10) / 2.0);
 
         ClassDefinition cls = ClassRegistry.getClass(vars.PlayerClass);
+
+        if (cls == null) {
+            throw new IllegalStateException("Fehler: Spieler " + player.getName().getString() + " hat keine gültige Dnd-Klasse definiert! (Klassen-ID: " + vars.PlayerClass + ")");
+        }
         // No x2 here as you stated the values are already doubled
-        int hpPerLvl = (cls != null) ? cls.getClassHealth() : 16;
+        int hpPerLvl = cls.getClassHealth();
 
         // --- STRENGTH ---
         updateMod(player, Attributes.ATTACK_DAMAGE, "dnd:str_dmg", strM * 1.5);
@@ -200,7 +204,11 @@ public record CharacterCreationPacket(
 
         // --- CONSTITUTION ---
         // Bonus HP from Con (x2 for Hearts) + Class HP for levels above 1
-        double bonusHP = (conM * 2.0 * level) + (hpPerLvl * (level - 1));
+        double totalTargetHP = (hpPerLvl + (conM * 2.0)) * level;
+        double bonusHP = totalTargetHP - 20.0;
+        if (bonusHP <= -20.0) {
+            bonusHP = -18.0;
+        }
         updateMod(player, Attributes.MAX_HEALTH, "dnd:con_hp", bonusHP);
         updateMod(player, Attributes.OXYGEN_BONUS, "dnd:con_oxy", conM * 20.0);
         updateMod(player, Attributes.SAFE_FALL_DISTANCE, "dnd:con_fall_dist", conM * 1.5);

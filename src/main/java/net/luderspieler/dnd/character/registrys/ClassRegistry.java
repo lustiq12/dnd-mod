@@ -26,19 +26,19 @@ public class ClassRegistry {
         return m;
     }
 
-    // Health Definitions (Hit Dice)
-    public static final int CLASS_HEALTH_BARBARIAN = 12;
-    public static final int CLASS_HEALTH_FIGHTER = 10;
-    public static final int CLASS_HEALTH_PALADIN = 10;
-    public static final int CLASS_HEALTH_RANGER = 10;
-    public static final int CLASS_HEALTH_BARD = 8;
-    public static final int CLASS_HEALTH_CLERIC = 8;
-    public static final int CLASS_HEALTH_DRUID = 8;
-    public static final int CLASS_HEALTH_MONK = 8;
-    public static final int CLASS_HEALTH_ROGUE = 8;
-    public static final int CLASS_HEALTH_WARLOCK = 8;
-    public static final int CLASS_HEALTH_SORCERER = 6;
-    public static final int CLASS_HEALTH_WIZARD = 6;
+    // Health Definitions (Hit Dice) - Multiplied by 2 for Minecraft Health Points
+    public static final int CLASS_HEALTH_BARBARIAN = 24; // D&D: 12
+    public static final int CLASS_HEALTH_FIGHTER = 20;   // D&D: 10
+    public static final int CLASS_HEALTH_PALADIN = 20;   // D&D: 10
+    public static final int CLASS_HEALTH_RANGER = 20;    // D&D: 10
+    public static final int CLASS_HEALTH_BARD = 16;      // D&D: 8
+    public static final int CLASS_HEALTH_CLERIC = 16;    // D&D: 8
+    public static final int CLASS_HEALTH_DRUID = 16;     // D&D: 8
+    public static final int CLASS_HEALTH_MONK = 16;      // D&D: 8
+    public static final int CLASS_HEALTH_ROGUE = 16;     // D&D: 8
+    public static final int CLASS_HEALTH_WARLOCK = 16;   // D&D: 8
+    public static final int CLASS_HEALTH_SORCERER = 12;  // D&D: 6
+    public static final int CLASS_HEALTH_WIZARD = 12;    // D&D: 6
 
     // --- Can use Magic ---
     public static final boolean BARB_CAN_USE_MAGIC = false;
