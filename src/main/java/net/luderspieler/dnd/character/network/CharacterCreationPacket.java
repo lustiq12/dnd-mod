@@ -105,7 +105,7 @@ public record CharacterCreationPacket(
             }
 
             vars.markSyncDirty();
-            applyAttrs(player, null, false);
+            applyAttrs(player);
         });
     }
 
@@ -168,7 +168,7 @@ public record CharacterCreationPacket(
         return sb.toString();
     }
 
-    public static void applyAttrs(ServerPlayer player, Map<String, Double> attrs, boolean isRace) {
+    public static void applyAttrs(ServerPlayer player) {
 
         DndModVariables.PlayerVariables vars = player.getData(DndModVariables.PLAYER_VARIABLES);
 

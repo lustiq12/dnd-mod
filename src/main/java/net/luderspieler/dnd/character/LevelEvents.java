@@ -82,7 +82,7 @@ public class LevelEvents {
 
 
         // 3. Stats & HP aktualisieren (nutzt das Packet-Backend)
-        CharacterCreationPacket.applyAttrs(player, null, false);
+        CharacterCreationPacket.applyAttrs(player);
         ChoiceUpdateSystem.updateChoices(player);
 
         // 4. Speichern & Sync

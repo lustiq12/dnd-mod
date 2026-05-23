@@ -1,5 +1,6 @@
 package net.luderspieler.dnd.character.choices;
 
+import net.luderspieler.dnd.character.screens.SubclassSelectionScreen;
 import net.luderspieler.dnd.generalConfigs;
 import net.luderspieler.dnd.network.DndModVariables;
 import net.minecraft.client.Minecraft;
@@ -91,7 +92,12 @@ public class LevelingChoiceScreen extends Screen {
     @Override
     public boolean mouseClicked(double mx, double my, int btn) {
         if (hoveredIdx >= 0 && hoveredIdx < choices.size()) {
-            Minecraft.getInstance().setScreen(new GenericChoicePopup(this, choices.get(hoveredIdx)));
+            String choice = choices.get(hoveredIdx);
+            if ("SUBCLASS".equals(choice)) {
+                Minecraft.getInstance().setScreen(new SubclassSelectionScreen(this));
+            } else {
+                Minecraft.getInstance().setScreen(new GenericChoicePopup(this, choice));
+            }
             return true;
         }
         return super.mouseClicked(mx, my, btn);

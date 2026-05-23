@@ -174,10 +174,36 @@ public class CharacterFinalizationScreen extends Screen {
                 generalConfigs.COLOR_ACCENT_GOLD);
 
         // ── Infoleiste: Subrace Race | Class | Lvl 1 ─────────────────────────
-        String racePart  = (subrace != null ? subrace.getDisplayName() + " " : "")
-                + (race != null ? "("+race.getDisplayName()+")" : "?");
-        String classPart = cls != null ? cls.getDisplayName() : "?";
-        String infoText  = racePart + " | " + classPart + " | Lvl 1";
+        // 1. Strings direkt aus dem CreationState holen und säubern (Unterstriche zu Leerzeichen)
+        String rawRace = CharacterCreationState.selectedRaceId.replace("_", " ");
+        String rawSubrace = CharacterCreationState.selectedSubraceId.replace("_", " ");
+        String rawClass = CharacterCreationState.selectedClassId.replace("_", " ");
+
+// 2. Schnelle Konvertierung in Camel Case / Title Case
+        java.util.function.Function<String, String> format = (str) -> {
+            if (str == null || str.isBlank()) return "";
+            String[] words = str.split("\\s+");
+            StringBuilder sb = new StringBuilder();
+            for (String w : words) {
+                sb.append(Character.toUpperCase(w.charAt(0))).append(w.substring(1).toLowerCase()).append(" ");
+            }
+            return sb.toString().trim();
+        };
+
+        String cleanRace = format.apply(rawRace);
+        String cleanSubrace = format.apply(rawSubrace);
+        String cleanClass = format.apply(rawClass);
+
+// 3. Rassen-Teil: "Subrace (Race)" oder nur "Race" (Falls keine Subrace gewählt wurde oder sie leer ist)
+        String racePart = (!cleanSubrace.isEmpty())
+                ? cleanSubrace + " (" + (!cleanRace.isEmpty() ? cleanRace : "?") + ")"
+                : (!cleanRace.isEmpty() ? cleanRace : "?");
+
+// 4. Klassen-Teil
+        String classPart = !cleanClass.isEmpty() ? cleanClass : "?";
+
+// 5. Finaler Info-Text für den Creation Screen
+        String infoText = racePart + " | " + classPart + " | Lvl 1";
         g.drawCenteredString(this.font, infoText, centerX, INFO_Y, generalConfigs.TEXT_GRAY);
 
         // ── Trennlinie ────────────────────────────────────────────────────────

@@ -1,7 +1,9 @@
 package net.luderspieler.dnd.character.choices;
 
-import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
+
+import static net.luderspieler.dnd.character.network.CharacterCreationPacket.applyAttrs;
 
 public class ChoiceExecutor {
     public static void apply(Player player, String choiceID, String selectedValue) {
@@ -17,6 +19,7 @@ public class ChoiceExecutor {
                 if (stat.equalsIgnoreCase("Intelligence")) vars.Intelligence += 2;
                 if (stat.equalsIgnoreCase("Wisdom")) vars.Wisdom += 2;
                 if (stat.equalsIgnoreCase("Charisma")) vars.Charisma += 2;
+                applyAttrs((ServerPlayer) player);
                 break;
 
             case "SUBCLASS":

@@ -34,7 +34,7 @@ public record KeepCharacterPacket() implements CustomPacketPayload {
             vars.FinishedCharacterCreation = true;
             vars.markSyncDirty();
 
-            CharacterCreationPacket.applyAttrs(player, null, false);
+            CharacterCreationPacket.applyAttrs(player);
         });
     }
 }

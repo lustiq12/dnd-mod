@@ -116,12 +116,43 @@ public class CharacterSheetScreen extends Screen {
         String name = (vars.PlayerName == null || vars.PlayerName.isEmpty()) ? "Unnamed Adventurer" : vars.PlayerName;
         g.drawCenteredString(this.font, name, centerX, textY, generalConfigs.COLOR_ACCENT_GOLD);
 
-        // 3. Race | Class | Level Info-Zeile
-        String raceStr = race != null ? race.getDisplayName() : "Unknown";
-        String classStr = cls != null ? cls.getDisplayName() : "Unknown";
+        java.util.function.Function<String, String> toCamelCase = (str) -> {
+            if (str == null || str.isBlank()) return "";
+            String cleanStr = str.replace("\"", "");
+            String[] words = cleanStr.split("[_\\s]+");
+            StringBuilder sb = new StringBuilder();
+            for (String word : words) {
+                if (!word.isEmpty()) {
+                    sb.append(Character.toUpperCase(word.charAt(0)))
+                            .append(word.substring(1).toLowerCase())
+                            .append(" ");
+                }
+            }
+            return sb.toString().trim();
+        };
 
-        // Wir bauen den String ohne §-Codes zusammen
-        String info = raceStr + " | " + classStr + " | Lvl " + (int)vars.PlayerLevel;
+        String cleanRace = toCamelCase.apply(vars.PlayerRace);
+        String cleanSubRace = toCamelCase.apply(vars.PlayerSubrace);
+        String cleanClass = toCamelCase.apply(vars.PlayerClass);
+        String cleanSubclass = toCamelCase.apply(vars.PlayerSubclass);
+
+        boolean hasSubclass = vars.PlayerSubclass != null
+                && !vars.PlayerSubclass.isBlank()
+                && !vars.PlayerSubclass.equals("\"\"");
+        String subclassStr = hasSubclass ? " (" + cleanSubclass + ")" : "";
+
+        boolean hasSubRace = vars.PlayerSubrace != null
+                && !vars.PlayerSubrace.isBlank()
+                && !vars.PlayerSubrace.equals("\"\"");
+
+        String raceDisplay;
+        if (hasSubRace) {
+            raceDisplay = cleanSubRace + " (" + cleanRace + ")";
+        } else {
+            raceDisplay = cleanRace;
+        }
+
+        String info = raceDisplay + " | " + cleanClass + subclassStr + " | Lvl " + (int) vars.PlayerLevel;
 
         g.drawCenteredString(this.font, info, centerX, textY + 12, generalConfigs.TEXT_GRAY);
     }

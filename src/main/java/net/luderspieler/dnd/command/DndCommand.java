@@ -332,7 +332,7 @@ public class DndCommand {
 
         AbilityUtils.updateClassAbilities(player);
         ChoiceUpdateSystem.updateChoices(player);
-        CharacterCreationPacket.applyAttrs(player, null, false); // recalculate HP/speed/attributes
+        CharacterCreationPacket.applyAttrs(player); // recalculate HP/speed/attributes
 
         source.sendSuccess(() -> Component.literal("§aLevel set to " + level + " — stats and choices updated."), true);
         return 1;
