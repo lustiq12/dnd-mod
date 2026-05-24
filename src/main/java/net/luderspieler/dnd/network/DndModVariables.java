@@ -102,6 +102,7 @@ public class DndModVariables {
 		clone.PreparedSpellsLVL7 = original.PreparedSpellsLVL7;
 		clone.PreparedSpellsLVL8 = original.PreparedSpellsLVL8;
 		clone.PreparedSpellsLVL9 = original.PreparedSpellsLVL9;
+		clone.AbilityData = original.AbilityData;
 		clone.ChoicesNeeded = original.ChoicesNeeded;
 		clone.Strength = original.Strength;
 		clone.Dexterity = original.Dexterity;
@@ -113,6 +114,7 @@ public class DndModVariables {
 		clone.Abilities = original.Abilities;
 		clone.ChoicesMade = original.ChoicesMade;
 		clone.ToughBonus = original.ToughBonus;
+		clone.Feats = original.Feats;
 		if (!event.isWasDeath()) {
 			clone.FinishedCharacterCreation = original.FinishedCharacterCreation;
 			clone.TargetingRange = original.TargetingRange;
@@ -121,11 +123,9 @@ public class DndModVariables {
 			clone.TargetingSpell = original.TargetingSpell;
 			clone.targetUUIDS = original.targetUUIDS;
 			clone.TargetingModeType = original.TargetingModeType;
-			clone.AbilityData = original.AbilityData;
 			clone.Charmer = original.Charmer;
 			clone.grabber = original.grabber;
 			clone.Decaying_Focus = original.Decaying_Focus;
-			clone.Feats = original.Feats;
 		}
 		event.getEntity().setData(PLAYER_VARIABLES, clone);
 	}

@@ -114,58 +114,45 @@ public class DndCommand {
 
     private static void setupVariableNode(LiteralArgumentBuilder<CommandSourceStack> node) {
 
-        final String[] STRING_VARS = {
-                "PlayerClass", "Spellslots", "PlayerSubrace", "PlayerName",
-                "PlayerStory", "PlayerPersonality", "PlayerRace", "PlayerSubclass",
-                "Proficiencys", "PreparedCantrips", "PreparedSpellsLVL1",
-                "PreparedSpellsLVL2", "PreparedSpellsLVL3", "PreparedSpellsLVL4",
-                "PreparedSpellsLVL5", "PreparedSpellsLVL6", "PreparedSpellsLVL7",
-                "PreparedSpellsLVL8", "PreparedSpellsLVL9", "TargetingSpell",
-                "targetUUIDS", "TargetingModeType", "AbilityData", "Charmer",
-                "grabber", "Decaying_Focus", "ChoicesNeeded", "Abilities"
-        };
+        // Iteriert flexibel über alle Variablen in PlayerVariables
+        for (java.lang.reflect.Field field : DndModVariables.PlayerVariables.class.getDeclaredFields()) {
 
-        final String[] DOUBLE_VARS = {
-                "PlayerLevel", "PlayerXP", "TargetingRange", "TargetingAmount",
-                "Strength", "Dexterity", "Constitution", "Intelligence",
-                "Wisdom", "Charisma", "ProficiencyBonus"
-        };
+            // Interne Variablen (die mit '_' beginnen) wie '_syncDirty' überspringen
+            if (field.getName().startsWith("_")) continue;
 
-        final String[] BOOL_VARS = {
-                "FinishedCharacterCreation", "CanUseMagic", "TargetingMode"
-        };
+            String fieldName = field.getName();
+            Class<?> type = field.getType();
 
-        // ── String fields ──
-        for (String field : STRING_VARS) {
-            node.then(Commands.literal(field)
-                    .executes(c -> readVariable(c.getSource().getPlayerOrException(), field))
-                    .then(Commands.argument("v", StringArgumentType.greedyString())
-                            .executes(c -> updateStringVariable(
-                                    c.getSource().getPlayerOrException(),
-                                    field,
-                                    StringArgumentType.getString(c, "v")))));
-        }
-
-        // ── Double fields (including PlayerLevel - now without side effects) ──
-        for (String field : DOUBLE_VARS) {
-            node.then(Commands.literal(field)
-                    .executes(c -> readVariable(c.getSource().getPlayerOrException(), field))
-                    .then(Commands.argument("v", DoubleArgumentType.doubleArg())
-                            .executes(c -> updateDoubleVariable(
-                                    c.getSource().getPlayerOrException(),
-                                    field,
-                                    DoubleArgumentType.getDouble(c, "v")))));
-        }
-
-        // ── Boolean fields ──
-        for (String field : BOOL_VARS) {
-            node.then(Commands.literal(field)
-                    .executes(c -> readVariable(c.getSource().getPlayerOrException(), field))
-                    .then(Commands.argument("v", BoolArgumentType.bool())
-                            .executes(c -> updateBoolVariable(
-                                    c.getSource().getPlayerOrException(),
-                                    field,
-                                    BoolArgumentType.getBool(c, "v")))));
+            // ── String fields ──
+            if (type == String.class) {
+                node.then(Commands.literal(fieldName)
+                        .executes(c -> readVariable(c.getSource().getPlayerOrException(), fieldName))
+                        .then(Commands.argument("v", StringArgumentType.greedyString())
+                                .executes(c -> updateStringVariable(
+                                        c.getSource().getPlayerOrException(),
+                                        fieldName,
+                                        StringArgumentType.getString(c, "v")))));
+            }
+            // ── Double fields ──
+            else if (type == double.class || type == Double.class) {
+                node.then(Commands.literal(fieldName)
+                        .executes(c -> readVariable(c.getSource().getPlayerOrException(), fieldName))
+                        .then(Commands.argument("v", DoubleArgumentType.doubleArg())
+                                .executes(c -> updateDoubleVariable(
+                                        c.getSource().getPlayerOrException(),
+                                        fieldName,
+                                        DoubleArgumentType.getDouble(c, "v")))));
+            }
+            // ── Boolean fields ──
+            else if (type == boolean.class || type == Boolean.class) {
+                node.then(Commands.literal(fieldName)
+                        .executes(c -> readVariable(c.getSource().getPlayerOrException(), fieldName))
+                        .then(Commands.argument("v", BoolArgumentType.bool())
+                                .executes(c -> updateBoolVariable(
+                                        c.getSource().getPlayerOrException(),
+                                        fieldName,
+                                        BoolArgumentType.getBool(c, "v")))));
+            }
         }
     }
 

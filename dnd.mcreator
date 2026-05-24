@@ -1097,7 +1097,7 @@
     {
       "name": "AbilityData",
       "type": "string",
-      "scope": "player_lifetime",
+      "scope": "player_persistent",
       "value": "\"\""
     },
     {
@@ -1193,7 +1193,7 @@
     {
       "name": "Feats",
       "type": "string",
-      "scope": "player_lifetime",
+      "scope": "player_persistent",
       "value": "\"\""
     }
   ],
