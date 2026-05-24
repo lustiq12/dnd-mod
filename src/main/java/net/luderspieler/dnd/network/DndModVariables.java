@@ -112,6 +112,7 @@ public class DndModVariables {
 		clone.ProficiencyBonus = original.ProficiencyBonus;
 		clone.Abilities = original.Abilities;
 		clone.ChoicesMade = original.ChoicesMade;
+		clone.ToughBonus = original.ToughBonus;
 		if (!event.isWasDeath()) {
 			clone.FinishedCharacterCreation = original.FinishedCharacterCreation;
 			clone.TargetingRange = original.TargetingRange;
@@ -124,6 +125,7 @@ public class DndModVariables {
 			clone.Charmer = original.Charmer;
 			clone.grabber = original.grabber;
 			clone.Decaying_Focus = original.Decaying_Focus;
+			clone.Feats = original.Feats;
 		}
 		event.getEntity().setData(PLAYER_VARIABLES, clone);
 	}
@@ -317,6 +319,8 @@ public class DndModVariables {
 		public double ProficiencyBonus = 0.0;
 		public String Abilities = "\"\"";
 		public String ChoicesMade = "\"\"";
+		public double ToughBonus = 0;
+		public String Feats = "\"\"";
 
 		@Override
 		public void serialize(ValueOutput output) {
@@ -363,6 +367,8 @@ public class DndModVariables {
 			output.putDouble("ProficiencyBonus", ProficiencyBonus);
 			output.putString("Abilities", Abilities);
 			output.putString("ChoicesMade", ChoicesMade);
+			output.putDouble("ToughBonus", ToughBonus);
+			output.putString("Feats", Feats);
 		}
 
 		@Override
@@ -410,6 +416,8 @@ public class DndModVariables {
 			ProficiencyBonus = input.getDoubleOr("ProficiencyBonus", 0);
 			Abilities = input.getStringOr("Abilities", "");
 			ChoicesMade = input.getStringOr("ChoicesMade", "");
+			ToughBonus = input.getDoubleOr("ToughBonus", 0);
+			Feats = input.getStringOr("Feats", "");
 		}
 
 		public void markSyncDirty() {

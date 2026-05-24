@@ -7,6 +7,9 @@ public enum Ability {
     EVASION,
     UNARMORED_DEFENSE,
     WEAPON_MASTERY,
+    DARKVISION_120,
+    DARKVISION_60,
+    SPEED_BONUS_5,
 
     // ==========================================
     // CLASS ABILITIES
@@ -193,14 +196,11 @@ public enum Ability {
     VERSATILE,
 
     // --- DWARF ---
-    DARKVISION_DWARF,
     DWARVEN_RESILIENCE,
     DWARVEN_TOUGHNESS,
     STONE_CUNNING,
 
     // --- ELF (Base & Lineages) ---
-    DARKVISION_DROW,
-    DARKVISION_ELF,
     DROW_LINEAGE,
     ELVEN_LINEAGE,
     FEY_ANCESTRY,
@@ -219,12 +219,10 @@ public enum Ability {
     // --- DRAGONBORN ---
     BREATH_WEAPON,
     DAMAGE_RESISTANCE_DRAGONBORN,
-    DARKVISION_DRAGONBORN,
     DRACONIC_ANCESTRY,
     FLIGHT,
 
     // --- GNOME (Base & Lineages) ---
-    DARKVISION_GNOME,
     FOREST_GNOME_LINEAGE,
     GNOME_CUNNING,
     GNOMISH_LINEAGE,
@@ -233,14 +231,12 @@ public enum Ability {
     // --- AASIMAR ---
     CELESTIAL_RESISTANCE,
     CELESTIAL_REVELATION,
-    DARKVISION_AASIMAR,
     HEALING_HANDS,
     LIGHT_BEARER,
 
     // --- TIEFLING (Base & Lineages) ---
     ABYSSAL_LINEAGE,
     CHTHONIC_LINEAGE,
-    DARKVISION_TIEFLING,
     FIENDISH_RESISTANCE,
     INFERNAL_LINEAGE,
     OTHERWORLDLY_GIFT,
@@ -259,7 +255,6 @@ public enum Ability {
 
     // --- ORC ---
     ADRENALINE_RUSH,
-    DARKVISION_ORC,
     POWERFUL_BUILD_ORC,
     RELENTLESS_ENDURANCE;
 

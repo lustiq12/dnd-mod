@@ -161,12 +161,12 @@ public class AbilityRegistry {
     );
 
     public static final List<Ability> DWARF = Arrays.asList(
-            Ability.DARKVISION_DWARF, Ability.DWARVEN_RESILIENCE,
+            Ability.DARKVISION_60, Ability.DWARVEN_RESILIENCE,
             Ability.DWARVEN_TOUGHNESS, Ability.STONE_CUNNING
     );
 
     public static final List<Ability> ELF = Arrays.asList(
-            Ability.DARKVISION_ELF, Ability.FEY_ANCESTRY,
+            Ability.DARKVISION_60, Ability.FEY_ANCESTRY,
             Ability.KEEN_SENSES, Ability.TRANCE, Ability.ELVEN_LINEAGE
     );
 
@@ -177,21 +177,21 @@ public class AbilityRegistry {
 
     public static final List<Ability> DRAGONBORN = Arrays.asList(
             Ability.DRACONIC_ANCESTRY, Ability.BREATH_WEAPON,
-            Ability.DAMAGE_RESISTANCE_DRAGONBORN, Ability.DARKVISION_DRAGONBORN, Ability.FLIGHT
+            Ability.DAMAGE_RESISTANCE_DRAGONBORN, Ability.DARKVISION_60, Ability.FLIGHT
     );
 
     public static final List<Ability> GNOME = Arrays.asList(
-            Ability.DARKVISION_GNOME, Ability.GNOME_CUNNING, Ability.GNOMISH_LINEAGE
+            Ability.DARKVISION_60, Ability.GNOME_CUNNING, Ability.GNOMISH_LINEAGE
     );
 
     /** Base Aasimar abilities. Celestial Revelation is a level-3 choice added by ChoiceUpdateSystem. */
     public static final List<Ability> AASIMAR = Arrays.asList(
-            Ability.CELESTIAL_RESISTANCE, Ability.DARKVISION_AASIMAR,
+            Ability.CELESTIAL_RESISTANCE, Ability.DARKVISION_60,
             Ability.HEALING_HANDS, Ability.LIGHT_BEARER
     );
 
     public static final List<Ability> TIEFLING = Arrays.asList(
-            Ability.DARKVISION_TIEFLING, Ability.OTHERWORLDLY_GIFT, Ability.FIENDISH_RESISTANCE
+            Ability.DARKVISION_60, Ability.OTHERWORLDLY_GIFT, Ability.FIENDISH_RESISTANCE
     );
 
     public static final List<Ability> GOLIATH = Arrays.asList(
@@ -200,16 +200,16 @@ public class AbilityRegistry {
     );
 
     public static final List<Ability> ORC = Arrays.asList(
-            Ability.ADRENALINE_RUSH, Ability.DARKVISION_ORC,
+            Ability.ADRENALINE_RUSH, Ability.DARKVISION_120,
             Ability.RELENTLESS_ENDURANCE, Ability.POWERFUL_BUILD_ORC
     );
 
     // ==================== LINEAGE / SUBRACE ABILITIES ====================
 
     public static final Map<String, List<Ability>> ELF_SUBRACES = new HashMap<>() {{
-        put("high_elf",  Arrays.asList(Ability.DARKVISION_ELF, Ability.FEY_ANCESTRY, Ability.KEEN_SENSES, Ability.TRANCE, Ability.HIGH_ELF_LINEAGE));
-        put("wood_elf",  Arrays.asList(Ability.DARKVISION_ELF, Ability.FEY_ANCESTRY, Ability.KEEN_SENSES, Ability.TRANCE, Ability.WOOD_ELF_LINEAGE, Ability.SPEED_WOOD_ELF));
-        put("drow",      Arrays.asList(Ability.DARKVISION_DROW, Ability.FEY_ANCESTRY, Ability.KEEN_SENSES, Ability.TRANCE, Ability.DROW_LINEAGE));
+        put("high_elf",  Arrays.asList(Ability.DARKVISION_60, Ability.FEY_ANCESTRY, Ability.KEEN_SENSES, Ability.TRANCE, Ability.HIGH_ELF_LINEAGE));
+        put("wood_elf",  Arrays.asList(Ability.DARKVISION_60, Ability.FEY_ANCESTRY, Ability.KEEN_SENSES, Ability.TRANCE, Ability.WOOD_ELF_LINEAGE, Ability.SPEED_WOOD_ELF));
+        put("drow",      Arrays.asList(Ability.DARKVISION_120, Ability.FEY_ANCESTRY, Ability.KEEN_SENSES, Ability.TRANCE, Ability.DROW_LINEAGE));
     }};
 
     public static final Map<String, List<Ability>> GOLIATH_SUBRACES = new HashMap<>() {{
@@ -222,14 +222,14 @@ public class AbilityRegistry {
     }};
 
     public static final Map<String, List<Ability>> TIEFLING_SUBRACES = new HashMap<>() {{
-        put("abyssal_tiefling",  Arrays.asList(Ability.DARKVISION_TIEFLING, Ability.OTHERWORLDLY_GIFT, Ability.FIENDISH_RESISTANCE, Ability.ABYSSAL_LINEAGE));
-        put("chthonic_tiefling", Arrays.asList(Ability.DARKVISION_TIEFLING, Ability.OTHERWORLDLY_GIFT, Ability.FIENDISH_RESISTANCE, Ability.CHTHONIC_LINEAGE));
-        put("infernal_tiefling", Arrays.asList(Ability.DARKVISION_TIEFLING, Ability.OTHERWORLDLY_GIFT, Ability.FIENDISH_RESISTANCE, Ability.INFERNAL_LINEAGE));
+        put("abyssal_tiefling",  Arrays.asList(Ability.DARKVISION_60, Ability.OTHERWORLDLY_GIFT, Ability.FIENDISH_RESISTANCE, Ability.ABYSSAL_LINEAGE));
+        put("chthonic_tiefling", Arrays.asList(Ability.DARKVISION_60, Ability.OTHERWORLDLY_GIFT, Ability.FIENDISH_RESISTANCE, Ability.CHTHONIC_LINEAGE));
+        put("infernal_tiefling", Arrays.asList(Ability.DARKVISION_60, Ability.OTHERWORLDLY_GIFT, Ability.FIENDISH_RESISTANCE, Ability.INFERNAL_LINEAGE));
     }};
 
     public static final Map<String, List<Ability>> GNOME_SUBRACES = new HashMap<>() {{
-        put("forest_gnome", Arrays.asList(Ability.DARKVISION_GNOME, Ability.GNOME_CUNNING, Ability.GNOMISH_LINEAGE, Ability.FOREST_GNOME_LINEAGE));
-        put("rock_gnome",   Arrays.asList(Ability.DARKVISION_GNOME, Ability.GNOME_CUNNING, Ability.GNOMISH_LINEAGE, Ability.ROCK_GNOME_LINEAGE));
+        put("forest_gnome", Arrays.asList(Ability.DARKVISION_60, Ability.GNOME_CUNNING, Ability.GNOMISH_LINEAGE, Ability.FOREST_GNOME_LINEAGE));
+        put("rock_gnome",   Arrays.asList(Ability.DARKVISION_60, Ability.GNOME_CUNNING, Ability.GNOMISH_LINEAGE, Ability.ROCK_GNOME_LINEAGE));
     }};
 
     /** Dragonborn ancestry differences are primarily data (damage type), not distinct Ability entries. */
