@@ -106,7 +106,7 @@
     {
       "name": "Dnd",
       "type": "command",
-      "compiles": false,
+      "compiles": true,
       "locked_code": true,
       "registry_name": "dnd",
       "metadata": {
@@ -1097,7 +1097,7 @@
     {
       "name": "AbilityData",
       "type": "string",
-      "scope": "player_lifetime",
+      "scope": "player_persistent",
       "value": "\"\""
     },
     {
@@ -1174,6 +1174,24 @@
     },
     {
       "name": "Abilities",
+      "type": "string",
+      "scope": "player_persistent",
+      "value": "\"\""
+    },
+    {
+      "name": "ChoicesMade",
+      "type": "string",
+      "scope": "player_persistent",
+      "value": "\"\""
+    },
+    {
+      "name": "ToughBonus",
+      "type": "number",
+      "scope": "player_persistent",
+      "value": "0"
+    },
+    {
+      "name": "Feats",
       "type": "string",
       "scope": "player_persistent",
       "value": "\"\""
