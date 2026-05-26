@@ -1,5 +1,6 @@
 package net.luderspieler.dnd.rests;
 
+import net.luderspieler.dnd.character.AbilitysAndFeats.management.AbilityDataUtils;
 import net.luderspieler.dnd.character.definition.ClassDefinition;
 import net.luderspieler.dnd.character.registrys.ClassRegistry;
 import net.luderspieler.dnd.network.DndModVariables;
@@ -40,16 +41,25 @@ public class SleepingIntereferer {
     }
 
     private void applyLongRestBenefits(ServerPlayer player) {
-        // HP heilen
         DndModVariables.PlayerVariables vars = player.getData(DndModVariables.PLAYER_VARIABLES);
-        
-        int level = (int)vars.PlayerLevel;
 
+        int level = (int) vars.PlayerLevel;
         ClassDefinition cls = ClassRegistry.getClass(vars.PlayerClass);
         vars.Spellslots = resetSpellSlots(cls, level);
         player.setHealth(player.getMaxHealth());
-        ClientAccess.openLongRestScreen();
 
+        // Clear all per-LongRest uses from AbilityData
+        var map = AbilityDataUtils.parse(vars.AbilityData);
+        map.entrySet().removeIf(e -> e.getKey().endsWith("_uses")
+                || e.getKey().endsWith("_active")
+                || e.getKey().endsWith("_readied")
+                || e.getKey().equals("RelentlessEndurance_used"));
+        vars.AbilityData = map.isEmpty() ? "" :
+                "{" + map.entrySet().stream()
+                        .map(e -> e.getKey() + "=" + e.getValue())
+                        .collect(java.util.stream.Collectors.joining(",")) + "}";
+
+        ClientAccess.openLongRestScreen();
         vars.markSyncDirty();
     }
 

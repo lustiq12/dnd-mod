@@ -1,5 +1,7 @@
 package net.luderspieler.dnd.character.network;
 
+import net.luderspieler.dnd.character.AbilitysAndFeats.management.Ability;
+import net.luderspieler.dnd.character.AbilitysAndFeats.management.AbilityDataUtils;
 import net.luderspieler.dnd.character.AbilitysAndFeats.management.AbilityUtils;
 import net.luderspieler.dnd.character.choices.ChoiceUpdateSystem;
 import net.luderspieler.dnd.character.definition.RaceDefinition;
@@ -189,6 +191,26 @@ public record CharacterCreationPacket(
         // No x2 here as you stated the values are already doubled
         int hpPerLvl = cls.getClassHealth();
 
+        double abilitySpeedBonus = 0.0;
+
+        if (AbilityUtils.hasAbility(player, Ability.SPEED_BONUS_5)) {
+            abilitySpeedBonus += 0.015; // +5ft — Wood Elf, Goliath
+        }
+        if (AbilityUtils.hasAbility(player, Ability.ROVING)) {
+            abilitySpeedBonus += 0.030; // +10ft — Ranger lvl 6
+        }
+        if (abilitySpeedBonus != 0) {
+            updateMod(player, Attributes.MOVEMENT_SPEED, "dnd:speed_ability_constant", abilitySpeedBonus);
+        } else {
+            // Entfernen falls keine Speed-Ability mehr vorhanden
+            var speedInst = player.getAttribute(Attributes.MOVEMENT_SPEED);
+            if (speedInst != null) {
+                speedInst.removeModifier(
+                        net.minecraft.resources.ResourceLocation.parse("dnd:speed_ability_constant"));
+            }
+        }
+
+
         // --- STRENGTH ---
         updateMod(player, Attributes.ATTACK_DAMAGE, "dnd:str_dmg", strM * 1.5);
         updateMod(player, Attributes.BLOCK_BREAK_SPEED, "dnd:str_mining", Math.max(-0.5, strM * 0.15));
@@ -203,7 +225,8 @@ public record CharacterCreationPacket(
 
         // --- CONSTITUTION ---
         // Bonus HP from Con (x2 for Hearts) + Class HP for levels above 1
-        double totalTargetHP = (hpPerLvl + (conM * 2.0)) * level;
+        int toughBonus = AbilityDataUtils.getInt(vars, "ToughBonus", 0) * 2;
+        double totalTargetHP = ((hpPerLvl + (conM * 2.0)) * level) + toughBonus;
         double bonusHP = totalTargetHP - 20.0;
         if (bonusHP <= -20.0) {
             bonusHP = -18.0;

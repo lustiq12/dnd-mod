@@ -1,5 +1,6 @@
 package net.luderspieler.dnd.character.AbilitysAndFeats.management;
 
+import net.luderspieler.dnd.character.AbilitysAndFeats.AbilityMethods_OneTime;
 import net.luderspieler.dnd.network.DndModVariables;
 import net.minecraft.server.level.ServerPlayer;
 import java.util.ArrayList;
@@ -35,17 +36,35 @@ public class AbilityUtils {
         DndModVariables.PlayerVariables vars = player.getData(DndModVariables.PLAYER_VARIABLES);
         List<Ability> abilities = parseAbilitiesString(vars.Abilities);
 
-        if (!abilities.contains(ability)) {
-            abilities.add(ability);
-            vars.Abilities = listToString(abilities);
-            vars.markSyncDirty();
+        // ── Darkvision hierarchy ───────────────────────────────────────
+        if (ability == Ability.DARKVISION_60) {
+            // Don't add 60ft if player already has 120ft
+            if (abilities.contains(Ability.DARKVISION_120)) return;
+        }
+        if (ability == Ability.DARKVISION_120) {
+            // Remove weaker 60ft if present
+            abilities.remove(Ability.DARKVISION_60);
+        }
+
+        // ── Standard duplicate check ──────────────────────────────────
+        if (abilities.contains(ability)) return;
+
+        abilities.add(ability);
+        vars.Abilities = listToString(abilities);
+        vars.markSyncDirty();
+
+        // ── Fire ONE_TIME_TRIGGER immediately ────────────────────────
+        AbilityCategory category = AbilityDefinitionRegistry.getCategory(ability);
+        if (category == AbilityCategory.ONE_TIME_TRIGGER) {
+            AbilityMethods_OneTime.execute(player, ability);
         }
     }
 
-    /**
-     * Entfernt eine Ability von einem Spieler
-     * Wird z.B. vom Choice-System verwendet wenn Spieler eine andere Ability wählt
-     */
+            /**
+             * Entfernt eine Ability von einem Spieler
+             * Wird z.B. vom Choice-System verwendet wenn Spieler eine andere Ability wählt
+             */
+
     public static void removeAbility(ServerPlayer player, Ability ability) {
         if (player == null || ability == null) return;
 

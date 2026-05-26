@@ -1,5 +1,7 @@
 package net.luderspieler.dnd.character.network;
 
+import net.luderspieler.dnd.character.AbilitysAndFeats.AbilityMethods_OneTime;
+import net.luderspieler.dnd.character.AbilitysAndFeats.management.AbilityDataUtils;
 import net.luderspieler.dnd.network.DndModVariables;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -29,12 +31,37 @@ public record KeepCharacterPacket() implements CustomPacketPayload {
             if (!(ctx.player() instanceof ServerPlayer player)) return;
 
             DndModVariables.PlayerVariables vars = player.getData(DndModVariables.PLAYER_VARIABLES);
-
-            // WICHTIG: Erst Variablen sichern
             vars.FinishedCharacterCreation = true;
             vars.markSyncDirty();
 
+            // Recalculate all stat-based attributes (HP, speed, etc.)
             CharacterCreationPacket.applyAttrs(player);
+
+            // Re-apply entity-level ability effects lost on respawn
+            // (Night Vision, Unarmored Defense armor mod, conditional speed mods)
+            AbilityMethods_OneTime.reapplyEntityEffects(player); // ← NEU
+
+            // Reset long-rest ability uses that were active before death
+            resetAbilityUsesOnRespawn(player);                   // ← NEU
         });
+    }
+
+    private static void resetAbilityUsesOnRespawn(ServerPlayer player) {
+        var vars = player.getData(DndModVariables.PLAYER_VARIABLES);
+
+        // Clear all "_uses" and "_active" entries in AbilityData
+        // so the player starts with full uses after "sleeping" (=dying counts as long rest here).
+        var map = AbilityDataUtils.parse(vars.AbilityData);
+        map.entrySet().removeIf(e -> {
+            String key = e.getKey();
+            return key.endsWith("_uses") || key.endsWith("_active") || key.endsWith("_readied");
+        });
+        // Preserve permanent values like ToughBonus
+        vars.AbilityData = "{" + map.entrySet().stream()
+                .map(e -> e.getKey() + "=" + e.getValue())
+                .collect(java.util.stream.Collectors.joining(",")) + "}";
+        if (vars.AbilityData.equals("{}")) vars.AbilityData = "";
+
+        vars.markSyncDirty();
     }
 }

@@ -43,7 +43,21 @@ public class AbilityDefinitionRegistry {
                 Ability.BRAVE,
                 Ability.GNOME_CUNNING,
                 // HP bonus per level (checked and applied every tick if needed)
-                Ability.DWARVEN_TOUGHNESS
+                Ability.DWARVEN_TOUGHNESS,
+                // Monk passive
+                Ability.ACROBATIC_MOVEMENT,   // vertikale Bewegung, Laufen auf Flüssigkeiten
+                Ability.EMPOWERED_STRIKES,    // Unarmed = magisch
+                Ability.HEIGHTENED_FOCUS,     // passiv verbesserte Focus-Optionen
+                // Rogue
+                Ability.RELIABLE_TALENT,      // Rolls ≤ 9 = 10
+                // Bard
+                Ability.JACK_OF_ALL_TRADES,   // halber Prof-Bonus auf nicht-profiziente Checks
+                // Ranger passives
+                Ability.PRECISE_HUNTER,       // Advantage gegen Hunter's-Mark-Ziel
+                Ability.FOE_SLAYER,           // WIS-Mod zu Angriffen gegen Mark-Ziel
+                // Barbarian
+                Ability.PERSISTENT_RAGE,      // Rage endet nicht früh
+                Ability.INDOMITABLE_MIGHT     // Min-STR-Check = STR-Score
         );
 
         // ── PLAYER_TRIGGERED ─────────────────────────────────────────
@@ -125,7 +139,20 @@ public class AbilityDefinitionRegistry {
                 // Radiant Strikes (on hit bonus damage)
                 Ability.RADIANT_STRIKES,
                 // Sneak Attack (on hit proc)
-                Ability.SNEAK_ATTACK
+                Ability.SNEAK_ATTACK,
+                // Triggern beim Initiative-Wurf
+                Ability.SUPERIOR_INSPIRATION,  // Bard: bei 0 Inspiration-Uses → 1 zurück
+                Ability.PERFECT_FOCUS,         // Monk: bei 0 Focus-Points → PB zurück
+                Ability.FERAL_INSTINCT,        // Barbarian: Advantage auf Initiative
+                Ability.UNCANNY_METABOLISM,    // Monk: regain Focus + HP bei Initiative
+
+                // Triggern bei Angriff / Treffer
+                Ability.BRUTAL_STRIKE,         // Barbarian: bei Reckless Attack Hit
+                Ability.STUDIED_ATTACKS,       // Fighter: nach Miss → Advantage nächster Angriff
+                Ability.TACTICAL_SHIFT,        // Fighter: bei Action Surge → Bewegung
+                Ability.TACTICAL_MIND,         // Fighter: bei misslugenem Ability Check
+                Ability.INDOMITABLE,           // Fighter: bei misslugenem Save
+                Ability.DANGER_SENSE           // Barbarian: Advantage auf DEX-Saves (Tracking)
         );
 
         // ── SHORT_REST_TRIGGER ────────────────────────────────────────
@@ -136,7 +163,8 @@ public class AbilityDefinitionRegistry {
                 Ability.CHANNEL_DIVINITY_PALADIN,
                 Ability.FOCUS_POINTS,
                 Ability.ARCANE_RECOVERY,
-                Ability.MAGICAL_CUNNING
+                Ability.MAGICAL_CUNNING,
+                Ability.LARGE_FORM  // Goliath: 1× pro Short Rest
         );
 
         // ── LONG_REST_TRIGGER ─────────────────────────────────────────
@@ -160,7 +188,8 @@ public class AbilityDefinitionRegistry {
                 Ability.HEALING_HANDS,
                 Ability.CELESTIAL_REVELATION,
                 Ability.CONTACT_PATRON,
-                Ability.MAGICAL_CUNNING
+                Ability.MAGICAL_CUNNING,
+                Ability.FLIGHT      // Dragonborn: 1× pro Long Rest
         );
 
         // Everything else not listed above → PASSIVE_TRACKED by default.
