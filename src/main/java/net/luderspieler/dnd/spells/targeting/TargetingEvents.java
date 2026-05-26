@@ -182,6 +182,7 @@ public class TargetingEvents {
             case "LEVITATE" -> SpellCasters.castLevitate(player, target);
             case "RAY_OF_FROST" -> SpellCasters.castRayOfFrost(player, vars.TargetingRange);
             case "LIGHTNING_BOLT" -> SpellCasters.castLightningBolt(player);
+            case "HEAL" -> SpellCasters.castHeal(player, target);
         }
     }
 

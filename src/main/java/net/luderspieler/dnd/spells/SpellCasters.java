@@ -32,7 +32,7 @@ public class SpellCasters {
             "BLIGHT", "HOLD_PERSON", "BESTOW_CURSE","THUNDERWAVE", "FIRE_BOLT",
             "FIREBALL", "FALSE_LIFE", "FEATHER_FALL", "MAGE_ARMOR", "MIND_SPIKE",
             "MENDING", "CHILL_TOUCH", "WATER_BREATHING", "LEVITATE", "LIGHT",
-            "RAY_OF_FROST", "LIGHTNING_BOLT","GREATER_INVISIBILITY"
+            "RAY_OF_FROST", "LIGHTNING_BOLT","GREATER_INVISIBILITY","HEAL"
     );
 
     // --- Cantrips ---
@@ -542,7 +542,11 @@ public class SpellCasters {
     public static void castGlobeOfInvulnerability(ServerPlayer p) { /* Logic */ }
     public static void castGuardsAndWards(ServerPlayer p) { /* Logic */ }
     public static void castHarm(ServerPlayer p) { /* Logic */ }
-    public static void castHeal(ServerPlayer p) { /* Logic */ }
+    public static void castHeal(ServerPlayer p, LivingEntity target) {
+        target.removeEffect(MobEffects.BLINDNESS);
+        target.removeEffect(MobEffects.POISON);
+        target.heal(140);
+    }
     public static void castHeroesFeast(ServerPlayer p) { /* Logic */ }
     public static void castInstantSummons(ServerPlayer p) { /* Logic */ }
     public static void castIrresistibleDance(ServerPlayer p) { /* Logic */ }

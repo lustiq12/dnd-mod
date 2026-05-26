@@ -306,7 +306,7 @@ public class CastSpellProcedure {
             case "GLOBE_OF_INVULNERABILITY" -> castGlobeOfInvulnerability(player);
             case "GUARDS_AND_WARDS" -> castGuardsAndWards(player);
             case "HARM" -> castHarm(player);
-            case "HEAL" -> castHeal(player);
+            case "HEAL" -> SpellCasterHelper.startTargeting(player, 18.0, 1, "HEAL");
             case "HEROES_FEAST" -> castHeroesFeast(player);
             case "INSTANT_SUMMONS" -> castInstantSummons(player);
             case "IRRESISTIBLE_DANCE" -> castIrresistibleDance(player);
