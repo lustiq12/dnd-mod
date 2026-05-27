@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+import static net.luderspieler.dnd.character.AbilitysAndFeats.management.AbilityResetRegistry.serializeMap;
+
 /**
  * Utility-Klasse für Ability-Operationen
  * Speichert Abilities als komma-getrennte String-Liste in vars.Abilities
@@ -51,6 +53,15 @@ public class AbilityUtils {
 
         abilities.add(ability);
         vars.Abilities = listToString(abilities);
+
+        // ── LADUNGEN SOFORT INITIALISIEREN ────────────────────────────
+        int maxUses = AbilityResetRegistry.getMaxUses(player, ability, vars);
+
+        if (maxUses > 0) {
+            AbilityDataUtils.set(vars, ability.name() + "_uses", maxUses);
+        }
+
+        // Erst nach allen Änderungen (Abilities + AbilityData) syncen!
         vars.markSyncDirty();
 
         // ── Fire ONE_TIME_TRIGGER immediately ────────────────────────

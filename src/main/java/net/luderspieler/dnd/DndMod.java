@@ -1,6 +1,5 @@
 package net.luderspieler.dnd;
 
-import net.luderspieler.dnd.character.AbilitysAndFeats.AbilityMethods_SelfTriggered;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -34,6 +33,7 @@ import net.luderspieler.dnd.character.ProficiencyCheckProcedure;
 import net.luderspieler.dnd.character.LevelEvents;
 import net.luderspieler.dnd.character.CharacterCreationEventHandler;
 import net.luderspieler.dnd.character.AbilitysAndFeats.AbilityPassiveTriggers;
+import net.luderspieler.dnd.character.AbilitysAndFeats.AbilityMethods_SelfTriggered;
 
 import javax.annotation.Nullable;
 

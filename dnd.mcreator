@@ -917,6 +917,18 @@
         ]
       },
       "path": "~/Potions"
+    },
+    {
+      "name": "Abilities",
+      "type": "keybind",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "abilities",
+      "metadata": {
+        "files": [
+          "src/main/java/net/luderspieler/dnd/network/AbilitiesMessage.java"
+        ]
+      }
     }
   ],
   "variable_elements": [
@@ -1280,7 +1292,8 @@
       "item.dnd.medusa_spawn_egg": "Medusa Spawn Egg",
       "effect.dnd.petrified": "Petrified",
       "key.dnd.character_sheet": "Character Sheet",
-      "effect.dnd.hovering": "Hovering"
+      "effect.dnd.hovering": "Hovering",
+      "key.dnd.abilities": "Abilities"
     }
   },
   "metadata": {

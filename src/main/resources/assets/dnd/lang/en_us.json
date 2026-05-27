@@ -20,5 +20,6 @@
   "item.dnd.medusa_spawn_egg": "Medusa Spawn Egg",
   "effect.dnd.petrified": "Petrified",
   "key.dnd.character_sheet": "Character Sheet",
-  "effect.dnd.hovering": "Hovering"
+  "effect.dnd.hovering": "Hovering",
+  "key.dnd.abilities": "Abilities"
 }

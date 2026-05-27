@@ -10,189 +10,239 @@ import java.util.Map;
 public class AbilityDefinitionRegistry {
 
     private static final Map<Ability, AbilityCategory> REGISTRY = new EnumMap<>(Ability.class);
-
+    /**
+     * Assign all of the abilities to their respective categories
+     */
     static {
         // ── ONE_TIME_TRIGGER ─────────────────────────────────────────
-        // Fired once when the ability is added to the player.
+        // Rein passive Stat-Boosts, die nur EINMALIG beim Freischalten wirken.
         oneTime(
-                // Barbarian capstone: +4 STR +4 CON
                 Ability.PRIMAL_CHAMPION,
-                // Monk capstone: +4 DEX +4 WIS
                 Ability.BODY_AND_MIND,
-                // Dragonborn level 5: fly speed unlocked
-                Ability.FLIGHT,
-                // Speed bonuses (species / class)
                 Ability.SPEED_BONUS_5
         );
 
         // ── ALWAYS_ACTIVE ─────────────────────────────────────────────
-        // Re-evaluated every CHECK_INTERVAL ticks in AbilityPassiveTriggers.
+        // Permanente, rein passive Hintergrund-Regeln (Keine Spielerentscheidung).
         alwaysActive(
-                // Darkvision (Night Vision reapplication)
+                // --- Allgemein & Kampfgrundlagen ---
+                Ability.UNARMORED_DEFENSE,
+                Ability.WEAPON_MASTERY,
+                Ability.FIGHTING_STYLE,
+                Ability.FIGHTING_STYLE_PALADIN,
+                Ability.FIGHTING_STYLE_RANGER,
+                Ability.EXTRA_ATTACK_BARBARIAN,
+                Ability.EXTRA_ATTACK_FIGHTER,
+                Ability.EXTRA_ATTACK_MONK,
+                Ability.EXTRA_ATTACK_PALADIN,
+                Ability.EXTRA_ATTACK_RANGER,
+                Ability.IMPROVED_EXTRA_ATTACK_FIGHTER_ONE,
+                Ability.IMPROVED_EXTRA_ATTACK_FIGHTER_TWO,
+
+                // --- Klassenspezifische Passiv-Mechaniken ---
+                Ability.PRIMAL_KNOWLEDGE,
+                Ability.FAST_MOVEMENT,
+                Ability.IMPROVED_BRUTAL_STRIKE_ONE,
+                Ability.PERSISTENT_RAGE,
+                Ability.IMPROVED_BRUTAL_STRIKE_TWO,
+                Ability.INDOMITABLE_MIGHT,
+                Ability.JACK_OF_ALL_TRADES,
+                Ability.EXPERTISE,
+                Ability.FONT_OF_INSPIRATION,
+                Ability.IMPROVED_EXPERTISE_ONE,
+                Ability.MAGICAL_SECRETS,
+                Ability.DIVINE_ORDER,
+                Ability.IMPROVED_BLESSED_STRIKES_ONE,
+                Ability.IMPROVED_DIVINE_INTERVENTION_ONE,
+                Ability.DRUIDIC,
+                Ability.PRIMAL_ORDER,
+                Ability.IMPROVED_ELEMENTAL_FURY_ONE,
+                Ability.BEAST_SPELLS,
+                Ability.ARCHDRUID,
+                Ability.IMPROVED_INDOMITABLE_ONE,
+                Ability.IMPROVED_ACTION_SURGE_ONE,
+                Ability.IMPROVED_INDOMITABLE_TWO,
+                Ability.MARTIAL_ARTS,
+                Ability.UNARMORED_MOVEMENT,
+                Ability.EMPOWERED_STRIKES,
+                Ability.ACROBATIC_MOVEMENT,
+                Ability.HEIGHTENED_FOCUS,
+                Ability.DEFLECT_ENERGY,
+                Ability.DISCIPLINED_SURVIVOR,
+                Ability.AURA_EXPANSION,
+                Ability.DEFT_EXPLORER,
+                Ability.ROVING,
+                Ability.IMPROVED_DEFT_EXPLORER_ONE,
+                Ability.RELENTLESS_HUNTER,
+                Ability.PRECISE_HUNTER,
+                Ability.FERAL_SENSES,
+                Ability.FOE_SLAYER,
+                Ability.EXPERTISE_ROGUE,
+                Ability.THIEVES_CANT,
+                Ability.IMPROVED_EXPERTISE_ROGUE_ONE,
+                Ability.RELIABLE_TALENT,
+                Ability.IMPROVED_CUNNING_STRIKE_ONE,
+                Ability.SLIPPERY_MIND,
+                Ability.ELUSIVE,
+                Ability.SORCEROUS_INCARNATION,
+                Ability.ELDRITCH_INVOCATIONS,
+                Ability.IMPROVED_MYSTIC_ARCANUM_ONE,
+                Ability.IMPROVED_MYSTIC_ARCANUM_TWO,
+                Ability.IMPROVED_MYSTIC_ARCANUM_THREE,
+                Ability.RITUAL_ADEPT,
+                Ability.SCHOLAR,
+                Ability.SPELL_MASTERY,
+                Ability.SIGNATURE_SPELLS,
+
+                // --- Volks-Passive & Resistenzen ---
+                Ability.VERSATILE,
                 Ability.DARKVISION_60,
                 Ability.DARKVISION_120,
-                // AC calculations
-                Ability.UNARMORED_DEFENSE,
-                // Speed modifiers
-                Ability.FAST_MOVEMENT,
-                Ability.UNARMORED_MOVEMENT,
-                Ability.ROVING,
-                // Resistance tracking (applied via effect renewal)
                 Ability.DWARVEN_RESILIENCE,
-                Ability.FEY_ANCESTRY,
-                Ability.BRAVE,
-                Ability.GNOME_CUNNING,
-                // HP bonus per level (checked and applied every tick if needed)
                 Ability.DWARVEN_TOUGHNESS,
-                // Monk passive
-                Ability.ACROBATIC_MOVEMENT,   // vertikale Bewegung, Laufen auf Flüssigkeiten
-                Ability.EMPOWERED_STRIKES,    // Unarmed = magisch
-                Ability.HEIGHTENED_FOCUS,     // passiv verbesserte Focus-Optionen
-                // Rogue
-                Ability.RELIABLE_TALENT,      // Rolls ≤ 9 = 10
-                // Bard
-                Ability.JACK_OF_ALL_TRADES,   // halber Prof-Bonus auf nicht-profiziente Checks
-                // Ranger passives
-                Ability.PRECISE_HUNTER,       // Advantage gegen Hunter's-Mark-Ziel
-                Ability.FOE_SLAYER,           // WIS-Mod zu Angriffen gegen Mark-Ziel
-                // Barbarian
-                Ability.PERSISTENT_RAGE,      // Rage endet nicht früh
-                Ability.INDOMITABLE_MIGHT     // Min-STR-Check = STR-Score
+                Ability.FEY_ANCESTRY,
+                Ability.KEEN_SENSES,
+                Ability.TRANCE,
+                Ability.ELVEN_LINEAGE,
+                Ability.HIGH_ELF_LINEAGE,
+                Ability.WOOD_ELF_LINEAGE,
+                Ability.SPEED_WOOD_ELF,
+                Ability.DROW_LINEAGE,
+                Ability.BRAVE,
+                Ability.HALFLING_NIMBLENESS,
+                Ability.NATURALLY_STEALTHY,
+                Ability.DRACONIC_ANCESTRY,
+                Ability.DAMAGE_RESISTANCE_DRAGONBORN,
+                Ability.GNOMISH_LINEAGE,
+                Ability.FOREST_GNOME_LINEAGE,
+                Ability.ROCK_GNOME_LINEAGE,
+                Ability.CELESTIAL_RESISTANCE,
+                Ability.OTHERWORLDLY_GIFT,
+                Ability.FIENDISH_RESISTANCE,
+                Ability.ABYSSAL_LINEAGE,
+                Ability.CHTHONIC_LINEAGE,
+                Ability.INFERNAL_LINEAGE,
+                Ability.GIANT_ANCESTRY,
+                Ability.POWERFUL_BUILD,
+                Ability.SPEED_GOLIATH,
+                Ability.POWERFUL_BUILD_ORC
         );
 
         // ── PLAYER_TRIGGERED ─────────────────────────────────────────
-        // Activated by the player from the ability wheel.
+        // ALLES, wo der Spieler selbst drückt, toggelt oder entscheidet. Landet im Wheel!
         playerTriggered(
-                // Barbarian
+                // --- Aktive Zauberklassen-Zugriffe ---
+                Ability.SPELLCASTING_BARD,
+                Ability.SPELLCASTING_CLERIC,
+                Ability.SPELLCASTING_DRUID,
+                Ability.SPELLCASTING_PALADIN,
+                Ability.SPELLCASTING_RANGER,
+                Ability.SPELLCASTING_SORCERER,
+                Ability.SPELLCASTING_WIZARD,
+                Ability.PACT_MAGIC,
+
+                // --- Klassenspezifische Toggles & Aktionen ---
                 Ability.RAGE,
-                // Fighter
-                Ability.SECOND_WIND,
-                Ability.ACTION_SURGE,
-                // Bard
+                Ability.RECKLESS_ATTACK,
+                Ability.INSTINCTIVE_POUNCE,
+                Ability.BRUTAL_STRIKE,
                 Ability.BARDIC_INSPIRATION,
-                // Cleric
+                Ability.COUNTERCHARM,          // 2024: Aktive Reaktion bei failed Ally-Saves
+                Ability.PEERLESS_SKILL,
+                Ability.WORDS_OF_CREATION,
                 Ability.CHANNEL_DIVINITY,
                 Ability.DIVINE_INTERVENTION,
-                // Druid
                 Ability.WILD_SHAPE,
-                // Monk — BonusAction abilities
+                Ability.WILD_COMPANION,
+                Ability.WILD_RESURGENCE,
+                Ability.SECOND_WIND,
+                Ability.ACTION_SURGE,
+                Ability.TACTICAL_MIND,
+                Ability.INDOMITABLE,           // Reaktion: Spieler entscheidet, neu zu würfeln
+                Ability.TACTICAL_MASTER,       // Treffereffekt: Spieler wählt Mastery-Wechsel
                 Ability.FOCUS_POINTS,
-                Ability.SLOW_FALL,
-                Ability.DEFLECT_ATTACKS,
-                Ability.STUNNING_STRIKE,
-                Ability.SUPERIOR_DEFENSE,
                 Ability.UNCANNY_METABOLISM,
-                // Paladin
+                Ability.DEFLECT_ATTACKS,       // Reaktion
+                Ability.SLOW_FALL,             // Reaktion
+                Ability.STUNNING_STRIKE,       // On-Hit Toggle
+                Ability.SELF_RESTORATION,      // Aktive Zustandsbeendigung
+                Ability.SUPERIOR_DEFENSE,
                 Ability.LAY_ON_HANDS,
+                Ability.PALADINS_SMITE,        // Aktivierte Bonus-Aktion Smites
                 Ability.CHANNEL_DIVINITY_PALADIN,
+                Ability.FAITHFUL_STEED,
                 Ability.ABJURE_FOES,
-                Ability.PALADINS_SMITE,
-                // Ranger
-                Ability.TIRELESS,
+                Ability.RESTORING_TOUCH,
+                Ability.FAVORED_ENEMY,         // Aktive Hunter's Mark Markierung
+                Ability.TIRELESS,              // Aktive Temp-HP Generierung
                 Ability.NATURES_VEIL,
-                // Rogue
                 Ability.CUNNING_ACTION,
                 Ability.STEADY_AIM,
-                // Sorcerer
+                Ability.CUNNING_STRIKE,        // On-Hit Schadensopferung für Effekte
+                Ability.UNCANNY_DODGE,         // Reaktion
+                Ability.DEVIOUS_STRIKES,       // On-Hit Schadensopferung für Effekte
+                Ability.STROKE_OF_LUCK,
                 Ability.INNATE_SORCERY,
+                Ability.SORCEROUS_BURST,
                 Ability.FONT_OF_MAGIC,
-                Ability.SORCEROUS_RESTORATION,
-                // Warlock
+                Ability.METAMAGIC,
+                Ability.ARCANE_APOTHEOSIS,
                 Ability.MAGICAL_CUNNING,
                 Ability.CONTACT_PATRON,
-                // Wizard
+                Ability.MYSTIC_ARCANUM,
+                Ability.ELDRITCH_MASTER,
                 Ability.ARCANE_RECOVERY,
                 Ability.MEMORIZE_SPELLS,
-                // Aasimar
+
+                // --- Aktive Volks- & Unterrassen-Fähigkeiten ---
+                Ability.STONE_CUNNING,         // Aktivierbarer Tremorsense
+                Ability.BREATH_WEAPON,
+                Ability.FLIGHT,
                 Ability.HEALING_HANDS,
+                Ability.LIGHT_BEARER,
                 Ability.CELESTIAL_REVELATION,
-                // Orc
-                Ability.ADRENALINE_RUSH,
-                // Goliath ancestry actives
+                Ability.LARGE_FORM,
                 Ability.CLOUDS_JAUNT,
-                Ability.FIRES_BURN,
-                Ability.FROSTS_CHILL,
-                Ability.HILLS_TUMBLE,
-                Ability.STONES_ENDURANCE,
-                Ability.STORMS_THUNDER
+                Ability.FIRES_BURN,            // Treffereffekt: Wahlweise Zusatzschaden
+                Ability.FROSTS_CHILL,          // Treffereffekt: Wahlweise Verlangsamung
+                Ability.HILLS_TUMBLE,          // Treffereffekt: Wahlweise Prone
+                Ability.STONES_ENDURANCE,      // Reaktion
+                Ability.STORMS_THUNDER,        // Reaktion
+                Ability.ADRENALINE_RUSH
         );
 
         // ── SELF_TRIGGERED ────────────────────────────────────────────
-        // Fires automatically in response to a game event.
+        // Rein automatische Code-Trigger, Auren und On-Hit-Procs OHNE Spieler-Input.
         selfTriggered(
-                // Drop to 1 HP instead of dying
+                // --- Automatische Rettungswürfe & HP-Retter ---
+                Ability.DANGER_SENSE,
                 Ability.RELENTLESS_RAGE,
                 Ability.RELENTLESS_ENDURANCE,
-                // Rogue / Monk
-                Ability.UNCANNY_DODGE,
                 Ability.EVASION,
-                // Cunning Strike on hit
-                Ability.CUNNING_STRIKE,
-                Ability.DEVIOUS_STRIKES,
-                // Paladin aura effects (proc when ally would be harmed)
+
+                // --- Automatische Refills bei Initiative ---
+                Ability.FERAL_INSTINCT,
+                Ability.SUPERIOR_INSPIRATION,
+                Ability.PERFECT_FOCUS,
+
+                // --- Reine automatische System-Auren ---
                 Ability.AURA_OF_PROTECTION,
                 Ability.AURA_OF_COURAGE,
-                // Barbarian
-                Ability.BRUTAL_STRIKE,
-                Ability.DANGER_SENSE,
-                Ability.RECKLESS_ATTACK,
-                // Radiant Strikes (on hit bonus damage)
-                Ability.RADIANT_STRIKES,
-                // Sneak Attack (on hit proc)
-                Ability.SNEAK_ATTACK,
-                // Triggern beim Initiative-Wurf
-                Ability.SUPERIOR_INSPIRATION,  // Bard: bei 0 Inspiration-Uses → 1 zurück
-                Ability.PERFECT_FOCUS,         // Monk: bei 0 Focus-Points → PB zurück
-                Ability.FERAL_INSTINCT,        // Barbarian: Advantage auf Initiative
-                Ability.UNCANNY_METABOLISM,    // Monk: regain Focus + HP bei Initiative
 
-                // Triggern bei Angriff / Treffer
-                Ability.BRUTAL_STRIKE,         // Barbarian: bei Reckless Attack Hit
-                Ability.STUDIED_ATTACKS,       // Fighter: nach Miss → Advantage nächster Angriff
-                Ability.TACTICAL_SHIFT,        // Fighter: bei Action Surge → Bewegung
-                Ability.TACTICAL_MIND,         // Fighter: bei misslugenem Ability Check
-                Ability.INDOMITABLE,           // Fighter: bei misslugenem Save
-                Ability.DANGER_SENSE           // Barbarian: Advantage auf DEX-Saves (Tracking)
+                // --- Automatische Kampf-Boni / On-Hit Procs ---
+                Ability.SMITE_UNDEAD,          // Löst auto bei Turn Undead aus
+                Ability.BLESSED_STRIKES,       // Auto-Schaden beim ersten Treffer
+                Ability.ELEMENTAL_FURY,        // Auto-Schaden beim ersten Treffer
+                Ability.TACTICAL_SHIFT,        // Auto-Bewegung bei Action Surge
+                Ability.STUDIED_ATTACKS,       // Auto-Vorteil nach Fehlschlag
+                Ability.RADIANT_STRIKES,       // Auto-Zusatzschaden auf jeden Hit
+                Ability.SNEAK_ATTACK,          // Auto-Zusatzschaden unter Bedingungen
+                Ability.SORCEROUS_RESTORATION, // Auto-Refill bei Short Rest
+
+                // --- Volks-Automatisierungen ---
+                Ability.RESOURCEFUL,           // Auto-Inspiration bei Long Rest
+                Ability.LUCKY                  // Halfling: Würfelt die 1 automatisch neu
         );
-
-        // ── SHORT_REST_TRIGGER ────────────────────────────────────────
-        shortRestTrigger(
-                Ability.ACTION_SURGE,     // regain use
-                Ability.SECOND_WIND,      // regain use
-                Ability.CHANNEL_DIVINITY,
-                Ability.CHANNEL_DIVINITY_PALADIN,
-                Ability.FOCUS_POINTS,
-                Ability.ARCANE_RECOVERY,
-                Ability.MAGICAL_CUNNING,
-                Ability.LARGE_FORM  // Goliath: 1× pro Short Rest
-        );
-
-        // ── LONG_REST_TRIGGER ─────────────────────────────────────────
-        longRestTrigger(
-                Ability.RAGE,
-                Ability.LAY_ON_HANDS,
-                Ability.WILD_SHAPE,
-                Ability.BARDIC_INSPIRATION,
-                Ability.DIVINE_INTERVENTION,
-                Ability.INNATE_SORCERY,
-                Ability.RELENTLESS_ENDURANCE,
-                Ability.ADRENALINE_RUSH,
-                Ability.NATURES_VEIL,
-                Ability.TIRELESS,
-                Ability.CLOUDS_JAUNT,
-                Ability.FIRES_BURN,
-                Ability.FROSTS_CHILL,
-                Ability.HILLS_TUMBLE,
-                Ability.STONES_ENDURANCE,
-                Ability.STORMS_THUNDER,
-                Ability.HEALING_HANDS,
-                Ability.CELESTIAL_REVELATION,
-                Ability.CONTACT_PATRON,
-                Ability.MAGICAL_CUNNING,
-                Ability.FLIGHT      // Dragonborn: 1× pro Long Rest
-        );
-
-        // Everything else not listed above → PASSIVE_TRACKED by default.
     }
 
     // ── HELPERS ───────────────────────────────────────────────────────

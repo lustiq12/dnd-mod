@@ -18,6 +18,7 @@ import net.minecraft.client.KeyMapping;
 import net.luderspieler.dnd.network.PrepareSpellsMessage;
 import net.luderspieler.dnd.network.CharacterSheetMessage;
 import net.luderspieler.dnd.network.CastSpellMessage;
+import net.luderspieler.dnd.network.AbilitiesMessage;
 
 @EventBusSubscriber(Dist.CLIENT)
 public class DndModKeyMappings {
@@ -60,12 +61,26 @@ public class DndModKeyMappings {
 			isDownOld = isDown;
 		}
 	};
+	public static final KeyMapping ABILITIES = new KeyMapping("key.dnd.abilities", GLFW.GLFW_KEY_C, "key.categories.gameplay") {
+		private boolean isDownOld = false;
+
+		@Override
+		public void setDown(boolean isDown) {
+			super.setDown(isDown);
+			if (isDownOld != isDown && isDown) {
+				ClientPacketDistributor.sendToServer(new AbilitiesMessage(0, 0));
+				AbilitiesMessage.pressAction(Minecraft.getInstance().player, 0, 0);
+			}
+			isDownOld = isDown;
+		}
+	};
 
 	@SubscribeEvent
 	public static void registerKeyMappings(RegisterKeyMappingsEvent event) {
 		event.register(CAST_SPELL);
 		event.register(PREPARE_SPELLS);
 		event.register(CHARACTER_SHEET);
+		event.register(ABILITIES);
 	}
 
 	@EventBusSubscriber(Dist.CLIENT)
@@ -76,6 +91,7 @@ public class DndModKeyMappings {
 				CAST_SPELL.consumeClick();
 				PREPARE_SPELLS.consumeClick();
 				CHARACTER_SHEET.consumeClick();
+				ABILITIES.consumeClick();
 			}
 		}
 	}
