@@ -25,17 +25,6 @@
     "animations": [
       {
         "animation": {
-          "value": "CUSTOM:nothicAnimation.idle"
-        },
-        "speed": 1.0,
-        "condition": {
-          "name": "NothicIdlePlaybackCondition"
-        },
-        "walking": false,
-        "amplitude": 1.0
-      },
-      {
-        "animation": {
           "value": "CUSTOM:nothicAnimation.walk"
         },
         "speed": 1.0,

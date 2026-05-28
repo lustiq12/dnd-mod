@@ -1,21 +1,22 @@
 package net.luderspieler.dnd.procedures;
 
-import net.luderspieler.dnd.DndMod;
-import net.luderspieler.dnd.entity.MedusaEntity;
-import net.luderspieler.dnd.init.DndModMobEffects;
-import net.minecraft.commands.arguments.EntityAnchorArgument;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.projectile.AbstractArrow;
-import net.minecraft.world.entity.projectile.Arrow;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.entity.projectile.Arrow;
+import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.commands.arguments.EntityAnchorArgument;
+
+import net.luderspieler.dnd.init.DndModMobEffects;
+import net.luderspieler.dnd.entity.MedusaEntity;
+import net.luderspieler.dnd.DndMod;
 
 public class MedusaIdleCooldownProcedure {
 	public static void execute(LevelAccessor world, Entity entity) {

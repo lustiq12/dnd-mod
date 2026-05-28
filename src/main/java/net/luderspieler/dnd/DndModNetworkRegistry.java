@@ -1,5 +1,6 @@
 package net.luderspieler.dnd;
 
+import net.luderspieler.dnd.character.AbilitysAndFeats.ActivateAbilityPacket;
 import net.luderspieler.dnd.character.network.CharacterCreationPacket;
 import net.luderspieler.dnd.character.network.KeepCharacterPacket;
 import net.luderspieler.dnd.character.network.OpenCreationGuiPacket;
@@ -61,6 +62,12 @@ public class DndModNetworkRegistry {
                 ExecuteChoicePacket.TYPE,
                 ExecuteChoicePacket.CODEC,
                 ExecuteChoicePacket::handle
+        );
+
+        reg.playToServer(
+                ActivateAbilityPacket.TYPE,
+                ActivateAbilityPacket.CODEC,
+                ActivateAbilityPacket::handle
         );
 
         // ── Server → Client ──────────────────────────────────────

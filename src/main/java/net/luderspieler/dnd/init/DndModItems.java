@@ -9,6 +9,7 @@ import net.neoforged.neoforge.registries.DeferredItem;
 import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.item.Item;
 
+import net.luderspieler.dnd.item.SpearItem;
 import net.luderspieler.dnd.DndMod;
 
 import java.util.function.Function;
@@ -21,6 +22,8 @@ public class DndModItems {
 	public static final DeferredItem<Item> NOTHIC_SPAWN_EGG;
 	public static final DeferredItem<Item> VAMPIRE_SPAWN_EGG;
 	public static final DeferredItem<Item> MEDUSA_SPAWN_EGG;
+	public static final DeferredItem<Item> SPEAR;
+	public static final DeferredItem<Item> GELATINOUS_CUBE_SPAWN_EGG;
 	static {
 		STIRGE_SPAWN_EGG = register("stirge_spawn_egg", properties -> new SpawnEggItem(DndModEntities.STIRGE.get(), properties));
 		SCARECROW_SPAWN_EGG = register("scarecrow_spawn_egg", properties -> new SpawnEggItem(DndModEntities.SCARECROW.get(), properties));
@@ -28,6 +31,8 @@ public class DndModItems {
 		NOTHIC_SPAWN_EGG = register("nothic_spawn_egg", properties -> new SpawnEggItem(DndModEntities.NOTHIC.get(), properties));
 		VAMPIRE_SPAWN_EGG = register("vampire_spawn_egg", properties -> new SpawnEggItem(DndModEntities.VAMPIRE.get(), properties));
 		MEDUSA_SPAWN_EGG = register("medusa_spawn_egg", properties -> new SpawnEggItem(DndModEntities.MEDUSA.get(), properties));
+		SPEAR = register("spear", SpearItem::new);
+		GELATINOUS_CUBE_SPAWN_EGG = register("gelatinous_cube_spawn_egg", properties -> new SpawnEggItem(DndModEntities.GELATINOUS_CUBE.get(), properties));
 	}
 
 	// Start of user code block custom items

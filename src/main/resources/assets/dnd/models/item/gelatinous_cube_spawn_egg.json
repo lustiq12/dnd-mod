@@ -1,0 +1,6 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "dnd:item/gelatinous_cube_spawn_egg_generated"
+  }
+}

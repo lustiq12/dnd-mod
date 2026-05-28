@@ -15,6 +15,8 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +41,7 @@ public class AbilityWheelScreen extends Screen {
     private static final int COL_SEGMENT_HOV_DEPL  = 0xCC331111;
     private static final int COL_OUTLINE            = 0xFF111111;
     private static final int COL_HUB               = 0xFF1A1A2E;
+    private static final Logger log = LoggerFactory.getLogger(AbilityWheelScreen.class);
 
     // ── State ────────────────────────────────────────────────────────
     private final List<Ability> abilities = new ArrayList<>();
@@ -199,7 +202,7 @@ public class AbilityWheelScreen extends Screen {
             List<Ability> list = getClientAbilities();
             if (hoveredSegment >= 0 && hoveredSegment < list.size()) {
                 Ability chosen = list.get(hoveredSegment);
-                //ActivateAbilityPacket.send(chosen);
+                ActivateAbilityPacket.send(chosen);
                 this.onClose();
                 return true;
             }

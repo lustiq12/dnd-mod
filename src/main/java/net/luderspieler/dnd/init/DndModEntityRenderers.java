@@ -8,6 +8,8 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.api.distmarker.Dist;
 
+import net.minecraft.client.renderer.entity.ThrownItemRenderer;
+
 import net.luderspieler.dnd.client.renderer.*;
 
 @EventBusSubscriber(Dist.CLIENT)
@@ -20,5 +22,7 @@ public class DndModEntityRenderers {
 		event.registerEntityRenderer(DndModEntities.NOTHIC.get(), NothicRenderer::new);
 		event.registerEntityRenderer(DndModEntities.VAMPIRE.get(), VampireRenderer::new);
 		event.registerEntityRenderer(DndModEntities.MEDUSA.get(), MedusaRenderer::new);
+		event.registerEntityRenderer(DndModEntities.SPEAR_PROJECTILE.get(), ThrownItemRenderer::new);
+		event.registerEntityRenderer(DndModEntities.GELATINOUS_CUBE.get(), GelatinousCubeRenderer::new);
 	}
 }

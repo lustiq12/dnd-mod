@@ -1,7 +1,8 @@
 package net.luderspieler.dnd.procedures;
 
-import net.luderspieler.dnd.entity.VampireEntity;
 import net.minecraft.world.entity.Entity;
+
+import net.luderspieler.dnd.entity.VampireEntity;
 
 public class VampireRizzPlaybackConditionProcedure {
 	public static boolean execute(Entity entity) {

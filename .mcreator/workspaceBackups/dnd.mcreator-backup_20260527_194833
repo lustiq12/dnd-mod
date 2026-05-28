@@ -922,8 +922,51 @@
       "name": "Abilities",
       "type": "keybind",
       "compiles": true,
+      "locked_code": true,
+      "registry_name": "abilities",
+      "metadata": {
+        "files": [
+          "src/main/java/net/luderspieler/dnd/network/AbilitiesMessage.java"
+        ]
+      }
+    },
+    {
+      "name": "Spear",
+      "type": "item",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "spear",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/dnd/models/item/spear.json",
+          "src/main/resources/assets/dnd/items/spear.json",
+          "src/main/java/net/luderspieler/dnd/item/SpearItem.java"
+        ]
+      },
+      "path": "~/Weapons"
+    },
+    {
+      "name": "DndWeapons",
+      "type": "tab",
+      "compiles": true,
       "locked_code": false,
-      "registry_name": "abilities"
+      "registry_name": "dnd_weapons",
+      "metadata": {
+        "files": []
+      }
+    },
+    {
+      "name": "SpearProjectile",
+      "type": "projectile",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "spear_projectile",
+      "metadata": {
+        "files": [
+          "src/main/java/net/luderspieler/dnd/entity/SpearProjectileEntity.java"
+        ]
+      },
+      "path": "~/Weapons"
     }
   ],
   "variable_elements": [
@@ -1261,6 +1304,12 @@
     ],
     "ITEMS:mod:shields": [
       "Items.SHIELD"
+    ],
+    "ITEMS:minecraft:enchantable/durability": [
+      "~CUSTOM:Spear"
+    ],
+    "ITEMS:dnd:spear_repair_items": [
+      "~Items.IRON_NUGGET"
     ]
   },
   "tab_element_order": {},
@@ -1287,7 +1336,10 @@
       "item.dnd.medusa_spawn_egg": "Medusa Spawn Egg",
       "effect.dnd.petrified": "Petrified",
       "key.dnd.character_sheet": "Character Sheet",
-      "effect.dnd.hovering": "Hovering"
+      "effect.dnd.hovering": "Hovering",
+      "key.dnd.abilities": "Abilities",
+      "item.dnd.spear": "Spear",
+      "item_group.dnd.dnd_weapons": "D\u0026D Weapons"
     }
   },
   "metadata": {

@@ -1,7 +1,8 @@
 package net.luderspieler.dnd.procedures;
 
-import net.luderspieler.dnd.entity.HarpyEntity;
 import net.minecraft.world.entity.Entity;
+
+import net.luderspieler.dnd.entity.HarpyEntity;
 
 public class HarpyRizzPlaybackConditionProcedure {
 	public static boolean execute(Entity entity) {

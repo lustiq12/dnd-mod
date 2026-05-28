@@ -10,19 +10,21 @@
       "[, D\u0026D, Source (Gradle), C:\\Users\\julia\\MCreatorWorkspaces\\dungerramityd\\src\\main\\java\\net, C:\\Users\\julia\\MCreatorWorkspaces\\dungerramityd\\src\\main\\java\\net\\luderspieler]",
       "[, D\u0026D, Source (Gradle), C:\\Users\\julia\\MCreatorWorkspaces\\dungerramityd\\src\\main\\java\\net, C:\\Users\\julia\\MCreatorWorkspaces\\dungerramityd\\src\\main\\java\\net\\luderspieler, C:\\Users\\julia\\MCreatorWorkspaces\\dungerramityd\\src\\main\\java\\net\\luderspieler\\dnd]",
       "[, D\u0026D, Source (Gradle), C:\\Users\\julia\\MCreatorWorkspaces\\dungerramityd\\src\\main\\java\\net, C:\\Users\\julia\\MCreatorWorkspaces\\dungerramityd\\src\\main\\java\\net\\luderspieler, C:\\Users\\julia\\MCreatorWorkspaces\\dungerramityd\\src\\main\\java\\net\\luderspieler\\dnd, C:\\Users\\julia\\MCreatorWorkspaces\\dungerramityd\\src\\main\\java\\net\\luderspieler\\dnd\\network]",
-      "[, D\u0026D, Source (Gradle), C:\\Users\\julia\\MCreatorWorkspaces\\dungerramityd\\src\\main\\java\\net, C:\\Users\\julia\\MCreatorWorkspaces\\dungerramityd\\src\\main\\java\\net\\mcreator]"
+      "[, D\u0026D, Resources (Gradle)]",
+      "[, D\u0026D, Resources (Gradle), C:\\Users\\julia\\MCreatorWorkspaces\\dungerramityd\\src\\main\\resources\\assets]",
+      "[, D\u0026D, Resources (Gradle), C:\\Users\\julia\\MCreatorWorkspaces\\dungerramityd\\src\\main\\resources\\assets, C:\\Users\\julia\\MCreatorWorkspaces\\dungerramityd\\src\\main\\resources\\assets\\dnd]",
+      "[, D\u0026D, Resources (Gradle), C:\\Users\\julia\\MCreatorWorkspaces\\dungerramityd\\src\\main\\resources\\assets, C:\\Users\\julia\\MCreatorWorkspaces\\dungerramityd\\src\\main\\resources\\assets\\dnd, C:\\Users\\julia\\MCreatorWorkspaces\\dungerramityd\\src\\main\\resources\\assets\\dnd\\items]"
     ]
   },
   "leftDockState": {
-    "expandedDock": "project_browser",
     "dockSizes": {
-      "project_browser": 279
+      "project_browser": 25
     }
   },
   "bottomDockState": {
     "dockSizes": {
-      "console": 185,
-      "code_viewer": 266,
+      "console": 206,
+      "code_viewer": 27,
       "debugger": 300
     }
   }

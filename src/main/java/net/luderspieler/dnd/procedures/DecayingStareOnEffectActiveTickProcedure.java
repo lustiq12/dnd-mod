@@ -1,16 +1,17 @@
 package net.luderspieler.dnd.procedures;
 
-import net.luderspieler.dnd.entity.NothicEntity;
-import net.luderspieler.dnd.init.DndModMobEffects;
-import net.luderspieler.dnd.network.DndModVariables;
-import net.minecraft.commands.arguments.EntityAnchorArgument;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.DamageTypes;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.damagesource.DamageTypes;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.commands.arguments.EntityAnchorArgument;
+
+import net.luderspieler.dnd.network.DndModVariables;
+import net.luderspieler.dnd.init.DndModMobEffects;
+import net.luderspieler.dnd.entity.NothicEntity;
 
 import java.util.UUID;
 

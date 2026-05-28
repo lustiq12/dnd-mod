@@ -47,6 +47,12 @@ public class DndModEntities {
 			EntityType.Builder.<MedusaEntity>of(MedusaEntity::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3)
 
 					.sized(0.6f, 1.8f));
+	public static final DeferredHolder<EntityType<?>, EntityType<SpearProjectileEntity>> SPEAR_PROJECTILE = register("spear_projectile",
+			EntityType.Builder.<SpearProjectileEntity>of(SpearProjectileEntity::new, MobCategory.MISC).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(1).sized(0.5f, 0.5f));
+	public static final DeferredHolder<EntityType<?>, EntityType<GelatinousCubeEntity>> GELATINOUS_CUBE = register("gelatinous_cube",
+			EntityType.Builder.<GelatinousCubeEntity>of(GelatinousCubeEntity::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3)
+
+					.sized(1.5f, 1.5f));
 
 	// Start of user code block custom entities
 	// End of user code block custom entities
@@ -62,6 +68,7 @@ public class DndModEntities {
 		NothicEntity.init(event);
 		VampireEntity.init(event);
 		MedusaEntity.init(event);
+		GelatinousCubeEntity.init(event);
 	}
 
 	@SubscribeEvent
@@ -72,5 +79,6 @@ public class DndModEntities {
 		event.put(NOTHIC.get(), NothicEntity.createAttributes().build());
 		event.put(VAMPIRE.get(), VampireEntity.createAttributes().build());
 		event.put(MEDUSA.get(), MedusaEntity.createAttributes().build());
+		event.put(GELATINOUS_CUBE.get(), GelatinousCubeEntity.createAttributes().build());
 	}
 }

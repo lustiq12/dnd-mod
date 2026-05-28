@@ -1,42 +1,42 @@
 package net.luderspieler.dnd.entity;
 
-import net.luderspieler.dnd.init.DndModEntities;
-import net.luderspieler.dnd.procedures.NothicIdleCooldownProcedure;
-import net.luderspieler.dnd.procedures.NothicIdlePlaybackConditionProcedure;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializers;
-import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.world.Difficulty;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.DamageTypes;
-import net.minecraft.world.entity.*;
-import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
-import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
-import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
-import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
-import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
-import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
-import net.minecraft.world.entity.monster.Monster;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.levelgen.Heightmap;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.event.entity.RegisterSpawnPlacementsEvent;
+
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
+import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
+import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.*;
+import net.minecraft.world.damagesource.DamageTypes;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.Difficulty;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.BlockPos;
+
+import net.luderspieler.dnd.procedures.NothicIdleCooldownProcedure;
+import net.luderspieler.dnd.init.DndModEntities;
 
 public class NothicEntity extends Monster {
 	public static final EntityDataAccessor<Integer> DATA_cooldown = SynchedEntityData.defineId(NothicEntity.class, EntityDataSerializers.INT);
 	public static final EntityDataAccessor<String> DATA_anim = SynchedEntityData.defineId(NothicEntity.class, EntityDataSerializers.STRING);
 	public static final EntityDataAccessor<String> DATA_focus = SynchedEntityData.defineId(NothicEntity.class, EntityDataSerializers.STRING);
 	public static final EntityDataAccessor<Integer> DATA_stare_cooldown = SynchedEntityData.defineId(NothicEntity.class, EntityDataSerializers.INT);
-	public final AnimationState animationState0 = new AnimationState();
 
 	public NothicEntity(EntityType<NothicEntity> type, Level world) {
 		super(type, world);
@@ -112,14 +112,6 @@ public class NothicEntity extends Monster {
 		this.entityData.set(DATA_anim, valueInput.getStringOr("Dataanim", ""));
 		this.entityData.set(DATA_focus, valueInput.getStringOr("Datafocus", ""));
 		this.entityData.set(DATA_stare_cooldown, valueInput.getIntOr("Datastare_cooldown", 0));
-	}
-
-	@Override
-	public void tick() {
-		super.tick();
-		if (this.level().isClientSide()) {
-			this.animationState0.animateWhen(NothicIdlePlaybackConditionProcedure.execute(this), this.tickCount);
-		}
 	}
 
 	@Override

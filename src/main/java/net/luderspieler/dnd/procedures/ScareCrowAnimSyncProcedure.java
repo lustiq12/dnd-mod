@@ -1,15 +1,17 @@
 package net.luderspieler.dnd.procedures;
 
-import net.luderspieler.dnd.DndMod;
-import net.luderspieler.dnd.entity.ScarecrowEntity;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.LevelAccessor;
-import net.neoforged.bus.api.Event;
-import net.neoforged.bus.api.ICancellableEvent;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.bus.api.ICancellableEvent;
+import net.neoforged.bus.api.Event;
+
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.damagesource.DamageSource;
+
+import net.luderspieler.dnd.entity.ScarecrowEntity;
+import net.luderspieler.dnd.DndMod;
 
 import javax.annotation.Nullable;
 

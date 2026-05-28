@@ -1,15 +1,16 @@
 package net.luderspieler.dnd.procedures;
 
-import net.luderspieler.dnd.entity.NothicEntity;
-import net.luderspieler.dnd.init.DndModMobEffects;
-import net.luderspieler.dnd.network.DndModVariables;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.effect.MobEffectInstance;
+
+import net.luderspieler.dnd.network.DndModVariables;
+import net.luderspieler.dnd.init.DndModMobEffects;
+import net.luderspieler.dnd.entity.NothicEntity;
 
 import java.util.Comparator;
 
@@ -18,13 +19,6 @@ public class NothicIdleCooldownProcedure {
 		if (entity == null)
 			return;
 		boolean done = false;
-		if ((entity instanceof NothicEntity _datEntI ? _datEntI.getEntityData().get(NothicEntity.DATA_cooldown) : 0) > 0) {
-			if (entity instanceof NothicEntity _datEntSetI)
-				_datEntSetI.getEntityData().set(NothicEntity.DATA_cooldown, (int) ((entity instanceof NothicEntity _datEntI ? _datEntI.getEntityData().get(NothicEntity.DATA_cooldown) : 0) - 1));
-		} else {
-			if (entity instanceof NothicEntity _datEntSetS)
-				_datEntSetS.getEntityData().set(NothicEntity.DATA_anim, "test");
-		}
 		if (entity instanceof NothicEntity _datEntSetI)
 			_datEntSetI.getEntityData().set(NothicEntity.DATA_stare_cooldown, (int) ((entity instanceof NothicEntity _datEntI ? _datEntI.getEntityData().get(NothicEntity.DATA_stare_cooldown) : 0) + 1));
 		if ((entity instanceof NothicEntity _datEntI ? _datEntI.getEntityData().get(NothicEntity.DATA_stare_cooldown) : 0) >= 240) {

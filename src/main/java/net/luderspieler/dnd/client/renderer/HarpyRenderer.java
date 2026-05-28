@@ -1,15 +1,16 @@
 package net.luderspieler.dnd.client.renderer;
 
-import net.luderspieler.dnd.client.model.ModelHarpy;
-import net.luderspieler.dnd.client.model.animations.HarpyAnimation;
-import net.luderspieler.dnd.entity.HarpyEntity;
-import net.minecraft.client.animation.AnimationDefinition;
-import net.minecraft.client.animation.KeyframeAnimation;
-import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
+import net.minecraft.client.renderer.entity.MobRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.animation.KeyframeAnimation;
+import net.minecraft.client.animation.AnimationDefinition;
+
+import net.luderspieler.dnd.entity.HarpyEntity;
+import net.luderspieler.dnd.client.model.animations.HarpyAnimation;
+import net.luderspieler.dnd.client.model.ModelHarpy;
 
 import java.util.Map;
 

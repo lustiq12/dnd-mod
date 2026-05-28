@@ -1,7 +1,8 @@
 package net.luderspieler.dnd.procedures;
 
-import net.luderspieler.dnd.entity.MedusaEntity;
 import net.minecraft.world.entity.Entity;
+
+import net.luderspieler.dnd.entity.MedusaEntity;
 
 public class MedusaIdlePlaybackConditionProcedure {
 	public static boolean execute(Entity entity) {

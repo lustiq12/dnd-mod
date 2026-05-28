@@ -136,7 +136,7 @@ public class AbilityMethods_PlayerTriggered {
         player.getAbilities().mayfly = true;
         player.onUpdateAbilities();
         // TODO: schedule removal after 12000 ticks (10 min) via DndMod.queueServerWork
-        DndMod_queueFlyRevoke(player, 12000);
+        DndMod_queueFlyRevoke(player, 120);
         return true;
     }
 
