@@ -25,5 +25,7 @@
   "item.dnd.spear": "Spear",
   "item_group.dnd.dnd_weapons": "D\u0026D Weapons",
   "item.dnd.gelatinous_cube_spawn_egg": "Gelatinous Cube Spawn Egg",
-  "entity.dnd.gelatinous_cube": "Gelatinous Cube"
+  "entity.dnd.gelatinous_cube": "Gelatinous Cube",
+  "effect.dnd.rage": "Rage",
+  "effect.dnd.large_form": "Large Form"
 }

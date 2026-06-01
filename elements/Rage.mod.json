@@ -1,0 +1,38 @@
+{
+  "_fv": 85,
+  "_type": "potioneffect",
+  "definition": {
+    "effectName": "Rage",
+    "icon": "charmed",
+    "color": {
+      "value": -13312,
+      "falpha": 0.0
+    },
+    "onAddedSound": {
+      "value": ""
+    },
+    "isInstant": false,
+    "mobEffectCategory": "BENEFICIAL",
+    "renderStatusInInventory": true,
+    "renderStatusInHUD": true,
+    "isCuredbyHoney": false,
+    "modifiers": [
+      {
+        "equipmentSlot": "any",
+        "attribute": {
+          "value": "ATTACK_DAMAGE"
+        },
+        "amount": 4.0,
+        "operation": "ADD_VALUE"
+      },
+      {
+        "equipmentSlot": "any",
+        "attribute": {
+          "value": "ARMOR"
+        },
+        "amount": 3.0,
+        "operation": "ADD_VALUE"
+      }
+    ]
+  }
+}

@@ -3,36 +3,41 @@ package net.luderspieler.dnd.character.AbilitysAndFeats;
 import net.luderspieler.dnd.character.AbilitysAndFeats.management.Ability;
 import net.luderspieler.dnd.character.AbilitysAndFeats.management.AbilityDataUtils;
 import net.luderspieler.dnd.character.AbilitysAndFeats.management.AbilityUtils;
+import net.luderspieler.dnd.init.DndModMobEffects;
 import net.luderspieler.dnd.network.DndModVariables;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 
 /**
- * Implementations for all PLAYER_TRIGGERED abilities.
- * These are called by the Ability Wheel (not yet implemented).
- * Each method is a self-contained action the player can activate.
+ * Implementierungen für alle PLAYER_TRIGGERED-Abilities.
+ * Aufgerufen vom Ability Wheel über ActivateAbilityPacket.
  *
- * Use-tracking convention:
- *   Uses remaining are stored in AbilityData with key "<ABILITY_NAME>_uses".
- *   e.g. AbilityDataUtils.getInt(vars, "FLIGHT_uses", 1)
- *   Reset on long/short rest is handled by SleepingIntereferer (long rest)
- *   and a future ShortRest system.
+ * Konventionen:
+ *   _uses    → AbilityData-Schlüssel für verbleibende Ladungen
+ *   _readied → Flag: Ability ist auf den nächsten Treffer/Ereignis vorbereitet
+ *   _active  → Flag: Ability ist aktuell aktiv (zeitlich begrenzt)
+ *
+ * SORCEROUS_RESTORATION ist nun SELF_TRIGGERED und wird hier NICHT mehr aufgerufen.
+ * Es wird stattdessen durch AbilityResetRegistry.resetOnShortRest() ausgelöst.
  */
 public class AbilityMethods_PlayerTriggered {
 
     // ── ENTRY POINT ───────────────────────────────────────────────────
 
-    /**
-     * Called by the ability wheel when the player activates an ability.
-     * Returns true if the ability was successfully triggered.
-     */
     public static boolean activate(ServerPlayer player, Ability ability) {
         if (!AbilityUtils.hasAbility(player, ability)) return false;
         return switch (ability) {
 
-            // ── DRAGONBORN ──────────────────────────────────────────────
-            case FLIGHT                  -> activateFlight(player);
+            // ── DWARF ────────────────────────────────────────────────────
+            case STONE_CUNNING           -> activateStoneCunning(player);
 
-            // ── GOLIATH ─────────────────────────────────────────────────
+            // ── DRAGONBORN ───────────────────────────────────────────────
+            case FLIGHT                  -> activateFlight(player);
+            case BREATH_WEAPON           -> activateBreathWeapon(player);
+
+            // ── GOLIATH ──────────────────────────────────────────────────
             case LARGE_FORM              -> activateLargeForm(player);
             case CLOUDS_JAUNT            -> activateCloudsJaunt(player);
             case FIRES_BURN              -> activateFiresBurn(player);
@@ -41,62 +46,78 @@ public class AbilityMethods_PlayerTriggered {
             case STONES_ENDURANCE        -> activateStonesEndurance(player);
             case STORMS_THUNDER          -> activateStormsThunder(player);
 
-            // ── AASIMAR ─────────────────────────────────────────────────
+            // ── AASIMAR ──────────────────────────────────────────────────
             case HEALING_HANDS           -> activateHealingHands(player);
             case CELESTIAL_REVELATION    -> activateCelestialRevelation(player);
 
-            // ── ORC ─────────────────────────────────────────────────────
+            // ── ORC ──────────────────────────────────────────────────────
             case ADRENALINE_RUSH         -> activateAdrenalineRush(player);
 
-            // ── BARBARIAN ───────────────────────────────────────────────
+            // ── BARBARIAN ────────────────────────────────────────────────
             case RAGE                    -> activateRage(player);
             case RECKLESS_ATTACK         -> activateRecklessAttack(player);
+            case BRUTAL_STRIKE           -> activateBrutalStrike(player);
 
-            // ── FIGHTER ─────────────────────────────────────────────────
-            case SECOND_WIND             -> activateSecondWind(player);
-            case ACTION_SURGE            -> activateActionSurge(player);
-
-            // ── BARD ────────────────────────────────────────────────────
+            // ── BARD ─────────────────────────────────────────────────────
             case BARDIC_INSPIRATION      -> activateBardicInspiration(player);
             case COUNTERCHARM            -> activateCountercharm(player);
             case PEERLESS_SKILL          -> activatePeerlessSkill(player);
 
-            // ── CLERIC ──────────────────────────────────────────────────
+            // ── CLERIC ───────────────────────────────────────────────────
+            // IMPROVED_DIVINE_INTERVENTION_ONE ist dieselbe Aktion, nur auto-success
             case CHANNEL_DIVINITY        -> activateChannelDivinity(player);
-            case DIVINE_INTERVENTION     -> activateDivineIntervention(player);
+            case DIVINE_INTERVENTION,
+                 IMPROVED_DIVINE_INTERVENTION_ONE -> activateDivineIntervention(player);
 
-            // ── DRUID ───────────────────────────────────────────────────
+            // ── DRUID ────────────────────────────────────────────────────
             case WILD_SHAPE              -> activateWildShape(player);
+            case WILD_COMPANION          -> activateWildCompanion(player);
             case WILD_RESURGENCE         -> activateWildResurgence(player);
 
-            // ── MONK ────────────────────────────────────────────────────
+            // ── FIGHTER ──────────────────────────────────────────────────
+            case SECOND_WIND             -> activateSecondWind(player);
+            case ACTION_SURGE            -> activateActionSurge(player);
+            case TACTICAL_MIND           -> activateTacticalMind(player);
+            case INDOMITABLE             -> activateIndomitable(player);
+            case TACTICAL_MASTER         -> activateTacticalMaster(player);
+
+            // ── MONK ─────────────────────────────────────────────────────
             case FOCUS_POINTS            -> activateFocusPoints(player);
-            case SLOW_FALL               -> activateSlowFall(player);
-            case DEFLECT_ATTACKS         -> activateDeflectAttacks(player);
-            case STUNNING_STRIKE         -> activateStunningStrike(player);
-            case SUPERIOR_DEFENSE        -> activateSuperiorDefense(player);
             case UNCANNY_METABOLISM      -> activateUncannyMetabolism(player);
+            case DEFLECT_ATTACKS         -> activateDeflectAttacks(player);
+            case SLOW_FALL               -> activateSlowFall(player);
+            case STUNNING_STRIKE         -> activateStunningStrike(player);
+            case SELF_RESTORATION        -> activateSelfRestoration(player);
+            case SUPERIOR_DEFENSE        -> activateSuperiorDefense(player);
 
-            // ── PALADIN ─────────────────────────────────────────────────
+            // ── PALADIN ──────────────────────────────────────────────────
             case LAY_ON_HANDS            -> activateLayOnHands(player);
-            case CHANNEL_DIVINITY_PALADIN-> activateChannelDivinityPaladin(player);
-            case ABJURE_FOES             -> activateAbjureFoes(player);
             case PALADINS_SMITE          -> activatePaladinsSmite(player);
+            case RADIANT_SMITE           -> activateRadiantSmite(player);
+            case CHANNEL_DIVINITY_PALADIN-> activateChannelDivinityPaladin(player);
+            case FAITHFUL_STEED          -> activateFaithfulSteed(player);
+            case ABJURE_FOES             -> activateAbjureFoes(player);
+            case RESTORING_TOUCH         -> activateRestoringTouch(player);
 
-            // ── RANGER ──────────────────────────────────────────────────
+            // ── RANGER ───────────────────────────────────────────────────
             case TIRELESS                -> activateTireless(player);
             case NATURES_VEIL            -> activateNaturesVeil(player);
 
-            // ── ROGUE ───────────────────────────────────────────────────
+            // ── ROGUE ────────────────────────────────────────────────────
             case CUNNING_ACTION          -> activateCunningAction(player);
             case STEADY_AIM              -> activateSteadyAim(player);
+            case CUNNING_STRIKE          -> activateCunningStrike(player);
+            case UNCANNY_DODGE           -> activateUncannyDodge(player);
+            case DEVIOUS_STRIKES         -> activateDeviousStrikes(player);
+            case STROKE_OF_LUCK          -> activateStrokeOfLuck(player);
 
-            // ── SORCERER ────────────────────────────────────────────────
+            // ── SORCERER ─────────────────────────────────────────────────
             case INNATE_SORCERY          -> activateInnateSorcery(player);
             case FONT_OF_MAGIC           -> activateFontOfMagic(player);
-            case SORCEROUS_RESTORATION   -> activateSorcerousRestoration(player);
+            case METAMAGIC               -> activateMetamagic(player);
+            case ARCANE_APOTHEOSIS       -> activateArcaneApotheosis(player);
 
-            // ── WARLOCK ─────────────────────────────────────────────────
+            // ── WARLOCK ──────────────────────────────────────────────────
             case MAGICAL_CUNNING         -> activateMagicalCunning(player);
             case CONTACT_PATRON          -> activateContactPatron(player);
             case ELDRITCH_MASTER         -> activateEldritchMaster(player);
@@ -105,7 +126,7 @@ public class AbilityMethods_PlayerTriggered {
                  IMPROVED_MYSTIC_ARCANUM_TWO,
                  IMPROVED_MYSTIC_ARCANUM_THREE -> activateMysticArcanum(player, ability);
 
-            // ── WIZARD ──────────────────────────────────────────────────
+            // ── WIZARD ───────────────────────────────────────────────────
             case ARCANE_RECOVERY         -> activateArcaneRecovery(player);
             case MEMORIZE_SPELLS         -> activateMemorizeSpells(player);
 
@@ -113,273 +134,631 @@ public class AbilityMethods_PlayerTriggered {
         };
     }
 
-    // ── USE TRACKING HELPERS ──────────────────────────────────────────
+    // ── USE-TRACKING HELPERS ──────────────────────────────────────────
 
     private static boolean hasUse(ServerPlayer player, String key, int maxDefault) {
-        var vars = player.getData(DndModVariables.PLAYER_VARIABLES);
-        return AbilityDataUtils.getInt(vars, key, maxDefault) > 0;
+        return AbilityDataUtils.getInt(
+                player.getData(DndModVariables.PLAYER_VARIABLES), key, maxDefault) > 0;
     }
 
     private static void consumeUse(ServerPlayer player, String key, int maxDefault) {
         var vars = player.getData(DndModVariables.PLAYER_VARIABLES);
-        int current = AbilityDataUtils.getInt(vars, key, maxDefault);
-        AbilityDataUtils.set(vars, key, Math.max(0, current - 1));
+        AbilityDataUtils.set(vars, key,
+                Math.max(0, AbilityDataUtils.getInt(vars, key, maxDefault) - 1));
         vars.markSyncDirty();
     }
 
-    // ── IMPLEMENTATIONS ───────────────────────────────────────────────
+    private static void setFlag(ServerPlayer player, String key, boolean value) {
+        var vars = player.getData(DndModVariables.PLAYER_VARIABLES);
+        AbilityDataUtils.set(vars, key, value);
+        vars.markSyncDirty();
+    }
 
-    /** FLIGHT (Dragonborn) — 10 min fly speed, 1× per long rest. */
+    // ══════════════════════════════════════════════════════════════════
+    //  IMPLEMENTIERUNGEN — DWARF
+    // ══════════════════════════════════════════════════════════════════
+
+    /**
+     * STONE_CUNNING (Dwarf) — Bonus Action: Tremorsense 60ft für 10 min,
+     * ProficiencyBonus-mal pro Long Rest.
+     * Als Minecraft-Annäherung: Night Vision (sensorische Verstärkung) + TODO Tremorsense.
+     */
+    private static boolean activateStoneCunning(ServerPlayer player) {
+        var vars = player.getData(DndModVariables.PLAYER_VARIABLES);
+        int maxUses = (int) vars.ProficiencyBonus;
+        if (!hasUse(player, "STONE_CUNNING_uses", maxUses)) return false;
+        consumeUse(player, "STONE_CUNNING_uses", maxUses);
+        // Night Vision als Platzhalter für Tremorsense — 12000 Ticks = 10 min
+        player.addEffect(new MobEffectInstance(
+                MobEffects.NIGHT_VISION, 12000, 0, false, false, false));
+        // TODO: Tremorsense implementieren (Entitäten durch Blöcke erspüren)
+        return true;
+    }
+
+    // ══════════════════════════════════════════════════════════════════
+    //  IMPLEMENTIERUNGEN — DRAGONBORN
+    // ══════════════════════════════════════════════════════════════════
+
+    /**
+     * FLIGHT (Dragonborn Level 5) — 10 min Flug, 1× pro Long Rest.
+     */
     private static boolean activateFlight(ServerPlayer player) {
         if (!hasUse(player, "FLIGHT_uses", 1)) return false;
         consumeUse(player, "FLIGHT_uses", 1);
         player.getAbilities().mayfly = true;
         player.onUpdateAbilities();
-        DndMod_queueFlyRevoke(player, 6000);
-        return true;
-    }
-
-    private static void DndMod_queueFlyRevoke(ServerPlayer player, int ticks) {
-        net.luderspieler.dnd.DndMod.queueServerWork(ticks, () -> {
+        net.luderspieler.dnd.DndMod.queueServerWork(12000, () -> {
             if (player.isAlive()) {
                 player.getAbilities().mayfly = false;
                 player.getAbilities().flying = false;
                 player.onUpdateAbilities();
             }
         });
+        return true;
     }
 
-    /** LARGE_FORM (Goliath) — become Large for 10 min, 1× per short rest. */
+    /**
+     * BREATH_WEAPON (Dragonborn) — Aktive Nutzung, ProficiencyBonus-mal pro Long Rest.
+     * Schadenstyp abhängig von DRACONIC_ANCESTRY (in AbilityData gespeichert).
+     */
+    private static boolean activateBreathWeapon(ServerPlayer player) {
+        var vars = player.getData(DndModVariables.PLAYER_VARIABLES);
+        int maxUses = (int) vars.ProficiencyBonus;
+        if (!hasUse(player, "BREATH_WEAPON_uses", maxUses)) return false;
+        consumeUse(player, "BREATH_WEAPON_uses", maxUses);
+        // TODO: AoE-Angriff basierend auf Ancestral-Element aus AbilityData
+        // Schaden skaliert mit Character-Level:
+        //   Level 1-4:   2d6, Level 5-10: 3d6, Level 11-16: 4d6, Level 17+: 5d6
+        // Form: Kegel (15ft) oder Linie (30ft × 5ft) je nach Drachen-Typ
+        return true;
+    }
+
+    // ══════════════════════════════════════════════════════════════════
+    //  IMPLEMENTIERUNGEN — GOLIATH
+    // ══════════════════════════════════════════════════════════════════
+
+    /**
+     * LARGE_FORM (Goliath) — Wird Large für 10 min, ProfBonus-mal pro Long Rest.
+     */
     private static boolean activateLargeForm(ServerPlayer player) {
         if (!hasUse(player, "LARGE_FORM_uses", 1)) return false;
         consumeUse(player, "LARGE_FORM_uses", 1);
-        // TODO: implement entity scale change when NeoForge scale attribute is available
-        // Attributes.SCALE or similar — mark in AbilityData for now
+        player.addEffect(new MobEffectInstance(DndModMobEffects.LARGE_FORM, 6000));
         AbilityDataUtils.set(player.getData(DndModVariables.PLAYER_VARIABLES),
                 "LARGE_FORM_active", true);
         player.getData(DndModVariables.PLAYER_VARIABLES).markSyncDirty();
         return true;
     }
 
-    /** HEALING_HANDS (Aasimar) — touch to heal ProficiencyBonus HP, 1× per long rest. */
+
+
+    /** CLOUDS_JAUNT — Teleport 30ft zu sichtbarem freiem Ort, ProfBonus/LR. */
+    private static boolean activateCloudsJaunt(ServerPlayer player) {
+        var vars = player.getData(DndModVariables.PLAYER_VARIABLES);
+        int maxUses = (int) vars.ProficiencyBonus;
+        if (!hasUse(player, "CLOUDS_JAUNT_uses", maxUses)) return false;
+        consumeUse(player, "CLOUDS_JAUNT_uses", maxUses);
+        // TODO: Teleport 30ft (ähnlich Misty Step) zum Blickziel
+        return true;
+    }
+
+    /** FIRES_BURN — On-Hit: +1d10 Feuerschaden, ProfBonus/LR. */
+    private static boolean activateFiresBurn(ServerPlayer player) {
+        setFlag(player, "FIRES_BURN_readied", true);
+        return true;
+    }
+
+    /** FROSTS_CHILL — On-Hit: Ziel wird verlangsamt (Speed -10ft bis nächster eigener Zug), ProfBonus/LR. */
+    private static boolean activateFrostsChill(ServerPlayer player) {
+        setFlag(player, "FROSTS_CHILL_readied", true);
+        return true;
+    }
+
+    /** HILLS_TUMBLE — On-Hit: Ziel wird Prone (Large oder kleiner), ProfBonus/LR. */
+    private static boolean activateHillsTumble(ServerPlayer player) {
+        setFlag(player, "HILLS_TUMBLE_readied", true);
+        return true;
+    }
+
+    /** STONES_ENDURANCE — Reaction: Schadens-Reduktion 1d12 + CON-Modifier, ProfBonus/LR. */
+    private static boolean activateStonesEndurance(ServerPlayer player) {
+        var vars = player.getData(DndModVariables.PLAYER_VARIABLES);
+        int maxUses = (int) vars.ProficiencyBonus;
+        if (!hasUse(player, "STONES_ENDURANCE_uses", maxUses)) return false;
+        consumeUse(player, "STONES_ENDURANCE_uses", maxUses);
+        int conMod = Math.floorDiv((int) vars.Constitution - 10, 2);
+        int reduction = (1 + player.getRandom().nextInt(12) + conMod) * 2; // ×2 für Minecraft-Herzen
+        float newHealth = Math.max(1.0f, player.getHealth() + Math.min(0, reduction));
+        // Reduktion: wird auf nächsten eingehenden Schaden angewendet
+        AbilityDataUtils.set(vars, "STONES_ENDURANCE_reduction", Math.max(0, reduction));
+        vars.markSyncDirty();
+        // TODO: Auf nächsten eingehenden Schaden anwenden via LivingIncomingDamageEvent
+        return true;
+    }
+
+    /** STORMS_THUNDER — Reaction nach Treffer: Angreifer nimmt 1d8 Donner-Schaden, ProfBonus/LR. */
+    private static boolean activateStormsThunder(ServerPlayer player) {
+        var vars = player.getData(DndModVariables.PLAYER_VARIABLES);
+        int maxUses = (int) vars.ProficiencyBonus;
+        if (!hasUse(player, "STORMS_THUNDER_uses", maxUses)) return false;
+        consumeUse(player, "STORMS_THUNDER_uses", maxUses);
+        setFlag(player, "STORMS_THUNDER_readied", true);
+        return true;
+    }
+
+    // ══════════════════════════════════════════════════════════════════
+    //  IMPLEMENTIERUNGEN — AASIMAR
+    // ══════════════════════════════════════════════════════════════════
+
+    /**
+     * HEALING_HANDS (Aasimar) — Berühr-Heilung: ProficiencyBonus HP, 1× pro Long Rest.
+     * Heilt sich selbst (Targeting-System leitet später auf Ziel weiter).
+     */
     private static boolean activateHealingHands(ServerPlayer player) {
         if (!hasUse(player, "HEALING_HANDS_uses", 1)) return false;
         consumeUse(player, "HEALING_HANDS_uses", 1);
         var vars = player.getData(DndModVariables.PLAYER_VARIABLES);
-        // Heal self for now; targeting system will redirect this to a chosen entity later
-        player.heal((float) vars.ProficiencyBonus);
+        player.heal((float) vars.ProficiencyBonus * 2);
         return true;
     }
 
-    /** CELESTIAL_REVELATION (Aasimar) — activate chosen form for 1 min, 1× per long rest. */
+    /**
+     * CELESTIAL_REVELATION (Aasimar Level 3) — Himmelsform aktivieren, 1× pro Long Rest.
+     * Form (Necrotic Shroud, Radiant Consumption, Healing Radiance) in AbilityData wählbar.
+     */
     private static boolean activateCelestialRevelation(ServerPlayer player) {
         if (!hasUse(player, "CELESTIAL_REVELATION_uses", 1)) return false;
         consumeUse(player, "CELESTIAL_REVELATION_uses", 1);
-        var vars = player.getData(DndModVariables.PLAYER_VARIABLES);
-        AbilityDataUtils.set(vars, "CELESTIAL_REVELATION_active", true);
-        vars.markSyncDirty();
-        // TODO: apply visual effects and healing/damage pulses based on chosen form
+        setFlag(player, "CELESTIAL_REVELATION_active", true);
+        // TODO: je nach gewählter Form (CELESTIAL_REVELATION_form in AbilityData):
+        //   "necrotic_shroud"  → Frightened-AoE + Nekrotik-Schaden-Bonus
+        //   "radiant_consump." → Radiant-Schaden-Aura
+        //   "healing_radiance" → Heilungs-Bonus-Aktion
         return true;
     }
 
-    /** ADRENALINE_RUSH (Orc) — Dash + temp HP equal to ProfBonus, uses = ProfBonus per LR. */
+    // ══════════════════════════════════════════════════════════════════
+    //  IMPLEMENTIERUNGEN — ORC
+    // ══════════════════════════════════════════════════════════════════
+
+    /**
+     * ADRENALINE_RUSH (Orc) — Bonus Action Dash + Temp HP gleich ProfBonus, ProfBonus/LR.
+     */
     private static boolean activateAdrenalineRush(ServerPlayer player) {
         var vars = player.getData(DndModVariables.PLAYER_VARIABLES);
         int maxUses = (int) vars.ProficiencyBonus;
         if (!hasUse(player, "ADRENALINE_RUSH_uses", maxUses)) return false;
         consumeUse(player, "ADRENALINE_RUSH_uses", maxUses);
-        // Grant temp HP equal to ProficiencyBonus
-        player.setAbsorptionAmount(player.getAbsorptionAmount() + (float) vars.ProficiencyBonus);
-        // Dash effect: speed boost for 1 tick is done through the wheel activation
-        // TODO: grant movement boost for current turn
+        player.setAbsorptionAmount(player.getAbsorptionAmount() + (float) vars.ProficiencyBonus * 2);
+        // TODO: Dash-Bewegungsbonus für diesen Zug
         return true;
     }
 
-    /** RAGE (Barbarian) — resist B/P/S damage, bonus damage, adv on STR. */
+    // ══════════════════════════════════════════════════════════════════
+    //  IMPLEMENTIERUNGEN — BARBARIAN
+    // ══════════════════════════════════════════════════════════════════
+
+    /**
+     * RAGE (Barbarian) — Wut aktivieren: B/P/S-Resistenz, STR-Vorteil, Bonusschaden.
+     * Ladungen pro Long Rest: 2 (lvl1) bis 6 (lvl17+).
+     */
     private static boolean activateRage(ServerPlayer player) {
-        // TODO: needs Rage tracker (active state, duration, bonus damage per level)
-        // Set flag in AbilityData
+
+        if (!hasUse(player, "RAGE_uses", 1)) return false;
+        consumeUse(player, "RAGE_uses", 1);
+
         var vars = player.getData(DndModVariables.PLAYER_VARIABLES);
+
+        player.addEffect(new MobEffectInstance(DndModMobEffects.RAGE, 1200, (int)vars.PlayerLevel));
+
         AbilityDataUtils.set(vars, "RAGE_active", true);
-        AbilityDataUtils.set(vars, "RAGE_ticks_remaining", 200); // ~10 sec placeholder
+        AbilityDataUtils.set(vars, "RAGE_ticks_remaining", 1200);
         vars.markSyncDirty();
         return true;
     }
 
-    /** RECKLESS_ATTACK (Barbarian) — player declares before their attack action. */
+    /**
+     * RECKLESS_ATTACK (Barbarian Level 2) — Angriffe mit Vorteil, Gegner auch.
+     */
     private static boolean activateRecklessAttack(ServerPlayer player) {
-        var vars = player.getData(DndModVariables.PLAYER_VARIABLES);
-        AbilityDataUtils.set(vars, "RECKLESS_active", true);
-        vars.markSyncDirty();
+        setFlag(player, "RECKLESS_active", true);
         return true;
     }
 
-    /** SECOND_WIND (Fighter) — heal 1d10 + Fighter level. */
-    private static boolean activateSecondWind(ServerPlayer player) {
-        var vars = player.getData(DndModVariables.PLAYER_VARIABLES);
-        int maxUses = 2; // scales with level but 2 is lvl1 default
-        if (!hasUse(player, "SECOND_WIND_uses", maxUses)) return false;
-        consumeUse(player, "SECOND_WIND_uses", maxUses);
-        int heal = 1 + player.getRandom().nextInt(10) + (int) vars.PlayerLevel;
-        player.heal(heal * 2f); // ×2 for hearts
+    /**
+     * BRUTAL_STRIKE (Barbarian Level 9) — Verzichtet auf Reckless-Vorteil für Bonus-Effekt.
+     * Optionen: Forceful Blow (Knockback + Schaden) oder Hamstring Blow (Speed-Debuff).
+     */
+    private static boolean activateBrutalStrike(ServerPlayer player) {
+        if (!AbilityDataUtils.getBool(
+                player.getData(DndModVariables.PLAYER_VARIABLES), "RECKLESS_active")) {
+            return false; // Nur bei aktivem Reckless Attack nutzbar
+        }
+        setFlag(player, "BRUTAL_STRIKE_readied", true);
+        // TODO: Sub-Wahl (Forceful Blow / Hamstring Blow) via Targeting-System
         return true;
     }
 
-    /** ACTION_SURGE (Fighter) — grants an extra action this turn. */
-    private static boolean activateActionSurge(ServerPlayer player) {
-        if (!hasUse(player, "ACTION_SURGE_uses", 1)) return false;
-        consumeUse(player, "ACTION_SURGE_uses", 1);
-        AbilityDataUtils.set(player.getData(DndModVariables.PLAYER_VARIABLES),
-                "ACTION_SURGE_active", true);
-        player.getData(DndModVariables.PLAYER_VARIABLES).markSyncDirty();
-        return true;
-    }
+    // ══════════════════════════════════════════════════════════════════
+    //  IMPLEMENTIERUNGEN — BARD
+    // ══════════════════════════════════════════════════════════════════
 
-    /** BARDIC_INSPIRATION — give a creature an inspiration die. */
+    /**
+     * BARDIC_INSPIRATION (Bard Level 1) — Inspirierende Würfel (d6→d12), CHA-Mod Ladungen/LR.
+     * Ab Level 5 (Font of Inspiration): auch Short Rest Recharge.
+     */
     private static boolean activateBardicInspiration(ServerPlayer player) {
         var vars = player.getData(DndModVariables.PLAYER_VARIABLES);
-        int maxUses = Math.max(1, (int)((vars.Charisma - 10) / 2.0));
+        int maxUses = Math.max(1, Math.floorDiv((int) vars.Charisma - 10, 2));
         if (!hasUse(player, "BARDIC_INSPIRATION_uses", maxUses)) return false;
         consumeUse(player, "BARDIC_INSPIRATION_uses", maxUses);
-        // TODO: send inspiration to targeted creature via targeting system
+        // TODO: Targeting-System → gewählte Kreatur erhält Inspiration-Würfel
         return true;
     }
 
-    /** CHANNEL_DIVINITY (Cleric) — Turn Undead or Divine Spark. */
+    /**
+     * COUNTERCHARM (Bard Level 7) — Bonus Action: Verbündete erhalten Vorteil auf
+     * Charm/Frighten-Saves bis Beginn des nächsten Zuges.
+     */
+    private static boolean activateCountercharm(ServerPlayer player) {
+        setFlag(player, "COUNTERCHARM_active", true);
+        net.luderspieler.dnd.DndMod.queueServerWork(20, () ->
+                setFlag(player, "COUNTERCHARM_active", false));
+        // TODO: Aura auf nahe Verbündete anwenden
+        return true;
+    }
+
+    /**
+     * PEERLESS_SKILL (Bard Level 15) — Bardicwürfel zu eigenem Ability-Check addieren.
+     */
+    private static boolean activatePeerlessSkill(ServerPlayer player) {
+        var vars = player.getData(DndModVariables.PLAYER_VARIABLES);
+        int maxUses = Math.max(1, Math.floorDiv((int) vars.Charisma - 10, 2));
+        if (!hasUse(player, "BARDIC_INSPIRATION_uses", maxUses)) return false;
+        consumeUse(player, "BARDIC_INSPIRATION_uses", maxUses);
+        setFlag(player, "PEERLESS_SKILL_readied", true);
+        // TODO: Auf nächsten Ability-Check anwenden
+        return true;
+    }
+
+    // ══════════════════════════════════════════════════════════════════
+    //  IMPLEMENTIERUNGEN — CLERIC
+    // ══════════════════════════════════════════════════════════════════
+
+    /**
+     * CHANNEL_DIVINITY (Cleric Level 2) — Turn Undead oder Divine Spark.
+     * 2 Ladungen/SR (mehr auf höheren Levels).
+     */
     private static boolean activateChannelDivinity(ServerPlayer player) {
-        if (!hasUse(player, "CHANNEL_DIVINITY_uses", 2)) return false;
-        consumeUse(player, "CHANNEL_DIVINITY_uses", 2);
-        // TODO: show sub-choice popup (Turn Undead / Divine Spark)
+        var vars = player.getData(DndModVariables.PLAYER_VARIABLES);
+        int maxUses = (int) vars.PlayerLevel >= 18 ? 4 : (int) vars.PlayerLevel >= 6 ? 3 : 2;
+        if (!hasUse(player, "CHANNEL_DIVINITY_uses", maxUses)) return false;
+        consumeUse(player, "CHANNEL_DIVINITY_uses", maxUses);
+        // TODO: Sub-Wahl (Turn Undead / Divine Spark) über Wheel-Popup
         return true;
     }
 
-    /** DIVINE_INTERVENTION (Cleric) — call on deity, 1× per LR. */
+    /**
+     * DIVINE_INTERVENTION (Cleric Level 10 / IMPROVED Level 20) —
+     * Level 20: auto-succeeds. Ruft die Gottheit zu Hilfe.
+     */
     private static boolean activateDivineIntervention(ServerPlayer player) {
         if (!hasUse(player, "DIVINE_INTERVENTION_uses", 1)) return false;
         consumeUse(player, "DIVINE_INTERVENTION_uses", 1);
-        // TODO: DM-equivalent effect selection
+        // TODO: DM-äquivalente Effekt-Auswahl (starke Heilung, Schutz, Schaden)
         return true;
     }
 
-    /** WILD_SHAPE (Druid) — transform into a beast, 2 uses per SR. */
+    // ══════════════════════════════════════════════════════════════════
+    //  IMPLEMENTIERUNGEN — DRUID
+    // ══════════════════════════════════════════════════════════════════
+
+    /**
+     * WILD_SHAPE (Druid Level 2) — Verwandelt sich in ein Tier, 2 Ladungen/SR.
+     */
     private static boolean activateWildShape(ServerPlayer player) {
         if (!hasUse(player, "WILD_SHAPE_uses", 2)) return false;
         consumeUse(player, "WILD_SHAPE_uses", 2);
-        // TODO: beast form morph system
+        // TODO: Tierform-Morphing-System (Entitäts-Wechsel oder Attribut-Override)
         return true;
     }
 
-    /** WILD_RESURGENCE (Druid) — spend Wild Shape use for 1st-level slot or vice versa. */
+    /**
+     * WILD_COMPANION (Druid Level 2) — Find Familiar als Magic Action ohne Materialien.
+     */
+    private static boolean activateWildCompanion(ServerPlayer player) {
+        if (!hasUse(player, "WILD_SHAPE_uses", 2)) return false;
+        consumeUse(player, "WILD_SHAPE_uses", 2);
+        // TODO: Find Familiar via Zaubersystem
+        return true;
+    }
+
+    /**
+     * WILD_RESURGENCE (Druid Level 5) — Wild Shape Slot ↔ Spell Slot konvertieren.
+     */
     private static boolean activateWildResurgence(ServerPlayer player) {
-        // TODO: sub-choice (which direction to convert)
+        // TODO: Sub-Wahl Richtung (Wild Shape → Slot 1st-lvl ODER Slot → Wild Shape Ladung)
         return true;
     }
 
-    /** FOCUS_POINTS (Monk) — show sub-choice: Flurry / Patient Defense / Step of the Wind. */
+    // ══════════════════════════════════════════════════════════════════
+    //  IMPLEMENTIERUNGEN — FIGHTER
+    // ══════════════════════════════════════════════════════════════════
+
+    /**
+     * SECOND_WIND (Fighter Level 1) — Heilung 1d10 + Fighter-Level.
+     * 2 Ladungen/SR (bis zu 4 auf höheren Levels).
+     * Short Rest: +1 Ladung.
+     */
+    private static boolean activateSecondWind(ServerPlayer player) {
+        var vars = player.getData(DndModVariables.PLAYER_VARIABLES);
+        int level = (int) vars.PlayerLevel;
+        int maxUses = level >= 10 ? 4 : level >= 4 ? 3 : 2;
+        if (!hasUse(player, "SECOND_WIND_uses", maxUses)) return false;
+        consumeUse(player, "SECOND_WIND_uses", maxUses);
+        int heal = 1 + player.getRandom().nextInt(10) + level;
+        player.heal(heal * 2.0f);
+        return true;
+    }
+
+    /**
+     * ACTION_SURGE (Fighter Level 2) — Gewährt eine zusätzliche Aktion diesen Zug.
+     * 1 Ladung/SR (2 ab Level 17).
+     */
+    private static boolean activateActionSurge(ServerPlayer player) {
+        var vars = player.getData(DndModVariables.PLAYER_VARIABLES);
+        int maxUses = AbilityUtils.hasAbility(player, Ability.IMPROVED_ACTION_SURGE_ONE) ? 2 : 1;
+        if (!hasUse(player, "ACTION_SURGE_uses", maxUses)) return false;
+        consumeUse(player, "ACTION_SURGE_uses", maxUses);
+        setFlag(player, "ACTION_SURGE_active", true);
+        // TACTICAL_SHIFT (SELF_TRIGGERED) prüft ACTION_SURGE_active und gewährt Bewegung
+        return true;
+    }
+
+    /**
+     * TACTICAL_MIND (Fighter Level 2) — Bei misslungenem Ability-Check:
+     * Second Wind ausgeben → 1d10 addieren.
+     */
+    private static boolean activateTacticalMind(ServerPlayer player) {
+        var vars = player.getData(DndModVariables.PLAYER_VARIABLES);
+        int level = (int) vars.PlayerLevel;
+        int swMax = level >= 10 ? 4 : level >= 4 ? 3 : 2;
+        if (!hasUse(player, "SECOND_WIND_uses", swMax)) return false;
+        consumeUse(player, "SECOND_WIND_uses", swMax);
+        setFlag(player, "TACTICAL_MIND_readied", true);
+        // TODO: Auf nächsten Ability-Check anwenden (kein direkter MC-Hook vorhanden)
+        return true;
+    }
+
+    /**
+     * INDOMITABLE (Fighter Level 9) — Reaction: misslungener Saving Throw neu würfeln.
+     * 1 Ladung/LR (Level 13: 2, Level 17: 3). TODO: In AbilityResetRegistry eintragen.
+     */
+    private static boolean activateIndomitable(ServerPlayer player) {
+        var vars = player.getData(DndModVariables.PLAYER_VARIABLES);
+        int level = (int) vars.PlayerLevel;
+        int maxUses = level >= 17 ? 3 : level >= 13 ? 2 : 1;
+        if (!hasUse(player, "INDOMITABLE_uses", maxUses)) return false;
+        consumeUse(player, "INDOMITABLE_uses", maxUses);
+        setFlag(player, "INDOMITABLE_readied", true);
+        // TODO: Auf nächsten Saving Throw anwenden + Fighter-Level als Bonus
+        return true;
+    }
+
+    /**
+     * TACTICAL_MASTER (Fighter Level 9) — Tauscht Weapon Mastery Property beim Angriff
+     * gegen Push, Slow oder Topple.
+     */
+    private static boolean activateTacticalMaster(ServerPlayer player) {
+        setFlag(player, "TACTICAL_MASTER_readied", true);
+        // TODO: Sub-Wahl (Push / Slow / Topple) für den nächsten Angriff
+        return true;
+    }
+
+    // ══════════════════════════════════════════════════════════════════
+    //  IMPLEMENTIERUNGEN — MONK
+    // ══════════════════════════════════════════════════════════════════
+
+    /**
+     * FOCUS_POINTS (Monk Level 2) — Öffnet Sub-Wahl: Flurry of Blows,
+     * Patient Defense, Step of the Wind.
+     * Ladungen = Monk-Level.
+     */
     private static boolean activateFocusPoints(ServerPlayer player) {
         var vars = player.getData(DndModVariables.PLAYER_VARIABLES);
-        int maxPoints = (int) vars.PlayerLevel;
-        if (!hasUse(player, "FOCUS_POINTS_remaining", maxPoints)) return false;
-        // TODO: sub-choice popup
+        if (AbilityDataUtils.getInt(vars, "FOCUS_POINTS_remaining", (int) vars.PlayerLevel) < 1)
+            return false;
+        // TODO: Sub-Wahl-Popup (Flurry / Patient Defense / Step of the Wind)
         return true;
     }
 
-    /** SLOW_FALL (Monk) — reduce fall damage by 5 × Monk level. */
-    private static boolean activateSlowFall(ServerPlayer player) {
-        AbilityDataUtils.set(player.getData(DndModVariables.PLAYER_VARIABLES),
-                "SLOW_FALL_active", true);
-        player.getData(DndModVariables.PLAYER_VARIABLES).markSyncDirty();
-        // TODO: hook into fall damage event
-        return true;
-    }
-
-    /** DEFLECT_ATTACKS (Monk) — reduce incoming damage as Reaction. */
-    private static boolean activateDeflectAttacks(ServerPlayer player) {
-        AbilityDataUtils.set(player.getData(DndModVariables.PLAYER_VARIABLES),
-                "DEFLECT_ATTACKS_readied", true);
-        player.getData(DndModVariables.PLAYER_VARIABLES).markSyncDirty();
-        return true;
-    }
-
-    /** STUNNING_STRIKE (Monk) — 1 Focus Point to attempt to stun on hit. */
-    private static boolean activateStunningStrike(ServerPlayer player) {
+    /**
+     * UNCANNY_METABOLISM (Monk Level 2) — Bei Initiative: 1 Focus Point ausgeben
+     * um ProfBonus Focus Points zurückzuerhalten + 1 Treffer-Würfel heilen.
+     * "you CAN expend 1 Focus Point" → PLAYER_TRIGGERED.
+     */
+    private static boolean activateUncannyMetabolism(ServerPlayer player) {
         var vars = player.getData(DndModVariables.PLAYER_VARIABLES);
-        int remaining = AbilityDataUtils.getInt(vars, "FOCUS_POINTS_remaining",
-                (int) vars.PlayerLevel);
+        int remaining = AbilityDataUtils.getInt(vars, "FOCUS_POINTS_remaining", (int) vars.PlayerLevel);
         if (remaining < 1) return false;
         AbilityDataUtils.set(vars, "FOCUS_POINTS_remaining", remaining - 1);
-        AbilityDataUtils.set(vars, "STUNNING_STRIKE_readied", true);
+        // Zurückgewinnung: ProfBonus Focus Points
+        int regain = Math.min((int) vars.ProficiencyBonus,
+                (int) vars.PlayerLevel - AbilityDataUtils.getInt(vars, "FOCUS_POINTS_remaining", 0));
+        AbilityDataUtils.set(vars, "FOCUS_POINTS_remaining",
+                AbilityDataUtils.getInt(vars, "FOCUS_POINTS_remaining", 0) + regain);
+        // Heilung: 1 Trefferwürfel (d8/d10/d12 je Level, Wisdom-Modifier addiert)
+        int wismod = Math.floorDiv((int) vars.Wisdom - 10, 2);
+        int dieSize = (int) vars.PlayerLevel >= 17 ? 12 : (int) vars.PlayerLevel >= 11 ? 10 : 8;
+        player.heal((1 + player.getRandom().nextInt(dieSize) + wismod) * 2.0f);
         vars.markSyncDirty();
         return true;
     }
 
-    /** SUPERIOR_DEFENSE (Monk lvl 18) — 3 Focus Points, resist all damage except Force. */
+    /**
+     * DEFLECT_ATTACKS (Monk Level 3) — Reaction: Eingehenden Schaden reduzieren.
+     * Wenn auf 0 reduziert: als Wurfgeschoss zurückwerfen (1 Focus Point).
+     */
+    private static boolean activateDeflectAttacks(ServerPlayer player) {
+        setFlag(player, "DEFLECT_ATTACKS_readied", true);
+        return true;
+    }
+
+    /**
+     * SLOW_FALL (Monk Level 4) — Reaction: Fallschaden um 5 × Monk-Level reduzieren.
+     */
+    private static boolean activateSlowFall(ServerPlayer player) {
+        setFlag(player, "SLOW_FALL_active", true);
+        // TODO: In LivingFallEvent einhaken und Schaden reduzieren
+        return true;
+    }
+
+    /**
+     * STUNNING_STRIKE (Monk Level 5) — On-Hit: 1 Focus Point → Ziel muss CON-Save bestehen
+     * oder wird bis Ende des nächsten Zuges betäubt.
+     */
+    private static boolean activateStunningStrike(ServerPlayer player) {
+        var vars = player.getData(DndModVariables.PLAYER_VARIABLES);
+        int remaining = AbilityDataUtils.getInt(vars, "FOCUS_POINTS_remaining", (int) vars.PlayerLevel);
+        if (remaining < 1) return false;
+        AbilityDataUtils.set(vars, "FOCUS_POINTS_remaining", remaining - 1);
+        setFlag(player, "STUNNING_STRIKE_readied", true);
+        vars.markSyncDirty();
+        return true;
+    }
+
+    /**
+     * SELF_RESTORATION (Monk Level 10) — Am Ende des eigenen Zuges: einen Zustand beenden
+     * (Charmed, Frightened, Poisoned etc.).
+     */
+    private static boolean activateSelfRestoration(ServerPlayer player) {
+        // Entfernt den ersten zutreffenden negativen Effekt
+        for (net.minecraft.core.Holder<MobEffect> effect : java.util.List.of(
+
+                DndModMobEffects.CHARMED,
+                MobEffects.POISON,
+                MobEffects.BLINDNESS,
+                MobEffects.WEAKNESS,
+                MobEffects.SLOWNESS
+        )) {
+            if (player.hasEffect(effect)) {
+                player.removeEffect(effect);
+                break;
+            }
+        }
+        // TODO: DndModMobEffects.FRIGHTENED entfernen
+        return true;
+    }
+
+    /**
+     * SUPERIOR_DEFENSE (Monk Level 18) — 3 Focus Points: Resistance auf alle Schadenstypen
+     * außer Force für 1 Runde.
+     */
     private static boolean activateSuperiorDefense(ServerPlayer player) {
         var vars = player.getData(DndModVariables.PLAYER_VARIABLES);
-        int remaining = AbilityDataUtils.getInt(vars, "FOCUS_POINTS_remaining",
-                (int) vars.PlayerLevel);
+        int remaining = AbilityDataUtils.getInt(vars, "FOCUS_POINTS_remaining", (int) vars.PlayerLevel);
         if (remaining < 3) return false;
         AbilityDataUtils.set(vars, "FOCUS_POINTS_remaining", remaining - 3);
-        AbilityDataUtils.set(vars, "SUPERIOR_DEFENSE_active", true);
+        setFlag(player, "SUPERIOR_DEFENSE_active", true);
         vars.markSyncDirty();
-        // TODO: apply resistance to all damage types except Force for 1 turn
+        // TODO: Resistance auf alle Schadenstypen außer Force für 1 Runde (20 Ticks)
+        net.luderspieler.dnd.DndMod.queueServerWork(20, () ->
+                setFlag(player, "SUPERIOR_DEFENSE_active", false));
         return true;
     }
 
-    /** UNCANNY_METABOLISM (Monk) — on Initiative: regain Focus Points + HP. */
-    private static boolean activateUncannyMetabolism(ServerPlayer player) {
-        // Called automatically by SelfTriggered on Initiative; also exposed here.
-        var vars = player.getData(DndModVariables.PLAYER_VARIABLES);
-        int heal  = player.getRandom().nextInt(
-                switch ((int) vars.PlayerLevel) {
-                    case 5,6,7,8,9,10 -> 8; case 11,12,13,14,15,16 -> 10; default -> 12;
-                }) + 1;
-        int wismod = Math.floorDiv((int) vars.Wisdom - 10, 2);
-        player.heal((heal + wismod) * 2f);
-        AbilityDataUtils.set(vars, "FOCUS_POINTS_remaining", (int) vars.PlayerLevel);
-        vars.markSyncDirty();
-        return true;
-    }
+    // ══════════════════════════════════════════════════════════════════
+    //  IMPLEMENTIERUNGEN — PALADIN
+    // ══════════════════════════════════════════════════════════════════
 
-    /** LAY_ON_HANDS (Paladin) — heal from pool. */
+    /**
+     * LAY_ON_HANDS (Paladin Level 1) — Heilung aus HP-Pool (5 × Level), 1 Long Rest.
+     * Heilt sich selbst (5 HP pro Aktivierung); Targeting leitet später auf Ziel.
+     */
     private static boolean activateLayOnHands(ServerPlayer player) {
         var vars = player.getData(DndModVariables.PLAYER_VARIABLES);
-        int pool = AbilityDataUtils.getInt(vars, "LAY_ON_HANDS_pool",
-                (int) vars.PlayerLevel * 5);
+        int pool = AbilityDataUtils.getInt(vars, "LAY_ON_HANDS_pool", (int) vars.PlayerLevel * 5);
         if (pool <= 0) return false;
-        // Heal self for up to 5 HP per activation (targeting will redirect this later)
         int heal = Math.min(5, pool);
-        player.heal(heal * 2f);
+        player.heal(heal * 2.0f);
         AbilityDataUtils.set(vars, "LAY_ON_HANDS_pool", pool - heal);
         vars.markSyncDirty();
         return true;
     }
 
-    /** CHANNEL_DIVINITY — Paladin version (Sacred Weapon). */
+    /**
+     * PALADINS_SMITE (Paladin Level 2) — On-Hit: Spell-Slot ausgeben für Radiant-Schaden.
+     */
+    private static boolean activatePaladinsSmite(ServerPlayer player) {
+        setFlag(player, "SMITE_readied", true);
+        // TODO: Sub-Wahl Slot-Grad → Schaden: 2d8 + 1d8/Grad über 1
+        return true;
+    }
+
+    /**
+     * RADIANT_SMITE (Paladin Level 2) — Smite emittiert Licht und kann blenden.
+     * Muss zusammen mit Paladins Smite aktiv sein.
+     */
+    private static boolean activateRadiantSmite(ServerPlayer player) {
+        setFlag(player, "RADIANT_SMITE_readied", true);
+        return true;
+    }
+
+    /**
+     * CHANNEL_DIVINITY_PALADIN (Paladin Level 3) — Sacred Weapon: +CHA zu Angriff für 1 min.
+     * 2 Ladungen/SR.
+     */
     private static boolean activateChannelDivinityPaladin(ServerPlayer player) {
         if (!hasUse(player, "CHANNEL_DIVINITY_PAL_uses", 2)) return false;
         consumeUse(player, "CHANNEL_DIVINITY_PAL_uses", 2);
-        // TODO: apply Sacred Weapon glow + CHA attack bonus
+        setFlag(player, "SACRED_WEAPON_active", true);
+        // TODO: CHA-Modifier auf Angriffswürfe + Glüh-Effekt auf Waffe
         return true;
     }
 
-    /** ABJURE_FOES (Paladin lvl 9) — frighten enemies, 1× per LR. */
+    /**
+     * FAITHFUL_STEED (Paladin Level 5) — Phantom Steed herbeirufen oder wiederbeleben.
+     */
+    private static boolean activateFaithfulSteed(ServerPlayer player) {
+        // TODO: Phantom Steed / Unicorn Entität spawnen (eigene Entity-Klasse nötig)
+        return true;
+    }
+
+    /**
+     * ABJURE_FOES (Paladin Level 9) — CHA-Mod Kreaturen werden frightened/geläuhmt, 1× LR.
+     */
     private static boolean activateAbjureFoes(ServerPlayer player) {
-        if (!hasUse(player, "ABJURE_FOES_uses", 1)) return false;
-        consumeUse(player, "ABJURE_FOES_uses", 1);
-        // TODO: apply Frightened to nearby entities
+        var vars = player.getData(DndModVariables.PLAYER_VARIABLES);
+        int maxUses = Math.max(1, Math.floorDiv((int) vars.Charisma - 10, 2));
+        if (!hasUse(player, "ABJURE_FOES_uses", maxUses)) return false;
+        consumeUse(player, "ABJURE_FOES_uses", maxUses);
+        // TODO: Frightened-Effekt auf nahe Kreaturen (WIS-Save gegen Spell Save DC)
         return true;
     }
 
-    /** PALADIN'S SMITE — expend spell slot for radiant damage on hit. */
-    private static boolean activatePaladinsSmite(ServerPlayer player) {
-        AbilityDataUtils.set(player.getData(DndModVariables.PLAYER_VARIABLES),
-                "SMITE_readied", true);
-        player.getData(DndModVariables.PLAYER_VARIABLES).markSyncDirty();
+    /**
+     * RESTORING_TOUCH (Paladin Level 14) — Erweiterung von Lay on Hands:
+     * 5 HP aus dem Pool ausgeben um einen Zustand zu beenden.
+     */
+    private static boolean activateRestoringTouch(ServerPlayer player) {
+        var vars = player.getData(DndModVariables.PLAYER_VARIABLES);
+        int pool = AbilityDataUtils.getInt(vars, "LAY_ON_HANDS_pool", (int) vars.PlayerLevel * 5);
+        if (pool < 5) return false;
+        AbilityDataUtils.set(vars, "LAY_ON_HANDS_pool", pool - 5);
+        vars.markSyncDirty();
+        // Entfernt einen Zustand beim Ziel (hier: beim Caster selbst als Platzhalter)
+        // TODO: Targeting → Zustand beim Ziel beenden (Blinded, Charmed, Frightened, etc.)
+        activateSelfRestoration(player);
         return true;
     }
 
-    /** TIRELESS (Ranger) — gain Temp HP + reduce Exhaustion. */
+    // ══════════════════════════════════════════════════════════════════
+    //  IMPLEMENTIERUNGEN — RANGER
+    // ══════════════════════════════════════════════════════════════════
+
+    /**
+     * TIRELESS (Ranger Level 10) — Temp HP = 1d8 + WIS-Mod, ProfBonus-mal/LR.
+     */
     private static boolean activateTireless(ServerPlayer player) {
         var vars = player.getData(DndModVariables.PLAYER_VARIABLES);
         int maxUses = (int) vars.ProficiencyBonus;
@@ -387,145 +766,207 @@ public class AbilityMethods_PlayerTriggered {
         consumeUse(player, "TIRELESS_uses", maxUses);
         int wismod = Math.floorDiv((int) vars.Wisdom - 10, 2);
         int tempHp = 1 + player.getRandom().nextInt(8) + wismod;
-        player.setAbsorptionAmount(player.getAbsorptionAmount() + tempHp * 2f);
+        player.setAbsorptionAmount(player.getAbsorptionAmount() + tempHp * 2.0f);
         return true;
     }
 
-    /** NATURE'S VEIL (Ranger lvl 14) — Invisible until start of next turn. */
+    /**
+     * NATURES_VEIL (Ranger Level 14) — Unsichtbar bis Beginn des nächsten Zuges,
+     * ProfBonus-mal/LR.
+     */
     private static boolean activateNaturesVeil(ServerPlayer player) {
         var vars = player.getData(DndModVariables.PLAYER_VARIABLES);
         int maxUses = (int) vars.ProficiencyBonus;
         if (!hasUse(player, "NATURES_VEIL_uses", maxUses)) return false;
         consumeUse(player, "NATURES_VEIL_uses", maxUses);
-        player.addEffect(new net.minecraft.world.effect.MobEffectInstance(
-                net.minecraft.world.effect.MobEffects.INVISIBILITY, 40, 0, false, false));
+        // 40 Ticks ≈ 2 Sek. als Platzhalter für "bis Beginn nächster Zug"
+        player.addEffect(new MobEffectInstance(
+                MobEffects.INVISIBILITY, 40, 0, false, false));
         return true;
     }
 
-    /** CUNNING_ACTION (Rogue) — Dash, Disengage, or Hide as BonusAction. */
+    // ══════════════════════════════════════════════════════════════════
+    //  IMPLEMENTIERUNGEN — ROGUE
+    // ══════════════════════════════════════════════════════════════════
+
+    /**
+     * CUNNING_ACTION (Rogue Level 2) — Bonus Action: Dash, Disengage oder Hide.
+     */
     private static boolean activateCunningAction(ServerPlayer player) {
-        AbilityDataUtils.set(player.getData(DndModVariables.PLAYER_VARIABLES),
-                "CUNNING_ACTION_readied", true);
-        player.getData(DndModVariables.PLAYER_VARIABLES).markSyncDirty();
-        // TODO: sub-choice Dash/Disengage/Hide
+        setFlag(player, "CUNNING_ACTION_readied", true);
+        // TODO: Sub-Wahl (Dash / Disengage / Hide)
         return true;
     }
 
-    /** STEADY_AIM (Rogue) — Advantage on next attack, speed = 0 this turn. */
+    /**
+     * STEADY_AIM (Rogue Level 3) — Bonus Action: Advantage auf nächsten Angriff,
+     * Geschwindigkeit = 0 diesen Zug.
+     */
     private static boolean activateSteadyAim(ServerPlayer player) {
-        AbilityDataUtils.set(player.getData(DndModVariables.PLAYER_VARIABLES),
-                "STEADY_AIM_active", true);
-        player.getData(DndModVariables.PLAYER_VARIABLES).markSyncDirty();
+        setFlag(player, "STEADY_AIM_active", true);
+        // TODO: Geschwindigkeit auf 0 setzen, Advantage auf nächsten Angriff
         return true;
     }
 
-    /** INNATE_SORCERY (Sorcerer) — advantage on spell attacks for 1 min, 2× per LR. */
+    /**
+     * CUNNING_STRIKE (Rogue Level 5) — Gibt Sneak-Attack-Würfel für Effekte aus.
+     * Optionen: Poison (1W), Trip (1W), Withdraw (1W), Distract (2W).
+     */
+    private static boolean activateCunningStrike(ServerPlayer player) {
+        setFlag(player, "CUNNING_STRIKE_readied", true);
+        // TODO: Sub-Wahl Effekt; Würfelanzahl von Sneak Attack abziehen
+        return true;
+    }
+
+    /**
+     * UNCANNY_DODGE (Rogue Level 5) — Reaction: Schaden eines sichtbaren Angreifers halbieren.
+     * Hinweis: SelfTriggered implementiert dies bereits automatisch. Dieser Wheel-Eintrag
+     * erlaubt dem Spieler die manuelle Kontrolle (z.B. als Toggle).
+     */
+    private static boolean activateUncannyDodge(ServerPlayer player) {
+        // Die eigentliche Implementierung läuft in AbilityMethods_SelfTriggered.handleUncannDodge()
+        // Hier als manuelle Bestätigung falls die Auto-Impl. auf expliziten Toggle umgestellt wird.
+        setFlag(player, "UNCANNY_DODGE_readied", true);
+        return true;
+    }
+
+    /**
+     * DEVIOUS_STRIKES (Rogue Level 14) — Erweiterte Cunning Strike Optionen:
+     * Daze (2W), Knock Out (6W), Obscure (3W).
+     */
+    private static boolean activateDeviousStrikes(ServerPlayer player) {
+        setFlag(player, "DEVIOUS_STRIKES_readied", true);
+        // TODO: Sub-Wahl (Daze / Knock Out / Obscure)
+        return true;
+    }
+
+    /**
+     * STROKE_OF_LUCK (Rogue Level 20) — Miss → Hit oder fehlgeschlagener Check → 20.
+     * 1 Ladung/SR oder LR.
+     */
+    private static boolean activateStrokeOfLuck(ServerPlayer player) {
+        if (!hasUse(player, "STROKE_OF_LUCK_uses", 1)) return false;
+        consumeUse(player, "STROKE_OF_LUCK_uses", 1);
+        setFlag(player, "STROKE_OF_LUCK_active", true);
+        // TODO: Nächsten Miss → Hit umwandeln oder fehlgeschlagenen Check auf 20 setzen
+        return true;
+    }
+
+    // ══════════════════════════════════════════════════════════════════
+    //  IMPLEMENTIERUNGEN — SORCERER
+    // ══════════════════════════════════════════════════════════════════
+
+    /**
+     * INNATE_SORCERY (Sorcerer Level 1) — Bonus Action: Advantage auf Spell Attacks
+     * für 1 min, 2× pro Long Rest.
+     */
     private static boolean activateInnateSorcery(ServerPlayer player) {
         if (!hasUse(player, "INNATE_SORCERY_uses", 2)) return false;
         consumeUse(player, "INNATE_SORCERY_uses", 2);
-        AbilityDataUtils.set(player.getData(DndModVariables.PLAYER_VARIABLES),
-                "INNATE_SORCERY_active", true);
-        player.getData(DndModVariables.PLAYER_VARIABLES).markSyncDirty();
+        setFlag(player, "INNATE_SORCERY_active", true);
+        net.luderspieler.dnd.DndMod.queueServerWork(1200, () -> {
+            if (player.isAlive()) setFlag(player, "INNATE_SORCERY_active", false);
+        });
         return true;
     }
 
-    /** FONT_OF_MAGIC (Sorcerer) — convert Sorcery Points ↔ Spell Slots. */
+    /**
+     * FONT_OF_MAGIC (Sorcerer Level 2) — Konvertiert Sorcery Points ↔ Spell Slots.
+     */
     private static boolean activateFontOfMagic(ServerPlayer player) {
-        // TODO: sub-choice (which direction, how many points/slots)
+        // TODO: Sub-Wahl Richtung und Menge
         return true;
     }
 
-    /** SORCEROUS_RESTORATION (Sorcerer) — regain 4 Sorcery Points on SR. */
-    private static boolean activateSorcerousRestoration(ServerPlayer player) {
-        var vars = player.getData(DndModVariables.PLAYER_VARIABLES);
-        AbilityDataUtils.increment(vars, "SORCERY_POINTS", 4);
-        vars.markSyncDirty();
+    /**
+     * METAMAGIC (Sorcerer Level 2) — Wählt Metamagic-Option für nächsten Zauber.
+     * Kostet Sorcery Points je nach Option.
+     */
+    private static boolean activateMetamagic(ServerPlayer player) {
+        setFlag(player, "METAMAGIC_readied", true);
+        // TODO: Sub-Wahl (Careful / Distant / Empowered / Extended / Heightened / Quickened / Subtle / Transmuted / Twinned)
         return true;
     }
 
-    /** MAGICAL_CUNNING (Warlock) — regain half Pact Magic slots. */
+    /**
+     * ARCANE_APOTHEOSIS (Sorcerer Level 20) — Während Innate Sorcery: 1× pro Zug
+     * Metamagic gratis (ohne Sorcery Points).
+     */
+    private static boolean activateArcaneApotheosis(ServerPlayer player) {
+        if (!AbilityDataUtils.getBool(
+                player.getData(DndModVariables.PLAYER_VARIABLES), "INNATE_SORCERY_active")) {
+            return false; // Nur aktiv während Innate Sorcery
+        }
+        setFlag(player, "ARCANE_APOTHEOSIS_active", true);
+        return true;
+    }
+
+    // ══════════════════════════════════════════════════════════════════
+    //  IMPLEMENTIERUNGEN — WARLOCK
+    // ══════════════════════════════════════════════════════════════════
+
+    /** MAGICAL_CUNNING — Hälfte der Pact Magic Slots zurückgewinnen, 1× LR. */
     private static boolean activateMagicalCunning(ServerPlayer player) {
         if (!hasUse(player, "MAGICAL_CUNNING_uses", 1)) return false;
         consumeUse(player, "MAGICAL_CUNNING_uses", 1);
-        // TODO: integrate with spell slot system
+        // TODO: Spell-Slot-System: halbe Pact-Magic-Slots wiederherstellen
         return true;
     }
 
-    /** CONTACT_PATRON (Warlock) — cast Commune for free, 1× per LR. */
+    /** CONTACT_PATRON — Commune gratis casten, 1× LR. */
     private static boolean activateContactPatron(ServerPlayer player) {
         if (!hasUse(player, "CONTACT_PATRON_uses", 1)) return false;
         consumeUse(player, "CONTACT_PATRON_uses", 1);
-        // TODO: trigger Commune spell effect
+        // TODO: Commune-Zauber via Zaubersystem auslösen
         return true;
     }
 
-    /** ELDRITCH_MASTER (Warlock) — 1-min ritual, regain all Pact Magic slots. */
+    /** ELDRITCH_MASTER — 1-min-Ritual: alle Pact Magic Slots zurückgewinnen, 1× LR. */
     private static boolean activateEldritchMaster(ServerPlayer player) {
         if (!hasUse(player, "ELDRITCH_MASTER_uses", 1)) return false;
         consumeUse(player, "ELDRITCH_MASTER_uses", 1);
-        // TODO: schedule slot refill after 1200 ticks (1 min)
+        // TODO: Nach 1200 Ticks (1 min) alle Slots wiederherstellen
         return true;
     }
 
-    /** MYSTIC_ARCANUM — cast the stored arcanum spell, 1× per LR per arcanum level. */
+    /**
+     * MYSTIC_ARCANUM / IMPROVED_MYSTIC_ARCANUM — Arcanum-Spell 1× pro LR casten.
+     * Welcher Spell je Arcanum-Stufe wird in AbilityData gespeichert.
+     */
     private static boolean activateMysticArcanum(ServerPlayer player, Ability which) {
         String key = which.name() + "_uses";
         if (!hasUse(player, key, 1)) return false;
         consumeUse(player, key, 1);
-        // TODO: trigger the stored arcanum spell via spell system
+        // TODO: Arcanum-Spell via Zaubersystem auslösen (gespeicherter Spell-Name)
+        // Slot-Grade: MYSTIC_ARCANUM=6, IMPROVED_ONE=7, IMPROVED_TWO=8, IMPROVED_THREE=9
         return true;
     }
 
-    /** ARCANE_RECOVERY (Wizard) — regain spell slots after Short Rest, 1× per LR. */
+    // ══════════════════════════════════════════════════════════════════
+    //  IMPLEMENTIERUNGEN — WIZARD
+    // ══════════════════════════════════════════════════════════════════
+
+    /**
+     * ARCANE_RECOVERY (Wizard Level 1) — Short Rest: Spell Slots bis Wizard-Level/2 zurückgewinnen.
+     * 1× pro Long Rest.
+     */
     private static boolean activateArcaneRecovery(ServerPlayer player) {
         if (!hasUse(player, "ARCANE_RECOVERY_uses", 1)) return false;
         consumeUse(player, "ARCANE_RECOVERY_uses", 1);
-        // TODO: sub-choice which slots to recover (up to half Wizard level)
+        // TODO: Sub-Wahl welche Slots zurückgewinnen (Summe der Grade ≤ Wizard-Level/2)
         return true;
     }
 
-    /** MEMORIZE_SPELLS (Wizard lvl 5) — swap prepared spells after Short Rest. */
+    /**
+     * MEMORIZE_SPELLS (Wizard Level 5) — Short Rest: einen vorbereiteten Zauber austauschen.
+     * ProfBonus-mal pro Long Rest.
+     */
     private static boolean activateMemorizeSpells(ServerPlayer player) {
         var vars = player.getData(DndModVariables.PLAYER_VARIABLES);
         int maxUses = (int) vars.ProficiencyBonus;
         if (!hasUse(player, "MEMORIZE_SPELLS_uses", maxUses)) return false;
         consumeUse(player, "MEMORIZE_SPELLS_uses", maxUses);
-        // TODO: open SpellPrepScreen restricted to current grade
+        // TODO: SpellPrepScreen öffnen (eingeschränkt auf aktuellen Grad)
         return true;
     }
-
-    // Goliath ancestry — stubs
-    private static boolean activateCloudsJaunt(ServerPlayer player)  {
-        if (!hasUse(player, "CLOUDS_JAUNT_uses", (int)player.getData(DndModVariables.PLAYER_VARIABLES).ProficiencyBonus)) return false;
-        consumeUse(player, "CLOUDS_JAUNT_uses", (int)player.getData(DndModVariables.PLAYER_VARIABLES).ProficiencyBonus);
-        // TODO: teleport 30ft to visible unoccupied space
-        return true;
-    }
-    private static boolean activateFiresBurn(ServerPlayer player) {
-        AbilityDataUtils.set(player.getData(DndModVariables.PLAYER_VARIABLES), "FIRES_BURN_readied", true);
-        player.getData(DndModVariables.PLAYER_VARIABLES).markSyncDirty();
-        return true;
-    }
-    private static boolean activateFrostsChill(ServerPlayer player) {
-        AbilityDataUtils.set(player.getData(DndModVariables.PLAYER_VARIABLES), "FROSTS_CHILL_readied", true);
-        player.getData(DndModVariables.PLAYER_VARIABLES).markSyncDirty();
-        return true;
-    }
-    private static boolean activateHillsTumble(ServerPlayer player) {
-        AbilityDataUtils.set(player.getData(DndModVariables.PLAYER_VARIABLES), "HILLS_TUMBLE_readied", true);
-        player.getData(DndModVariables.PLAYER_VARIABLES).markSyncDirty();
-        return true;
-    }
-    private static boolean activateStonesEndurance(ServerPlayer player) {
-        AbilityDataUtils.set(player.getData(DndModVariables.PLAYER_VARIABLES), "STONES_ENDURANCE_readied", true);
-        player.getData(DndModVariables.PLAYER_VARIABLES).markSyncDirty();
-        return true;
-    }
-    private static boolean activateStormsThunder(ServerPlayer player) {
-        AbilityDataUtils.set(player.getData(DndModVariables.PLAYER_VARIABLES), "STORMS_THUNDER_readied", true);
-        player.getData(DndModVariables.PLAYER_VARIABLES).markSyncDirty();
-        return true;
-    }
-    private static boolean activateCountercharm(ServerPlayer player)  { return true; /* TODO */ }
-    private static boolean activatePeerlessSkill(ServerPlayer player) { return true; /* TODO */ }
 }

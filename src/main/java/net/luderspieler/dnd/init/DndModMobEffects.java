@@ -20,4 +20,6 @@ public class DndModMobEffects {
 	public static final DeferredHolder<MobEffect, MobEffect> DECAYING_STARE = REGISTRY.register("decaying_stare", () -> new DecayingStareMobEffect());
 	public static final DeferredHolder<MobEffect, MobEffect> PETRIFIED = REGISTRY.register("petrified", () -> new PetrifiedMobEffect());
 	public static final DeferredHolder<MobEffect, MobEffect> HOVERING = REGISTRY.register("hovering", () -> new HoveringMobEffect());
+	public static final DeferredHolder<MobEffect, MobEffect> RAGE = REGISTRY.register("rage", () -> new RageMobEffect());
+	public static final DeferredHolder<MobEffect, MobEffect> LARGE_FORM = REGISTRY.register("large_form", () -> new LargeFormMobEffect());
 }

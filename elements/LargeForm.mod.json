@@ -1,0 +1,38 @@
+{
+  "_fv": 85,
+  "_type": "potioneffect",
+  "definition": {
+    "effectName": "Large Form",
+    "icon": "charmed",
+    "color": {
+      "value": -1,
+      "falpha": 0.0
+    },
+    "onAddedSound": {
+      "value": ""
+    },
+    "isInstant": false,
+    "mobEffectCategory": "BENEFICIAL",
+    "renderStatusInInventory": true,
+    "renderStatusInHUD": true,
+    "isCuredbyHoney": false,
+    "modifiers": [
+      {
+        "equipmentSlot": "any",
+        "attribute": {
+          "value": "SCALE"
+        },
+        "amount": 0.75,
+        "operation": "ADD_VALUE"
+      },
+      {
+        "equipmentSlot": "any",
+        "attribute": {
+          "value": "MOVEMENT_SPEED"
+        },
+        "amount": 0.03,
+        "operation": "ADD_VALUE"
+      }
+    ]
+  }
+}
