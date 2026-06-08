@@ -312,16 +312,21 @@ public class DndCommand {
     private static int setLevelAndSync(CommandSourceStack source, ServerPlayer player, int level) {
         DndModVariables.PlayerVariables vars = player.getData(DndModVariables.PLAYER_VARIABLES);
 
-        vars.PlayerLevel     = (double) level;
-        vars.PlayerXP        = LevelEvents.getRequiredXP(level);
+        vars.PlayerLevel      = (double) level;
+        vars.PlayerXP         = LevelEvents.getRequiredXP(level);
         vars.ProficiencyBonus = LevelEvents.getProficiencyBonus(level);
         vars.markSyncDirty();
 
         AbilityUtils.updateClassAbilities(player);
-        ChoiceUpdateSystem.updateChoices(player);
-        CharacterCreationPacket.applyAttrs(player); // recalculate HP/speed/attributes
 
-        source.sendSuccess(() -> Component.literal("§aLevel set to " + level + " — stats and choices updated."), true);
+        AbilityUtils.updateRaceAbilitiesForLevel(player, level);
+
+        ChoiceUpdateSystem.updateChoices(player);
+        CharacterCreationPacket.applyAttrs(player);
+
+        source.sendSuccess(
+                () -> Component.literal("§aLevel set to " + level + " — stats, abilities and choices updated."),
+                true);
         return 1;
     }
 

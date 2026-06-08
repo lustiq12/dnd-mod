@@ -1,7 +1,7 @@
 package net.luderspieler.dnd.character.network;
 
 import net.luderspieler.dnd.character.AbilitysAndFeats.AbilityMethods_OneTime;
-import net.luderspieler.dnd.character.AbilitysAndFeats.management.AbilityDataUtils;
+import net.luderspieler.dnd.character.AbilitysAndFeats.management.AbilityResetRegistry;
 import net.luderspieler.dnd.network.DndModVariables;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -34,34 +34,22 @@ public record KeepCharacterPacket() implements CustomPacketPayload {
             vars.FinishedCharacterCreation = true;
             vars.markSyncDirty();
 
-            // Recalculate all stat-based attributes (HP, speed, etc.)
+            // 1. Alle Stat-basierten Attribute neu berechnen (HP, Speed, etc.)
             CharacterCreationPacket.applyAttrs(player);
 
-            // Re-apply entity-level ability effects lost on respawn
-            // (Night Vision, Unarmored Defense armor mod, conditional speed mods)
-            AbilityMethods_OneTime.reapplyEntityEffects(player); // ← NEU
+            // 2. Entity-Level Ability-Effekte reaktivieren
+            //    (Night Vision für Darkvision, Unarmored Defense AC, Speed-Mods)
+            AbilityMethods_OneTime.reapplyEntityEffects(player);
 
-            // Reset long-rest ability uses that were active before death
-            resetAbilityUsesOnRespawn(player);                   // ← NEU
+            // 3. Tod = Long Rest: Ladungen auf Maximum setzen + Flags bereinigen
+            //
+            //    BUGFIX: Frühere Version löschte alle _uses-Einträge ohne sie neu zu
+            //    initialisieren → Spieler hatte nach Respawn keinerlei Ability-Ladungen
+            //    bis zum nächsten Schlaf. Jetzt korrekt über resetOnLongRest():
+            //      - Alle Long/Short-Rest-Abilities auf Max-Ladungen setzen
+            //      - _active / _readied Flags bereinigen
+            //      - ToughBonus und andere permanente Werte bleiben erhalten
+            AbilityResetRegistry.resetOnLongRest(player);
         });
-    }
-
-    private static void resetAbilityUsesOnRespawn(ServerPlayer player) {
-        var vars = player.getData(DndModVariables.PLAYER_VARIABLES);
-
-        // Clear all "_uses" and "_active" entries in AbilityData
-        // so the player starts with full uses after "sleeping" (=dying counts as long rest here).
-        var map = AbilityDataUtils.parse(vars.AbilityData);
-        map.entrySet().removeIf(e -> {
-            String key = e.getKey();
-            return key.endsWith("_uses") || key.endsWith("_active") || key.endsWith("_readied");
-        });
-        // Preserve permanent values like ToughBonus
-        vars.AbilityData = "{" + map.entrySet().stream()
-                .map(e -> e.getKey() + "=" + e.getValue())
-                .collect(java.util.stream.Collectors.joining(",")) + "}";
-        if (vars.AbilityData.equals("{}")) vars.AbilityData = "";
-
-        vars.markSyncDirty();
     }
 }
