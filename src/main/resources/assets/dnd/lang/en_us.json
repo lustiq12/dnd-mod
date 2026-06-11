@@ -27,5 +27,7 @@
   "item.dnd.gelatinous_cube_spawn_egg": "Gelatinous Cube Spawn Egg",
   "entity.dnd.gelatinous_cube": "Gelatinous Cube",
   "effect.dnd.rage": "Rage",
-  "effect.dnd.large_form": "Large Form"
+  "effect.dnd.large_form": "Large Form",
+  "entity.dnd.goristro": "Goristro",
+  "item.dnd.goristro_spawn_egg": "Goristro Spawn Egg"
 }

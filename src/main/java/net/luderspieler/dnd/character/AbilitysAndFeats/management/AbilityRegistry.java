@@ -177,7 +177,7 @@ public class AbilityRegistry {
 
     public static final List<Ability> DRAGONBORN = Arrays.asList(
             Ability.DRACONIC_ANCESTRY, Ability.BREATH_WEAPON,
-            Ability.DAMAGE_RESISTANCE_DRAGONBORN, Ability.DARKVISION_60, Ability.FLIGHT
+            Ability.DAMAGE_RESISTANCE_DRAGONBORN, Ability.DARKVISION_60
     );
 
     public static final List<Ability> GNOME = Arrays.asList(
@@ -239,6 +239,20 @@ public class AbilityRegistry {
     public static final Map<String, List<Ability>> HALFLING_SUBRACES = new HashMap<>();
     /** Aasimar Celestial Revelation is a level-3 choice, not a creation-time subrace. */
     public static final Map<String, List<Ability>> AASIMAR_SUBRACES  = new HashMap<>();
+
+    public static final Map<String, Map<Integer, List<Ability>>> RACE_LEVELED_ABILITIES =
+            new java.util.HashMap<>() {{
+                // Dragonborn: Flügel ab Level 5
+                put("dragonborn", new LinkedHashMap<>() {{
+                    put(5, Arrays.asList(Ability.FLIGHT));
+                }});
+
+                // Aasimar: Celestial Revelation ab Level 3 (war bisher als ChoiceUpdateSystem-TODO
+                // markiert aber nie implementiert — jetzt korrekt level-gated)
+                put("aasimar", new LinkedHashMap<>() {{
+                    put(3, Arrays.asList(Ability.CELESTIAL_REVELATION));
+                }});
+            }};
 
     // ==================== GETTER METHODS ====================
 

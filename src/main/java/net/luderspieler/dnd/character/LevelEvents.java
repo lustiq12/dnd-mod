@@ -1,6 +1,6 @@
 package net.luderspieler.dnd.character;
 
-import net.luderspieler.dnd.character.AbilitysAndFeats.management.Ability;
+import net.luderspieler.dnd.character.AbilitysAndFeats.management.AbilityUtils;
 import net.luderspieler.dnd.character.choices.ChoiceUpdateSystem;
 import net.luderspieler.dnd.character.network.CharacterCreationPacket;
 import net.luderspieler.dnd.network.DndModVariables;
@@ -28,88 +28,76 @@ public class LevelEvents {
         int currentLevel = (int) vars.PlayerLevel;
         int nextLevel = currentLevel;
 
-        // Berechne wie viele Level aufgestiegen wurde
         while (nextLevel < 20 && vars.PlayerXP >= getRequiredXP(nextLevel + 1)) {
             nextLevel++;
         }
 
         if (nextLevel > currentLevel) {
-            // Nutze die gruppierte Methode für das Level-Up
             updatePlayerLevel(serverPlayer, nextLevel, false);
-
             serverPlayer.displayClientMessage(
                     Component.literal("§6§lLEVEL UP! §fYou are now Level " + nextLevel),
                     false);
         } else {
-            // Falls kein Level-Up, nur XP synchronisieren
             vars.markSyncDirty();
         }
     }
 
     // ════════════════════════════════════════════════════════════════════════════
-    //  SHARED STATIC HELPERS  (used by DndCommand as well)
+    //  SHARED STATIC HELPERS
     // ════════════════════════════════════════════════════════════════════════════
 
     /**
-     * Reads the abilities unlocked at {@code level} for {@code classId},
-     * maps any ability that requires a player choice to its choice-ID,
-     * and appends those IDs to {@code vars.ChoicesNeeded}.
+     * Setzt das Level des Spielers, aktualisiert alle Abilities (Klasse + Rasse level-gebunden),
+     * berechnet Attribute neu und triggert Choice-Updates.
      *
-     * To add new choice types, extend {@link #choiceIdForAbility(Ability)}.
-     */
-
-    /**
-     * Maps a class ability to the choice-ID shown in {@link net.luderspieler.dnd.character.choices.LevelingChoiceScreen}.
-     * Returns {@code null} for abilities that need no player input.
-     *
-     * Extend this switch as you add more entries to ChoiceRegistry.
-     */
-
-
-    /**
-     * Update player level by setting proficiency bonus, setting xp if needed when set manually, applying attributes and
-     * adding the character advancement choices needed
+     * BUGFIX: Frühere Version rief updateClassAbilities() nicht auf im XP-Pfad,
+     * und updateRaceAbilitiesForLevel() existierte noch nicht.
      */
     public static void updatePlayerLevel(ServerPlayer player, int targetLevel, boolean silent) {
-        // Variablen intern abrufen
         DndModVariables.PlayerVariables vars = player.getData(DndModVariables.PLAYER_VARIABLES);
-        int oldLevel = (int) vars.PlayerLevel;
 
-        // 1. Werte setzen
-        vars.PlayerLevel = targetLevel;
-        vars.PlayerXP = getRequiredXP(targetLevel);
+        // 1. Level-Werte setzen
+        vars.PlayerLevel     = targetLevel;
+        vars.PlayerXP        = getRequiredXP(targetLevel);
         vars.ProficiencyBonus = getProficiencyBonus(targetLevel);
 
+        // 2. Neue Klassen-Abilities freischalten
+        //    (ruft addAbility() auf → _uses werden sofort initialisiert)
+        AbilityUtils.updateClassAbilities(player);
 
-        // 3. Stats & HP aktualisieren (nutzt das Packet-Backend)
+        // 3. Level-gebundene Rassen-Abilities freischalten
+        //    z.B. Dragonborn FLIGHT ab Level 5, Aasimar CELESTIAL_REVELATION ab Level 3
+        AbilityUtils.updateRaceAbilitiesForLevel(player, targetLevel);
+
+        // 4. HP, Geschwindigkeit und alle Attribut-Modifier neu berechnen
         CharacterCreationPacket.applyAttrs(player);
+
+        // 5. ASI/Feat/Subclass-Choices aktualisieren
         ChoiceUpdateSystem.updateChoices(player);
 
-        // 4. Speichern & Sync
+        // 6. Sync
         vars.markSyncDirty();
 
         if (!silent) {
             player.displayClientMessage(
                     Component.literal("§6§lLevel set to " + targetLevel + "!"),
-                    false
-            );
+                    false);
         }
     }
+
     /**
-     * Standard D&D 5e proficiency bonus by character level.
-     * Public so DndCommand can reuse it.
+     * Standard D&D 5e/2024 Proficiency Bonus nach Character-Level.
      */
     public static int getProficiencyBonus(int level) {
         if (level >= 17) return 6;
         if (level >= 13) return 5;
         if (level >= 9)  return 4;
         if (level >= 5)  return 3;
-        return 2; // levels 1-4
+        return 2;
     }
 
     /**
-     * Minimum XP required to reach {@code level}.
-     * Public so DndCommand can set PlayerXP correctly.
+     * Mindest-XP für ein bestimmtes Level.
      */
     public static long getRequiredXP(int level) {
         return switch (level) {

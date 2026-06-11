@@ -24,5 +24,6 @@ public class DndModEntityRenderers {
 		event.registerEntityRenderer(DndModEntities.MEDUSA.get(), MedusaRenderer::new);
 		event.registerEntityRenderer(DndModEntities.SPEAR_PROJECTILE.get(), ThrownItemRenderer::new);
 		event.registerEntityRenderer(DndModEntities.GELATINOUS_CUBE.get(), GelatinousCubeRenderer::new);
+		event.registerEntityRenderer(DndModEntities.GORISTRO.get(), GoristroRenderer::new);
 	}
 }

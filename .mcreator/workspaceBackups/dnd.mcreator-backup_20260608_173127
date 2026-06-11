@@ -969,7 +969,7 @@
       "name": "Rage",
       "type": "potioneffect",
       "compiles": true,
-      "locked_code": false,
+      "locked_code": true,
       "registry_name": "rage",
       "metadata": {
         "files": [
@@ -977,6 +977,150 @@
         ]
       },
       "path": "~/Potions"
+    },
+    {
+      "name": "LargeForm",
+      "type": "potioneffect",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "large_form",
+      "metadata": {
+        "files": [
+          "src/main/java/net/luderspieler/dnd/potion/LargeFormMobEffect.java"
+        ]
+      },
+      "path": "~/Potions"
+    },
+    {
+      "name": "Goristro",
+      "type": "livingentity",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "goristro",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/dnd/neoforge/biome_modifier/goristro_biome_modifier.json",
+          "src/main/java/net/luderspieler/dnd/entity/GoristroEntity.java",
+          "src/main/java/net/luderspieler/dnd/client/renderer/GoristroRenderer.java",
+          "src/main/resources/assets/dnd/models/item/goristro_spawn_egg.json",
+          "src/main/resources/assets/dnd/items/goristro_spawn_egg.json"
+        ]
+      },
+      "path": "~/Monsters"
+    },
+    {
+      "name": "GoristroAttackPlaybackCondition",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "goristro_attack_playback_condition",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "return_type": "logic",
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/GoristroAttackPlaybackConditionProcedure.java"
+        ]
+      },
+      "path": "~/Monsters/Goristro"
+    },
+    {
+      "name": "GoristroAnimSync",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "goristro_anim_sync",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "damagesource",
+            "type": "damagesource"
+          },
+          {
+            "name": "entity",
+            "type": "entity"
+          },
+          {
+            "name": "immediatesourceentity",
+            "type": "entity"
+          },
+          {
+            "name": "amount",
+            "type": "number"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/GoristroAnimSyncProcedure.java"
+        ]
+      },
+      "path": "~/Monsters/Goristro"
+    },
+    {
+      "name": "GoristroRoarPlaybackCondition",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "goristro_roar_playback_condition",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "return_type": "logic",
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/GoristroRoarPlaybackConditionProcedure.java"
+        ]
+      },
+      "path": "~/Monsters/Goristro"
+    },
+    {
+      "name": "GoristroIdlePlaybackCondition",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "goristro_idle_playback_condition",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "return_type": "logic",
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/GoristroIdlePlaybackConditionProcedure.java"
+        ]
+      },
+      "path": "~/Monsters/Goristro"
+    },
+    {
+      "name": "GoristroIdleCooldown",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "goristro_idle_cooldown",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/GoristroIdleCooldownProcedure.java"
+        ]
+      },
+      "path": "~/Monsters/Goristro"
     }
   ],
   "variable_elements": [
@@ -1352,7 +1496,10 @@
       "item_group.dnd.dnd_weapons": "D\u0026D Weapons",
       "item.dnd.gelatinous_cube_spawn_egg": "Gelatinous Cube Spawn Egg",
       "entity.dnd.gelatinous_cube": "Gelatinous Cube",
-      "effect.dnd.rage": "Rage"
+      "effect.dnd.rage": "Rage",
+      "effect.dnd.large_form": "Large Form",
+      "entity.dnd.goristro": "Goristro",
+      "item.dnd.goristro_spawn_egg": "Goristro Spawn Egg"
     }
   },
   "metadata": {
@@ -1412,6 +1559,10 @@
           },
           {
             "name": "Medusa",
+            "children": []
+          },
+          {
+            "name": "Goristro",
             "children": []
           }
         ]

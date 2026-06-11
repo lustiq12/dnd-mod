@@ -23,6 +23,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.luderspieler.dnd.spells.SpellEvents;
 import net.luderspieler.dnd.spells.BlockUpdater;
 import net.luderspieler.dnd.rests.SleepingIntereferer;
+import net.luderspieler.dnd.resources.ResourceHudOverlay;
 import net.luderspieler.dnd.network.DndModVariables;
 import net.luderspieler.dnd.init.DndModTabs;
 import net.luderspieler.dnd.init.DndModSounds;
@@ -77,6 +78,7 @@ public class DndMod {
 		NeoForge.EVENT_BUS.register(new SpellEvents());
 		NeoForge.EVENT_BUS.register(new BlockUpdater());
 		NeoForge.EVENT_BUS.register(new AbilityMethods_SelfTriggered());
+		NeoForge.EVENT_BUS.register(new ResourceHudOverlay());
 		// End of user code block mod init
 	}
 

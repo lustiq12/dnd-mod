@@ -53,6 +53,10 @@ public class DndModEntities {
 			EntityType.Builder.<GelatinousCubeEntity>of(GelatinousCubeEntity::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3)
 
 					.sized(1.5f, 1.5f));
+	public static final DeferredHolder<EntityType<?>, EntityType<GoristroEntity>> GORISTRO = register("goristro",
+			EntityType.Builder.<GoristroEntity>of(GoristroEntity::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3)
+
+					.sized(0.6f, 1.8f));
 
 	// Start of user code block custom entities
 	// End of user code block custom entities
@@ -69,6 +73,7 @@ public class DndModEntities {
 		VampireEntity.init(event);
 		MedusaEntity.init(event);
 		GelatinousCubeEntity.init(event);
+		GoristroEntity.init(event);
 	}
 
 	@SubscribeEvent
@@ -80,5 +85,6 @@ public class DndModEntities {
 		event.put(VAMPIRE.get(), VampireEntity.createAttributes().build());
 		event.put(MEDUSA.get(), MedusaEntity.createAttributes().build());
 		event.put(GELATINOUS_CUBE.get(), GelatinousCubeEntity.createAttributes().build());
+		event.put(GORISTRO.get(), GoristroEntity.createAttributes().build());
 	}
 }

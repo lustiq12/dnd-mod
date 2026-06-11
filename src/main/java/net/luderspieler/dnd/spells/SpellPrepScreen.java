@@ -34,21 +34,6 @@ public class SpellPrepScreen extends Screen {
     private static final int TAB_W       = 28;
     private static final int SCROLL_STEP = ROW_H;
 
-    // ── Colors ──────────────────────────────────────────────────
-    private static final int COL_BG          = 0xEE0D1B2A;
-    private static final int COL_PANEL       = 0xCC1C2541;
-    private static final int COL_PANEL_EDGE  = 0xFF53D8FB;
-    private static final int COL_ROW_HOVER   = 0x882E4A8C;
-    private static final int COL_ROW_FULL    = 0x44FF2222;  // can't add more
-    private static final int COL_TAB_ACTIVE  = 0xFF2E4A8C;
-    private static final int COL_TAB_IDLE    = 0xFF1C2541;
-    private static final int COL_TEXT        = 0xFFFFFFFF;
-    private static final int COL_TEXT_DIM    = 0xFF888888;
-    private static final int COL_TEXT_HOV    = 0xFF53D8FB;
-    private static final int COL_REMOVE      = 0xFFFF6666;
-    private static final int COL_CANTRIP_TAB = 0xFFA06010;
-    private static final int COL_TEXT_WIP = 0xFFFFA500; // Orange für Work in Progress
-
 
     private final Screen parent;
 

@@ -537,26 +537,6 @@
       "path": "~/Monsters/Nothic"
     },
     {
-      "name": "NothicIdlePlaybackCondition",
-      "type": "procedure",
-      "compiles": true,
-      "locked_code": false,
-      "registry_name": "nothic_idle_playback_condition",
-      "metadata": {
-        "dependencies": [
-          {
-            "name": "entity",
-            "type": "entity"
-          }
-        ],
-        "return_type": "logic",
-        "files": [
-          "src/main/java/net/luderspieler/dnd/procedures/NothicIdlePlaybackConditionProcedure.java"
-        ]
-      },
-      "path": "~/Monsters/Nothic"
-    },
-    {
       "name": "Vampire",
       "type": "livingentity",
       "compiles": true,
@@ -969,24 +949,64 @@
       "path": "~/Weapons"
     },
     {
-      "name": "NothicWalkPlaybackCondition",
-      "type": "procedure",
+      "name": "GelatinousCube",
+      "type": "livingentity",
       "compiles": true,
       "locked_code": false,
-      "registry_name": "nothic_walk_playback_condition",
+      "registry_name": "gelatinous_cube",
       "metadata": {
-        "dependencies": [
-          {
-            "name": "entity",
-            "type": "entity"
-          }
-        ],
-        "return_type": "logic",
         "files": [
-          "src/main/java/net/luderspieler/dnd/procedures/NothicWalkPlaybackConditionProcedure.java"
+          "src/main/java/net/luderspieler/dnd/entity/GelatinousCubeEntity.java",
+          "src/main/resources/assets/dnd/models/item/gelatinous_cube_spawn_egg.json",
+          "src/main/resources/assets/dnd/items/gelatinous_cube_spawn_egg.json",
+          "src/main/resources/data/dnd/neoforge/biome_modifier/gelatinous_cube_biome_modifier.json",
+          "src/main/java/net/luderspieler/dnd/client/renderer/GelatinousCubeRenderer.java"
         ]
       },
-      "path": "~/Monsters/Nothic"
+      "path": "~/Monsters"
+    },
+    {
+      "name": "Rage",
+      "type": "potioneffect",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "rage",
+      "metadata": {
+        "files": [
+          "src/main/java/net/luderspieler/dnd/potion/RageMobEffect.java"
+        ]
+      },
+      "path": "~/Potions"
+    },
+    {
+      "name": "LargeForm",
+      "type": "potioneffect",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "large_form",
+      "metadata": {
+        "files": [
+          "src/main/java/net/luderspieler/dnd/potion/LargeFormMobEffect.java"
+        ]
+      },
+      "path": "~/Potions"
+    },
+    {
+      "name": "Goristro",
+      "type": "livingentity",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "goristro",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/dnd/neoforge/biome_modifier/goristro_biome_modifier.json",
+          "src/main/java/net/luderspieler/dnd/entity/GoristroEntity.java",
+          "src/main/java/net/luderspieler/dnd/client/renderer/GoristroRenderer.java",
+          "src/main/resources/assets/dnd/models/item/goristro_spawn_egg.json",
+          "src/main/resources/assets/dnd/items/goristro_spawn_egg.json"
+        ]
+      },
+      "path": "~/Monsters"
     }
   ],
   "variable_elements": [
@@ -1359,7 +1379,13 @@
       "effect.dnd.hovering": "Hovering",
       "key.dnd.abilities": "Abilities",
       "item.dnd.spear": "Spear",
-      "item_group.dnd.dnd_weapons": "D\u0026D Weapons"
+      "item_group.dnd.dnd_weapons": "D\u0026D Weapons",
+      "item.dnd.gelatinous_cube_spawn_egg": "Gelatinous Cube Spawn Egg",
+      "entity.dnd.gelatinous_cube": "Gelatinous Cube",
+      "effect.dnd.rage": "Rage",
+      "effect.dnd.large_form": "Large Form",
+      "entity.dnd.goristro": "Goristro",
+      "item.dnd.goristro_spawn_egg": "Goristro Spawn Egg"
     }
   },
   "metadata": {

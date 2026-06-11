@@ -24,6 +24,7 @@ public class DndModItems {
 	public static final DeferredItem<Item> MEDUSA_SPAWN_EGG;
 	public static final DeferredItem<Item> SPEAR;
 	public static final DeferredItem<Item> GELATINOUS_CUBE_SPAWN_EGG;
+	public static final DeferredItem<Item> GORISTRO_SPAWN_EGG;
 	static {
 		STIRGE_SPAWN_EGG = register("stirge_spawn_egg", properties -> new SpawnEggItem(DndModEntities.STIRGE.get(), properties));
 		SCARECROW_SPAWN_EGG = register("scarecrow_spawn_egg", properties -> new SpawnEggItem(DndModEntities.SCARECROW.get(), properties));
@@ -33,6 +34,7 @@ public class DndModItems {
 		MEDUSA_SPAWN_EGG = register("medusa_spawn_egg", properties -> new SpawnEggItem(DndModEntities.MEDUSA.get(), properties));
 		SPEAR = register("spear", SpearItem::new);
 		GELATINOUS_CUBE_SPAWN_EGG = register("gelatinous_cube_spawn_egg", properties -> new SpawnEggItem(DndModEntities.GELATINOUS_CUBE.get(), properties));
+		GORISTRO_SPAWN_EGG = register("goristro_spawn_egg", properties -> new SpawnEggItem(DndModEntities.GORISTRO.get(), properties));
 	}
 
 	// Start of user code block custom items

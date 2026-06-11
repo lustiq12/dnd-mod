@@ -35,6 +35,7 @@ public class DndModTabs {
 			tabData.accept(DndModItems.VAMPIRE_SPAWN_EGG.get());
 			tabData.accept(DndModItems.MEDUSA_SPAWN_EGG.get());
 			tabData.accept(DndModItems.GELATINOUS_CUBE_SPAWN_EGG.get());
+			tabData.accept(DndModItems.GORISTRO_SPAWN_EGG.get());
 		}
 	}
 }

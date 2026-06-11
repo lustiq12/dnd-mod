@@ -17,6 +17,7 @@ public class DndModModels {
 		event.registerLayerDefinition(Modelmedusa.LAYER_LOCATION, Modelmedusa::createBodyLayer);
 		event.registerLayerDefinition(ModelStirge.LAYER_LOCATION, ModelStirge::createBodyLayer);
 		event.registerLayerDefinition(Modelvampire.LAYER_LOCATION, Modelvampire::createBodyLayer);
+		event.registerLayerDefinition(Modelgoristro.LAYER_LOCATION, Modelgoristro::createBodyLayer);
 		event.registerLayerDefinition(Modelscarecrow.LAYER_LOCATION, Modelscarecrow::createBodyLayer);
 		event.registerLayerDefinition(ModelHarpy.LAYER_LOCATION, ModelHarpy::createBodyLayer);
 		event.registerLayerDefinition(Modelgelatinous_cube.LAYER_LOCATION, Modelgelatinous_cube::createBodyLayer);
