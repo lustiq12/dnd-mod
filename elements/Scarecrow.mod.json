@@ -167,6 +167,9 @@
         "value": false
       }
     ],
+    "whenMobIsHurt": {
+      "name": "ScarecrowEntityIsHurt"
+    },
     "onMobTickUpdate": {
       "name": "ScareCrowIdleCooldown"
     },

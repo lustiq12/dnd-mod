@@ -29,6 +29,7 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.core.registries.BuiltInRegistries;
 
+import net.luderspieler.dnd.procedures.ScarecrowEntityIsHurtProcedure;
 import net.luderspieler.dnd.procedures.ScareCrowIdleCooldownProcedure;
 import net.luderspieler.dnd.procedures.ScareCrowAttackPlaybackConditionProcedure;
 import net.luderspieler.dnd.procedures.ScareCrowAttackConditionProcedure;
@@ -123,6 +124,15 @@ public class ScarecrowEntity extends Monster {
 
 	@Override
 	public boolean hurtServer(ServerLevel level, DamageSource damagesource, float amount) {
+		double x = this.getX();
+		double y = this.getY();
+		double z = this.getZ();
+		Level world = this.level();
+		Entity entity = this;
+		Entity sourceentity = damagesource.getEntity();
+		Entity immediatesourceentity = damagesource.getDirectEntity();
+
+		ScarecrowEntityIsHurtProcedure.execute(world, x, y, z, entity);
 		if (damagesource.getDirectEntity() instanceof AbstractThrownPotion || damagesource.getDirectEntity() instanceof AreaEffectCloud || damagesource.typeHolder().is(NeoForgeMod.POISON_DAMAGE))
 			return false;
 		if (damagesource.is(DamageTypes.FALL))

@@ -1114,6 +1114,22 @@
           {
             "name": "entity",
             "type": "entity"
+          },
+          {
+            "name": "x",
+            "type": "number"
+          },
+          {
+            "name": "y",
+            "type": "number"
+          },
+          {
+            "name": "z",
+            "type": "number"
+          },
+          {
+            "name": "world",
+            "type": "world"
           }
         ],
         "files": [
@@ -1121,6 +1137,20 @@
         ]
       },
       "path": "~/Monsters/Goristro"
+    },
+    {
+      "name": "ScarecrowEntityIsHurt",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "scarecrow_entity_is_hurt",
+      "metadata": {
+        "dependencies": [],
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/ScarecrowEntityIsHurtProcedure.java"
+        ]
+      },
+      "path": "~/Monsters/Scarecrow"
     }
   ],
   "variable_elements": [
@@ -1399,6 +1429,42 @@
       "type": "string",
       "scope": "player_persistent",
       "value": "\"\""
+    },
+    {
+      "name": "StrengthBonus",
+      "type": "number",
+      "scope": "player_persistent",
+      "value": "0"
+    },
+    {
+      "name": "DexterityBonus",
+      "type": "number",
+      "scope": "player_persistent",
+      "value": "0"
+    },
+    {
+      "name": "ConstitutionBonus",
+      "type": "number",
+      "scope": "player_persistent",
+      "value": "0"
+    },
+    {
+      "name": "IntelligenceBonus",
+      "type": "number",
+      "scope": "player_persistent",
+      "value": "0"
+    },
+    {
+      "name": "WisdomBonus",
+      "type": "number",
+      "scope": "player_persistent",
+      "value": "0"
+    },
+    {
+      "name": "CharismaBonus",
+      "type": "number",
+      "scope": "player_persistent",
+      "value": "0"
     }
   ],
   "sound_elements": [
