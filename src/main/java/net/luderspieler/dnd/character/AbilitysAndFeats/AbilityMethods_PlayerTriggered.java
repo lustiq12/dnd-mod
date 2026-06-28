@@ -5,10 +5,14 @@ import net.luderspieler.dnd.character.AbilitysAndFeats.management.AbilityDataUti
 import net.luderspieler.dnd.character.AbilitysAndFeats.management.AbilityUtils;
 import net.luderspieler.dnd.init.DndModMobEffects;
 import net.luderspieler.dnd.network.DndModVariables;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+
+import java.util.Arrays;
+import java.util.Set;
 
 /**
  * Implementierungen für alle PLAYER_TRIGGERED-Abilities.
@@ -27,6 +31,10 @@ public class AbilityMethods_PlayerTriggered {
     // ── ENTRY POINT ───────────────────────────────────────────────────
 
     public static boolean activate(ServerPlayer player, Ability ability) {
+        return activate(player, ability, "");
+    }
+
+    public static boolean activate(ServerPlayer player, Ability ability, String subAction) {
         if (!AbilityUtils.hasAbility(player, ability)) return false;
         return switch (ability) {
 
@@ -64,7 +72,6 @@ public class AbilityMethods_PlayerTriggered {
             case PEERLESS_SKILL          -> activatePeerlessSkill(player);
 
             // ── CLERIC ───────────────────────────────────────────────────
-            // IMPROVED_DIVINE_INTERVENTION_ONE ist dieselbe Aktion, nur auto-success
             case CHANNEL_DIVINITY        -> activateChannelDivinity(player);
             case DIVINE_INTERVENTION,
                  IMPROVED_DIVINE_INTERVENTION_ONE -> activateDivineIntervention(player);
@@ -82,7 +89,8 @@ public class AbilityMethods_PlayerTriggered {
             case TACTICAL_MASTER         -> activateTacticalMaster(player);
 
             // ── MONK ─────────────────────────────────────────────────────
-            case FOCUS_POINTS            -> activateFocusPoints(player);
+            // subAction gibt die konkrete Focus-Aktion an (FLURRY_OF_BLOWS usw.)
+            case FOCUS_POINTS            -> activateFocusPoints(player, subAction);
             case UNCANNY_METABOLISM      -> activateUncannyMetabolism(player);
             case DEFLECT_ATTACKS         -> activateDeflectAttacks(player);
             case SLOW_FALL               -> activateSlowFall(player);
@@ -113,8 +121,10 @@ public class AbilityMethods_PlayerTriggered {
 
             // ── SORCERER ─────────────────────────────────────────────────
             case INNATE_SORCERY          -> activateInnateSorcery(player);
-            case FONT_OF_MAGIC           -> activateFontOfMagic(player);
-            case METAMAGIC               -> activateMetamagic(player);
+            // subAction = "SLOT_1" … "SLOT_5"
+            case FONT_OF_MAGIC           -> activateFontOfMagic(player, subAction);
+            // subAction = "CAREFUL_SPELL" … "TWINNED_SPELL"
+            case METAMAGIC               -> activateMetamagic(player, subAction);
             case ARCANE_APOTHEOSIS       -> activateArcaneApotheosis(player);
 
             // ── WARLOCK ──────────────────────────────────────────────────
@@ -564,12 +574,62 @@ public class AbilityMethods_PlayerTriggered {
      * Patient Defense, Step of the Wind.
      * Ladungen = Monk-Level.
      */
-    private static boolean activateFocusPoints(ServerPlayer player) {
+    private static boolean activateFocusPoints(ServerPlayer player, String subAction) {
         var vars = player.getData(DndModVariables.PLAYER_VARIABLES);
-        if (AbilityDataUtils.getInt(vars, "FOCUS_POINTS_remaining", (int) vars.PlayerLevel) < 1)
-            return false;
-        // TODO: Sub-Wahl-Popup (Flurry / Patient Defense / Step of the Wind)
-        return true;
+        int remaining = AbilityDataUtils.getInt(vars, "FOCUS_POINTS_remaining",
+                (int) vars.PlayerLevel);
+
+        // Kein subAction → Sub-Wheel ist client-seitig schon offen; nichts zu tun.
+        if (subAction == null || subAction.isBlank()) {
+            return remaining > 0;
+        }
+
+        int cost = switch (subAction) {
+            case "FLURRY_OF_BLOWS", "PATIENT_DEFENSE", "STEP_OF_THE_WIND" -> 1;
+            default -> -1;
+        };
+
+        if (cost < 0 || remaining < cost) return false;
+
+        AbilityDataUtils.set(vars, "FOCUS_POINTS_remaining", remaining - cost);
+        vars.markSyncDirty();
+
+        return switch (subAction) {
+            case "FLURRY_OF_BLOWS" -> {
+                player.addEffect(new MobEffectInstance(
+                        MobEffects.HASTE, 10, 2, false, false, false));
+                AbilityDataUtils.set(vars, "FLURRY_remaining", 2);
+                vars.markSyncDirty();
+                player.displayClientMessage(
+                        Component.literal("§9Flurry of Blows ready!"), true);
+                yield true;
+            }
+            case "PATIENT_DEFENSE" -> {
+                player.addEffect(new MobEffectInstance(
+                        MobEffects.RESISTANCE, 20, 0, false, false, false));
+                player.addEffect(new MobEffectInstance(
+                        MobEffects.SPEED, 20, 1, false, false, false));
+                AbilityDataUtils.set(vars, "PATIENT_DEFENSE_active", true);
+                vars.markSyncDirty();
+                net.luderspieler.dnd.DndMod.queueServerWork(20, () -> {
+                    AbilityDataUtils.set(vars, "PATIENT_DEFENSE_active", false);
+                    vars.markSyncDirty();
+                });
+                player.displayClientMessage(
+                        Component.literal("§9Patient Defense!"), true);
+                yield true;
+            }
+            case "STEP_OF_THE_WIND" -> {
+                player.addEffect(new MobEffectInstance(
+                        MobEffects.SPEED, 40, 1, false, false, false));
+                player.addEffect(new MobEffectInstance(
+                        MobEffects.JUMP_BOOST, 40, 1, false, false, false));
+                player.displayClientMessage(
+                        Component.literal("§9Step of the Wind!"), true);
+                yield true;
+            }
+            default -> false;
+        };
     }
 
     /**
@@ -873,8 +933,54 @@ public class AbilityMethods_PlayerTriggered {
     /**
      * FONT_OF_MAGIC (Sorcerer Level 2) — Konvertiert Sorcery Points ↔ Spell Slots.
      */
-    private static boolean activateFontOfMagic(ServerPlayer player) {
-        // TODO: Sub-Wahl Richtung und Menge
+    private static boolean activateFontOfMagic(ServerPlayer player, String subAction) {
+        if (subAction == null || subAction.isBlank()) return false;
+
+        var vars = player.getData(DndModVariables.PLAYER_VARIABLES);
+
+        int cost = switch (subAction) {
+            case "SLOT_1" -> 2;
+            case "SLOT_2" -> 3;
+            case "SLOT_3" -> 5;
+            case "SLOT_4" -> 6;
+            case "SLOT_5" -> 7;
+            default -> -1;
+        };
+        int minLevel = switch (subAction) {
+            case "SLOT_1" -> 2;
+            case "SLOT_2" -> 3;
+            case "SLOT_3" -> 5;
+            case "SLOT_4" -> 7;
+            case "SLOT_5" -> 9;
+            default -> 99;
+        };
+        int grade = switch (subAction) {
+            case "SLOT_1" -> 1;
+            case "SLOT_2" -> 2;
+            case "SLOT_3" -> 3;
+            case "SLOT_4" -> 4;
+            case "SLOT_5" -> 5;
+            default -> 0;
+        };
+
+        if (cost < 0 || grade == 0 || (int) vars.PlayerLevel < minLevel) return false;
+
+        int current = AbilityDataUtils.getInt(vars, "SORCERY_POINTS", 0);
+        if (current < cost) return false;
+
+        AbilityDataUtils.set(vars, "SORCERY_POINTS", current - cost);
+
+        // Spell-Slot zur Spellslots-Zeichenkette hinzufügen
+        String slots = vars.Spellslots != null
+                ? vars.Spellslots.replace("\"", "") : "000000000";
+        if (slots.length() < 9) slots = "000000000";
+        char[] arr = slots.toCharArray();
+        arr[grade - 1] = (char) ('0' + Math.min(9, arr[grade - 1] - '0' + 1));
+        vars.Spellslots = new String(arr);
+        vars.markSyncDirty();
+
+        player.displayClientMessage(
+                Component.literal("§5Created Grade " + grade + " spell slot!"), true);
         return true;
     }
 
@@ -882,9 +988,38 @@ public class AbilityMethods_PlayerTriggered {
      * METAMAGIC (Sorcerer Level 2) — Wählt Metamagic-Option für nächsten Zauber.
      * Kostet Sorcery Points je nach Option.
      */
-    private static boolean activateMetamagic(ServerPlayer player) {
-        setFlag(player, "METAMAGIC_readied", true);
-        // TODO: Sub-Wahl (Careful / Distant / Empowered / Extended / Heightened / Quickened / Subtle / Transmuted / Twinned)
+    private static boolean activateMetamagic(ServerPlayer player, String subAction) {
+        if (subAction == null || subAction.isBlank()) return false;
+
+        var vars = player.getData(DndModVariables.PLAYER_VARIABLES);
+
+        // Prüfen ob der Spieler diese Option überhaupt gewählt hat.
+        // METAMAGIC_chosen nutzt SEMIKOLON als Trenner (kein Komma, da
+        // AbilityData Kommas als Top-Level-Key-Trenner reserviert).
+        String chosen = AbilityDataUtils.get(vars, "METAMAGIC_chosen", "");
+        String displayName = actionKeyToDisplayName(subAction); // "CAREFUL_SPELL" → "Careful Spell"
+        Set<String> chosenSet = Arrays.stream(chosen.split(";"))
+                .map(String::trim).collect(java.util.stream.Collectors.toSet());
+        if (!chosenSet.contains(displayName)) return false;
+
+        // Kosten bestimmen
+        int cost = switch (subAction) {
+            case "CAREFUL_SPELL", "DISTANT_SPELL", "EMPOWERED_SPELL", "EXTENDED_SPELL",
+                 "SEEKING_SPELL", "SUBTLE_SPELL", "TRANSMUTED_SPELL", "TWINNED_SPELL" -> 1;
+            case "HEIGHTENED_SPELL", "QUICKENED_SPELL" -> 2;
+            default -> -1;
+        };
+        if (cost < 0) return false;
+
+        int current = AbilityDataUtils.getInt(vars, "SORCERY_POINTS", 0);
+        if (current < cost) return false;
+
+        AbilityDataUtils.set(vars, "SORCERY_POINTS", current - cost);
+        AbilityDataUtils.set(vars, subAction + "_active", true);
+        vars.markSyncDirty();
+
+        player.displayClientMessage(
+                Component.literal("§5" + displayName + " readied!"), true);
         return true;
     }
 
@@ -968,5 +1103,17 @@ public class AbilityMethods_PlayerTriggered {
         consumeUse(player, "MEMORIZE_SPELLS_uses", maxUses);
         // TODO: SpellPrepScreen öffnen (eingeschränkt auf aktuellen Grad)
         return true;
+    }
+
+
+    private static String actionKeyToDisplayName(String key) {
+        StringBuilder sb = new StringBuilder();
+        for (String word : key.split("_")) {
+            if (word.isEmpty()) continue;
+            if (sb.length() > 0) sb.append(' ');
+            sb.append(Character.toUpperCase(word.charAt(0)));
+            sb.append(word.substring(1).toLowerCase());
+        }
+        return sb.toString();
     }
 }

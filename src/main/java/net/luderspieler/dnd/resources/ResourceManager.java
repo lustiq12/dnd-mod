@@ -32,47 +32,53 @@ public class ResourceManager {
     // ══════════════════════════════════════════════════════════════════
 
     public enum ResourcePool {
-        // Monk
-        FOCUS_POINTS    ("FOCUS_POINTS_remaining",    Ability.FOCUS_POINTS,             "Focus",       0xFF4488FF, DisplayMode.PIPS),
+        // Monk (Ruhiges, verblichenes Ozeanblau)
+        FOCUS_POINTS    ("FOCUS_POINTS_remaining",    Ability.FOCUS_POINTS,             "Focus",       0xFF5A8EAA, DisplayMode.PIPS),
 
-        // Barbarian
-        RAGE            ("RAGE_uses",                 Ability.RAGE,                     "Rage",        0xFFFF4422, DisplayMode.PIPS),
+        // Barbarian (Getrocknetes Blut / Ziegelrot)
+        RAGE            ("RAGE_uses",                 Ability.RAGE,                     "Rage",        0xFFB34747, DisplayMode.PIPS),
 
-        // Sorcerer — eigene Logik, max = PlayerLevel
-        SORCERY_POINTS  ("SORCERY_POINTS",            Ability.FONT_OF_MAGIC,            "Sorcery",     0xFFAA44FF, DisplayMode.PIPS),
+        // Sorcerer (Mattes Amethyst / verblichenes Lila)
+        SORCERY_POINTS  ("SORCERY_POINTS",            Ability.FONT_OF_MAGIC,            "Sorcery",     0xFF8B64A3, DisplayMode.PIPS),
 
-        // Bard
-        BARDIC_INSP     ("BARDIC_INSPIRATION_uses",   Ability.BARDIC_INSPIRATION,       "Inspiration", 0xFFFFD700, DisplayMode.PIPS),
+        // Bard (Altgold / Messing)
+        BARDIC_INSP     ("BARDIC_INSPIRATION_uses",   Ability.BARDIC_INSPIRATION,       "Inspiration", 0xFFC7A859, DisplayMode.PIPS),
 
-        // Druid
-        WILD_SHAPE      ("WILD_SHAPE_uses",           Ability.WILD_SHAPE,               "Wild Shape",  0xFF44AA22, DisplayMode.PIPS),
+        // Druid (Wald- und Moosgrün)
+        WILD_SHAPE      ("WILD_SHAPE_uses",           Ability.WILD_SHAPE,               "Wild Shape",  0xFF6B8E53, DisplayMode.PIPS),
 
-        // Cleric
-        CHANNEL_DIV     ("CHANNEL_DIVINITY_uses",     Ability.CHANNEL_DIVINITY,         "Channel",     0xFFFFFFAA, DisplayMode.PIPS),
+        // Cleric (Pergament / Warmes Elfenbein)
+        CHANNEL_DIV     ("CHANNEL_DIVINITY_uses",     Ability.CHANNEL_DIVINITY,         "Channel",     0xFFDED09F, DisplayMode.PIPS),
 
-        // Paladin
-        CH_DIV_PAL      ("CHANNEL_DIVINITY_PAL_uses", Ability.CHANNEL_DIVINITY_PALADIN, "C.Div",       0xFFFFEEBB, DisplayMode.PIPS),
-        LAY_ON_HANDS    ("LAY_ON_HANDS_pool",         Ability.LAY_ON_HANDS,             "Lay on Hands",0xFF44FF88, DisplayMode.BAR),
+        // Paladin (Angelaufenes Gold / Bronze)
+        CH_DIV_PAL      ("CHANNEL_DIVINITY_PAL_uses", Ability.CHANNEL_DIVINITY_PALADIN, "C.Div",       0xFFB5A77A, DisplayMode.PIPS),
+        // (Sanftes, heilendes Salbeigrün/Teal)
+        LAY_ON_HANDS    ("LAY_ON_HANDS_pool",         Ability.LAY_ON_HANDS,             "Lay on Hands",0xFF6EAA98, DisplayMode.BAR),
 
-        // Fighter
-        SECOND_WIND     ("SECOND_WIND_uses",          Ability.SECOND_WIND,              "2nd Wind",    0xFF44CCFF, DisplayMode.PIPS),
-        ACTION_SURGE    ("ACTION_SURGE_uses",         Ability.ACTION_SURGE,             "A.Surge",     0xFFFF8800, DisplayMode.PIPS),
+        // Fighter (Kühler, stumpfer Stahl)
+        SECOND_WIND     ("SECOND_WIND_uses",          Ability.SECOND_WIND,              "2nd Wind",    0xFF7A93A3, DisplayMode.PIPS),
+        // (Rostorange / abgenutztes Kupfer)
+        ACTION_SURGE    ("ACTION_SURGE_uses",         Ability.ACTION_SURGE,             "A.Surge",     0xFFB87340, DisplayMode.PIPS),
 
-        // Sorcerer — Innate Sorcery aktivierungen
-        INNATE_SORCERY  ("INNATE_SORCERY_uses",       Ability.INNATE_SORCERY,           "Inn.Sorcery", 0xFFCC44FF, DisplayMode.PIPS),
+        // Sorcerer — Innate Sorcery (Dunkles Pflaumenblau / Indigo)
+        INNATE_SORCERY  ("INNATE_SORCERY_uses",       Ability.INNATE_SORCERY,           "Inn.Sorcery", 0xFF965B8E, DisplayMode.PIPS),
 
-        // Warlock
-        MAGICAL_CUNNING ("MAGICAL_CUNNING_uses",      Ability.MAGICAL_CUNNING,          "Mag.Cunning", 0xFFAA00FF, DisplayMode.PIPS),
+        // Warlock (Düsteres, unheimliches Tiefviolett)
+        MAGICAL_CUNNING ("MAGICAL_CUNNING_uses",      Ability.MAGICAL_CUNNING,          "Mag.Cunning", 0xFF644485, DisplayMode.PIPS),
 
-        // Ranger
-        TIRELESS        ("TIRELESS_uses",             Ability.TIRELESS,                 "Tireless",    0xFF88FFAA, DisplayMode.PIPS),
-        NATURES_VEIL    ("NATURES_VEIL_uses",         Ability.NATURES_VEIL,             "N.Veil",      0xFF44CC88, DisplayMode.PIPS),
+        // Ranger (Verblichenes Olivgrün)
+        TIRELESS        ("TIRELESS_uses",             Ability.TIRELESS,                 "Tireless",    0xFF879665, DisplayMode.PIPS),
+        // (Dunkles Kieferngrün zur Tarnung)
+        NATURES_VEIL    ("NATURES_VEIL_uses",         Ability.NATURES_VEIL,             "N.Veil",      0xFF548270, DisplayMode.PIPS),
 
-        // Spezies
-        BREATH_WEAPON   ("BREATH_WEAPON_uses",        Ability.BREATH_WEAPON,            "Breath",      0xFFFF6600, DisplayMode.PIPS),
-        ADRENALINE      ("ADRENALINE_RUSH_uses",      Ability.ADRENALINE_RUSH,          "Adrenaline",  0xFFFF2200, DisplayMode.PIPS),
-        HEALING_HANDS   ("HEALING_HANDS_uses",        Ability.HEALING_HANDS,            "Heal.Hands",  0xFFFFAAAA, DisplayMode.PIPS),
-        FLIGHT          ("FLIGHT_uses",               Ability.FLIGHT,                   "Flight",      0xFF88CCFF, DisplayMode.PIPS);
+        // Spezies (Terrakotta / Glühende Asche)
+        BREATH_WEAPON   ("BREATH_WEAPON_uses",        Ability.BREATH_WEAPON,            "Breath",      0xFFBF6B4E, DisplayMode.PIPS),
+        // (Dunkles Karminrot)
+        ADRENALINE      ("ADRENALINE_RUSH_uses",      Ability.ADRENALINE_RUSH,          "Adrenaline",  0xFFA34242, DisplayMode.PIPS),
+        // (Blasses Roségold / Ton)
+        HEALING_HANDS   ("HEALING_HANDS_uses",        Ability.HEALING_HANDS,            "Heal.Hands",  0xFFCBA49E, DisplayMode.PIPS),
+        // (Schiefergrau / Wolkenblau)
+        FLIGHT          ("FLIGHT_uses",               Ability.FLIGHT,                   "Flight",      0xFF8FA1B3, DisplayMode.PIPS);
 
         /** Welcher Anzeigemodus wird im HUD verwendet. */
         public enum DisplayMode {

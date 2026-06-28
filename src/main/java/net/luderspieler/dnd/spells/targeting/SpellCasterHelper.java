@@ -1,5 +1,6 @@
 package net.luderspieler.dnd.spells.targeting;
 
+import net.luderspieler.dnd.character.AbilitysAndFeats.management.AbilityDataUtils;
 import net.luderspieler.dnd.network.DndModVariables;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
@@ -23,7 +24,81 @@ import java.util.function.Consumer;
 
 public class SpellCasterHelper {
 
+    // ══════════════════════════════════════════════════════════════════
+    //  METAMAGIC — Konsumierung beim Zauber-Start
+    //
+    //  Die aktiven Metamagic-Flags (gesetzt von AbilityMethods_PlayerTriggered
+    //  .activateMetamagic()) werden hier gelesen und auf Range/Amount
+    //  angewendet, sobald der Spieler den Zauber tatsächlich zu wirken
+    //  beginnt (loadSpellForTargeting / startTargeting / startTargetingBlock).
+    //  Das jeweilige Flag wird dabei sofort konsumiert (gelöscht), damit es
+    //  nicht versehentlich auf den nächsten Zauber durchschlägt.
+    // ══════════════════════════════════════════════════════════════════
+
+    /** DISTANT_SPELL — Reichweite verdoppeln (oder Touch → 30ft, hier vereinfacht: ×2). */
+    private static double applyDistantSpell(ServerPlayer player, double baseRange) {
+        var vars = player.getData(DndModVariables.PLAYER_VARIABLES);
+        if (!AbilityDataUtils.getBool(vars, "DISTANT_SPELL_active")) return baseRange;
+        AbilityDataUtils.set(vars, "DISTANT_SPELL_active", false);
+        vars.markSyncDirty();
+        player.displayClientMessage(Component.literal("§5Distant Spell: range doubled!"), true);
+        return baseRange * 2.0;
+    }
+
+    /**
+     * TWINNED_SPELL — erlaubt bei Einzelziel-Zaubern ein zweites Ziel.
+     * Greift nur wenn der Basis-Amount exakt 1 ist (Twinned Spell gilt laut
+     * 2024 PHB nur für Zauber die normalerweise genau ein Ziel haben).
+     */
+    private static int applyTwinnedSpell(ServerPlayer player, int baseAmount) {
+        var vars = player.getData(DndModVariables.PLAYER_VARIABLES);
+        if (!AbilityDataUtils.getBool(vars, "TWINNED_SPELL_active")) return baseAmount;
+        if (baseAmount != 1) return baseAmount; // gilt nicht für AoE/Multi-Target-Zauber
+
+        AbilityDataUtils.set(vars, "TWINNED_SPELL_active", false);
+        vars.markSyncDirty();
+        player.displayClientMessage(Component.literal("§5Twinned Spell: second target allowed!"), true);
+        return baseAmount + 1;
+    }
+
+    /**
+     * Räumt alle noch aktiven Metamagic-Flags auf, die in diesem Cast nicht
+     * konsumiert wurden. Betrifft aktuell Careful/Empowered/Extended/
+     * Heightened/Quickened/Seeking/Subtle/Transmuted Spell — deren
+     * mechanische Effekte (Auto-Save, Reroll, Komponenten-Verzicht, etc.)
+     * mangels Saving-Throw-/Combat-System im Mod noch nicht implementiert
+     * sind. Wird trotzdem konsequent aufgeräumt, damit kein Flag über den
+     * gewirkten Zauber hinaus "hängen bleibt".
+     *
+     * TODO: Sobald ein Save-/Component-System existiert, hier echte Effekte
+     * für die restlichen Optionen verdrahten statt nur das Flag zu löschen.
+     *
+     * Aufruf: CastSpellPacket.handle(), direkt nach CastSpellProcedure.execute().
+     */
+    public static void clearRemainingMetamagicFlags(ServerPlayer player) {
+        var vars = player.getData(DndModVariables.PLAYER_VARIABLES);
+        boolean changed = false;
+        for (String key : new String[]{
+                "CAREFUL_SPELL_active", "DISTANT_SPELL_active", "EMPOWERED_SPELL_active",
+                "EXTENDED_SPELL_active", "HEIGHTENED_SPELL_active", "QUICKENED_SPELL_active",
+                "SEEKING_SPELL_active", "SUBTLE_SPELL_active", "TRANSMUTED_SPELL_active",
+                "TWINNED_SPELL_active"
+        }) {
+            if (AbilityDataUtils.getBool(vars, key)) {
+                AbilityDataUtils.set(vars, key, false);
+                changed = true;
+            }
+        }
+        if (changed) vars.markSyncDirty();
+    }
+
+    // ══════════════════════════════════════════════════════════════════
+    //  TARGETING-EINSTIEGSPUNKTE (Metamagic wird hier angewendet)
+    // ══════════════════════════════════════════════════════════════════
+
     public static void loadSpellForTargeting(ServerPlayer player, String spellName, double range) {
+        range = applyDistantSpell(player, range);
+
         var vars = player.getData(DndModVariables.PLAYER_VARIABLES);
         vars.TargetingMode = true;
         vars.TargetingModeType = "FREE_AIM";
@@ -34,6 +109,9 @@ public class SpellCasterHelper {
     }
 
     public static void startTargeting(ServerPlayer player, double range, int amount, String spellName) {
+        range  = applyDistantSpell(player, range);
+        amount = applyTwinnedSpell(player, amount);
+
         var vars = player.getData(DndModVariables.PLAYER_VARIABLES);
         vars.TargetingMode = true;
         vars.TargetingModeType = "ENTITY";
@@ -45,6 +123,8 @@ public class SpellCasterHelper {
     }
 
     public static void startTargetingBlock(ServerPlayer player, double range, String spellName) {
+        range = applyDistantSpell(player, range);
+
         var vars = player.getData(DndModVariables.PLAYER_VARIABLES);
         vars.TargetingMode = true;
         vars.TargetingModeType = "BLOCK";

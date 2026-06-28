@@ -1,31 +1,86 @@
 package net.luderspieler.dnd.character.choices;
 
+import net.luderspieler.dnd.character.AbilitysAndFeats.management.Ability;
+import net.luderspieler.dnd.character.AbilitysAndFeats.management.AbilityDataUtils;
+import net.luderspieler.dnd.character.AbilitysAndFeats.management.AbilityUtils;
+import net.luderspieler.dnd.character.feats.FeatRegistry;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 
 import static net.luderspieler.dnd.character.network.CharacterCreationPacket.applyAttrs;
 
 public class ChoiceExecutor {
+
     public static void apply(Player player, String choiceID, String selectedValue) {
         var vars = player.getData(net.luderspieler.dnd.network.DndModVariables.PLAYER_VARIABLES);
 
         switch (choiceID) {
-            case "ABILITY_SCORE_IMPROVEMENT":
-                // "Strength +2" -> "Strength"
-                String stat = selectedValue.split(" ")[0];
-                if (stat.equalsIgnoreCase("Strength")) vars.Strength += 2;
-                if (stat.equalsIgnoreCase("Dexterity")) vars.Dexterity += 2;
-                if (stat.equalsIgnoreCase("Constitution")) vars.Constitution += 2;
-                if (stat.equalsIgnoreCase("Intelligence")) vars.Intelligence += 2;
-                if (stat.equalsIgnoreCase("Wisdom")) vars.Wisdom += 2;
-                if (stat.equalsIgnoreCase("Charisma")) vars.Charisma += 2;
-                applyAttrs((ServerPlayer) player);
-                break;
 
-            case "SUBCLASS":
+            // ── ABILITY SCORE IMPROVEMENT OR FEAT ─────────────────────────
+            // selectedValue ist entweder:
+            //   "Feat: <FEAT_ID>"              → Feat statt ASI (FeatRegistry kümmert sich drum)
+            //   "Strength +2"                  → 1 Stat, +2
+            //   "Strength +1,Dexterity +1"     → 2 Stats, je +1
+            case "ABILITY_SCORE_IMPROVEMENT_OR_FEAT" -> {
+                if (selectedValue.startsWith("Feat: ")) {
+                    String featId = selectedValue.substring("Feat: ".length());
+                    if (player instanceof ServerPlayer sp) {
+                        FeatRegistry.apply(sp, featId);
+                    }
+                } else {
+                    // Stat-Parsing: Komma trennt hier zwei Stat-Teile, nicht
+                    // AbilityData-Keys, also ist direktes split(",") korrekt.
+                    for (String part : selectedValue.split(",")) {
+                        String[] split = part.trim().split(" \\+");
+                        if (split.length != 2) continue;
+                        String stat = split[0].trim();
+                        int amount;
+                        try { amount = Integer.parseInt(split[1].trim()); }
+                        catch (NumberFormatException e) { continue; }
+
+                        // Hard-Cap bei 20 auf den BASIS-Wert.
+                        switch (stat) {
+                            case "Strength"     -> vars.Strength     = Math.min(20, vars.Strength + amount);
+                            case "Dexterity"    -> vars.Dexterity    = Math.min(20, vars.Dexterity + amount);
+                            case "Constitution" -> vars.Constitution = Math.min(20, vars.Constitution + amount);
+                            case "Intelligence" -> vars.Intelligence = Math.min(20, vars.Intelligence + amount);
+                            case "Wisdom"       -> vars.Wisdom       = Math.min(20, vars.Wisdom + amount);
+                            case "Charisma"     -> vars.Charisma     = Math.min(20, vars.Charisma + amount);
+                        }
+                    }
+                    if (player instanceof ServerPlayer sp) applyAttrs(sp);
+                }
+                vars.markSyncDirty();
+            }
+
+            // ── SUBCLASS ──────────────────────────────────────────────────
+            case "SUBCLASS" -> {
                 vars.PlayerSubclass = selectedValue;
-                break;
-        }
+                if (player instanceof ServerPlayer sp) {
+                    AbilityUtils.updateSubclassAbilitiesForLevel(sp, (int) vars.PlayerLevel);
+                }
+                vars.markSyncDirty();
+            }
 
+            // ── METAMAGIC ─────────────────────────────────────────────────
+            // WICHTIG: METAMAGIC_chosen nutzt SEMIKOLON als Trenner zwischen
+            // den gewählten Optionen, NICHT Komma. Grund: AbilityData trennt
+            // seine Top-Level-Einträge (key=value-Paare) an Kommas — ein Wert
+            // der selbst Kommas enthält, wird beim nächsten parse() zerstört.
+            // Semikolon taucht im AbilityData-Format nicht auf, ist also sicher.
+            case "METAMAGIC" -> {
+                String existing = AbilityDataUtils.get(vars, "METAMAGIC_chosen", "");
+                AbilityDataUtils.set(vars, "METAMAGIC_chosen",
+                        existing.isBlank() ? selectedValue : existing + ";" + selectedValue);
+
+                if (player instanceof ServerPlayer sp
+                        && !AbilityUtils.hasAbility(sp, Ability.METAMAGIC)) {
+                    AbilityUtils.addAbility(sp, Ability.METAMAGIC);
+                }
+
+                vars.markSyncDirty();
+                if (player instanceof ServerPlayer sp) applyAttrs(sp);
+            }
+        }
     }
 }

@@ -3,6 +3,7 @@ package net.luderspieler.dnd.character.network;
 import net.luderspieler.dnd.character.AbilitysAndFeats.management.Ability;
 import net.luderspieler.dnd.character.AbilitysAndFeats.management.AbilityDataUtils;
 import net.luderspieler.dnd.character.AbilitysAndFeats.management.AbilityUtils;
+import net.luderspieler.dnd.character.AttributeHandler;
 import net.luderspieler.dnd.character.choices.ChoiceUpdateSystem;
 import net.luderspieler.dnd.character.definition.RaceDefinition;
 import net.luderspieler.dnd.character.definition.SubraceDefinition;
@@ -176,12 +177,16 @@ public record CharacterCreationPacket(
 
         int level = (int) vars.PlayerLevel;
 
-        int strM = (int) Math.floor((vars.Strength - 10) / 2.0);
-        int dexM = (int) Math.floor((vars.Dexterity - 10) / 2.0);
-        int conM = (int) Math.floor((vars.Constitution - 10) / 2.0);
-        int intM = (int) Math.floor((vars.Intelligence - 10) / 2.0);
-        int wisM = (int) Math.floor((vars.Wisdom - 10) / 2.0);
-        int chaM = (int) Math.floor((vars.Charisma - 10) / 2.0);
+        // Nutzt den EFFEKTIVEN Wert (Basis + <Stat>Bonus aus Tränken/Buffs/
+        // zukünftigen Items) — nicht den reinen Basiswert. Wer einen
+        // <Stat>Bonus ändert, muss applyAttrs() danach erneut aufrufen,
+        // damit es hier einfließt (siehe AttributeHandler-Doc).
+        int strM = AttributeHandler.getAttributeBonus(player, "strength");
+        int dexM = AttributeHandler.getAttributeBonus(player, "dexterity");
+        int conM = AttributeHandler.getAttributeBonus(player, "constitution");
+        int intM = AttributeHandler.getAttributeBonus(player, "intelligence");
+        int wisM = AttributeHandler.getAttributeBonus(player, "wisdom");
+        int chaM = AttributeHandler.getAttributeBonus(player, "charisma");
 
         ClassDefinition cls = ClassRegistry.getClass(vars.PlayerClass);
 
@@ -226,7 +231,9 @@ public record CharacterCreationPacket(
         // --- CONSTITUTION ---
         // Bonus HP from Con (x2 for Hearts) + Class HP for levels above 1
         int toughBonus = AbilityDataUtils.getInt(vars, "ToughBonus", 0) * 2;
-        double totalTargetHP = ((hpPerLvl + (conM * 2.0)) * level) + toughBonus;
+        // Tough-Feat (2024 PHB): +2 max HP pro Level, ×2 für Minecraft-Herzen.
+        int featToughBonus = AbilityDataUtils.getBool(vars, "FeatToughBonus") ? level * 4 : 0;
+        double totalTargetHP = ((hpPerLvl + (conM * 2.0)) * level) + toughBonus + featToughBonus;
         double bonusHP = totalTargetHP - 20.0;
         if (bonusHP <= -20.0) {
             bonusHP = -18.0;

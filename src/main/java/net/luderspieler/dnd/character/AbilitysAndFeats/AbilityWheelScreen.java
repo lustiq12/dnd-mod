@@ -8,7 +8,6 @@ import net.luderspieler.dnd.character.AbilitysAndFeats.management.AbilityCategor
 import net.luderspieler.dnd.generalConfigs;
 import net.luderspieler.dnd.network.DndModVariables;
 import net.luderspieler.dnd.resources.ResourceManager;
-import net.luderspieler.dnd.resources.UseResourceActionPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
@@ -18,83 +17,93 @@ import net.minecraft.world.entity.player.Player;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
- * Radiales Ability-Wheel mit zwei Stages — analog zu SpellWheelScreen.
+ * Radiales Ability-Wheel mit mehreren Stages.
  *
- * Stage ABILITY_SELECT — Haupt-Wheel mit allen PLAYER_TRIGGERED Abilities.
- * Stage FOCUS_SPEND    — Sub-Wheel für Focus-Point-Ausgaben (Monk).
- * Stage SORCERY_SPEND  — Sub-Wheel für Sorcery-Point-Ausgaben (Sorcerer).
+ * ABILITY_SELECT  – Haupt-Wheel: alle PLAYER_TRIGGERED-Abilities
+ * FOCUS_SPEND     – Sub-Wheel: Focus-Point-Ausgaben (Monk)
+ * SORCERY_SPEND   – Sub-Wheel: Sorcery-Point → Spell-Slot (Sorcerer)
+ * METAMAGIC_SELECT– Sub-Wheel: Metamagic-Option auswählen (Sorcerer)
  *
- * Navigation:
- *   Hub klicken          → eine Stage zurück (oder schließen)
- *   FOCUS_POINTS wählen  → FOCUS_SPEND
- *   FONT_OF_MAGIC wählen → SORCERY_SPEND
- *   Rechtsklick          → eine Stage zurück
- *   ESC                  → schließen
+ * Alle Aktionen werden via ActivateAbilityPacket gesendet (kein separates
+ * UseResourceActionPacket mehr).
  */
 public class AbilityWheelScreen extends Screen {
 
     // ── Stages ───────────────────────────────────────────────────────
-    private enum Stage { ABILITY_SELECT, FOCUS_SPEND, SORCERY_SPEND }
+    private enum Stage { ABILITY_SELECT, FOCUS_SPEND, SORCERY_SPEND, METAMAGIC_SELECT }
 
     /**
      * Eine wählbare Aktion im Sub-Wheel.
-     * @param minLevel  Mindest-Sorcerer/Monk-Level für diese Option (Level-Gating)
+     * @param minLevel Mindest-Level für diese Option (Level-Gating).
      */
     private record SubAction(String name, String detail, int cost, int minLevel,
                              ResourceManager.ResourcePool pool, String actionKey) {}
 
-    // ── Focus-Point-Aktionen (2024 PHB, Monk) ────────────────────────
-    // Alle drei Basis-Optionen gibt es ab Level 1 (werden mit FOCUS_POINTS gegeben).
-    // Höhere FP-Abilities (STUNNING_STRIKE etc.) erscheinen im Haupt-Wheel sobald gelernt.
+    // ── Focus-Point-Aktionen (Monk, 2024 PHB) ────────────────────────
     private static final List<SubAction> FOCUS_ACTIONS = List.of(
-            new SubAction("Flurry of Blows",  "2 extra Unarmed Strikes (Bonus Action)", 1, 1, ResourceManager.ResourcePool.FOCUS_POINTS, "FLURRY_OF_BLOWS"),
-            new SubAction("Patient Defense",  "Dodge als Bonus Action",                 1, 1, ResourceManager.ResourcePool.FOCUS_POINTS, "PATIENT_DEFENSE"),
-            new SubAction("Step of the Wind", "Dash oder Disengage + Jump-Reichweite×2",1, 1, ResourceManager.ResourcePool.FOCUS_POINTS, "STEP_OF_THE_WIND")
+            new SubAction("Flurry of Blows",  "2 extra Unarmed Strikes (Bonus Action)", 1, 1,
+                    ResourceManager.ResourcePool.FOCUS_POINTS, "FLURRY_OF_BLOWS"),
+            new SubAction("Patient Defense",  "Dodge as Bonus Action",                  1, 1,
+                    ResourceManager.ResourcePool.FOCUS_POINTS, "PATIENT_DEFENSE"),
+            new SubAction("Step of the Wind", "Dash or Disengage + Jump ×2",            1, 1,
+                    ResourceManager.ResourcePool.FOCUS_POINTS, "STEP_OF_THE_WIND")
     );
 
-    /**
-     * Font of Magic — Spell Slot erstellen (Bonus Action).
-     * Kosten und Mindest-Level exakt nach 2024 PHB Sorcerer-Tabelle.
-     * Slots verschwinden nach Long Rest.
-     */
+    // ── Sorcery-Point-Aktionen (Sorcerer, 2024 PHB) ──────────────────
     private static final List<SubAction> SORCERY_ACTIONS = List.of(
-            new SubAction("Spell Slot 1",  "2 SP → Spell Slot Level 1",  2, 2, ResourceManager.ResourcePool.SORCERY_POINTS, "SLOT_1"),
-            new SubAction("Spell Slot 2",  "3 SP → Spell Slot Level 2",  3, 3, ResourceManager.ResourcePool.SORCERY_POINTS, "SLOT_2"),
-            new SubAction("Spell Slot 3",  "5 SP → Spell Slot Level 3",  5, 5, ResourceManager.ResourcePool.SORCERY_POINTS, "SLOT_3"),
-            new SubAction("Spell Slot 4",  "6 SP → Spell Slot Level 4",  6, 7, ResourceManager.ResourcePool.SORCERY_POINTS, "SLOT_4"),
-            new SubAction("Spell Slot 5",  "7 SP → Spell Slot Level 5",  7, 9, ResourceManager.ResourcePool.SORCERY_POINTS, "SLOT_5")
+            new SubAction("Spell Slot 1", "2 SP → 1st-level slot", 2, 2,
+                    ResourceManager.ResourcePool.SORCERY_POINTS, "SLOT_1"),
+            new SubAction("Spell Slot 2", "3 SP → 2nd-level slot", 3, 3,
+                    ResourceManager.ResourcePool.SORCERY_POINTS, "SLOT_2"),
+            new SubAction("Spell Slot 3", "5 SP → 3rd-level slot", 5, 5,
+                    ResourceManager.ResourcePool.SORCERY_POINTS, "SLOT_3"),
+            new SubAction("Spell Slot 4", "6 SP → 4th-level slot", 6, 7,
+                    ResourceManager.ResourcePool.SORCERY_POINTS, "SLOT_4"),
+            new SubAction("Spell Slot 5", "7 SP → 5th-level slot", 7, 9,
+                    ResourceManager.ResourcePool.SORCERY_POINTS, "SLOT_5")
+    );
+
+    // ── Metamagic-Konstanten ─────────────────────────────────────────
+    private static final Map<String, Integer> METAMAGIC_SP_COSTS = Map.of(
+            "Careful Spell",    1,
+            "Distant Spell",    1,
+            "Empowered Spell",  1,
+            "Extended Spell",   1,
+            "Heightened Spell", 2,
+            "Quickened Spell",  2,
+            "Seeking Spell",    1,
+            "Subtle Spell",     1,
+            "Transmuted Spell", 1,
+            "Twinned Spell",    1
+    );
+
+    private static final Map<String, String> METAMAGIC_DETAILS = Map.ofEntries(
+            Map.entry("Careful Spell",    "Chosen creatures auto-succeed saving throw"),
+            Map.entry("Distant Spell",    "Double range, or Touch becomes 30 ft"),
+            Map.entry("Empowered Spell",  "Reroll damage dice up to CHA modifier"),
+            Map.entry("Extended Spell",   "Double duration (max 24h)"),
+            Map.entry("Heightened Spell", "One target has Disadvantage on saving throw"),
+            Map.entry("Quickened Spell",  "Change casting time to Bonus Action"),
+            Map.entry("Seeking Spell",    "Reroll a missed spell attack roll"),
+            Map.entry("Subtle Spell",     "Cast without verbal/somatic/material components"),
+            Map.entry("Transmuted Spell", "Change damage type among 6 elements"),
+            Map.entry("Twinned Spell",    "Hit a second target (costs 1 extra spell level in SP)")
     );
 
     // ── Layout ───────────────────────────────────────────────────────
-    private static final int OUTER_RADIUS  = 90;
-    private static final int INNER_RADIUS  = 30;
-    private static final int LABEL_RADIUS  = 65;
-    private static final float HOVER_EXPAND = 6f;
-
-    // ── Farben ───────────────────────────────────────────────────────
-    private static final int COL_IDLE      = 0xAA222233;
-    private static final int COL_HOVER     = 0xCC334466;
-    private static final int COL_DEPLETED  = 0xAA221111;
-    private static final int COL_HOV_DEPL  = 0xCC331111;
-    private static final int COL_OUTLINE   = 0xFF111111;
-    private static final int COL_HUB       = 0xFF1A1A2E;
-    // Sub-Wheel
-    private static final int COL_FP_IDLE   = 0xAA1122AA;
-    private static final int COL_FP_HOVER  = 0xCC2244CC;
-    private static final int COL_SP_IDLE   = 0xAA441177;
-    private static final int COL_SP_HOVER  = 0xCC6622AA;
-    private static final int COL_CANT      = 0xAA332211;
-    private static final int COL_CANT_HOV  = 0xCC443322;
-    private static final int COL_LEVEL     = 0xAA222211;  // Zu niedriges Level (gelblich-grau)
-    private static final int COL_LEVEL_HOV = 0xCC444422;
+    private static final int   OUTER_RADIUS  = 90;
+    private static final int   INNER_RADIUS  = 30;
+    private static final int   LABEL_RADIUS  = 65;
+    private static final float HOVER_EXPAND  = 6f;
 
     // ── State ─────────────────────────────────────────────────────────
-    private Stage stage = Stage.ABILITY_SELECT;
-    private int hoveredSegment   = -1;
-    private int hoveredSubAction = -1;
-    private int cx, cy;
+    private Stage stage          = Stage.ABILITY_SELECT;
+    private int   hoveredSegment   = -1;
+    private int   hoveredSubAction = -1;
+    private int   cx, cy;
 
     public AbilityWheelScreen() { super(Component.empty()); }
 
@@ -103,7 +112,7 @@ public class AbilityWheelScreen extends Screen {
     @Override
     protected void init() {
         super.init();
-        cx = this.width / 2;
+        cx = this.width  / 2;
         cy = this.height / 2;
     }
 
@@ -114,35 +123,53 @@ public class AbilityWheelScreen extends Screen {
     @Override
     public void render(GuiGraphics g, int mouseX, int mouseY, float partial) {
         g.fill(0, 0, this.width, this.height, generalConfigs.COLOR_SCREEN_OVERLAY);
+
         switch (stage) {
             case ABILITY_SELECT -> renderMainWheel(g, mouseX, mouseY);
+
             case FOCUS_SPEND    -> renderSubWheel(g, mouseX, mouseY, FOCUS_ACTIONS,
                     ResourceManager.ResourcePool.FOCUS_POINTS,
-                    "Focus Points", COL_FP_IDLE, COL_FP_HOVER);
+                    "Focus Points", generalConfigs.WHEEL_FP_IDLE, generalConfigs.WHEEL_FP_HOVER);
+
             case SORCERY_SPEND  -> renderSubWheel(g, mouseX, mouseY, SORCERY_ACTIONS,
                     ResourceManager.ResourcePool.SORCERY_POINTS,
-                    "Sorcery Points", COL_SP_IDLE, COL_SP_HOVER);
+                    "Sorcery Points", generalConfigs.WHEEL_SP_IDLE, generalConfigs.WHEEL_SP_HOVER);
+
+            case METAMAGIC_SELECT -> {
+                Player p = Minecraft.getInstance().player;
+                List<SubAction> meta = p != null ? getMetamagicActions(p) : List.of();
+                if (meta.isEmpty()) {
+                    int hubR = (int) (INNER_RADIUS * 1.5f);
+                    drawCircle(g, cx, cy, hubR, generalConfigs.WHEEL_HUB, generalConfigs.WHEEL_OUTLINE);
+                    drawCentered(g, "No Metamagic", cx, cy - 4, generalConfigs.TEXT_GRAY);
+                    drawCentered(g, "chosen yet",   cx, cy + 6, generalConfigs.TEXT_GRAY);
+                } else {
+                    renderSubWheel(g, mouseX, mouseY, meta,
+                            ResourceManager.ResourcePool.SORCERY_POINTS,
+                            "Metamagic", generalConfigs.WHEEL_SP_IDLE, generalConfigs.WHEEL_SP_HOVER);
+                }
+            }
         }
+
         super.render(g, mouseX, mouseY, partial);
     }
 
-    // ── Stage 1: Haupt-Wheel ──────────────────────────────────────────
+    // ── Haupt-Wheel ──────────────────────────────────────────────────
 
     private void renderMainWheel(GuiGraphics g, int mouseX, int mouseY) {
         List<Ability> abilities = getClientAbilities();
-        float scale = getScale(abilities.size());
-        int outerR  = (int)(OUTER_RADIUS * scale);
-        int hubR    = (int)(INNER_RADIUS * scale);
-        int labelR  = (int)(LABEL_RADIUS * scale);
+        float scale  = getScale(abilities.size());
+        int   outerR = (int) (OUTER_RADIUS * scale);
+        int   hubR   = (int) (INNER_RADIUS * scale);
+        int   labelR = (int) (LABEL_RADIUS * scale);
 
         if (abilities.isEmpty()) {
-            drawCircle(g, cx, cy, hubR + 10, COL_HUB, COL_OUTLINE);
-            drawCentered(g, "No abilities", cx, cy - 5, generalConfigs.TEXT_GRAY);
-            super.render(g, mouseX, mouseY, 0);
+            drawCircle(g, cx, cy, hubR + 10, generalConfigs.WHEEL_HUB, generalConfigs.WHEEL_OUTLINE);
+            drawCentered(g, "No abilities", cx, cy - 4, generalConfigs.TEXT_GRAY);
             return;
         }
 
-        int   count      = abilities.size();
+        int    count      = abilities.size();
         double sliceAngle = (2 * Math.PI) / count;
         double mouseAngle = Math.atan2(mouseY - cy, mouseX - cx);
         double dist       = Math.hypot(mouseX - cx, mouseY - cy);
@@ -151,38 +178,47 @@ public class AbilityWheelScreen extends Screen {
         if (dist > hubR && dist < outerR + HOVER_EXPAND) {
             double angle = mouseAngle + Math.PI / 2;
             if (angle < 0) angle += 2 * Math.PI;
-            hoveredSegment = (int)(angle / sliceAngle) % count;
+            hoveredSegment = (int) (angle / sliceAngle) % count;
         }
 
         var clientVars = Minecraft.getInstance().player != null
                 ? Minecraft.getInstance().player.getData(DndModVariables.PLAYER_VARIABLES) : null;
 
         for (int i = 0; i < count; i++) {
-            Ability ability   = abilities.get(i);
-            boolean hovered   = i == hoveredSegment;
-            boolean depleted  = isDepleted(ability, clientVars);
-            double  start     = -Math.PI / 2 + i * sliceAngle;
-            double  end       = start + sliceAngle;
-            int     curOuter  = hovered ? outerR + (int)HOVER_EXPAND : outerR;
-            int     color     = depleted
-                    ? (hovered ? COL_HOV_DEPL : COL_DEPLETED)
-                    : (hovered ? COL_HOVER    : COL_IDLE);
+            Ability ability  = abilities.get(i);
+            boolean hovered  = i == hoveredSegment;
+            boolean depleted = isDepleted(ability, clientVars);
+            double  start    = -Math.PI / 2 + i * sliceAngle;
+            double  end      = start + sliceAngle;
+            int     curOuter = hovered ? outerR + (int) HOVER_EXPAND : outerR;
 
-            drawSegment(g, cx, cy, hubR, curOuter, start, end, color, COL_OUTLINE);
+            int color;
+            if (depleted) {
+                color = hovered ? generalConfigs.WHEEL_SEGMENT_DEPL_HOVER
+                        : generalConfigs.WHEEL_SEGMENT_DEPLETED;
+            } else {
+                color = hovered ? generalConfigs.WHEEL_SEGMENT_HOVER
+                        : generalConfigs.WHEEL_SEGMENT_IDLE;
+            }
 
-            double mid  = (start + end) / 2;
-            int    lx   = cx + (int)(labelR * Math.cos(mid));
-            int    ly   = cy + (int)(labelR * Math.sin(mid));
-            String name = formatAbilityName(ability);
-            String uses = getUsesString(ability, clientVars);
-            int textCol = depleted ? 0xFF885555 : hovered ? generalConfigs.TEXT_HOVER : generalConfigs.TEXT_WHITE;
+            drawSegment(g, cx, cy, hubR, curOuter, start, end, color, generalConfigs.WHEEL_OUTLINE);
+
+            double mid   = (start + end) / 2;
+            int    lx    = cx + (int) (labelR * Math.cos(mid));
+            int    ly    = cy + (int) (labelR * Math.sin(mid));
+            String name  = formatAbilityName(ability);
+            String uses  = getUsesString(ability, clientVars);
+            int textCol  = depleted ? 0xFF885555
+                    : hovered  ? generalConfigs.TEXT_HOVER
+                      : generalConfigs.TEXT_WHITE;
 
             drawCentered(g, name, lx, ly - (uses.isEmpty() ? 0 : 4), textCol);
             if (!uses.isEmpty())
-                drawCentered(g, uses, lx, ly + 6, depleted ? 0xFF663333 : generalConfigs.TEXT_GRAY);
+                drawCentered(g, uses, lx, ly + 6,
+                        depleted ? 0xFF663333 : generalConfigs.TEXT_GRAY);
         }
 
-        drawCircle(g, cx, cy, hubR, COL_HUB, COL_OUTLINE);
+        drawCircle(g, cx, cy, hubR, generalConfigs.WHEEL_HUB, generalConfigs.WHEEL_OUTLINE);
         drawCentered(g, "Abilities", cx, cy - 4, generalConfigs.TEXT_WHITE);
 
         if (hoveredSegment >= 0 && hoveredSegment < count) {
@@ -191,7 +227,7 @@ public class AbilityWheelScreen extends Screen {
         }
     }
 
-    // ── Stage 2: Sub-Wheel für Resource-Pool ─────────────────────────
+    // ── Sub-Wheel (Focus / Sorcery / Metamagic) ───────────────────────
 
     private void renderSubWheel(GuiGraphics g, int mouseX, int mouseY,
                                 List<SubAction> actions,
@@ -205,86 +241,79 @@ public class AbilityWheelScreen extends Screen {
         int max         = ResourceManager.getMaxCached(player, pool);
         int playerLevel = (int) player.getData(DndModVariables.PLAYER_VARIABLES).PlayerLevel;
 
-        float  scale       = getScale(actions.size());
-        int    outerR      = (int)(OUTER_RADIUS * scale);
-        int    hubR        = (int)(INNER_RADIUS * scale);
-        int    labelR      = (int)(LABEL_RADIUS * scale);
-        int    count       = actions.size();
-        double sliceAngle  = (2 * Math.PI) / count;
-        double mouseAngle  = Math.atan2(mouseY - cy, mouseX - cx);
-        double dist        = Math.hypot(mouseX - cx, mouseY - cy);
+        float  scale      = getScale(actions.size());
+        int    outerR     = (int) (OUTER_RADIUS * scale);
+        int    hubR       = (int) (INNER_RADIUS * scale);
+        int    labelR     = (int) (LABEL_RADIUS * scale);
+        int    count      = actions.size();
+        double sliceAngle = (2 * Math.PI) / count;
+        double mouseAngle = Math.atan2(mouseY - cy, mouseX - cx);
+        double dist       = Math.hypot(mouseX - cx, mouseY - cy);
 
         hoveredSubAction = -1;
         if (dist > hubR && dist < outerR + HOVER_EXPAND) {
             double angle = mouseAngle + Math.PI / 2;
             if (angle < 0) angle += 2 * Math.PI;
-            hoveredSubAction = (int)(angle / sliceAngle) % count;
+            hoveredSubAction = (int) (angle / sliceAngle) % count;
         }
 
         for (int i = 0; i < count; i++) {
-            SubAction action     = actions.get(i);
-            boolean   hovered    = i == hoveredSubAction;
-            boolean   hasEnough  = current >= action.cost();
-            boolean   hasLevel   = playerLevel >= action.minLevel();
-            boolean   canUse     = hasEnough && hasLevel;
+            SubAction action  = actions.get(i);
+            boolean   hovered = i == hoveredSubAction;
+            boolean   hasRes  = current >= action.cost();
+            boolean   hasLvl  = playerLevel >= action.minLevel();
+            boolean   canUse  = hasRes && hasLvl;
 
             double start    = -Math.PI / 2 + i * sliceAngle;
             double end      = start + sliceAngle;
-            int    curOuter = hovered ? outerR + (int)HOVER_EXPAND : outerR;
+            int    curOuter = hovered ? outerR + (int) HOVER_EXPAND : outerR;
 
             int color;
             if (canUse) {
                 color = hovered ? hoverColor : idleColor;
-            } else if (!hasLevel) {
-                color = hovered ? COL_LEVEL_HOV : COL_LEVEL;
+            } else if (!hasLvl) {
+                color = hovered ? generalConfigs.WHEEL_SEGMENT_LEVEL_HOVER
+                        : generalConfigs.WHEEL_SEGMENT_LEVEL;
             } else {
-                color = hovered ? COL_CANT_HOV : COL_CANT;
+                color = hovered ? generalConfigs.WHEEL_SEGMENT_LOCKED_HOVER
+                        : generalConfigs.WHEEL_SEGMENT_LOCKED;
             }
 
-            drawSegment(g, cx, cy, hubR, curOuter, start, end, color, COL_OUTLINE);
+            drawSegment(g, cx, cy, hubR, curOuter, start, end, color, generalConfigs.WHEEL_OUTLINE);
 
             double mid   = (start + end) / 2;
-            int    lx    = cx + (int)(labelR * Math.cos(mid));
-            int    ly    = cy + (int)(labelR * Math.sin(mid));
-            int    textC = canUse
-                    ? (hovered ? generalConfigs.TEXT_HOVER : generalConfigs.TEXT_WHITE)
+            int    lx    = cx + (int) (labelR * Math.cos(mid));
+            int    ly    = cy + (int) (labelR * Math.sin(mid));
+            int    textC = canUse ? (hovered ? generalConfigs.TEXT_HOVER : generalConfigs.TEXT_WHITE)
                     : 0xFF886644;
 
             drawCentered(g, action.name(), lx, ly - 6, textC);
-
-            // Kosten-Zeile
             String costStr = action.cost() + " " + pool.displayName;
-            drawCentered(g, costStr, lx, ly + 3, canUse ? generalConfigs.TEXT_GRAY : 0xFF554433);
-
-            // Level-Anforderung wenn locked
-            if (!hasLevel) {
+            drawCentered(g, costStr, lx, ly + 3,
+                    canUse ? generalConfigs.TEXT_GRAY : 0xFF554433);
+            if (!hasLvl)
                 drawCentered(g, "Lvl " + action.minLevel(), lx, ly + 12, 0xFF888844);
-            }
         }
 
-        // Hub: zeigt aktuellen Ressourcenstand
-        drawCircle(g, cx, cy, hubR, COL_HUB, COL_OUTLINE);
+        // Hub
+        drawCircle(g, cx, cy, hubR, generalConfigs.WHEEL_HUB, generalConfigs.WHEEL_OUTLINE);
         drawCentered(g, current + "/" + max, cx, cy - 5, generalConfigs.TEXT_WHITE);
         drawCentered(g, "← Back",           cx, cy + 4, generalConfigs.TEXT_GRAY);
 
-        // Tooltip der gewählten Aktion am unteren Rand
+        // Tooltip
         if (hoveredSubAction >= 0 && hoveredSubAction < count) {
-            SubAction a        = actions.get(hoveredSubAction);
-            boolean   hasEnough = current >= a.cost();
-            boolean   hasLevel  = playerLevel >= a.minLevel();
-            String    tooltip;
-            if (!hasLevel) {
-                tooltip = a.detail() + "  [benötigt Sorcerer Level " + a.minLevel() + "]";
-            } else if (!hasEnough) {
-                tooltip = a.detail() + "  [nicht genug " + pool.displayName + "]";
-            } else {
-                tooltip = a.detail();
-            }
-            g.drawCenteredString(this.font, tooltip, cx, cy + outerR + 20,
+            SubAction a     = actions.get(hoveredSubAction);
+            boolean   hasR  = current >= a.cost();
+            boolean   hasL  = playerLevel >= a.minLevel();
+            String    tip;
+            if (!hasL) tip = a.detail() + "  [requires Level " + a.minLevel() + "]";
+            else if (!hasR) tip = a.detail() + "  [not enough " + pool.displayName + "]";
+            else            tip = a.detail();
+            g.drawCenteredString(this.font, tip, cx, cy + outerR + 20,
                     generalConfigs.COLOR_ACCENT_GOLD);
         }
 
-        // Pool-Name oben
+        // Pool-Label oben
         g.drawCenteredString(this.font, poolLabel + "  (" + current + "/" + max + ")",
                 cx, cy - outerR - 20, generalConfigs.TEXT_WHITE);
     }
@@ -297,17 +326,21 @@ public class AbilityWheelScreen extends Screen {
     public boolean mouseClicked(double mx, double my, int btn) {
         double dist = Math.hypot(mx - cx, my - cy);
 
-        // Rechtsklick: immer zurück / schließen
-        if (btn == 1) {
-            navigateBack();
-            return true;
-        }
+        if (btn == 1) { navigateBack(); return true; }
 
         if (btn == 0) {
             switch (stage) {
-                case ABILITY_SELECT -> handleMainWheelClick(dist);
-                case FOCUS_SPEND   -> handleSubWheelClick(dist, FOCUS_ACTIONS);
-                case SORCERY_SPEND -> handleSubWheelClick(dist, SORCERY_ACTIONS);
+                case ABILITY_SELECT   -> handleMainWheelClick(dist);
+                case FOCUS_SPEND      -> handleSubWheelClick(dist, FOCUS_ACTIONS,
+                        Ability.FOCUS_POINTS);
+                case SORCERY_SPEND    -> handleSubWheelClick(dist, SORCERY_ACTIONS,
+                        Ability.FONT_OF_MAGIC);
+                case METAMAGIC_SELECT -> {
+                    Player p = Minecraft.getInstance().player;
+                    handleSubWheelClick(dist,
+                            p != null ? getMetamagicActions(p) : List.of(),
+                            Ability.METAMAGIC);
+                }
             }
         }
         return super.mouseClicked(mx, my, btn);
@@ -315,67 +348,92 @@ public class AbilityWheelScreen extends Screen {
 
     private void handleMainWheelClick(double dist) {
         List<Ability> abilities = getClientAbilities();
-        int hubR = (int)(INNER_RADIUS * getScale(abilities.size()));
+        int hubR = (int) (INNER_RADIUS * getScale(abilities.size()));
 
         if (dist <= hubR) { this.onClose(); return; }
 
         if (hoveredSegment >= 0 && hoveredSegment < abilities.size()) {
             Ability chosen = abilities.get(hoveredSegment);
-            // Abilities die ein Sub-Wheel öffnen
-            if (chosen == Ability.FOCUS_POINTS) {
-                stage = Stage.FOCUS_SPEND;
-            } else if (chosen == Ability.FONT_OF_MAGIC) {
-                stage = Stage.SORCERY_SPEND;
-            } else {
-                // Normale Ability aktivieren
+            // Sub-Wheels öffnen
+            if      (chosen == Ability.FOCUS_POINTS) stage = Stage.FOCUS_SPEND;
+            else if (chosen == Ability.FONT_OF_MAGIC) stage = Stage.SORCERY_SPEND;
+            else if (chosen == Ability.METAMAGIC)     stage = Stage.METAMAGIC_SELECT;
+            else {
+                // Normale Ability → Packet senden
                 ActivateAbilityPacket.send(chosen);
                 this.onClose();
             }
         }
     }
 
-    private void handleSubWheelClick(double dist, List<SubAction> actions) {
+    /**
+     * Klick im Sub-Wheel: validiert client-seitig und sendet ActivateAbilityPacket
+     * mit der Sub-Aktion. Kein UseResourceActionPacket mehr.
+     */
+    private void handleSubWheelClick(double dist, List<SubAction> actions,
+                                     Ability targetAbility) {
         float scale = getScale(actions.size());
-        int   hubR  = (int)(INNER_RADIUS * scale);
+        int   hubR  = (int) (INNER_RADIUS * scale);
 
-        if (dist <= hubR) {
-            navigateBack();
-            return;
-        }
+        if (dist <= hubR) { navigateBack(); return; }
 
         if (hoveredSubAction >= 0 && hoveredSubAction < actions.size()) {
-            SubAction action  = actions.get(hoveredSubAction);
-            Player    player  = Minecraft.getInstance().player;
+            SubAction action = actions.get(hoveredSubAction);
+            Player    player = Minecraft.getInstance().player;
             if (player == null) return;
 
             int current     = ResourceManager.getCurrent(player, action.pool());
             int playerLevel = (int) player.getData(DndModVariables.PLAYER_VARIABLES).PlayerLevel;
 
             if (current < action.cost() || playerLevel < action.minLevel()) {
-                return; // Zu wenig Punkte oder Level — Screen bleibt offen (Spieler sieht warum)
+                // Zu wenig Ressource oder Level zu niedrig — Screen bleibt offen
+                return;
             }
-            UseResourceActionPacket.send(action.pool(), action.actionKey());
+
+            ActivateAbilityPacket.send(targetAbility, action.actionKey());
             this.onClose();
         }
     }
 
     @Override
     public boolean keyPressed(int key, int b, int c) {
-        if (key == 256) { this.onClose(); return true; } // ESC
+        if (key == 256) { this.onClose(); return true; }
         return super.keyPressed(key, b, c);
     }
 
     private void navigateBack() {
-        if (stage != Stage.ABILITY_SELECT) {
-            stage = Stage.ABILITY_SELECT;
-        } else {
-            this.onClose();
-        }
+        if (stage != Stage.ABILITY_SELECT) stage = Stage.ABILITY_SELECT;
+        else this.onClose();
     }
 
     // ══════════════════════════════════════════════════════════════════
     //  DATEN-HELPERS
     // ══════════════════════════════════════════════════════════════════
+
+    /**
+     * Liest die Metamagic-Optionen des Spielers aus AbilityData["METAMAGIC_chosen"]
+     * und baut daraus die SubAction-Liste für das Sub-Wheel.
+     */
+    private List<SubAction> getMetamagicActions(Player player) {
+        String raw = AbilityDataUtils.get(
+                player.getData(DndModVariables.PLAYER_VARIABLES),
+                "METAMAGIC_chosen", "");
+        if (raw.isBlank()) return List.of();
+
+        List<SubAction> list = new ArrayList<>();
+        // METAMAGIC_chosen nutzt SEMIKOLON als Trenner (Komma ist in
+        // AbilityData für Top-Level key=value-Paare reserviert).
+        for (String n : raw.split(";")) {
+            n = n.trim();
+            if (n.isBlank()) continue;
+            int    cost   = METAMAGIC_SP_COSTS.getOrDefault(n, 1);
+            String key    = n.toUpperCase().replace(" ", "_"); // "Careful Spell" → "CAREFUL_SPELL"
+            String detail = METAMAGIC_DETAILS.getOrDefault(n, cost + " SP");
+            list.add(new SubAction(n, detail, cost, 3,
+                    ResourceManager.ResourcePool.SORCERY_POINTS, key));
+        }
+        return list;
+    }
 
     private List<Ability> getClientAbilities() {
         List<Ability> list = new ArrayList<>();
@@ -387,31 +445,24 @@ public class AbilityWheelScreen extends Screen {
         for (String name : vars.Abilities.split(",")) {
             try {
                 Ability a = Ability.valueOf(name.trim());
-                if (AbilityDefinitionRegistry.getCategory(a) == AbilityCategory.PLAYER_TRIGGERED) {
+                if (AbilityDefinitionRegistry.getCategory(a) == AbilityCategory.PLAYER_TRIGGERED)
                     list.add(a);
-                }
             } catch (IllegalArgumentException ignored) {}
         }
         return list;
     }
 
-    /**
-     * Prüft ob eine Ability keine Ladungen mehr hat.
-     * Berücksichtigt Resource-Pool-Abilities mit eigenen Keys.
-     */
     private boolean isDepleted(Ability ability, DndModVariables.PlayerVariables vars) {
         if (vars == null) return false;
         Player player = Minecraft.getInstance().player;
 
-        // Spezielle Resource-Pool-Abilities
-        if (ability == Ability.FOCUS_POINTS && player != null) {
+        if (ability == Ability.FOCUS_POINTS && player != null)
             return ResourceManager.getCurrent(player, ResourceManager.ResourcePool.FOCUS_POINTS) <= 0;
-        }
-        if (ability == Ability.FONT_OF_MAGIC && player != null) {
+        if (ability == Ability.FONT_OF_MAGIC && player != null)
             return ResourceManager.getCurrent(player, ResourceManager.ResourcePool.SORCERY_POINTS) <= 0;
-        }
+        if (ability == Ability.METAMAGIC && player != null)
+            return ResourceManager.getCurrent(player, ResourceManager.ResourcePool.SORCERY_POINTS) <= 0;
 
-        // Standard: _uses Key
         String key = ability.name() + "_uses";
         var map = AbilityDataUtils.parse(vars.AbilityData);
         if (!map.containsKey(key)) return false;
@@ -419,26 +470,21 @@ public class AbilityWheelScreen extends Screen {
         catch (NumberFormatException e) { return false; }
     }
 
-    /**
-     * Ladungsanzeige unter dem Ability-Namen im Wheel.
-     */
     private String getUsesString(Ability ability, DndModVariables.PlayerVariables vars) {
         if (vars == null) return "";
         Player player = Minecraft.getInstance().player;
 
-        // Spezielle Resource-Pool-Abilities
         if (ability == Ability.FOCUS_POINTS && player != null) {
             int cur = ResourceManager.getCurrent(player, ResourceManager.ResourcePool.FOCUS_POINTS);
             int max = ResourceManager.getMaxCached(player, ResourceManager.ResourcePool.FOCUS_POINTS);
             return cur + "/" + max;
         }
-        if (ability == Ability.FONT_OF_MAGIC && player != null) {
+        if ((ability == Ability.FONT_OF_MAGIC || ability == Ability.METAMAGIC) && player != null) {
             int cur = ResourceManager.getCurrent(player, ResourceManager.ResourcePool.SORCERY_POINTS);
             int max = ResourceManager.getMaxCached(player, ResourceManager.ResourcePool.SORCERY_POINTS);
             return cur + "/" + max + " SP";
         }
 
-        // Standard: _uses Key
         String key = ability.name() + "_uses";
         var map = AbilityDataUtils.parse(vars.AbilityData);
         if (!map.containsKey(key)) return "";
@@ -454,9 +500,13 @@ public class AbilityWheelScreen extends Screen {
 
     private String formatAbilityName(Ability ability) {
         String raw = ability.name();
-        for (String suffix : new String[]{"_BARBARIAN","_BARD","_CLERIC","_DRUID",
-                "_FIGHTER","_MONK","_PALADIN","_RANGER","_ROGUE","_SORCERER","_WARLOCK","_WIZARD"}) {
-            if (raw.endsWith(suffix)) { raw = raw.substring(0, raw.length() - suffix.length()); break; }
+        for (String suffix : new String[]{ "_BARBARIAN","_BARD","_CLERIC","_DRUID",
+                "_FIGHTER","_MONK","_PALADIN","_RANGER","_ROGUE","_SORCERER",
+                "_WARLOCK","_WIZARD" }) {
+            if (raw.endsWith(suffix)) {
+                raw = raw.substring(0, raw.length() - suffix.length());
+                break;
+            }
         }
         StringBuilder sb = new StringBuilder();
         for (String part : raw.split("_")) {
@@ -470,17 +520,19 @@ public class AbilityWheelScreen extends Screen {
     }
 
     // ══════════════════════════════════════════════════════════════════
-    //  ZEICHEN-PRIMITIVEN (identisch SpellWheelScreen)
+    //  RENDER-PRIMITIVEN
     // ══════════════════════════════════════════════════════════════════
 
     private void drawSegment(GuiGraphics g, int ox, int oy,
                              int innerR, int outerR,
                              double startAngle, double endAngle,
                              int fillColor, int outlineColor) {
-        int steps = 32;
+        int    steps = 32;
         double range = endAngle - startAngle;
-        int a = (fillColor >> 24) & 0xFF, r = (fillColor >> 16) & 0xFF,
-                gr = (fillColor >> 8) & 0xFF, b = fillColor & 0xFF;
+        int    a     = (fillColor >> 24) & 0xFF;
+        int    r     = (fillColor >> 16) & 0xFF;
+        int    gr    = (fillColor >>  8) & 0xFF;
+        int    b     = fillColor & 0xFF;
 
         VertexConsumer buffer = Minecraft.getInstance().renderBuffers()
                 .bufferSource().getBuffer(RenderType.debugQuads());
@@ -516,6 +568,7 @@ public class AbilityWheelScreen extends Screen {
         int w = this.font.width(text);
         g.drawString(this.font, text, x - w / 2 + 1, y - this.font.lineHeight / 2 + 1,
                 generalConfigs.COLOR_TEXT_SHADOW, false);
-        g.drawString(this.font, text, x - w / 2, y - this.font.lineHeight / 2, color, false);
+        g.drawString(this.font, text, x - w / 2,     y - this.font.lineHeight / 2,
+                color, false);
     }
 }

@@ -1,11 +1,11 @@
 package net.luderspieler.dnd.resources;
 
+import net.luderspieler.dnd.generalConfigs;
 import net.luderspieler.dnd.network.DndModVariables;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RenderGuiEvent;
@@ -21,11 +21,8 @@ import java.util.List;
  * Layout pro Zeile (BAR-Modus oder max > PIP_SWITCH_THRESHOLD):
  *   [Icon] Name  [████░░░░]  18/50
  *
- * Bugs aus Vorgängerversion behoben:
- *  - Sanity-Clamp für max (verhindert "+61020" wenn PlayerLevel falsch gelesen)
- *  - Automatischer Wechsel auf BAR wenn max > PIP_SWITCH_THRESHOLD (kein Overflow-Text mehr)
- *  - Korrekte g.drawString() API statt font.draw(g.pose(), ...)
- *  - NAME_WIDTH dynamisch nach längsten aktiven Pool-Namen berechnet
+ * Alle Farben kommen aus generalConfigs (keine lokalen Farb-Konstanten mehr,
+ * außer wo es um reine Alpha-Blends auf einer generalConfigs-Basisfarbe geht).
  */
 public class ResourceHudOverlay {
 
@@ -40,13 +37,7 @@ public class ResourceHudOverlay {
     private static final int BAR_HEIGHT           = 5;
     private static final int ICON_SIZE            = 7;
     private static final int ICON_TEXT_GAP        = 3;
-    private static final int MAX_SANE_POOL        = 500;  // Sanity-Cap: Werte darüber werden ignoriert
-
-    // ── Farben ────────────────────────────────────────────────────────
-    private static final int COL_PIP_EMPTY = 0x55FFFFFF;
-    private static final int COL_TEXT_DIM  = 0xFFAAAAAA;
-    private static final int COL_TEXT_FULL = 0xFFFFFFFF;
-    private static final int COL_BG        = 0x77000000;
+    private static final int MAX_SANE_POOL        = 500;  // Sanity-Cap
 
     @SubscribeEvent
     public void onRenderGui(RenderGuiEvent.Post event) {
@@ -62,14 +53,13 @@ public class ResourceHudOverlay {
 
         GuiGraphics g    = event.getGuiGraphics();
         Font        font = mc.font;
-        int         screenH = mc.getWindow().getGuiScaledHeight();
 
         // ── Name-Spalte: Breite nach längstem aktiven Pool-Name ───────
         int nameColW = 0;
         for (ResourceManager.ResourcePool pool : pools) {
             nameColW = Math.max(nameColW, font.width(pool.displayName));
         }
-        nameColW += ICON_SIZE + ICON_TEXT_GAP + 4; // Icon + Gap + Puffer
+        nameColW += ICON_SIZE + ICON_TEXT_GAP + 4;
 
         // ── Panel-Maße ────────────────────────────────────────────────
         int valueColW  = Math.max(BAR_WIDTH, PIP_SWITCH_THRESHOLD * (PIP_SIZE + PIP_GAP));
@@ -79,7 +69,8 @@ public class ResourceHudOverlay {
         int startX     = MARGIN_LEFT;
         int startY     = MARGIN_TOP;
 
-        g.fill(startX - 2, startY - 2, startX + panelW, startY + panelH, COL_BG);
+        g.fill(startX - 2, startY - 2, startX + panelW, startY + panelH,
+                generalConfigs.HUD_BACKGROUND);
 
         for (int i = 0; i < pools.size(); i++) {
             ResourceManager.ResourcePool pool = pools.get(i);
@@ -87,12 +78,10 @@ public class ResourceHudOverlay {
             int current = ResourceManager.getCurrent(player, pool);
             int max     = ResourceManager.getMaxCached(player, pool);
 
-            // Sanity-Check: kaputte Werte nicht anzeigen
             if (max <= 0 || max > MAX_SANE_POOL) continue;
-            // current auch clampen (kann nie > max sein)
             current = Math.min(current, max);
 
-            int textCol = current > 0 ? COL_TEXT_FULL : COL_TEXT_DIM;
+            int textCol = current > 0 ? generalConfigs.TEXT_WHITE : generalConfigs.TEXT_GRAY;
 
             // ── Icon ──────────────────────────────────────────────────
             int iconAlpha = current > 0 ? 0xFF000000 : 0x66000000;
@@ -101,13 +90,12 @@ public class ResourceHudOverlay {
             int iconY     = rowY + (ROW_HEIGHT - ICON_SIZE) / 2;
             g.fill(iconX, iconY, iconX + ICON_SIZE, iconY + ICON_SIZE, iconCol);
 
-            // ── Name (passt garantiert dank nameColW-Berechnung) ─────
+            // ── Name ──────────────────────────────────────────────────
             int nameX = startX + ICON_SIZE + ICON_TEXT_GAP;
             g.drawString(font, pool.displayName, nameX, rowY + (ROW_HEIGHT - 8) / 2, textCol, false);
 
             // ── Wert: Pips oder Bar ────────────────────────────────────
             int valueX = startX + nameColW;
-
             boolean useBar = pool.displayMode == ResourceManager.ResourcePool.DisplayMode.BAR
                     || max > PIP_SWITCH_THRESHOLD;
             if (useBar) {
@@ -127,33 +115,38 @@ public class ResourceHudOverlay {
 
     private static void drawPips(GuiGraphics g, int x, int y,
                                  int current, int max, int color) {
-        // max ist hier garantiert ≤ PIP_SWITCH_THRESHOLD (sonst wäre useBar=true)
         int pipY = y + (ROW_HEIGHT - PIP_SIZE) / 2;
         for (int i = 0; i < max; i++) {
             int px = x + i * (PIP_SIZE + PIP_GAP);
             if (i < current) {
                 g.fill(px, pipY, px + PIP_SIZE, pipY + PIP_SIZE, color);
-                // Glanz
-                g.fill(px + 1, pipY + 1, px + 2, pipY + 2, 0x44FFFFFF);
+                // Glanz — reiner Alpha-Highlight auf der Pool-Farbe, bleibt lokal
+                g.fill(px + 1, pipY + 1, px + 4, pipY + 4, 0x22FFFFFF);
+                g.fill(px + 2, pipY + 2, px + 3, pipY + 3, 0x22FFFFFF);
             } else {
-                g.fill(px, pipY, px + PIP_SIZE, pipY + PIP_SIZE, COL_PIP_EMPTY);
+                g.fill(px, pipY, px + PIP_SIZE, pipY + PIP_SIZE, generalConfigs.HUD_PIP_EMPTY);
             }
         }
     }
 
     private static void drawBar(GuiGraphics g, int x, int y, int current, int max, int color) {
         int barY = y + (ROW_HEIGHT - BAR_HEIGHT) / 2;
-        // Hintergrund
-        g.fill(x, barY, x + BAR_WIDTH, barY + BAR_HEIGHT, 0x44FFFFFF);
-        // Füllstand
+
+        g.fill(x, barY, x + BAR_WIDTH, barY + BAR_HEIGHT, generalConfigs.HUD_BAR_BACKGROUND);
+
         int fillW = max > 0 ? (int) ((current / (float) max) * BAR_WIDTH) : 0;
         if (fillW > 0) {
             g.fill(x, barY, x + fillW, barY + BAR_HEIGHT, color);
         }
+
         // Rahmen (oben/unten/links/rechts)
-        g.fill(x,              barY,                  x + BAR_WIDTH, barY + 1,           0x66FFFFFF);
-        g.fill(x,              barY + BAR_HEIGHT - 1, x + BAR_WIDTH, barY + BAR_HEIGHT,   0x33FFFFFF);
-        g.fill(x,              barY,                  x + 1,         barY + BAR_HEIGHT,   0x66FFFFFF);
-        g.fill(x + BAR_WIDTH - 1, barY,               x + BAR_WIDTH, barY + BAR_HEIGHT,   0x33FFFFFF);
+        g.fill(x,                  barY,                  x + BAR_WIDTH, barY + 1,
+                generalConfigs.HUD_BAR_BORDER_LIGHT);
+        g.fill(x,                  barY + BAR_HEIGHT - 1, x + BAR_WIDTH, barY + BAR_HEIGHT,
+                generalConfigs.HUD_BAR_BORDER_DARK);
+        g.fill(x,                  barY,                  x + 1,         barY + BAR_HEIGHT,
+                generalConfigs.HUD_BAR_BORDER_LIGHT);
+        g.fill(x + BAR_WIDTH - 1,  barY,                  x + BAR_WIDTH, barY + BAR_HEIGHT,
+                generalConfigs.HUD_BAR_BORDER_DARK);
     }
 }

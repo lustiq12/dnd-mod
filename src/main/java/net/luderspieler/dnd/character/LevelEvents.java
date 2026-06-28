@@ -47,11 +47,8 @@ public class LevelEvents {
     // ════════════════════════════════════════════════════════════════════════════
 
     /**
-     * Setzt das Level des Spielers, aktualisiert alle Abilities (Klasse + Rasse level-gebunden),
-     * berechnet Attribute neu und triggert Choice-Updates.
-     *
-     * BUGFIX: Frühere Version rief updateClassAbilities() nicht auf im XP-Pfad,
-     * und updateRaceAbilitiesForLevel() existierte noch nicht.
+     * Setzt das Level des Spielers, aktualisiert alle Abilities (Klasse + Rasse +
+     * Subklasse level-gebunden), berechnet Attribute neu und triggert Choice-Updates.
      */
     public static void updatePlayerLevel(ServerPlayer player, int targetLevel, boolean silent) {
         DndModVariables.PlayerVariables vars = player.getData(DndModVariables.PLAYER_VARIABLES);
@@ -68,6 +65,11 @@ public class LevelEvents {
         // 3. Level-gebundene Rassen-Abilities freischalten
         //    z.B. Dragonborn FLIGHT ab Level 5, Aasimar CELESTIAL_REVELATION ab Level 3
         AbilityUtils.updateRaceAbilitiesForLevel(player, targetLevel);
+
+        // 3.5 Level-gebundene Subklassen-Abilities freischalten
+        //     (wirkt nur falls eine Subklasse bereits gewählt wurde und für sie
+        //     Einträge in SubclassAbilityRegistry existieren)
+        AbilityUtils.updateSubclassAbilitiesForLevel(player, targetLevel);
 
         // 4. HP, Geschwindigkeit und alle Attribut-Modifier neu berechnen
         CharacterCreationPacket.applyAttrs(player);

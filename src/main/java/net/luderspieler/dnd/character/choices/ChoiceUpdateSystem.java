@@ -10,73 +10,67 @@ public class ChoiceUpdateSystem {
     public static void updateChoices(Player player) {
         var vars = player.getData(DndModVariables.PLAYER_VARIABLES);
 
-        // Anpassung an deine Variablennamen
-        int level = (int) vars.PlayerLevel;
-        String species = vars.PlayerRace;
-        String subrace = vars.PlayerSubrace; // Wichtig für Human/Goliath etc.
-        String clazz = vars.PlayerClass;
+        int    level  = (int) vars.PlayerLevel;
+        String clazz  = vars.PlayerClass; // immer lowercase
 
         List<String> needed = new ArrayList<>();
 
-        // --- 1. SUBCLASS CHECK ---
-        // In 2024 wählen ALLE Klassen ihre Subclass auf Level 3
+        // ── 1. SUBCLASS ───────────────────────────────────────────────
+        // Alle 2024-PHB-Klassen wählen ihre Subclass auf Level 3.
         if (level >= 3 && !hasMadeChoice(vars.ChoicesMade, "SUBCLASS")) {
             needed.add("SUBCLASS");
         }
 
-        // --- 2. ASI / FEAT CHECK ---
-        int maxASIs = calculateMaxASIs(level, clazz, species, subrace);
-        int currentASIs = countChoices(vars.ChoicesMade, "ABILITY_SCORE_IMPROVEMENT");
-
-        // Füge so viele ASI-Choices hinzu, wie noch offen sind
-        for (int i = 0; i < (maxASIs - currentASIs); i++) {
-            needed.add("ABILITY_SCORE_IMPROVEMENT");
+        // ── 2. ABILITY SCORE IMPROVEMENT OR FEAT ──────────────────────
+        // Die neue Choice-ID ersetzt "ABILITY_SCORE_IMPROVEMENT".
+        // Standard 2024 PHB: Level 4 / 8 / 12 / 16 / 19.
+        int maxAsi = calculateMaxASIs(level, clazz);
+        int curAsi = countChoices(vars.ChoicesMade, "ABILITY_SCORE_IMPROVEMENT_OR_FEAT");
+        for (int i = 0; i < (maxAsi - curAsi); i++) {
+            needed.add("ABILITY_SCORE_IMPROVEMENT_OR_FEAT");
         }
 
-        // --- 3. SPEZIFISCHE KLASSEN-CHOICES (Beispiele) ---
-        if (clazz.equals("Fighter") && level >= 1 && !hasMadeChoice(vars.ChoicesMade, "FIGHTING_STYLE")) {
+        // ── 3. KLASSEN-SPEZIFISCHE CHOICES ───────────────────────────
+        if ("fighter".equals(clazz) && level >= 1
+                && !hasMadeChoice(vars.ChoicesMade, "FIGHTING_STYLE")) {
             needed.add("FIGHTING_STYLE");
         }
 
-        if (clazz.equals("Warlock") && level >= 1 && !hasMadeChoice(vars.ChoicesMade, "ELDRITCH_INVOCATION")) {
-            // Hier müsste man die Anzahl der Invocations pro Level prüfen
-            int maxInvocations = (level >= 1) ? 2 : 0; // Vereinfachtes Beispiel
-            int currentInvocations = countChoices(vars.ChoicesMade, "ELDRITCH_INVOCATION");
-            for (int i = 0; i < (maxInvocations - currentInvocations); i++) {
-                needed.add("ELDRITCH_INVOCATION");
-            }
+        if ("warlock".equals(clazz)) {
+            int maxInv = level >= 1 ? 2 : 0;
+            int curInv = countChoices(vars.ChoicesMade, "ELDRITCH_INVOCATION");
+            for (int i = 0; i < (maxInv - curInv); i++) needed.add("ELDRITCH_INVOCATION");
         }
 
-        // Ergebnisse speichern
+        // ── 4. SORCERER: METAMAGIC ────────────────────────────────────
+        // 2024 PHB: 2 Optionen ab Level 2, 3 ab Level 10, 4 ab Level 17.
+        if ("sorcerer".equals(clazz)) {
+            int maxMeta = level >= 17 ? 4 : level >= 10 ? 3 : level >= 2 ? 2 : 0;
+            int curMeta = countChoices(vars.ChoicesMade, "METAMAGIC");
+            for (int i = 0; i < (maxMeta - curMeta); i++) needed.add("METAMAGIC");
+        }
+
         vars.ChoicesNeeded = String.join(",", needed);
         vars.markSyncDirty();
     }
 
-    private static int calculateMaxASIs(int level, String clazz, String species, String subrace) {
+    // ─────────────────────────────────────────────────────────────────
+
+    private static int calculateMaxASIs(int level, String clazz) {
         int count = 0;
-
-        // Der menschliche Bonus (oft ein Start-Feat oder ASI auf Level 1)
-        if ("Human".equalsIgnoreCase(species)) {
-            count += 1;
-        }
-
-        // Standard ASI Progression (2024 PHB)
-        if (level >= 4) count++;
-        if (level >= 8) count++;
+        if (level >= 4)  count++;
+        if (level >= 8)  count++;
         if (level >= 12) count++;
         if (level >= 16) count++;
         if (level >= 19) count++;
 
-        // Fighter Extra ASIs (Level 6 und 14)
-        if ("Fighter".equals(clazz)) {
-            if (level >= 6) count++;
+        // Fighter Extra ASIs (Level 6 + 14)
+        if ("fighter".equals(clazz)) {
+            if (level >= 6)  count++;
             if (level >= 14) count++;
         }
-
         // Rogue Extra ASI (Level 10)
-        if ("Rogue".equals(clazz) && level >= 10) {
-            count++;
-        }
+        if ("rogue".equals(clazz) && level >= 10) count++;
 
         return count;
     }
@@ -89,7 +83,7 @@ public class ChoiceUpdateSystem {
         return false;
     }
 
-    private static int countChoices(String choicesMade, String choiceId) {
+    public static int countChoices(String choicesMade, String choiceId) {
         if (choicesMade == null || choicesMade.isBlank()) return 0;
         int count = 0;
         for (String s : choicesMade.split(",")) {

@@ -115,6 +115,12 @@ public class DndModVariables {
 		clone.ChoicesMade = original.ChoicesMade;
 		clone.ToughBonus = original.ToughBonus;
 		clone.Feats = original.Feats;
+		clone.StrengthBonus = original.StrengthBonus;
+		clone.DexterityBonus = original.DexterityBonus;
+		clone.ConstitutionBonus = original.ConstitutionBonus;
+		clone.IntelligenceBonus = original.IntelligenceBonus;
+		clone.WisdomBonus = original.WisdomBonus;
+		clone.CharismaBonus = original.CharismaBonus;
 		if (!event.isWasDeath()) {
 			clone.FinishedCharacterCreation = original.FinishedCharacterCreation;
 			clone.TargetingRange = original.TargetingRange;
@@ -321,6 +327,12 @@ public class DndModVariables {
 		public String ChoicesMade = "\"\"";
 		public double ToughBonus = 0;
 		public String Feats = "\"\"";
+		public double StrengthBonus = 0;
+		public double DexterityBonus = 0;
+		public double ConstitutionBonus = 0;
+		public double IntelligenceBonus = 0;
+		public double WisdomBonus = 0;
+		public double CharismaBonus = 0;
 
 		@Override
 		public void serialize(ValueOutput output) {
@@ -369,6 +381,12 @@ public class DndModVariables {
 			output.putString("ChoicesMade", ChoicesMade);
 			output.putDouble("ToughBonus", ToughBonus);
 			output.putString("Feats", Feats);
+			output.putDouble("StrengthBonus", StrengthBonus);
+			output.putDouble("DexterityBonus", DexterityBonus);
+			output.putDouble("ConstitutionBonus", ConstitutionBonus);
+			output.putDouble("IntelligenceBonus", IntelligenceBonus);
+			output.putDouble("WisdomBonus", WisdomBonus);
+			output.putDouble("CharismaBonus", CharismaBonus);
 		}
 
 		@Override
@@ -418,6 +436,12 @@ public class DndModVariables {
 			ChoicesMade = input.getStringOr("ChoicesMade", "");
 			ToughBonus = input.getDoubleOr("ToughBonus", 0);
 			Feats = input.getStringOr("Feats", "");
+			StrengthBonus = input.getDoubleOr("StrengthBonus", 0);
+			DexterityBonus = input.getDoubleOr("DexterityBonus", 0);
+			ConstitutionBonus = input.getDoubleOr("ConstitutionBonus", 0);
+			IntelligenceBonus = input.getDoubleOr("IntelligenceBonus", 0);
+			WisdomBonus = input.getDoubleOr("WisdomBonus", 0);
+			CharismaBonus = input.getDoubleOr("CharismaBonus", 0);
 		}
 
 		public void markSyncDirty() {

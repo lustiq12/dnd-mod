@@ -1,6 +1,7 @@
 package net.luderspieler.dnd.character.AbilitysAndFeats.management;
 
 import net.luderspieler.dnd.character.AbilitysAndFeats.AbilityMethods_OneTime;
+import net.luderspieler.dnd.character.registrys.ClassRegistry;
 import net.luderspieler.dnd.network.DndModVariables;
 import net.minecraft.server.level.ServerPlayer;
 
@@ -49,8 +50,6 @@ public class AbilityUtils {
         vars.Abilities = listToString(abilities);
 
         // ── _uses sofort initialisieren ───────────────────────────────
-        // Das ist der entscheidende Schritt der früher beim direkten
-        // Listenmanipulieren übersprungen wurde!
         int maxUses = AbilityResetRegistry.getMaxUses(player, ability, vars);
         if (maxUses > 0) {
             AbilityDataUtils.set(vars, ability.name() + "_uses", maxUses);
@@ -95,9 +94,6 @@ public class AbilityUtils {
      * Fügt alle Klassen-Abilities für das aktuelle Level hinzu.
      * Ruft addAbility() für jede neue Ability auf → _uses werden korrekt gesetzt.
      * Idempotent — bereits vorhandene Abilities werden übersprungen.
-     *
-     * BUGFIX: Frühere Version hat Abilities direkt in die Liste geschrieben
-     * ohne addAbility() zu nutzen, dadurch wurden _uses nie initialisiert.
      */
     public static void updateClassAbilities(ServerPlayer player) {
         if (player == null) return;
@@ -120,9 +116,6 @@ public class AbilityUtils {
     /**
      * Fügt alle Rassen- und Subrace-Abilities für einen Spieler hinzu (Level 1 Basis
      * + level-gebundene Abilities bis zum aktuellen Level).
-     *
-     * BUGFIX: Frühere Version hat Abilities direkt manipuliert ohne addAbility() —
-     * _uses wurden nie initialisiert. Jetzt korrekt über addAbility().
      */
     public static void addRaceAbilities(ServerPlayer player) {
         if (player == null) return;
@@ -131,60 +124,80 @@ public class AbilityUtils {
         String playerRace = vars.PlayerRace;
         String playerSubrace = vars.PlayerSubrace;
 
-        // Basis-Rassen-Abilities (Level 1)
         for (Ability ability : AbilityRegistry.getRaceAbilities(playerRace)) {
             addAbility(player, ability);
         }
 
-        // Subrace-Abilities (Level 1)
         if (playerSubrace != null && !playerSubrace.isEmpty() && !playerSubrace.equals("\"\"")) {
             for (Ability ability : AbilityRegistry.getSubraceAbilities(playerRace, playerSubrace)) {
                 addAbility(player, ability);
             }
         }
 
-        // Level-gebundene Rassen-Abilities (z.B. Dragonborn Flight ab Level 5)
         updateRaceAbilitiesForLevel(player, (int) vars.PlayerLevel);
     }
 
     /**
      * Fügt Rassen-Abilities hinzu, die erst bei einem bestimmten Level freigeschaltet werden.
      * Muss bei jedem Level-Up aufgerufen werden.
-     *
-     * Beispiele (2024 PHB):
-     * - Dragonborn Flight: Level 5
-     * - Aasimar Celestial Revelation: Level 3
      */
     public static void updateRaceAbilitiesForLevel(ServerPlayer player, int level) {
         if (player == null || level < 1) return;
-
 
         DndModVariables.PlayerVariables vars = player.getData(DndModVariables.PLAYER_VARIABLES);
         List<Ability> raceAbilities = AbilityRegistry.getRaceAbilities(vars.PlayerRace);
 
         for (Ability ability : raceAbilities)
-                addAbility(player, ability); // Duplikate intern behandelt
+            addAbility(player, ability); // Duplikate intern behandelt
+    }
 
-        /*
+    // ── SUBKLASSEN-ABILITIES ────────────────────────────────────────────
+
+    /**
+     * Fügt Subklassen-Abilities hinzu, die bis zum aktuellen Level freigeschaltet
+     * sind (level-gated, analog zu updateRaceAbilitiesForLevel). Muss aufgerufen
+     * werden wenn:
+     *   - der Spieler eine Subklasse wählt (ChoiceExecutor "SUBCLASS")
+     *   - der Spieler ein Level-Up erreicht (LevelEvents, DndCommand)
+     *
+     * Liest vars.PlayerSubclass (Display-Name, z.B. "Path of the Berserker"),
+     * löst das über die SUBCLASSES-Liste in ClassRegistry zur id auf
+     * ("berserker") und fragt damit SubclassAbilityRegistry ab.
+     */
+    public static void updateSubclassAbilitiesForLevel(ServerPlayer player, int level) {
+        if (player == null || level < 1) return;
+
         DndModVariables.PlayerVariables vars = player.getData(DndModVariables.PLAYER_VARIABLES);
-        Map<Integer, List<Ability>> leveledAbilities =
-                AbilityRegistry.getRaceAbilities(vars.PlayerRace);
+        String subclassId = resolveSubclassId(vars);
+        if (subclassId == null) return;
 
-        for (Map.Entry<Integer, List<Ability>> entry : leveledAbilities.entrySet()) {
+        Map<Integer, List<Ability>> leveled = SubclassAbilityRegistry.getAbilities(subclassId);
+        for (Map.Entry<Integer, List<Ability>> entry : leveled.entrySet()) {
             if (entry.getKey() <= level) {
                 for (Ability ability : entry.getValue()) {
-                    addAbility(player, ability); // Duplikate intern behandelt
+                    addAbility(player, ability);
                 }
             }
         }
-        */
+    }
+
+    /**
+     * vars.PlayerSubclass speichert den Display-Namen (z.B. "Path of the
+     * Berserker"), SubclassAbilityRegistry arbeitet aber mit der id
+     * (z.B. "berserker"). Diese Hilfsmethode löst das über ClassRegistry auf.
+     */
+    private static String resolveSubclassId(DndModVariables.PlayerVariables vars) {
+        if (vars.PlayerSubclass == null || vars.PlayerSubclass.isBlank()
+                || vars.PlayerSubclass.equals("\"\"")) return null;
+
+        for (var sub : ClassRegistry.SUBCLASSES) {
+            if (sub.getDisplayName().equals(vars.PlayerSubclass)) return sub.getId();
+        }
+        return null;
     }
 
     // ==================== HELPER METHODS ====================
 
-    /**
-     * Konvertiert einen komma-getrennten String zu einer List von Abilities.
-     */
     private static List<Ability> parseAbilitiesString(String abilitiesString) {
         List<Ability> abilities = new ArrayList<>();
         if (abilitiesString == null || abilitiesString.isEmpty() || abilitiesString.equals("\"\"")) {
@@ -198,9 +211,6 @@ public class AbilityUtils {
         return abilities;
     }
 
-    /**
-     * Konvertiert eine List von Abilities zu einem komma-getrennten String.
-     */
     private static String listToString(List<Ability> abilities) {
         List<String> names = new ArrayList<>();
         for (Ability ability : abilities) names.add(ability.name());

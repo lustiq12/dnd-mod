@@ -1,6 +1,7 @@
 package net.luderspieler.dnd.spells;
 
 import net.luderspieler.dnd.network.DndModVariables;
+import net.luderspieler.dnd.spells.targeting.SpellCasterHelper;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -70,6 +71,12 @@ public record CastSpellPacket(String spellId, int level) implements CustomPacket
 
             // 3. Ausführung - erst NACH erfolgreicher Validierung
             CastSpellProcedure.execute(player, pkt.spellId(), level);
+
+            // 4. Metamagic-Aufräumen — Distant/Twinned Spell wurden bereits beim
+            //    Targeting-Start in SpellCasterHelper konsumiert; alle übrigen
+            //    (noch nicht implementierten) Metamagic-Flags werden hier
+            //    spätestens gelöscht, damit nichts in den nächsten Cast durchsickert.
+            SpellCasterHelper.clearRemainingMetamagicFlags(player);
         });
     }
 

@@ -321,6 +321,9 @@ public class DndCommand {
 
         AbilityUtils.updateRaceAbilitiesForLevel(player, level);
 
+        // Level-gebundene Subklassen-Abilities (analog zu LevelEvents.updatePlayerLevel())
+        AbilityUtils.updateSubclassAbilitiesForLevel(player, level);
+
         ChoiceUpdateSystem.updateChoices(player);
         CharacterCreationPacket.applyAttrs(player);
 
