@@ -59,7 +59,7 @@ public class AttributeHandler {
             case "intelligence" -> vars.Intelligence;
             case "wisdom" -> vars.Wisdom;
             case "charisma" -> vars.Charisma;
-            default -> 10;
+            default -> throw new IllegalArgumentException("Unknown attribute name " + attributeName);
         };
     }
 
@@ -71,7 +71,7 @@ public class AttributeHandler {
             case "intelligence" -> vars.IntelligenceBonus;
             case "wisdom" -> vars.WisdomBonus;
             case "charisma" -> vars.CharismaBonus;
-            default -> 0;
+            default -> throw new IllegalArgumentException("Unknown attribute name " + attributeName);
         };
     }
 

@@ -1,5 +1,6 @@
 package net.luderspieler.dnd.character.screens;
 
+import net.luderspieler.dnd.character.AttributeHandler;
 import net.luderspieler.dnd.character.definition.ClassDefinition;
 import net.luderspieler.dnd.character.registrys.ClassRegistry;
 import net.luderspieler.dnd.character.definition.RaceDefinition;
@@ -222,13 +223,13 @@ public class CharacterSheetScreen extends Screen {
         if (vars == null) return;
 
         double value = switch (label) {
-            case "Strength" -> vars.Strength;
-            case "Dexterity" -> vars.Dexterity;
-            case "Constitution" -> vars.Constitution;
-            case "Intelligence" -> vars.Intelligence;
-            case "Wisdom" -> vars.Wisdom;
-            case "Charisma" -> vars.Charisma;
-            default -> 10.0;
+            case "Strength" -> AttributeHandler.getAttribute(player, "Strength");
+            case "Dexterity" -> AttributeHandler.getAttribute(player, "Dexterity");
+            case "Constitution" -> AttributeHandler.getAttribute(player, "Constitution");
+            case "Intelligence" -> AttributeHandler.getAttribute(player, "Intelligence");
+            case "Wisdom" -> AttributeHandler.getAttribute(player, "Wisdom");
+            case "Charisma" -> AttributeHandler.getAttribute(player, "Charisma");
+            default -> throw new IllegalStateException("Unknown Attribute: " + label);
         };
 
         int total = (int) value;
