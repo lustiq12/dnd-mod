@@ -1,8 +1,6 @@
 package net.luderspieler.dnd.character.choices;
 
 import net.luderspieler.dnd.character.AbilitysAndFeats.management.AbilityDataUtils;
-import net.luderspieler.dnd.character.AttributeHandler;
-import net.luderspieler.dnd.character.feats.FeatRegistry;
 import net.luderspieler.dnd.network.DndModVariables;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
@@ -10,25 +8,64 @@ import net.minecraft.world.entity.player.Player;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Liefert für jede ChoiceID die wählbaren Optionen.
+ *
+ * WICHTIG: Die Subklassen-Namen sind 1:1 die Display-Namen aus ClassRegistry
+ * (dritter Parameter im SubclassDefinition-Konstruktor). Abweichungen
+ * würden resolveSubclassId() in AbilityUtils zum Scheitern bringen.
+ */
 public class ChoiceRegistry {
 
-    private static final Map<String, List<String>> SUBCLASSES = new HashMap<>();
+    // ── Subklassen: exakt wie in ClassRegistry.SUBCLASSES ────────────────────
+    private static final Map<String, List<String>> SUBCLASSES = new LinkedHashMap<>();
+    static {
+        SUBCLASSES.put("barbarian", List.of(
+                "Path of the Berserker", "Path of the Wild Heart",
+                "Path of the World Tree", "Path of the Zealot"));
+        SUBCLASSES.put("bard", List.of(
+                "College of Dance", "College of Glamour",
+                "College of Lore", "College of Valor"));
+        SUBCLASSES.put("cleric", List.of(
+                "Life Domain", "Light Domain",
+                "Trickery Domain", "War Domain"));
+        SUBCLASSES.put("druid", List.of(
+                "Circle of the Land", "Circle of the Moon",
+                "Circle of the Sea", "Circle of the Stars"));
+        SUBCLASSES.put("fighter", List.of(
+                "Battle Master", "Champion",
+                "Eldritch Knight", "Psi Warrior"));
+        SUBCLASSES.put("monk", List.of(
+                "Warrior of Mercy", "Warrior of Shadow",
+                "Warrior of the Elements", "Warrior of the Open Hand"));
+        SUBCLASSES.put("paladin", List.of(
+                "Oath of Devotion", "Oath of Glory",
+                "Oath of the Ancients", "Oath of Vengeance"));
+        SUBCLASSES.put("ranger", List.of(
+                "Beast Master", "Fey Wanderer",
+                "Gloom Stalker", "Hunter"));
+        SUBCLASSES.put("rogue", List.of(
+                "Arcane Trickster", "Assassin",
+                "Soulknife", "Thief"));
+        SUBCLASSES.put("sorcerer", List.of(
+                "Draconic Sorcery", "Wild Magic",
+                "Aberrant Sorcery", "Clockwork Sorcery"));
+        SUBCLASSES.put("warlock", List.of(
+                "Archfey Patron", "Fiend Patron",
+                "Great Old One Patron", "Celestial Patron"));
+        SUBCLASSES.put("wizard", List.of(
+                "Abjurer", "Diviner",
+                "Evoker", "Illusionist"));
+    }
 
+    // ── Metamagic (alle Optionen nach 2024 PHB) ───────────────────────────────
     private static final List<String> ALL_METAMAGIC = List.of(
             "Careful Spell", "Distant Spell", "Empowered Spell", "Extended Spell",
             "Heightened Spell", "Quickened Spell", "Seeking Spell", "Subtle Spell",
             "Transmuted Spell", "Twinned Spell"
     );
 
-    static {
-        SUBCLASSES.put("barbarian", Arrays.asList("Berserker", "Wild Heart", "World Tree"));
-        SUBCLASSES.put("cleric",    Arrays.asList("Life Domain", "Light Domain", "War Domain"));
-        SUBCLASSES.put("fighter",   Arrays.asList("Champion", "Battle Master", "Eldritch Knight"));
-        SUBCLASSES.put("warlock",   Arrays.asList("Archfey", "Fiend", "Great Old One"));
-        SUBCLASSES.put("sorcerer",  Arrays.asList("Draconic Sorcery", "Wild Magic"));
-        SUBCLASSES.put("druid",     Arrays.asList("Circle of the Land", "Circle of the Moon"));
-        SUBCLASSES.put("paladin",   Arrays.asList("Oath of Devotion", "Oath of the Ancients"));
-    }
+    // ─────────────────────────────────────────────────────────────────────────
 
     public static List<String> getOptions(String choiceId) {
         Player player = Minecraft.getInstance().player;
@@ -40,46 +77,48 @@ public class ChoiceRegistry {
         return switch (upperId) {
 
             case "SUBCLASS" -> SUBCLASSES.getOrDefault(vars.PlayerClass,
-                    List.of("No subclasses for class: " + vars.PlayerClass));
+                    List.of("No subclasses defined for: " + vars.PlayerClass));
 
-            // ABILITY_SCORE_IMPROVEMENT_OR_FEAT wird vollständig in
-            // GenericChoicePopup behandelt (dreistufiger Ablauf) — diese
-            // Methode wird dafür nicht aufgerufen, aber der leere Default
-            // schadet nicht.
+            // GenericChoicePopup handled intern (3-Stufen-Ablauf), kein List nötig.
             case "ABILITY_SCORE_IMPROVEMENT_OR_FEAT" -> List.of();
 
-            // ── METAMAGIC ──────────────────────────────────────────────
-            // METAMAGIC_chosen nutzt SEMIKOLON als internen Trenner.
-            // Daher hier split(";"), nicht split(",").
+            // METAMAGIC: bereits gewählte Options ausfiltern.
+            // Trenner = Semikolon (Komma ist AbilityData-Top-Level-Trenner).
             case "METAMAGIC" -> {
                 String chosen = AbilityDataUtils.get(vars, "METAMAGIC_chosen", "");
                 if (chosen.isBlank()) yield new ArrayList<>(ALL_METAMAGIC);
-
                 Set<String> chosenSet = Arrays.stream(chosen.split(";"))
-                        .map(String::trim)
-                        .collect(Collectors.toSet());
-
+                        .map(String::trim).collect(Collectors.toSet());
                 yield ALL_METAMAGIC.stream()
                         .filter(o -> !chosenSet.contains(o))
                         .collect(Collectors.toList());
             }
 
-            case "FIGHTING_STYLE" -> Arrays.asList(
+            case "FIGHTING_STYLE" -> List.of(
                     "Archery", "Defense", "Dueling",
                     "Great Weapon Fighting", "Protection", "Two-Weapon Fighting");
 
-            case "ELDRITCH_INVOCATION" -> Arrays.asList(
+            case "ELDRITCH_INVOCATION" -> List.of(
                     "Agonizing Blast", "Armor of Shadows", "Beast Speech",
                     "Devil's Sight", "Mask of Many Faces");
 
-            case "HOLY_ORDER"        -> Arrays.asList("Protector", "Scholar", "Thaumaturge");
-            case "PRIMAL_ORDER"      -> Arrays.asList("Magician", "Warden");
-            case "PRACTICED_SCHOLAR" -> Arrays.asList("Arcana", "History", "Nature", "Religion");
-            case "TOOL_PROFICIENCY"  -> Arrays.asList(
+            // Klassen-spezifische Choices
+            case "HOLY_ORDER"        -> List.of("Protector", "Scholar", "Thaumaturge");
+            case "PRIMAL_ORDER"      -> List.of("Magician", "Warden");
+            case "RANGER_COMPANION"  -> List.of("Beast of the Land", "Beast of the Sea", "Beast of the Sky");
+            case "RANGER_EXPERTISE"  -> List.of("Stealth", "Survival", "Perception", "Nature", "Investigation");
+            case "MONK_WEAPON"       -> List.of("Simple Weapons", "Short Swords");
+            case "TOOL_PROFICIENCY"  -> List.of(
                     "Thieves' Tools", "Alchemist's Supplies",
                     "Smith's Tools", "Brewer's Supplies");
+            case "BARDIC_COLLEGE_SKILL" -> List.of(
+                    "Acrobatics", "Animal Handling", "Arcana", "Athletics",
+                    "Deception", "History", "Insight", "Intimidation",
+                    "Investigation", "Medicine", "Nature", "Perception",
+                    "Performance", "Persuasion", "Religion", "Sleight of Hand",
+                    "Stealth", "Survival");
 
-            default -> List.of("No options for: " + choiceId);
+            default -> List.of("No options defined for: " + choiceId);
         };
     }
 }

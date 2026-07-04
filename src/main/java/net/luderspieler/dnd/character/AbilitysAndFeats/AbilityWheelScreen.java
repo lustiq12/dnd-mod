@@ -25,7 +25,7 @@ import java.util.Map;
  * ABILITY_SELECT  – Haupt-Wheel: alle PLAYER_TRIGGERED-Abilities
  * FOCUS_SPEND     – Sub-Wheel: Focus-Point-Ausgaben (Monk)
  * SORCERY_SPEND   – Sub-Wheel: Sorcery-Point → Spell-Slot (Sorcerer)
- * METAMAGIC_SELECT– Sub-Wheel: Metamagic-Option auswählen (Sorcerer)
+ * METAMAGIC_SELECT– Sub-wheel: select a Metamagic option (Sorcerer)
  *
  * Alle Aktionen werden via ActivateAbilityPacket gesendet (kein separates
  * UseResourceActionPacket mehr).
@@ -36,8 +36,8 @@ public class AbilityWheelScreen extends Screen {
     private enum Stage { ABILITY_SELECT, FOCUS_SPEND, SORCERY_SPEND, METAMAGIC_SELECT }
 
     /**
-     * Eine wählbare Aktion im Sub-Wheel.
-     * @param minLevel Mindest-Level für diese Option (Level-Gating).
+     * A selectable action within a sub-wheel.
+     * @param minLevel Minimum level required for this option (level gating).
      */
     private record SubAction(String name, String detail, int cost, int minLevel,
                              ResourceManager.ResourcePool pool, String actionKey) {}
@@ -53,6 +53,7 @@ public class AbilityWheelScreen extends Screen {
     );
 
     // ── Sorcery-Point-Aktionen (Sorcerer, 2024 PHB) ──────────────────
+    // SP → Slot (Font of Magic, Hin-Richtung)
     private static final List<SubAction> SORCERY_ACTIONS = List.of(
             new SubAction("Spell Slot 1", "2 SP → 1st-level slot", 2, 2,
                     ResourceManager.ResourcePool.SORCERY_POINTS, "SLOT_1"),
@@ -65,6 +66,29 @@ public class AbilityWheelScreen extends Screen {
             new SubAction("Spell Slot 5", "7 SP → 5th-level slot", 7, 9,
                     ResourceManager.ResourcePool.SORCERY_POINTS, "SLOT_5")
     );
+
+    // Slot → SP (Font of Magic, reverse direction).
+    // This list is built dynamically in getSlotToSpActions() (only shows slots > 0).
+    // Grades 6-9 cannot be converted per the 2024 PHB.
+    private List<SubAction> getSlotToSpActions(net.minecraft.world.entity.player.Player player) {
+        var vars = player.getData(net.luderspieler.dnd.network.DndModVariables.PLAYER_VARIABLES);
+        String slots = vars.Spellslots != null ? vars.Spellslots : "000000000";
+        List<SubAction> list = new java.util.ArrayList<>();
+        String[] labels = {"1st", "2nd", "3rd", "4th", "5th"};
+        for (int i = 0; i < 5; i++) {
+            int count = (slots.length() > i) ? (slots.charAt(i) - '0') : 0;
+            if (count < 1) continue; // no slot of this grade available
+            list.add(new SubAction(
+                    "Slot Lv." + (i + 1) + " → SP",
+                    (i + 1) + " SP  (has " + count + " " + labels[i] + ")",
+                    0, // cost isn't used for SP-gating here; slot availability is checked server-side
+                    2,
+                    ResourceManager.ResourcePool.SORCERY_POINTS,
+                    "SLOT_TO_SP_" + (i + 1)
+            ));
+        }
+        return list;
+    }
 
     // ── Metamagic-Konstanten ─────────────────────────────────────────
     private static final Map<String, Integer> METAMAGIC_SP_COSTS = Map.of(
@@ -131,9 +155,15 @@ public class AbilityWheelScreen extends Screen {
                     ResourceManager.ResourcePool.FOCUS_POINTS,
                     "Focus Points", generalConfigs.WHEEL_FP_IDLE, generalConfigs.WHEEL_FP_HOVER);
 
-            case SORCERY_SPEND  -> renderSubWheel(g, mouseX, mouseY, SORCERY_ACTIONS,
-                    ResourceManager.ResourcePool.SORCERY_POINTS,
-                    "Sorcery Points", generalConfigs.WHEEL_SP_IDLE, generalConfigs.WHEEL_SP_HOVER);
+            case SORCERY_SPEND  -> {
+                // Combine SP→Slot (static list) and Slot→SP (dynamic, based on available slots)
+                Player p = Minecraft.getInstance().player;
+                List<SubAction> fontActions = new java.util.ArrayList<>(SORCERY_ACTIONS);
+                if (p != null) fontActions.addAll(getSlotToSpActions(p));
+                renderSubWheel(g, mouseX, mouseY, fontActions,
+                        ResourceManager.ResourcePool.SORCERY_POINTS,
+                        "Sorcery Points", generalConfigs.WHEEL_SP_IDLE, generalConfigs.WHEEL_SP_HOVER);
+            }
 
             case METAMAGIC_SELECT -> {
                 Player p = Minecraft.getInstance().player;
@@ -333,8 +363,12 @@ public class AbilityWheelScreen extends Screen {
                 case ABILITY_SELECT   -> handleMainWheelClick(dist);
                 case FOCUS_SPEND      -> handleSubWheelClick(dist, FOCUS_ACTIONS,
                         Ability.FOCUS_POINTS);
-                case SORCERY_SPEND    -> handleSubWheelClick(dist, SORCERY_ACTIONS,
-                        Ability.FONT_OF_MAGIC);
+                case SORCERY_SPEND    -> {
+                    Player p2 = Minecraft.getInstance().player;
+                    List<SubAction> fa = new java.util.ArrayList<>(SORCERY_ACTIONS);
+                    if (p2 != null) fa.addAll(getSlotToSpActions(p2));
+                    handleSubWheelClick(dist, fa, Ability.FONT_OF_MAGIC);
+                }
                 case METAMAGIC_SELECT -> {
                     Player p = Minecraft.getInstance().player;
                     handleSubWheelClick(dist,
@@ -354,7 +388,7 @@ public class AbilityWheelScreen extends Screen {
 
         if (hoveredSegment >= 0 && hoveredSegment < abilities.size()) {
             Ability chosen = abilities.get(hoveredSegment);
-            // Sub-Wheels öffnen
+            // Open sub-wheels
             if      (chosen == Ability.FOCUS_POINTS) stage = Stage.FOCUS_SPEND;
             else if (chosen == Ability.FONT_OF_MAGIC) stage = Stage.SORCERY_SPEND;
             else if (chosen == Ability.METAMAGIC)     stage = Stage.METAMAGIC_SELECT;
@@ -412,7 +446,7 @@ public class AbilityWheelScreen extends Screen {
 
     /**
      * Liest die Metamagic-Optionen des Spielers aus AbilityData["METAMAGIC_chosen"]
-     * und baut daraus die SubAction-Liste für das Sub-Wheel.
+     * and builds the SubAction list for the sub-wheel from it.
      */
     private List<SubAction> getMetamagicActions(Player player) {
         String raw = AbilityDataUtils.get(
@@ -422,7 +456,7 @@ public class AbilityWheelScreen extends Screen {
 
         List<SubAction> list = new ArrayList<>();
         // METAMAGIC_chosen nutzt SEMIKOLON als Trenner (Komma ist in
-        // AbilityData für Top-Level key=value-Paare reserviert).
+        // AbilityData reserves commas for top-level key=value pairs).
         for (String n : raw.split(";")) {
             n = n.trim();
             if (n.isBlank()) continue;

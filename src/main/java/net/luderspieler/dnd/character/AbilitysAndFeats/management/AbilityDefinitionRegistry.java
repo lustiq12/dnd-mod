@@ -256,6 +256,41 @@ public class AbilityDefinitionRegistry {
         //   ELVEN_LINEAGE, HIGH_ELF_LINEAGE, WOOD_ELF_LINEAGE, DROW_LINEAGE
         //   GNOMISH_LINEAGE, FOREST_GNOME_LINEAGE, ROCK_GNOME_LINEAGE
         //   ABYSSAL_LINEAGE, CHTHONIC_LINEAGE, INFERNAL_LINEAGE
+        // registry.register(Ability.DRACONIC_RESILIENCE, AbilityCategory.PASSIVE_TRACKED,
+        //     "Draconic Resilience",
+        //     "+1 max HP per Sorcerer level. Unarmored AC = 10 + DEX + CHA.");
+        //
+        // registry.register(Ability.WILD_MAGIC_SURGE, AbilityCategory.PASSIVE_TRACKED,
+        //     "Wild Magic Surge",
+        //     "Wild magic may surge when you cast a Sorcerer spell of 1st level or higher.");
+        //
+        // registry.register(Ability.IMPROVED_CRITICAL, AbilityCategory.PASSIVE_TRACKED,
+        //     "Improved Critical",
+        //     "You score a critical hit on a 19 or 20.");
+        //
+        // registry.register(Ability.BATTLE_MASTER, AbilityCategory.PASSIVE_TRACKED,
+        //     "Battle Master",
+        //     "You learn Maneuvers and gain Superiority Dice to fuel them.");
+        //
+        // registry.register(Ability.ELDRITCH_KNIGHT_SPELLCASTING, AbilityCategory.PASSIVE_TRACKED,
+        //     "Eldritch Knight Spellcasting",
+        //     "You learn spells from the Wizard list, focused on abjuration and evocation.");
+        //
+        // registry.register(Ability.FRENZY, AbilityCategory.PASSIVE_TRACKED,
+        //     "Frenzy",
+        //     "When you enter a rage, you can choose to frenzy. While frenzied, make one extra attack.");
+        //
+        // registry.register(Ability.CIRCLE_OF_THE_MOON, AbilityCategory.PASSIVE_TRACKED,
+        //     "Circle Forms",
+        //     "You can use Wild Shape to transform into more powerful beasts.");
+        //
+        // registry.register(Ability.SACRED_WEAPON, AbilityCategory.PLAYER_TRIGGERED,
+        //     "Sacred Weapon",
+        //     "Channel Divinity: your weapon glows, dealing radiant bonus damage.");
+        //
+        // registry.register(Ability.DIVINE_HEALTH, AbilityCategory.PASSIVE_TRACKED,
+        //     "Divine Health",
+        //     "The divine magic flowing through you makes you immune to disease.");
         //
         // Passiv durch das Spell-System geregelt:
         //   MAGICAL_SECRETS, RITUAL_ADEPT, SPELL_MASTERY, SIGNATURE_SPELLS

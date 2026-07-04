@@ -1,48 +1,84 @@
 package net.luderspieler.dnd.character.AbilitysAndFeats.management;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
- * Ordnet jeder Subklasse (per id, z.B. "berserker") ihre level-gebundenen
- * Abilities zu — analog zu AbilityRegistry.RACE_LEVELED_ABILITIES.
+ * Ordnet jeder Subklasse (per ID aus ClassRegistry, z.B. "draconic_sorcery")
+ * ihre level-gebundenen Abilities zu.
  *
- * SCOPE-HINWEIS:
- * Die meisten 2024-PHB-Subklassen haben aktuell KEINE passenden Einträge im
- * Ability-Enum — ihre Features existieren bisher nur als Flavour-Text in
- * ClassRegistry's *_LEVELING_DESCRIPTIONS-Listen (z.B. "Frenzy: Extra attack
- * each turn while raging"), ohne mechanische Implementierung.
+ * IDs kommen aus SubclassDefinition.getId() — erster Parameter im Konstruktor.
+ * vars.PlayerSubclass speichert den Display-Namen; resolveSubclassId() in
+ * AbilityUtils macht die Übersetzung Display-Name → ID.
  *
- * Alle ~40 Subklassen × ~4 Features vollständig mit neuen Ability-Enum-Werten,
- * Kategorisierung (PLAYER_TRIGGERED/SELF_TRIGGERED/...) und tatsächlicher
- * Spiellogik auszustatten ist ein eigenes großes Vorhaben.
- *
- * Diese Klasse fixt die PIPELINE: Subklasse wählen (ChoiceExecutor) und
- * Level-Up (LevelEvents/DndCommand) rufen jetzt tatsächlich
- * AbilityUtils.updateSubclassAbilitiesForLevel() auf — vorher passierte
- * beim Subklassen-Wählen GAR NICHTS außer vars.PlayerSubclass zu setzen.
- *
- * Befülle SUBCLASS_ABILITIES hier, sobald für eine Subklassen-Ability ein
- * passender Ability-Enum-Wert + eine Implementierung existiert.
+ * Neue Ability-Enum-Werte die hier referenziert werden MÜSSEN in Ability.java
+ * und AbilityDefinitionRegistry ergänzt werden — siehe Ability_SUBCLASS_ADDITIONS.java.
  */
 public class SubclassAbilityRegistry {
 
-    private static final Map<String, Map<Integer, List<Ability>>> SUBCLASS_ABILITIES = new HashMap<>();
+    private static final Map<String, Map<Integer, List<Ability>>> SUBCLASS_ABILITIES
+            = new HashMap<>();
 
-    // Aktuell absichtlich leer — siehe Scope-Hinweis oben. Beispiel für das
-    // erwartete Format, sobald Inhalte ergänzt werden:
-    //
-    // static {
-    //     SUBCLASS_ABILITIES.put("berserker", new LinkedHashMap<>() {{
-    //         put(3, List.of(Ability.FRENZY));
-    //         put(6, List.of(Ability.MINDLESS_RAGE));
-    //     }});
-    // }
+    static {
 
-    /** Gibt die Level→Abilities-Map einer Subklasse zurück (leer falls keine definiert ist). */
+        // ── SORCERER ─────────────────────────────────────────────────────────
+        SUBCLASS_ABILITIES.put("draconic_sorcery", new LinkedHashMap<>() {{
+            put(3,  List.of(Ability.DRACONIC_RESILIENCE));
+            // put(6,  List.of(Ability.ELEMENTAL_AFFINITY));   // TODO
+            // put(14, List.of(Ability.DRAGON_WINGS));         // TODO
+        }});
+
+        SUBCLASS_ABILITIES.put("wild_magic", new LinkedHashMap<>() {{
+            put(3, List.of(Ability.WILD_MAGIC_SURGE));
+        }});
+
+        // aberrant_sorcery / clockwork_sorcery → TODO (keine Ability-Enum-Werte noch)
+
+        // ── FIGHTER ──────────────────────────────────────────────────────────
+        SUBCLASS_ABILITIES.put("champion", new LinkedHashMap<>() {{
+            put(3, List.of(Ability.IMPROVED_CRITICAL));
+        }});
+
+        SUBCLASS_ABILITIES.put("battle_master", new LinkedHashMap<>() {{
+            put(3, List.of(Ability.BATTLE_MASTER));
+        }});
+
+        SUBCLASS_ABILITIES.put("eldritch_knight", new LinkedHashMap<>() {{
+            put(3, List.of(Ability.ELDRITCH_KNIGHT_SPELLCASTING));
+        }});
+
+        // psi_warrior → TODO
+
+        // ── BARBARIAN ────────────────────────────────────────────────────────
+        SUBCLASS_ABILITIES.put("berserker", new LinkedHashMap<>() {{
+            put(3, List.of(Ability.FRENZY));
+        }});
+
+        // wild_heart / world_tree / zealot → TODO
+
+        // ── DRUID ────────────────────────────────────────────────────────────
+        SUBCLASS_ABILITIES.put("circle_moon", new LinkedHashMap<>() {{
+            put(3, List.of(Ability.CIRCLE_OF_THE_MOON));
+        }});
+
+        // circle_land / circle_sea / circle_stars → TODO
+
+        // ── PALADIN ──────────────────────────────────────────────────────────
+        SUBCLASS_ABILITIES.put("oath_devotion", new LinkedHashMap<>() {{
+            put(3, List.of(Ability.SACRED_WEAPON, Ability.DIVINE_HEALTH));
+        }});
+
+        // oath_glory / oath_ancients / oath_vengeance → TODO
+
+        // ── BARD / CLERIC / MONK / RANGER / ROGUE / WARLOCK / WIZARD ─────────
+        // → alle TODO (keine passenden Ability-Enum-Werte noch)
+    }
+
+    /**
+     * @param subclassId Die ID aus SubclassDefinition, z.B. "draconic_sorcery"
+     *                   (NICHT der Display-Name "Draconic Sorcery").
+     */
     public static Map<Integer, List<Ability>> getAbilities(String subclassId) {
-        if (subclassId == null) return Map.of();
+        if (subclassId == null || subclassId.isBlank()) return Map.of();
         return SUBCLASS_ABILITIES.getOrDefault(subclassId, Map.of());
     }
 }

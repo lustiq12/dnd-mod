@@ -58,6 +58,12 @@ public class ChoiceExecutor {
                 vars.PlayerSubclass = selectedValue;
                 if (player instanceof ServerPlayer sp) {
                     AbilityUtils.updateSubclassAbilitiesForLevel(sp, (int) vars.PlayerLevel);
+                    // Wichtig: Subklassen-Abilities wie DRACONIC_RESILIENCE wirken
+                    // sich auf abgeleitete Stats (max HP etc.) aus — ohne diesen
+                    // Aufruf bleibt die Ability zwar in vars.Abilities sichtbar,
+                    // aber die AttributeModifier (z.B. MAX_HEALTH) werden nie neu
+                    // berechnet, bis der Spieler levelt oder /dnd applyattrs läuft.
+                    applyAttrs(sp);
                 }
                 vars.markSyncDirty();
             }

@@ -122,7 +122,8 @@ public class AbilityMethods_PlayerTriggered {
             // ── SORCERER ─────────────────────────────────────────────────
             case INNATE_SORCERY          -> activateInnateSorcery(player);
             // subAction = "SLOT_1" … "SLOT_5"
-            case FONT_OF_MAGIC           -> activateFontOfMagic(player, subAction);
+            // subAction = "SLOT_1" … "SLOT_5" (SP→Slot) ODER "SLOT_TO_SP_1" … "SLOT_TO_SP_5" (Slot→SP)
+            case FONT_OF_MAGIC           -> activateFontOfMagicDispatch(player, subAction);
             // subAction = "CAREFUL_SPELL" … "TWINNED_SPELL"
             case METAMAGIC               -> activateMetamagic(player, subAction);
             case ARCANE_APOTHEOSIS       -> activateArcaneApotheosis(player);
@@ -570,9 +571,15 @@ public class AbilityMethods_PlayerTriggered {
     // ══════════════════════════════════════════════════════════════════
 
     /**
-     * FOCUS_POINTS (Monk Level 2) — Öffnet Sub-Wahl: Flurry of Blows,
-     * Patient Defense, Step of the Wind.
-     * Ladungen = Monk-Level.
+     * FOCUS_POINTS (Monk Level 2) – Sub-Aktionen via Ability-Wheel.
+     *
+     * Ohne subAction: gibt true zurück wenn noch Punkte vorhanden
+     * (das Sub-Wheel wird client-seitig geöffnet, kein Packet nötig).
+     *
+     * Mit subAction: gibt die entsprechende Technik aus.
+     *   "FLURRY_OF_BLOWS"  – 1 FP, Haste-Effekt + Flag
+     *   "PATIENT_DEFENSE"  – 1 FP, Resistance + Speed für 1 Sek.
+     *   "STEP_OF_THE_WIND" – 1 FP, Speed + Jump-Boost für 2 Sek.
      */
     private static boolean activateFocusPoints(ServerPlayer player, String subAction) {
         var vars = player.getData(DndModVariables.PLAYER_VARIABLES);
@@ -931,7 +938,20 @@ public class AbilityMethods_PlayerTriggered {
     }
 
     /**
-     * FONT_OF_MAGIC (Sorcerer Level 2) — Konvertiert Sorcery Points ↔ Spell Slots.
+     * FONT_OF_MAGIC hat zwei Richtungen — SP→Slot und Slot→SP. Diese
+     * Dispatch-Methode routet anhand des subAction-Präfixes zur richtigen
+     * Implementierung, statt das im aufrufenden activate()-switch zu tun.
+     */
+    private static boolean activateFontOfMagicDispatch(ServerPlayer player, String subAction) {
+        if (subAction != null && subAction.startsWith("SLOT_TO_SP_")) {
+            return activateSlotToSorceryPoints(player, subAction);
+        }
+        return activateFontOfMagic(player, subAction);
+    }
+
+    /**
+     * FONT_OF_MAGIC (Sorcerer Level 2) – Sorcery Points → Spell Slot.
+     * subAction = "SLOT_1" … "SLOT_5"
      */
     private static boolean activateFontOfMagic(ServerPlayer player, String subAction) {
         if (subAction == null || subAction.isBlank()) return false;
@@ -1015,12 +1035,29 @@ public class AbilityMethods_PlayerTriggered {
         if (current < cost) return false;
 
         AbilityDataUtils.set(vars, "SORCERY_POINTS", current - cost);
-        AbilityDataUtils.set(vars, subAction + "_active", true);
+        // Flagge setzen (Integer 1 = aktiv, nicht boolean "true" — getBool()
+        // ist je nach AbilityDataUtils-Implementierung mehrdeutig; getInt() != 0 ist eindeutig).
+        AbilityDataUtils.set(vars, subAction + "_active", 1);
         vars.markSyncDirty();
 
         player.displayClientMessage(
                 Component.literal("§5" + displayName + " readied!"), true);
         return true;
+    }
+
+    /**
+     * Hilfsmethode: "CAREFUL_SPELL" → "Careful Spell"
+     * Wird von activateMetamagic() genutzt.
+     */
+    private static String actionKeyToDisplayName(String key) {
+        StringBuilder sb = new StringBuilder();
+        for (String word : key.split("_")) {
+            if (word.isEmpty()) continue;
+            if (sb.length() > 0) sb.append(' ');
+            sb.append(Character.toUpperCase(word.charAt(0)));
+            sb.append(word.substring(1).toLowerCase());
+        }
+        return sb.toString();
     }
 
     /**
@@ -1105,15 +1142,59 @@ public class AbilityMethods_PlayerTriggered {
         return true;
     }
 
+    // ═══════════════════════════════════════════════════════════════════════
+//  activateSlotToSorceryPoints() — Font of Magic (Slot → SP)
+//
+//  Sorcerer 2024 PHB: Du kannst einen Spell-Slot verbrauchen und dafür
+//  Sorcery Points in Höhe des Slot-Grades gewinnen. Ein Cantrip-Slot
+//  kann nicht konvertiert werden. Jeder Slot (Grade 1-5) kann umgewandelt
+//  werden; Grade 6-9 Slots sind laut 2024 PHB von dieser Umwandlung
+//  AUSGESCHLOSSEN (man kann sie nicht in SP zurückverwandeln).
+//
+//  subAction Beispiele: "SLOT_TO_SP_1", "SLOT_TO_SP_2", ..., "SLOT_TO_SP_5"
+//  Wird bereits über activateFontOfMagicDispatch() oben automatisch geroutet.
+//          }
+//          return activateFontOfMagic(player, subAction);
+// ═══════════════════════════════════════════════════════════════════════
 
-    private static String actionKeyToDisplayName(String key) {
-        StringBuilder sb = new StringBuilder();
-        for (String word : key.split("_")) {
-            if (word.isEmpty()) continue;
-            if (sb.length() > 0) sb.append(' ');
-            sb.append(Character.toUpperCase(word.charAt(0)));
-            sb.append(word.substring(1).toLowerCase());
+    private static boolean activateSlotToSorceryPoints(ServerPlayer player, String subAction) {
+        // subAction = "SLOT_TO_SP_1" bis "SLOT_TO_SP_5"
+        int grade;
+        try {
+            grade = Integer.parseInt(subAction.replace("SLOT_TO_SP_", ""));
+        } catch (NumberFormatException e) { return false; }
+
+        if (grade < 1 || grade > 5) return false; // Grade 6-9 sind nicht konvertierbar
+
+        DndModVariables.PlayerVariables vars = player.getData(DndModVariables.PLAYER_VARIABLES);
+
+        // Spell-Slot vorhanden?
+        String slots = vars.Spellslots != null ? vars.Spellslots : "000000000";
+        if (slots.length() < grade) return false;
+
+        int available = slots.charAt(grade - 1) - '0';
+        if (available < 1) {
+            player.displayClientMessage(
+                    Component.literal("§cNo Grade " + grade + " spell slot available!"), true);
+            return false;
         }
-        return sb.toString();
+
+        // Slot abziehen
+        char[] arr = slots.toCharArray();
+        arr[grade - 1] = (char) ('0' + (available - 1));
+        vars.Spellslots = new String(arr);
+
+        // Sorcery Points gewinnen (= Slot-Grade)
+        int currentSP = AbilityDataUtils.getInt(vars, "SORCERY_POINTS", 0);
+        int maxSP     = (int) vars.PlayerLevel; // 2024 PHB: max SP = Sorcerer-Level
+        int gained    = Math.min(grade, maxSP - currentSP); // nicht über Maximum
+        AbilityDataUtils.set(vars, "SORCERY_POINTS", currentSP + gained);
+
+        vars.markSyncDirty();
+
+        player.displayClientMessage(
+                Component.literal("§5Font of Magic: Grade " + grade + " slot → " + gained + " SP"),
+                true);
+        return true;
     }
 }

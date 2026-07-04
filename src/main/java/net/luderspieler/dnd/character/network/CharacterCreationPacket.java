@@ -232,8 +232,12 @@ public record CharacterCreationPacket(
         // Bonus HP from Con (x2 for Hearts) + Class HP for levels above 1
         int toughBonus = AbilityDataUtils.getInt(vars, "ToughBonus", 0) * 2;
         // Tough-Feat (2024 PHB): +2 max HP pro Level, ×2 für Minecraft-Herzen.
-        int featToughBonus = AbilityDataUtils.getBool(vars, "FeatToughBonus") ? level * 4 : 0;
-        double totalTargetHP = ((hpPerLvl + (conM * 2.0)) * level) + toughBonus + featToughBonus;
+        int featToughBonus = AbilityDataUtils.getInt(vars, "FeatToughBonus", 0) != 0 ? level * 4 : 0;
+        // DRACONIC_RESILIENCE: +1 max HP pro Sorcerer-Level (×2 für MC-Herzen)
+        int draconicHpBonus = AbilityUtils.hasAbility(player, Ability.DRACONIC_RESILIENCE)
+                            ? level * 2 : 0;
+        double totalTargetHP = ((hpPerLvl + (conM * 2.0)) * level)
+                             + toughBonus + featToughBonus + draconicHpBonus;
         double bonusHP = totalTargetHP - 20.0;
         if (bonusHP <= -20.0) {
             bonusHP = -18.0;
