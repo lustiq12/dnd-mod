@@ -6,6 +6,9 @@ import net.luderspieler.dnd.character.network.KeepCharacterPacket;
 import net.luderspieler.dnd.character.network.OpenCreationGuiPacket;
 import net.luderspieler.dnd.character.choices.ExecuteChoicePacket;
 import net.luderspieler.dnd.network.AirClickPacket;
+import net.luderspieler.dnd.rests.ApplyLongRestPacket;
+import net.luderspieler.dnd.rests.BeginRestPacket;
+import net.luderspieler.dnd.rests.OpenLongRestManagementPacket;
 import net.luderspieler.dnd.spells.CastSpellPacket;
 import net.luderspieler.dnd.spells.PrepareSpellsPacket;
 import net.neoforged.bus.api.IEventBus;
@@ -24,57 +27,66 @@ public class DndModNetworkRegistry {
         modEventBus.addListener(DndModNetworkRegistry::onRegisterPayloads);
     }
 
-    private static void onRegisterPayloads(RegisterPayloadHandlersEvent event) {
+    public static void onRegisterPayloads(RegisterPayloadHandlersEvent event) {
         PayloadRegistrar reg = event.registrar("1");
 
-        // ── Client → Server ──────────────────────────────────────
+        // ── Client → Server ───────────────────────────────────────────────────
         reg.playToServer(
                 CharacterCreationPacket.TYPE,
                 CharacterCreationPacket.CODEC,
-                CharacterCreationPacket::handle
-        );
+                CharacterCreationPacket::handle);
 
         reg.playToServer(
                 KeepCharacterPacket.TYPE,
                 KeepCharacterPacket.CODEC,
-                KeepCharacterPacket::handle
-        );
+                KeepCharacterPacket::handle);
 
         reg.playToServer(
                 CastSpellPacket.TYPE,
                 CastSpellPacket.CODEC,
-                CastSpellPacket::handle
-        );
+                CastSpellPacket::handle);
 
         reg.playToServer(
                 PrepareSpellsPacket.TYPE,
                 PrepareSpellsPacket.CODEC,
-                PrepareSpellsPacket::handle
-        );
+                PrepareSpellsPacket::handle);
 
         reg.playToServer(
                 AirClickPacket.TYPE,
                 AirClickPacket.CODEC,
-                AirClickPacket::handle
-        );
+                AirClickPacket::handle);
 
         reg.playToServer(
                 ExecuteChoicePacket.TYPE,
                 ExecuteChoicePacket.CODEC,
-                ExecuteChoicePacket::handle
-        );
+                ExecuteChoicePacket::handle);
 
         reg.playToServer(
                 ActivateAbilityPacket.TYPE,
                 ActivateAbilityPacket.CODEC,
-                ActivateAbilityPacket::handle
-        );
+                ActivateAbilityPacket::handle);
 
-        // ── Server → Client ──────────────────────────────────────
+        // Long Rest — Client → Server
+        reg.playToServer(
+                BeginRestPacket.TYPE,
+                BeginRestPacket.CODEC,
+                BeginRestPacket::handle);
+
+        reg.playToServer(
+                ApplyLongRestPacket.TYPE,
+                ApplyLongRestPacket.CODEC,
+                ApplyLongRestPacket::handle);
+
+        // ── Server → Client ───────────────────────────────────────────────────
         reg.playToClient(
                 OpenCreationGuiPacket.TYPE,
                 OpenCreationGuiPacket.CODEC,
-                OpenCreationGuiPacket::handle
-        );
+                OpenCreationGuiPacket::handle);
+
+        // Long Rest — Server → Client
+        reg.playToClient(
+                OpenLongRestManagementPacket.TYPE,
+                OpenLongRestManagementPacket.CODEC,
+                OpenLongRestManagementPacket::handle);
     }
 }
