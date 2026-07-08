@@ -252,7 +252,7 @@ public class CharacterFinalizationScreen extends Screen {
 
             int modColor = mod > 0 ? generalConfigs.COLOR_STATUS_SUCCESS
                     : mod < 0 ? generalConfigs.COLOR_STATUS_DANGER
-                    :           generalConfigs.TEXT_GRAY;
+                      :           generalConfigs.TEXT_GRAY;
 
             int aw = this.font.width(abbStr);
             int vw = this.font.width(valStr);
