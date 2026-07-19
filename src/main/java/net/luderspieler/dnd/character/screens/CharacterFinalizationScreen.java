@@ -147,7 +147,7 @@ public class CharacterFinalizationScreen extends Screen {
     public void render(GuiGraphics g, int mouseX, int mouseY, float partial) {
 
         // 1. Hintergrund + dunkles Overlay
-        this.renderBackground(g, mouseX, mouseY, partial);
+        // this.renderBackground(g, mouseX, mouseY, partial); <-- ENTFERNT, da NeoForge das jetzt vorher automatisch macht!
         g.fill(0, 0, this.width, this.height, generalConfigs.COLOR_SCREEN_OVERLAY);
 
         int centerX = this.width / 2;
