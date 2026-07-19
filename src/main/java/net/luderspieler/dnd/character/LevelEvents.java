@@ -104,26 +104,25 @@ public class LevelEvents {
     public static long getRequiredXP(int level) {
         return switch (level) {
             case 1  -> 0L;
-            case 2  -> 300L;
-            case 3  -> 900L;
-            case 4  -> 2700L;
-            case 5  -> 6500L;
-            case 6  -> 14000L;
-            case 7  -> 23000L;
-            case 8  -> 34000L;
-            case 9  -> 48000L;
-            case 10 -> 64000L;
-            case 11 -> 85000L;
-            case 12 -> 100000L;
-            case 13 -> 120000L;
-            case 14 -> 140000L;
-            case 15 -> 165000L;
-            case 16 -> 195000L;
-            case 17 -> 225000L;
-            case 18 -> 265000L;
-            case 19 -> 305000L;
-            case 20 -> 355000L;
-            default -> level > 20 ? 355000L + (long)(level - 20) * 50000L : 0L;
-        };
+            case 2  -> 24L;
+            case 3  -> 72L;
+            case 4  -> 216L;
+            case 5  -> 520L;
+            case 6  -> 1120L;
+            case 7  -> 1840L;
+            case 8  -> 2720L;
+            case 9  -> 3840L;
+            case 10 -> 5120L;
+            case 11 -> 6800L;
+            case 12 -> 8000L;
+            case 13 -> 9600L;
+            case 14 -> 11200L;
+            case 15 -> 13200L;
+            case 16 -> 15600L;
+            case 17 -> 18000L;
+            case 18 -> 21200L;
+            case 19 -> 24400L;
+            case 20 -> 28400L;
+            default -> level > 20 ? 28400L + (long)(level - 20) * 4000L : 0L;        };
     }
 }
