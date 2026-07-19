@@ -3,7 +3,7 @@
   "_type": "potioneffect",
   "definition": {
     "effectName": "Charmed",
-    "icon": "heart",
+    "icon": "charmed",
     "color": {
       "value": -39169,
       "falpha": 0.0

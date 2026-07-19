@@ -44,7 +44,7 @@ public class MedusaEntity extends Monster {
 
 	public MedusaEntity(EntityType<MedusaEntity> type, Level world) {
 		super(type, world);
-		xpReward = 0;
+		xpReward = 92;
 		setNoAi(false);
 	}
 

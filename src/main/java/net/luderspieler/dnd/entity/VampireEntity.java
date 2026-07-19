@@ -45,7 +45,7 @@ public class VampireEntity extends Monster {
 
 	public VampireEntity(EntityType<VampireEntity> type, Level world) {
 		super(type, world);
-		xpReward = 0;
+		xpReward = 72;
 		setNoAi(false);
 	}
 

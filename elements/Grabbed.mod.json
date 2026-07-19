@@ -2,7 +2,7 @@
   "_fv": 85,
   "_type": "potioneffect",
   "definition": {
-    "effectName": "Charmed",
+    "effectName": "Grabbed",
     "icon": "grabbed",
     "color": {
       "value": -39169,

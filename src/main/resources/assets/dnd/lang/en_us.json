@@ -13,7 +13,7 @@
   "entity.dnd.nothic": "Nothic",
   "entity.dnd.vampire": "Vampire",
   "item.dnd.vampire_spawn_egg": "Vampire Spawn Egg",
-  "effect.dnd.grabbed": "Charmed",
+  "effect.dnd.grabbed": "Grabbed",
   "effect.dnd.stunned": "Stunned",
   "effect.dnd.decaying_stare": "Decaying Stare",
   "entity.dnd.medusa": "Medusa",
