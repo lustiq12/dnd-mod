@@ -306,7 +306,9 @@ public class CharacterFinalizationScreen extends Screen {
         }
 
         // ── Widgets (EditBoxen, Buttons) über allem ────────────────────────
-        super.render(g, mouseX, mouseY, partial);
+        for (net.minecraft.client.gui.components.Renderable renderable : this.renderables) {
+            renderable.render(g, mouseX, mouseY, partial);
+        }
     }
 
     // ============================================================
