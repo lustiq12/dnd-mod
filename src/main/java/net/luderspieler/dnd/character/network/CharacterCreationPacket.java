@@ -74,6 +74,7 @@ public record CharacterCreationPacket(
             vars.PlayerStory = pkt.story();
             vars.PlayerPersonality = pkt.personality();
             vars.PlayerLevel = 1;
+            vars.PlayerXP = 0;
             vars.FinishedCharacterCreation = true;
             vars.CanUseMagic = cls.canUseMagic();
             vars.ChoicesNeeded = "";
