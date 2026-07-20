@@ -4,6 +4,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.monster.Pillager;
@@ -22,10 +24,10 @@ public class RestEncounterSystem {
 
     public static boolean rollEncounter(ServerPlayer player) {
         float chance = switch (player.level().getDifficulty()) {
-            case PEACEFUL -> 1.00f;
-            case EASY     -> 1.00f;
-            case NORMAL   -> 1.00f;
-            case HARD     -> 1.00f;
+            case PEACEFUL -> 0.00f;
+            case EASY     -> 0.05f;
+            case NORMAL   -> 0.10f;
+            case HARD     -> 0.20f;
         };
         return player.getRandom().nextFloat() < chance;
     }
@@ -35,6 +37,17 @@ public class RestEncounterSystem {
         // ServerPlayer.level() returns ServerLevel in 1.21.x.
         ServerLevel level = (ServerLevel) player.level();
         int count = 2 + player.getRandom().nextInt(3); // 2, 3 or 4
+
+        level.playLocalSound(
+                player.getX(),
+                player.getY(),
+                player.getZ(),
+                SoundEvents.RAID_HORN.value(),
+                SoundSource.PLAYERS,
+                1.0F,
+                1.0F,
+                false
+        );
 
         for (int i = 0; i < count; i++) {
             double angle = player.getRandom().nextDouble() * Math.PI * 2;

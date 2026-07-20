@@ -1137,6 +1137,205 @@
         ]
       },
       "path": "~/Monsters/Goristro"
+    },
+    {
+      "name": "ScarecrowEntityIsHurt",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "scarecrow_entity_is_hurt",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          },
+          {
+            "name": "x",
+            "type": "number"
+          },
+          {
+            "name": "y",
+            "type": "number"
+          },
+          {
+            "name": "z",
+            "type": "number"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/ScarecrowEntityIsHurtProcedure.java"
+        ]
+      },
+      "path": "~/Monsters/Scarecrow"
+    },
+    {
+      "name": "TemplateIdleCooldown",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "template_idle_cooldown",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/TemplateIdleCooldownProcedure.java"
+        ]
+      },
+      "path": "~/Monsters/TemplatesAndReusables"
+    },
+    {
+      "name": "TemplateAnimSync",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "template_anim_sync",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "damagesource",
+            "type": "damagesource"
+          },
+          {
+            "name": "entity",
+            "type": "entity"
+          },
+          {
+            "name": "immediatesourceentity",
+            "type": "entity"
+          },
+          {
+            "name": "amount",
+            "type": "number"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/TemplateAnimSyncProcedure.java"
+        ]
+      },
+      "path": "~/Monsters/TemplatesAndReusables"
+    },
+    {
+      "name": "TemplateAttackPlaybackCondition",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "template_attack_playback_condition",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "return_type": "logic",
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/TemplateAttackPlaybackConditionProcedure.java"
+        ]
+      },
+      "path": "~/Monsters/TemplatesAndReusables"
+    },
+    {
+      "name": "TemplateMob",
+      "type": "livingentity",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "template_mob",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/dnd/items/template_mob_spawn_egg.json",
+          "src/main/java/net/luderspieler/dnd/entity/TemplateMobEntity.java",
+          "src/main/java/net/luderspieler/dnd/client/renderer/TemplateMobRenderer.java",
+          "src/main/resources/data/dnd/neoforge/biome_modifier/template_mob_biome_modifier.json"
+        ]
+      },
+      "path": "~/Monsters/TemplatesAndReusables"
+    },
+    {
+      "name": "ReusableIdleCooldown",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "reusable_idle_cooldown",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/ReusableIdleCooldownProcedure.java"
+        ]
+      },
+      "path": "~/Monsters/TemplatesAndReusables"
+    },
+    {
+      "name": "ReusableAnimSync",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "reusable_anim_sync",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "damagesource",
+            "type": "damagesource"
+          },
+          {
+            "name": "entity",
+            "type": "entity"
+          },
+          {
+            "name": "immediatesourceentity",
+            "type": "entity"
+          },
+          {
+            "name": "amount",
+            "type": "number"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/ReusableAnimSyncProcedure.java"
+        ]
+      },
+      "path": "~/Monsters/TemplatesAndReusables"
+    },
+    {
+      "name": "ReusableAttackPlaybackCondition",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "reusable_attack_playback_condition",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "return_type": "logic",
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/ReusableAttackPlaybackConditionProcedure.java"
+        ]
+      },
+      "path": "~/Monsters/TemplatesAndReusables"
     }
   ],
   "variable_elements": [
@@ -1535,7 +1734,7 @@
       "entity.dnd.nothic": "Nothic",
       "entity.dnd.vampire": "Vampire",
       "item.dnd.vampire_spawn_egg": "Vampire Spawn Egg",
-      "effect.dnd.grabbed": "Charmed",
+      "effect.dnd.grabbed": "Grabbed",
       "effect.dnd.stunned": "Stunned",
       "effect.dnd.decaying_stare": "Decaying Stare",
       "entity.dnd.medusa": "Medusa",
@@ -1551,7 +1750,8 @@
       "effect.dnd.rage": "Rage",
       "effect.dnd.large_form": "Large Form",
       "entity.dnd.goristro": "Goristro",
-      "item.dnd.goristro_spawn_egg": "Goristro Spawn Egg"
+      "item.dnd.goristro_spawn_egg": "Goristro Spawn Egg",
+      "entity.dnd.template_mob": "Template Mob"
     }
   },
   "metadata": {
@@ -1615,6 +1815,30 @@
           },
           {
             "name": "Goristro",
+            "children": []
+          },
+          {
+            "name": "ShadyDwarf",
+            "children": []
+          },
+          {
+            "name": "GoblinHenchman",
+            "children": []
+          },
+          {
+            "name": "GoblinWarrior",
+            "children": []
+          },
+          {
+            "name": "DwarvenSmith",
+            "children": []
+          },
+          {
+            "name": "Solar",
+            "children": []
+          },
+          {
+            "name": "TemplatesAndReusables",
             "children": []
           }
         ]

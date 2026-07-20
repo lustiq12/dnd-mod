@@ -25,5 +25,8 @@ public class DndModEntityRenderers {
 		event.registerEntityRenderer(DndModEntities.SPEAR_PROJECTILE.get(), ThrownItemRenderer::new);
 		event.registerEntityRenderer(DndModEntities.GELATINOUS_CUBE.get(), GelatinousCubeRenderer::new);
 		event.registerEntityRenderer(DndModEntities.GORISTRO.get(), GoristroRenderer::new);
+		event.registerEntityRenderer(DndModEntities.TEMPLATE_MOB.get(), TemplateMobRenderer::new);
+		event.registerEntityRenderer(DndModEntities.REUSABLE_MOB.get(), ReusableMobRenderer::new);
+		event.registerEntityRenderer(DndModEntities.GOBLIN_HENCHMAN.get(), GoblinHenchmanRenderer::new);
 	}
 }

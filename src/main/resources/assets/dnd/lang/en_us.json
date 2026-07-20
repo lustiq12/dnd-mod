@@ -29,5 +29,9 @@
   "effect.dnd.rage": "Rage",
   "effect.dnd.large_form": "Large Form",
   "entity.dnd.goristro": "Goristro",
-  "item.dnd.goristro_spawn_egg": "Goristro Spawn Egg"
+  "item.dnd.goristro_spawn_egg": "Goristro Spawn Egg",
+  "entity.dnd.template_mob": "Template Mob",
+  "entity.dnd.reusable_mob": "Reusable Mob",
+  "entity.dnd.goblin_henchman": "Goblin Henchman",
+  "item.dnd.goblin_henchman_spawn_egg": "Goblin Henchman Spawn Egg"
 }

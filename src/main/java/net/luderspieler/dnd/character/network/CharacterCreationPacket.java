@@ -80,6 +80,8 @@ public record CharacterCreationPacket(
             vars.ChoicesNeeded = "";
             vars.ChoicesMade = "";
             vars.Abilities = "";
+            vars.Feats = "";
+            vars.AbilityData = "";
 
             clearAllSpellLists(vars);
             resetSpellSlots(cls, (int)vars.PlayerLevel);
@@ -229,21 +231,27 @@ public record CharacterCreationPacket(
         updateMod(player, Attributes.JUMP_STRENGTH, "dnd:dex_jump", dexM * 0.03);
         updateMod(player, net.neoforged.neoforge.common.NeoForgeMod.SWIM_SPEED, "dnd:dex_swim", dexM * 0.1);
 
-        // --- CONSTITUTION ---
-        // Bonus HP from Con (x2 for Hearts) + Class HP for levels above 1
-        int toughBonus = AbilityDataUtils.getInt(vars, "ToughBonus", 0) * 2;
-        // Tough-Feat (2024 PHB): +2 max HP pro Level, ×2 für Minecraft-Herzen.
+        // --- HEALTH (CONSTITUTION) ---
+        double levelHpBonus = (hpPerLvl * level) - 20.0;
+        double constitutionHpBonus = (conM * 2.0) * level;
         int featToughBonus = AbilityDataUtils.getInt(vars, "FeatToughBonus", 0) != 0 ? level * 4 : 0;
-        // DRACONIC_RESILIENCE: +1 max HP pro Sorcerer-Level (×2 für MC-Herzen)
-        int draconicHpBonus = AbilityUtils.hasAbility(player, Ability.DRACONIC_RESILIENCE)
-                            ? level * 2 : 0;
-        double totalTargetHP = ((hpPerLvl + (conM * 2.0)) * level)
-                             + toughBonus + featToughBonus + draconicHpBonus;
-        double bonusHP = totalTargetHP - 20.0;
-        if (bonusHP <= -20.0) {
-            bonusHP = -18.0;
+        int toughBonus = AbilityDataUtils.getInt(vars, "ToughBonus", 0) * 2;
+        int draconicHpBonus = AbilityUtils.hasAbility(player, Ability.DRACONIC_RESILIENCE) ? level * 2 : 0;
+
+        // Hard-cap check to prevent total health from dropping below 1 heart (2 HP)
+        double totalBonusSum = levelHpBonus + constitutionHpBonus + featToughBonus + toughBonus + draconicHpBonus;
+        if (totalBonusSum <= -20.0) {
+            levelHpBonus += (-18.0 - totalBonusSum);
         }
-        updateMod(player, Attributes.MAX_HEALTH, "dnd:con_hp", bonusHP);
+
+        updateMod(player, Attributes.MAX_HEALTH, "dnd:level_hp", levelHpBonus);
+        updateMod(player, Attributes.MAX_HEALTH, "dnd:con_hp", constitutionHpBonus);
+        updateMod(player, Attributes.MAX_HEALTH, "dnd:feat_tough_hp", featToughBonus);
+        updateMod(player, Attributes.MAX_HEALTH, "dnd:tough_hp", toughBonus);
+        updateMod(player, Attributes.MAX_HEALTH, "dnd:draconic_hp", draconicHpBonus);
+
+
+        // --- CONSTITUTION ---
         updateMod(player, Attributes.OXYGEN_BONUS, "dnd:con_oxy", conM * 20.0);
         updateMod(player, Attributes.SAFE_FALL_DISTANCE, "dnd:con_fall_dist", conM * 1.5);
         updateMod(player, Attributes.BURNING_TIME, "dnd:con_burn", conM * -0.1);
