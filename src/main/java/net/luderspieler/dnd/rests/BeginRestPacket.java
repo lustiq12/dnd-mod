@@ -63,7 +63,7 @@ public record BeginRestPacket(BlockPos bedPos) implements CustomPacketPayload {
                     .ifPresent(problem ->
                             player.displayClientMessage(
                                     net.minecraft.network.chat.Component.literal(
-                                            "§c⚠ Could not sleep ( " + problem.name().replace('_', ' ').toLowerCase() + " )"), false));
+                                            "§c⚠ Could not sleep (" + problem.name().replace('_', ' ').toLowerCase() + ")"), false));
         });
     }
 }
