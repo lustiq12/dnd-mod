@@ -100,7 +100,12 @@ public class ChoiceExecutor {
                     default -> "";
                 };
                 if (!damageType.isBlank()) {
-                    GeneralDataUtils.set(vars, "DraconicAncestryDamageType", damageType);
+                    AbilityDataUtils.set(vars, "DraconicAncestryDamageType", damageType);
+
+                    String abilityName = damageType + "_DAMAGE_RESISTANCE";
+
+                    Ability ability = Ability.valueOf(abilityName);
+                    AbilityUtils.addAbility((ServerPlayer) player, ability);
                 }
                 vars.markSyncDirty();
             }
