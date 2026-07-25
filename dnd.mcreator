@@ -1612,6 +1612,18 @@
         ]
       },
       "path": "~/Damage Types"
+    },
+    {
+      "name": "ChoiceNeeded",
+      "type": "overlay",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "choice_needed",
+      "metadata": {
+        "files": [
+          "src/main/java/net/luderspieler/dnd/client/screens/ChoiceNeededOverlay.java"
+        ]
+      }
     }
   ],
   "variable_elements": [
@@ -2075,7 +2087,8 @@
       "death.attack.piercing": "%1$s died",
       "death.attack.slashing.player": "%1$s died whilst trying to escape %2$s",
       "death.attack.slashing": "%1$s died",
-      "death.attack.slashing.item": "%1$s was killed by %2$s using %3$s"
+      "death.attack.slashing.item": "%1$s was killed by %2$s using %3$s",
+      "gui.dnd.choice_needed.label_choice_needed_press_r": "Choice Needed - Press R"
     }
   },
   "metadata": {

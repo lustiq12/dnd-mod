@@ -1362,12 +1362,13 @@
       "metadata": {
         "files": [
           "src/main/resources/data/dnd/neoforge/biome_modifier/goblin_henchman_biome_modifier.json",
+          "src/main/resources/assets/dnd/models/item/goblin_henchman_spawn_egg.json",
           "src/main/java/net/luderspieler/dnd/client/renderer/GoblinHenchmanRenderer.java",
           "src/main/java/net/luderspieler/dnd/entity/GoblinHenchmanEntity.java",
           "src/main/resources/assets/dnd/items/goblin_henchman_spawn_egg.json"
         ]
       },
-      "path": "~/Monsters/TemplatesAndReusables"
+      "path": "~/Monsters"
     },
     {
       "name": "GoblinHenchmanAttackPlaybackCondition",
@@ -1387,7 +1388,242 @@
           "src/main/java/net/luderspieler/dnd/procedures/GoblinHenchmanAttackPlaybackConditionProcedure.java"
         ]
       },
-      "path": "~/Monsters/TemplatesAndReusables"
+      "path": "~/Monsters/GoblinHenchman"
+    },
+    {
+      "name": "GoblinHenchmanAnimSync",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "goblin_henchman_anim_sync",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "damagesource",
+            "type": "damagesource"
+          },
+          {
+            "name": "entity",
+            "type": "entity"
+          },
+          {
+            "name": "immediatesourceentity",
+            "type": "entity"
+          },
+          {
+            "name": "amount",
+            "type": "number"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/GoblinHenchmanAnimSyncProcedure.java"
+        ]
+      },
+      "path": "~/Monsters/GoblinHenchman"
+    },
+    {
+      "name": "GoblinHenchmanIdleCooldown",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "goblin_henchman_idle_cooldown",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/GoblinHenchmanIdleCooldownProcedure.java"
+        ]
+      },
+      "path": "~/Monsters/GoblinHenchman"
+    },
+    {
+      "name": "Fire",
+      "type": "damagetype",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "fire",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/dnd/damage_type/fire.json"
+        ]
+      },
+      "path": "~/Damage Types"
+    },
+    {
+      "name": "Cold",
+      "type": "damagetype",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "cold",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/dnd/damage_type/cold.json"
+        ]
+      },
+      "path": "~/Damage Types"
+    },
+    {
+      "name": "Lightning",
+      "type": "damagetype",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "lightning",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/dnd/damage_type/lightning.json"
+        ]
+      },
+      "path": "~/Damage Types"
+    },
+    {
+      "name": "Thunder",
+      "type": "damagetype",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "thunder",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/dnd/damage_type/thunder.json"
+        ]
+      },
+      "path": "~/Damage Types"
+    },
+    {
+      "name": "Force",
+      "type": "damagetype",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "force",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/dnd/damage_type/force.json"
+        ]
+      },
+      "path": "~/Damage Types"
+    },
+    {
+      "name": "Necrotic",
+      "type": "damagetype",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "necrotic",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/dnd/damage_type/necrotic.json"
+        ]
+      },
+      "path": "~/Damage Types"
+    },
+    {
+      "name": "Poison",
+      "type": "damagetype",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "poison",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/dnd/damage_type/poison.json"
+        ]
+      },
+      "path": "~/Damage Types"
+    },
+    {
+      "name": "Acid",
+      "type": "damagetype",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "acid",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/dnd/damage_type/acid.json"
+        ]
+      },
+      "path": "~/Damage Types"
+    },
+    {
+      "name": "Psychic",
+      "type": "damagetype",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "psychic",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/dnd/damage_type/psychic.json"
+        ]
+      },
+      "path": "~/Damage Types"
+    },
+    {
+      "name": "Radiant",
+      "type": "damagetype",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "radiant",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/dnd/damage_type/radiant.json"
+        ]
+      },
+      "path": "~/Damage Types"
+    },
+    {
+      "name": "Bludgeoning",
+      "type": "damagetype",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "bludgeoning",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/dnd/damage_type/bludgeoning.json"
+        ]
+      },
+      "path": "~/Damage Types"
+    },
+    {
+      "name": "Piercing",
+      "type": "damagetype",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "piercing",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/dnd/damage_type/piercing.json"
+        ]
+      },
+      "path": "~/Damage Types"
+    },
+    {
+      "name": "Slashing",
+      "type": "damagetype",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "slashing",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/dnd/damage_type/slashing.json"
+        ]
+      },
+      "path": "~/Damage Types"
+    },
+    {
+      "name": "ChoiceNeeded",
+      "type": "overlay",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "choice_needed",
+      "metadata": {
+        "files": [
+          "src/main/java/net/luderspieler/dnd/client/screens/ChoiceNeededOverlay.java"
+        ]
+      }
     }
   ],
   "variable_elements": [
@@ -1702,6 +1938,12 @@
       "type": "number",
       "scope": "player_persistent",
       "value": "0"
+    },
+    {
+      "name": "GeneralData",
+      "type": "string",
+      "scope": "player_persistent",
+      "value": "\"\""
     }
   ],
   "sound_elements": [
@@ -1805,7 +2047,48 @@
       "item.dnd.goristro_spawn_egg": "Goristro Spawn Egg",
       "entity.dnd.template_mob": "Template Mob",
       "entity.dnd.reusable_mob": "Reusable Mob",
-      "entity.dnd.goblin_henchman": "Template Mob"
+      "entity.dnd.goblin_henchman": "Goblin Henchman",
+      "item.dnd.goblin_henchman_spawn_egg": "Goblin Henchman Spawn Egg",
+      "death.attack.fire": "%1$s died",
+      "death.attack.fire.player": "%1$s died whilst trying to escape %2$s",
+      "death.attack.fire.item": "%1$s was killed by %2$s using %3$s",
+      "death.attack.cold.player": "%1$s died whilst trying to escape %2$s",
+      "death.attack.cold.item": "%1$s was killed by %2$s using %3$s",
+      "death.attack.cold": "%1$s died",
+      "death.attack.lightning.item": "%1$s was killed by %2$s using %3$s",
+      "death.attack.lightning": "%1$s died",
+      "death.attack.lightning.player": "%1$s died whilst trying to escape %2$s",
+      "death.attack.thunder.player": "%1$s died whilst trying to escape %2$s",
+      "death.attack.thunder": "%1$s died",
+      "death.attack.thunder.item": "%1$s was killed by %2$s using %3$s",
+      "death.attack.force": "%1$s died",
+      "death.attack.force.player": "%1$s died whilst trying to escape %2$s",
+      "death.attack.force.item": "%1$s was killed by %2$s using %3$s",
+      "death.attack.necrotic.player": "%1$s died whilst trying to escape %2$s",
+      "death.attack.necrotic": "%1$s died",
+      "death.attack.necrotic.item": "%1$s was killed by %2$s using %3$s",
+      "death.attack.poison.player": "%1$s died whilst trying to escape %2$s",
+      "death.attack.poison.item": "%1$s was killed by %2$s using %3$s",
+      "death.attack.poison": "%1$s died",
+      "death.attack.acid": "%1$s died",
+      "death.attack.acid.player": "%1$s died whilst trying to escape %2$s",
+      "death.attack.acid.item": "%1$s was killed by %2$s using %3$s",
+      "death.attack.psychic.item": "%1$s was killed by %2$s using %3$s",
+      "death.attack.psychic": "%1$s died",
+      "death.attack.psychic.player": "%1$s died whilst trying to escape %2$s",
+      "death.attack.radiant": "%1$s died",
+      "death.attack.radiant.player": "%1$s died whilst trying to escape %2$s",
+      "death.attack.radiant.item": "%1$s was killed by %2$s using %3$s",
+      "death.attack.bludgeoning.player": "%1$s died whilst trying to escape %2$s",
+      "death.attack.bludgeoning": "%1$s died",
+      "death.attack.bludgeoning.item": "%1$s was killed by %2$s using %3$s",
+      "death.attack.piercing.player": "%1$s died whilst trying to escape %2$s",
+      "death.attack.piercing.item": "%1$s was killed by %2$s using %3$s",
+      "death.attack.piercing": "%1$s died",
+      "death.attack.slashing.player": "%1$s died whilst trying to escape %2$s",
+      "death.attack.slashing": "%1$s died",
+      "death.attack.slashing.item": "%1$s was killed by %2$s using %3$s",
+      "gui.dnd.choice_needed.label_choice_needed_press_g": "Choice Needed - Press \"G\""
     }
   },
   "metadata": {
@@ -1896,6 +2179,10 @@
             "children": []
           }
         ]
+      },
+      {
+        "name": "Damage Types",
+        "children": []
       }
     ]
   },
