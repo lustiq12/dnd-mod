@@ -87,6 +87,11 @@ public class ChoiceUpdateSystem {
             needed.add("TOOL_PROFICIENCY");
         }
 
+        // ── 4. RASSEN-SPEZIFISCHE CHOICES ─────────────────────────────────────
+        if ("dragonborn".equals(vars.PlayerRace) && !hasMadeChoice(vars.ChoicesMade, "DRACONIC_ANCESTRY")) {
+            needed.add("DRACONIC_ANCESTRY");
+        }
+
         vars.ChoicesNeeded = String.join(",", needed);
         vars.markSyncDirty();
     }

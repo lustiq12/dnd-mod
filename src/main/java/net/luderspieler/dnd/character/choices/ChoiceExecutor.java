@@ -3,6 +3,7 @@ package net.luderspieler.dnd.character.choices;
 import net.luderspieler.dnd.character.AbilitysAndFeats.management.Ability;
 import net.luderspieler.dnd.character.AbilitysAndFeats.management.AbilityDataUtils;
 import net.luderspieler.dnd.character.AbilitysAndFeats.management.AbilityUtils;
+import net.luderspieler.dnd.character.GeneralDataUtils;
 import net.luderspieler.dnd.character.feats.FeatRegistry;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -86,6 +87,22 @@ public class ChoiceExecutor {
 
                 vars.markSyncDirty();
                 if (player instanceof ServerPlayer sp) applyAttrs(sp);
+            }
+
+            // ── DRACONIC ANCESTRY ──────────────────────────────────────────
+            case "DRACONIC_ANCESTRY" -> {
+                String damageType = switch (selectedValue) {
+                    case "Black Dragon", "Copper Dragon" -> "ACID";
+                    case "Blue Dragon", "Bronze Dragon" -> "LIGHTNING";
+                    case "Brass Dragon", "Gold Dragon", "Red Dragon" -> "FIRE";
+                    case "Green Dragon" -> "POISON";
+                    case "Silver Dragon", "White Dragon" -> "COLD";
+                    default -> "";
+                };
+                if (!damageType.isBlank()) {
+                    GeneralDataUtils.set(vars, "DraconicAncestryDamageType", damageType);
+                }
+                vars.markSyncDirty();
             }
         }
     }

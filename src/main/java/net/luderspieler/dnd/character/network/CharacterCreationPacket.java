@@ -82,6 +82,7 @@ public record CharacterCreationPacket(
             vars.Abilities = "";
             vars.Feats = "";
             vars.AbilityData = "";
+            vars.GeneralData = "";
 
             clearAllSpellLists(vars);
             resetSpellSlots(cls, (int)vars.PlayerLevel);

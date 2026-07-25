@@ -1336,6 +1336,113 @@
         ]
       },
       "path": "~/Monsters/TemplatesAndReusables"
+    },
+    {
+      "name": "ReusableMob",
+      "type": "livingentity",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "reusable_mob",
+      "metadata": {
+        "files": [
+          "src/main/java/net/luderspieler/dnd/client/renderer/ReusableMobRenderer.java",
+          "src/main/java/net/luderspieler/dnd/entity/ReusableMobEntity.java",
+          "src/main/resources/assets/dnd/items/reusable_mob_spawn_egg.json",
+          "src/main/resources/data/dnd/neoforge/biome_modifier/reusable_mob_biome_modifier.json"
+        ]
+      },
+      "path": "~/Monsters/TemplatesAndReusables"
+    },
+    {
+      "name": "GoblinHenchman",
+      "type": "livingentity",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "goblin_henchman",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/dnd/neoforge/biome_modifier/goblin_henchman_biome_modifier.json",
+          "src/main/resources/assets/dnd/models/item/goblin_henchman_spawn_egg.json",
+          "src/main/java/net/luderspieler/dnd/client/renderer/GoblinHenchmanRenderer.java",
+          "src/main/java/net/luderspieler/dnd/entity/GoblinHenchmanEntity.java",
+          "src/main/resources/assets/dnd/items/goblin_henchman_spawn_egg.json"
+        ]
+      },
+      "path": "~/Monsters"
+    },
+    {
+      "name": "GoblinHenchmanAttackPlaybackCondition",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "goblin_henchman_attack_playback_condition",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "return_type": "logic",
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/GoblinHenchmanAttackPlaybackConditionProcedure.java"
+        ]
+      },
+      "path": "~/Monsters/GoblinHenchman"
+    },
+    {
+      "name": "GoblinHenchmanAnimSync",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "goblin_henchman_anim_sync",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "damagesource",
+            "type": "damagesource"
+          },
+          {
+            "name": "entity",
+            "type": "entity"
+          },
+          {
+            "name": "immediatesourceentity",
+            "type": "entity"
+          },
+          {
+            "name": "amount",
+            "type": "number"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/GoblinHenchmanAnimSyncProcedure.java"
+        ]
+      },
+      "path": "~/Monsters/GoblinHenchman"
+    },
+    {
+      "name": "GoblinHenchmanIdleCooldown",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "goblin_henchman_idle_cooldown",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/GoblinHenchmanIdleCooldownProcedure.java"
+        ]
+      },
+      "path": "~/Monsters/GoblinHenchman"
     }
   ],
   "variable_elements": [
@@ -1751,7 +1858,10 @@
       "effect.dnd.large_form": "Large Form",
       "entity.dnd.goristro": "Goristro",
       "item.dnd.goristro_spawn_egg": "Goristro Spawn Egg",
-      "entity.dnd.template_mob": "Template Mob"
+      "entity.dnd.template_mob": "Template Mob",
+      "entity.dnd.reusable_mob": "Reusable Mob",
+      "entity.dnd.goblin_henchman": "Goblin Henchman",
+      "item.dnd.goblin_henchman_spawn_egg": "Goblin Henchman Spawn Egg"
     }
   },
   "metadata": {

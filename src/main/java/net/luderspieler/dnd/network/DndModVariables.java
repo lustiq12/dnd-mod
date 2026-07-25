@@ -121,6 +121,7 @@ public class DndModVariables {
 		clone.IntelligenceBonus = original.IntelligenceBonus;
 		clone.WisdomBonus = original.WisdomBonus;
 		clone.CharismaBonus = original.CharismaBonus;
+		clone.GeneralData = original.GeneralData;
 		if (!event.isWasDeath()) {
 			clone.FinishedCharacterCreation = original.FinishedCharacterCreation;
 			clone.TargetingRange = original.TargetingRange;
@@ -333,6 +334,7 @@ public class DndModVariables {
 		public double IntelligenceBonus = 0;
 		public double WisdomBonus = 0;
 		public double CharismaBonus = 0;
+		public String GeneralData = "\"\"";
 
 		@Override
 		public void serialize(ValueOutput output) {
@@ -387,6 +389,7 @@ public class DndModVariables {
 			output.putDouble("IntelligenceBonus", IntelligenceBonus);
 			output.putDouble("WisdomBonus", WisdomBonus);
 			output.putDouble("CharismaBonus", CharismaBonus);
+			output.putString("GeneralData", GeneralData);
 		}
 
 		@Override
@@ -442,6 +445,7 @@ public class DndModVariables {
 			IntelligenceBonus = input.getDoubleOr("IntelligenceBonus", 0);
 			WisdomBonus = input.getDoubleOr("WisdomBonus", 0);
 			CharismaBonus = input.getDoubleOr("CharismaBonus", 0);
+			GeneralData = input.getStringOr("GeneralData", "");
 		}
 
 		public void markSyncDirty() {

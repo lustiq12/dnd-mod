@@ -10,7 +10,8 @@ public enum Choice {
     HOLY_ORDER,
     PRIMAL_ORDER,
     PRACTICED_SCHOLAR,
-    TOOL_PROFICIENCY;
+    TOOL_PROFICIENCY,
+    DRACONIC_ANCESTRY;
 
     /**
      * Hilfsmethode, um ein Enum aus einem String (ID) zu finden,

@@ -241,7 +241,22 @@ public class AbilityDefinitionRegistry {
 
                 // ── Spezies-Auto-Trigger ───────────────────────────────
                 Ability.RESOURCEFUL,           // Human: Heroic Inspiration bei Long Rest automatisch
-                Ability.LUCKY                  // Halfling: 1en bei Würfen automatisch neu würfeln
+                Ability.LUCKY,                 // Halfling: 1en bei Würfen automatisch neu würfeln
+
+                // Damage type immunities/resistances — no player choice, auto-applied on hit
+                Ability.FIRE_DAMAGE_IMMUNITY, Ability.FIRE_DAMAGE_RESISTANCE,
+                Ability.COLD_DAMAGE_IMMUNITY, Ability.COLD_DAMAGE_RESISTANCE,
+                Ability.LIGHTNING_DAMAGE_IMMUNITY, Ability.LIGHTNING_DAMAGE_RESISTANCE,
+                Ability.THUNDER_DAMAGE_IMMUNITY, Ability.THUNDER_DAMAGE_RESISTANCE,
+                Ability.FORCE_DAMAGE_IMMUNITY, Ability.FORCE_DAMAGE_RESISTANCE,
+                Ability.NECROTIC_DAMAGE_IMMUNITY, Ability.NECROTIC_DAMAGE_RESISTANCE,
+                Ability.POISON_DAMAGE_IMMUNITY, Ability.POISON_DAMAGE_RESISTANCE,
+                Ability.ACID_DAMAGE_IMMUNITY, Ability.ACID_DAMAGE_RESISTANCE,
+                Ability.PSYCHIC_DAMAGE_IMMUNITY, Ability.PSYCHIC_DAMAGE_RESISTANCE,
+                Ability.RADIANT_DAMAGE_IMMUNITY, Ability.RADIANT_DAMAGE_RESISTANCE,
+                Ability.BLUDGEONING_DAMAGE_IMMUNITY, Ability.BLUDGEONING_DAMAGE_RESISTANCE,
+                Ability.PIERCING_DAMAGE_IMMUNITY, Ability.PIERCING_DAMAGE_RESISTANCE,
+                Ability.SLASHING_DAMAGE_IMMUNITY, Ability.SLASHING_DAMAGE_RESISTANCE
         );
 
         // Alles nicht explizit gelistete → PASSIVE_TRACKED (via getOrDefault)

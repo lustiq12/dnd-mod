@@ -40,11 +40,8 @@ public class AbilityMethods_AlwaysActive {
         // ── Defensive Passivs ─────────────────────────────────────────
         handleUnarmoredDefense(player);
         handleDwarvenToughness(player);
-        handleDwarvenResilience(player, tick);
         handleFeyAncestry(player, tick);
         handleBrave(player, tick);
-        handleCelestialResistance(player, tick);
-        handleFiendishResistance(player, tick);
 
         // ── Bewegung & Geschwindigkeit ─────────────────────────────────
         handleFastMovement(player);
@@ -109,26 +106,6 @@ public class AbilityMethods_AlwaysActive {
     }
 
     /**
-     * DWARVEN_RESILIENCE — Resistance gegen Gift.
-     * Minecraft-Annäherung: Poison-Effekt wird auf Amplifier 0 begrenzt und
-     * alle 20 Ticks halbiert, um den "Resistance"-Effekt zu simulieren.
-     */
-    private static void handleDwarvenResilience(ServerPlayer player, int tick) {
-        if (!AbilityUtils.hasAbility(player, Ability.DWARVEN_RESILIENCE)) return;
-        var poison = player.getEffect(MobEffects.POISON);
-        if (poison == null) return;
-        // Simulation: Poison-Schaden auf 50% reduzieren durch schnelleres Abklingen
-        // TODO: Echte Resistance sobald DamageSource-Hook für Poison verfügbar
-        if (poison.getAmplifier() > 0) {
-            player.removeEffect(MobEffects.POISON);
-            player.addEffect(new MobEffectInstance(
-                    MobEffects.POISON,
-                    Math.max(1, poison.getDuration() / 2),
-                    0, false, false));
-        }
-    }
-
-    /**
      * FEY_ANCESTRY — Immunität gegen Charmed; kein magischer Schlaf.
      * Entfernt CHARMED-Effekt wenn vorhanden, verhindert Levitation durch Schlaf-Effekte.
      */
@@ -163,27 +140,6 @@ public class AbilityMethods_AlwaysActive {
         // Slowness ≥ 4 interpretieren wir als "frightened" (von DnD-Kreaturen)
         if (slow != null && slow.getAmplifier() >= 3 && !slow.isAmbient()) {
             player.removeEffect(MobEffects.SLOWNESS);
-        }
-    }
-
-    /**
-     * CELESTIAL_RESISTANCE (Aasimar) — Resistance gegen Nekrotik + Radiant.
-     * Minecraft-Annäherung: Absorption-Schild bei Wither-Schaden (Nekrotik-Proxy).
-     * TODO: Echte Resistance über Damage-Type-Hook.
-     */
-    private static void handleCelestialResistance(ServerPlayer player, int tick) {
-        if (!AbilityUtils.hasAbility(player, Ability.CELESTIAL_RESISTANCE)) return;
-        // Stub — echte Resistance benötigt DamageSource-Hook
-    }
-
-    /**
-     * FIENDISH_RESISTANCE (Tiefling) — Resistance gegen Feuer.
-     * Minecraft-Annäherung: Feuer sofort löschen, Fire-Damage halbieren.
-     */
-    private static void handleFiendishResistance(ServerPlayer player, int tick) {
-        if (!AbilityUtils.hasAbility(player, Ability.FIENDISH_RESISTANCE)) return;
-        if (player.isOnFire()) {
-            player.clearFire();
         }
     }
 

@@ -162,7 +162,8 @@ public class AbilityRegistry {
 
     public static final List<Ability> DWARF = Arrays.asList(
             Ability.DARKVISION_60, Ability.DWARVEN_RESILIENCE,
-            Ability.DWARVEN_TOUGHNESS, Ability.STONE_CUNNING
+            Ability.DWARVEN_TOUGHNESS, Ability.STONE_CUNNING,
+            Ability.POISON_DAMAGE_RESISTANCE
     );
 
     public static final List<Ability> ELF = Arrays.asList(
@@ -187,11 +188,13 @@ public class AbilityRegistry {
     /** Base Aasimar abilities. Celestial Revelation is a level-3 choice added by ChoiceUpdateSystem. */
     public static final List<Ability> AASIMAR = Arrays.asList(
             Ability.CELESTIAL_RESISTANCE, Ability.DARKVISION_60,
-            Ability.HEALING_HANDS, Ability.LIGHT_BEARER
+            Ability.HEALING_HANDS, Ability.LIGHT_BEARER,
+            Ability.NECROTIC_DAMAGE_RESISTANCE, Ability.RADIANT_DAMAGE_RESISTANCE
     );
 
     public static final List<Ability> TIEFLING = Arrays.asList(
-            Ability.DARKVISION_60, Ability.OTHERWORLDLY_GIFT, Ability.FIENDISH_RESISTANCE
+            Ability.DARKVISION_60, Ability.OTHERWORLDLY_GIFT, Ability.FIENDISH_RESISTANCE,
+            Ability.FIRE_DAMAGE_RESISTANCE
     );
 
     public static final List<Ability> GOLIATH = Arrays.asList(

@@ -118,6 +118,10 @@ public class ChoiceRegistry {
                     "Performance", "Persuasion", "Religion", "Sleight of Hand",
                     "Stealth", "Survival");
 
+            case "DRACONIC_ANCESTRY" -> List.of(
+                    "Black Dragon", "Blue Dragon", "Brass Dragon", "Bronze Dragon", "Copper Dragon",
+                    "Gold Dragon", "Green Dragon", "Red Dragon", "Silver Dragon", "White Dragon");
+
             default -> List.of("No options defined for: " + choiceId);
         };
     }
