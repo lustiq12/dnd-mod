@@ -1,6 +1,7 @@
-package net.luderspieler.dnd.character.AbilitysAndFeats.management;
+package net.luderspieler.dnd.aUtils;
 
 import net.luderspieler.dnd.character.AbilitysAndFeats.AbilityMethods_OneTime;
+import net.luderspieler.dnd.character.AbilitysAndFeats.management.*;
 import net.luderspieler.dnd.character.registrys.ClassRegistry;
 import net.luderspieler.dnd.network.DndModVariables;
 import net.minecraft.server.level.ServerPlayer;

@@ -1,13 +1,15 @@
 package net.luderspieler.dnd.character.choices;
 
 import net.luderspieler.dnd.character.AbilitysAndFeats.management.Ability;
-import net.luderspieler.dnd.character.AbilitysAndFeats.management.AbilityDataUtils;
-import net.luderspieler.dnd.character.AbilitysAndFeats.management.AbilityUtils;
-import net.luderspieler.dnd.character.GeneralDataUtils;
+import net.luderspieler.dnd.aUtils.AbilityDataUtils;
+import net.luderspieler.dnd.aUtils.AbilityUtils;
 import net.luderspieler.dnd.character.feats.FeatRegistry;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 
+import java.util.LinkedHashSet;
+
+import static net.luderspieler.dnd.aUtils.ProficiencyUtils.addProficiency;
 import static net.luderspieler.dnd.character.network.CharacterCreationPacket.applyAttrs;
 
 public class ChoiceExecutor {
@@ -16,6 +18,40 @@ public class ChoiceExecutor {
         var vars = player.getData(net.luderspieler.dnd.network.DndModVariables.PLAYER_VARIABLES);
 
         switch (choiceID) {
+
+            case "FIGHTING_STYLE" -> {
+                AbilityDataUtils.set(vars, "FightingStyle", selectedValue);
+                vars.markSyncDirty();
+            }
+
+            case "HOLY_ORDER" -> {
+                AbilityDataUtils.set(vars, "HolyOrder", selectedValue);
+                vars.markSyncDirty();
+            }
+
+            case "PRIMAL_ORDER" -> {
+                AbilityDataUtils.set(vars, "PrimalOrder", selectedValue);
+                vars.markSyncDirty();
+            }
+
+            case "ELDRITCH_INVOCATION" -> {
+                String existing = AbilityDataUtils.get(vars, "EldritchInvocations_chosen", "");
+                AbilityDataUtils.set(vars, "EldritchInvocations_chosen",
+                        existing.isBlank() ? selectedValue : existing + ";" + selectedValue);
+                vars.markSyncDirty();
+            }
+
+            case "BARDIC_COLLEGE_SKILL" -> {
+                String existing = AbilityDataUtils.get(vars, "BardExpertiseSkills_chosen", "");
+                AbilityDataUtils.set(vars, "BardExpertiseSkills_chosen",
+                        existing.isBlank() ? selectedValue : existing + ";" + selectedValue);
+                vars.markSyncDirty();
+            }
+
+            case "TOOL_PROFICIENCY" -> {
+                addProficiency(vars, selectedValue);
+                vars.markSyncDirty();
+            }
 
             // ── ABILITY SCORE IMPROVEMENT OR FEAT ─────────────────────────
             // selectedValue ist entweder:
@@ -111,4 +147,5 @@ public class ChoiceExecutor {
             }
         }
     }
+
 }

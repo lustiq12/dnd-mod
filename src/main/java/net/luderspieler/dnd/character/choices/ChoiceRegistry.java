@@ -1,6 +1,6 @@
 package net.luderspieler.dnd.character.choices;
 
-import net.luderspieler.dnd.character.AbilitysAndFeats.management.AbilityDataUtils;
+import net.luderspieler.dnd.aUtils.AbilityDataUtils;
 import net.luderspieler.dnd.network.DndModVariables;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
@@ -98,9 +98,16 @@ public class ChoiceRegistry {
                     "Archery", "Defense", "Dueling",
                     "Great Weapon Fighting", "Protection", "Two-Weapon Fighting");
 
-            case "ELDRITCH_INVOCATION" -> List.of(
-                    "Agonizing Blast", "Armor of Shadows", "Beast Speech",
-                    "Devil's Sight", "Mask of Many Faces");
+            case "ELDRITCH_INVOCATION" -> {
+                List<String> all = List.of(
+                        "Agonizing Blast", "Armor of Shadows", "Beast Speech",
+                        "Devil's Sight", "Mask of Many Faces");
+                String chosen = AbilityDataUtils.get(vars, "EldritchInvocations_chosen", "");
+                if (chosen.isBlank()) yield new ArrayList<>(all);
+                Set<String> chosenSet = Arrays.stream(chosen.split(";"))
+                        .map(String::trim).collect(Collectors.toSet());
+                yield all.stream().filter(o -> !chosenSet.contains(o)).collect(Collectors.toList());
+            }
 
             // Klassen-spezifische Choices
             case "HOLY_ORDER"        -> List.of("Protector", "Scholar", "Thaumaturge");
@@ -108,15 +115,30 @@ public class ChoiceRegistry {
             case "RANGER_COMPANION"  -> List.of("Beast of the Land", "Beast of the Sea", "Beast of the Sky");
             case "RANGER_EXPERTISE"  -> List.of("Stealth", "Survival", "Perception", "Nature", "Investigation");
             case "MONK_WEAPON"       -> List.of("Simple Weapons", "Short Swords");
-            case "TOOL_PROFICIENCY"  -> List.of(
-                    "Thieves' Tools", "Alchemist's Supplies",
-                    "Smith's Tools", "Brewer's Supplies");
-            case "BARDIC_COLLEGE_SKILL" -> List.of(
-                    "Acrobatics", "Animal Handling", "Arcana", "Athletics",
-                    "Deception", "History", "Insight", "Intimidation",
-                    "Investigation", "Medicine", "Nature", "Perception",
-                    "Performance", "Persuasion", "Religion", "Sleight of Hand",
-                    "Stealth", "Survival");
+
+            case "TOOL_PROFICIENCY" -> {
+                List<String> all = List.of(
+                        "Thieves' Tools", "Alchemist's Supplies",
+                        "Smith's Tools", "Brewer's Supplies");
+                String existing = vars.Proficiencys == null ? "" : vars.Proficiencys;
+                yield all.stream()
+                        .filter(o -> !existing.contains(toProficiencyKey(o)))
+                        .collect(Collectors.toList());
+            }
+
+            case "BARDIC_COLLEGE_SKILL" -> {
+                List<String> all = List.of(
+                        "Acrobatics", "Animal Handling", "Arcana", "Athletics",
+                        "Deception", "History", "Insight", "Intimidation",
+                        "Investigation", "Medicine", "Nature", "Perception",
+                        "Performance", "Persuasion", "Religion", "Sleight of Hand",
+                        "Stealth", "Survival");
+                String chosen = AbilityDataUtils.get(vars, "BardExpertiseSkills_chosen", "");
+                if (chosen.isBlank()) yield new ArrayList<>(all);
+                Set<String> chosenSet = Arrays.stream(chosen.split(";"))
+                        .map(String::trim).collect(Collectors.toSet());
+                yield all.stream().filter(o -> !chosenSet.contains(o)).collect(Collectors.toList());
+            }
 
             case "DRACONIC_ANCESTRY" -> List.of(
                     "Black Dragon", "Blue Dragon", "Brass Dragon", "Bronze Dragon", "Copper Dragon",
@@ -124,5 +146,10 @@ public class ChoiceRegistry {
 
             default -> List.of("No options defined for: " + choiceId);
         };
+    }
+
+    /** Normalizes a display name into the snake_case key format used in vars.Proficiencys. */
+    private static String toProficiencyKey(String displayName) {
+        return displayName.trim().toLowerCase().replace("'", "").replace(" ", "_");
     }
 }

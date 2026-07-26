@@ -1,6 +1,6 @@
 package net.luderspieler.dnd.resources;
 
-import net.luderspieler.dnd.character.AbilitysAndFeats.management.AbilityDataUtils;
+import net.luderspieler.dnd.aUtils.AbilityDataUtils;
 import net.luderspieler.dnd.network.DndModVariables;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;

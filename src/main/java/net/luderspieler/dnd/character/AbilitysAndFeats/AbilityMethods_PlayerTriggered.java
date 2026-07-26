@@ -1,8 +1,8 @@
 package net.luderspieler.dnd.character.AbilitysAndFeats;
 
 import net.luderspieler.dnd.character.AbilitysAndFeats.management.Ability;
-import net.luderspieler.dnd.character.AbilitysAndFeats.management.AbilityDataUtils;
-import net.luderspieler.dnd.character.AbilitysAndFeats.management.AbilityUtils;
+import net.luderspieler.dnd.aUtils.AbilityDataUtils;
+import net.luderspieler.dnd.aUtils.AbilityUtils;
 import net.luderspieler.dnd.init.DndModMobEffects;
 import net.luderspieler.dnd.network.DndModVariables;
 import net.minecraft.network.chat.Component;

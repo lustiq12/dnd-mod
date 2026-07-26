@@ -1,6 +1,6 @@
 package net.luderspieler.dnd.spells.targeting;
 
-import net.luderspieler.dnd.character.AbilitysAndFeats.management.AbilityDataUtils;
+import net.luderspieler.dnd.aUtils.AbilityDataUtils;
 import net.luderspieler.dnd.network.DndModVariables;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;

@@ -1,8 +1,8 @@
 package net.luderspieler.dnd.character.network;
 
 import net.luderspieler.dnd.character.AbilitysAndFeats.management.Ability;
-import net.luderspieler.dnd.character.AbilitysAndFeats.management.AbilityDataUtils;
-import net.luderspieler.dnd.character.AbilitysAndFeats.management.AbilityUtils;
+import net.luderspieler.dnd.aUtils.AbilityDataUtils;
+import net.luderspieler.dnd.aUtils.AbilityUtils;
 import net.luderspieler.dnd.character.AttributeHandler;
 import net.luderspieler.dnd.character.choices.ChoiceUpdateSystem;
 import net.luderspieler.dnd.character.definition.RaceDefinition;
@@ -25,6 +25,8 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import java.util.LinkedHashSet;
 import java.util.Map;
+
+import static net.luderspieler.dnd.aUtils.ProficiencyUtils.addProficiency;
 
 public record CharacterCreationPacket(
         String raceId, String subraceId, String classId,
@@ -89,11 +91,23 @@ public record CharacterCreationPacket(
 
 
             // 2. Proficiencies
-            LinkedHashSet<String> profSet = new LinkedHashSet<>();
-            addProfs(profSet, race.getProficiencies());
-            if (subrace != null) addProfs(profSet, subrace.getProficiencies());
-            addProfs(profSet, cls.getProficiencies());
-            vars.Proficiencys = String.join(",", profSet);
+            if (race.getProficiencies() != null && !race.getProficiencies().isBlank()) {
+                for (String prof : race.getProficiencies().split(",")) {
+                    addProficiency(vars, prof.trim());
+                }
+            }
+
+            if (subrace != null && subrace.getProficiencies() != null && !subrace.getProficiencies().isBlank()) {
+                for (String prof : subrace.getProficiencies().split(",")) {
+                    addProficiency(vars, prof.trim());
+                }
+            }
+
+            if (cls.getProficiencies() != null && !cls.getProficiencies().isBlank()) {
+                for (String prof : cls.getProficiencies().split(",")) {
+                    addProficiency(vars, prof.trim());
+                }
+            }
 
             // 3. Stats
             resetStats(vars);
@@ -137,14 +151,6 @@ public record CharacterCreationPacket(
                 case "wisdom"       -> vars.Wisdom += e.getValue();
                 case "charisma"     -> vars.Charisma += e.getValue();
             }
-        }
-    }
-
-    private static void addProfs(LinkedHashSet<String> set, String profs) {
-        if (profs == null || profs.isBlank()) return;
-        for (String p : profs.split(",")) {
-            String trimmed = p.trim();
-            if (!trimmed.isEmpty()) set.add(trimmed);
         }
     }
 

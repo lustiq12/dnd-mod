@@ -1,7 +1,7 @@
 package net.luderspieler.dnd.character.choices;
 
 import net.luderspieler.dnd.character.AttributeHandler;
-import net.luderspieler.dnd.character.AbilitysAndFeats.management.AbilityDataUtils;
+import net.luderspieler.dnd.aUtils.AbilityDataUtils;
 import net.luderspieler.dnd.character.feats.FeatRegistry;
 import net.luderspieler.dnd.generalConfigs;
 import net.luderspieler.dnd.network.DndModVariables;

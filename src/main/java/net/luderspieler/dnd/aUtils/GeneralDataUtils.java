@@ -1,4 +1,4 @@
-package net.luderspieler.dnd.character.AbilitysAndFeats.management;
+package net.luderspieler.dnd.aUtils;
 
 import net.luderspieler.dnd.network.DndModVariables;
 
@@ -6,7 +6,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * Read/write helper for vars.AbilityData — a key-value map stored as a string.
+ * Read/write helper for vars.GeneralData — a key-value map stored as a string.
  *
  * Format: {key1=value1,key2=value2}
  * Example: {ToughBonus=12,RageUses=3,RelentlessEndurance_used=1}
@@ -14,7 +14,7 @@ import java.util.Map;
  * Values are always stored as strings; use the typed getters (getInt, getDouble, getBool)
  * for convenience. All writes go through set() to keep the format consistent.
  */
-public class AbilityDataUtils {
+public class GeneralDataUtils {
 
     private static final char OPEN   = '{';
     private static final char CLOSE  = '}';
@@ -25,7 +25,7 @@ public class AbilityDataUtils {
 
     /** Returns the raw string value for the given key, or {@code defaultValue} if absent. */
     public static String get(DndModVariables.PlayerVariables vars, String key, String defaultValue) {
-        Map<String, String> map = parse(vars.AbilityData);
+        Map<String, String> map = parse(vars.GeneralData);
         return map.getOrDefault(key, defaultValue);
     }
 
@@ -51,9 +51,9 @@ public class AbilityDataUtils {
 
     /** Stores a string value. Creates or overwrites the key. */
     public static void set(DndModVariables.PlayerVariables vars, String key, String value) {
-        Map<String, String> map = parse(vars.AbilityData);
+        Map<String, String> map = parse(vars.GeneralData);
         map.put(key, value);
-        vars.AbilityData = serialize(map);
+        vars.GeneralData = serialize(map);
     }
 
     public static void set(DndModVariables.PlayerVariables vars, String key, int value) {
@@ -70,9 +70,9 @@ public class AbilityDataUtils {
 
     /** Removes a key from the map. Safe to call if the key doesn't exist. */
     public static void remove(DndModVariables.PlayerVariables vars, String key) {
-        Map<String, String> map = parse(vars.AbilityData);
+        Map<String, String> map = parse(vars.GeneralData);
         if (map.remove(key) != null) {
-            vars.AbilityData = serialize(map);
+            vars.GeneralData = serialize(map);
         }
     }
 

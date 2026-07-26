@@ -2,8 +2,8 @@ package net.luderspieler.dnd.character.AbilitysAndFeats;
 
 import net.luderspieler.dnd.agameplay.GeneralDamageHandling;
 import net.luderspieler.dnd.character.AbilitysAndFeats.management.Ability;
-import net.luderspieler.dnd.character.AbilitysAndFeats.management.AbilityDataUtils;
-import net.luderspieler.dnd.character.AbilitysAndFeats.management.AbilityUtils;
+import net.luderspieler.dnd.aUtils.AbilityDataUtils;
+import net.luderspieler.dnd.aUtils.AbilityUtils;
 import net.luderspieler.dnd.network.DndModVariables;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;

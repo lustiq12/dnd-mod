@@ -1,7 +1,7 @@
 package net.luderspieler.dnd.resources;
 
 import net.luderspieler.dnd.character.AbilitysAndFeats.management.Ability;
-import net.luderspieler.dnd.character.AbilitysAndFeats.management.AbilityDataUtils;
+import net.luderspieler.dnd.aUtils.AbilityDataUtils;
 import net.luderspieler.dnd.character.AbilitysAndFeats.management.AbilityResetRegistry;
 import net.luderspieler.dnd.network.DndModVariables;
 import net.minecraft.server.level.ServerPlayer;
