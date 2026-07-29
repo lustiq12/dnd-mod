@@ -236,8 +236,8 @@ public class CharacterSheetScreen extends Screen {
         int modifier = Math.floorDiv(total - 10, 2);
         String bonusStr = (modifier >= 0 ? "+" : "") + modifier;
         int statX = centerX + 8;
-        String namePart = "§7" + label + ": ";
-        String valuePart = "§f" + total + " §a(" + bonusStr + ")";
+        String namePart = label + ": ";
+        String valuePart = total + " (" + bonusStr + ")";
 
         // Set the gap between the label's end and the value's start
         int gap = 0;
@@ -247,7 +247,7 @@ public class CharacterSheetScreen extends Screen {
         g.drawString(this.font, namePart, statX - labelWidth - gap, y, generalConfigs.TEXT_WHITE, false);
 
         // Draw values starting at (centerX + gap)
-        g.drawString(this.font, valuePart, statX + gap, y, generalConfigs.TEXT_WHITE, false);
+        g.drawString(this.font, valuePart, statX + gap, y, generalConfigs.COLOR_STATUS_SUCCESS, false);
     }
 
     private String formatVal(String label, double val) {

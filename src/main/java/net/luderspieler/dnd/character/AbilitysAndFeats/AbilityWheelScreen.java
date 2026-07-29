@@ -92,29 +92,19 @@ public class AbilityWheelScreen extends Screen {
 
     // ── Metamagic-Konstanten ─────────────────────────────────────────
     private static final Map<String, Integer> METAMAGIC_SP_COSTS = Map.of(
-            "Careful Spell",    1,
             "Distant Spell",    1,
             "Empowered Spell",  1,
             "Extended Spell",   1,
-            "Heightened Spell", 2,
-            "Quickened Spell",  2,
-            "Seeking Spell",    1,
-            "Subtle Spell",     1,
             "Transmuted Spell", 1,
             "Twinned Spell",    1
     );
 
-    private static final Map<String, String> METAMAGIC_DETAILS = Map.ofEntries(
-            Map.entry("Careful Spell",    "Chosen creatures auto-succeed saving throw"),
-            Map.entry("Distant Spell",    "Double range, or Touch becomes 30 ft"),
-            Map.entry("Empowered Spell",  "Reroll damage dice up to CHA modifier"),
-            Map.entry("Extended Spell",   "Double duration (max 24h)"),
-            Map.entry("Heightened Spell", "One target has Disadvantage on saving throw"),
-            Map.entry("Quickened Spell",  "Change casting time to Bonus Action"),
-            Map.entry("Seeking Spell",    "Reroll a missed spell attack roll"),
-            Map.entry("Subtle Spell",     "Cast without verbal/somatic/material components"),
-            Map.entry("Transmuted Spell", "Change damage type among 6 elements"),
-            Map.entry("Twinned Spell",    "Hit a second target (costs 1 extra spell level in SP)")
+    private static final Map<String, String> METAMAGIC_DETAILS = Map.of(
+            "Distant Spell",    "Double range, or Touch becomes 30 ft",
+            "Empowered Spell",  "+CHA modifier flat damage/healing on your next spell",
+            "Extended Spell",   "Double the spell's effect duration",
+            "Transmuted Spell", "Bypass the target's resistance to the spell's damage type",
+            "Twinned Spell",    "Hit a second target (costs 1 extra spell level in SP)"
     );
 
     // ── Layout ───────────────────────────────────────────────────────

@@ -1024,9 +1024,8 @@ public class AbilityMethods_PlayerTriggered {
 
         // Kosten bestimmen
         int cost = switch (subAction) {
-            case "CAREFUL_SPELL", "DISTANT_SPELL", "EMPOWERED_SPELL", "EXTENDED_SPELL",
-                 "SEEKING_SPELL", "SUBTLE_SPELL", "TRANSMUTED_SPELL", "TWINNED_SPELL" -> 1;
-            case "HEIGHTENED_SPELL", "QUICKENED_SPELL" -> 2;
+            case "DISTANT_SPELL", "EMPOWERED_SPELL", "EXTENDED_SPELL",
+                 "TRANSMUTED_SPELL", "TWINNED_SPELL" -> 1;
             default -> -1;
         };
         if (cost < 0) return false;

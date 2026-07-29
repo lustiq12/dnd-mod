@@ -61,28 +61,49 @@ public class SpellCasterHelper {
         return baseAmount + 1;
     }
 
+    /** EMPOWERED_SPELL — add CHA modifier as a flat bonus to the next damage or healing roll. */
+    public static float applyEmpoweredSpell(ServerPlayer caster, float baseAmount) {
+        var vars = caster.getData(DndModVariables.PLAYER_VARIABLES);
+        if (!AbilityDataUtils.getBool(vars, "EMPOWERED_SPELL_active")) return baseAmount;
+        AbilityDataUtils.set(vars, "EMPOWERED_SPELL_active", false);
+        vars.markSyncDirty();
+        int chaMod = Math.max(0, Math.floorDiv((int) vars.Charisma - 10, 2));
+        caster.displayClientMessage(Component.literal("§5Empowered Spell: +" + chaMod + "!"), true);
+        return baseAmount + chaMod;
+    }
+
+    /** EXTENDED_SPELL — double the effect's duration. */
+    public static int applyExtendedSpell(ServerPlayer caster, int baseDurationTicks) {
+        var vars = caster.getData(DndModVariables.PLAYER_VARIABLES);
+        if (!AbilityDataUtils.getBool(vars, "EXTENDED_SPELL_active")) return baseDurationTicks;
+        AbilityDataUtils.set(vars, "EXTENDED_SPELL_active", false);
+        vars.markSyncDirty();
+        caster.displayClientMessage(Component.literal("§5Extended Spell: duration doubled!"), true);
+        return baseDurationTicks * 2;
+    }
+
+    /** TRANSMUTED_SPELL — consumes the flag; caller swaps to a damage type the target isn't resistant to. */
+    public static boolean consumeTransmutedSpell(ServerPlayer caster) {
+        var vars = caster.getData(DndModVariables.PLAYER_VARIABLES);
+        if (!AbilityDataUtils.getBool(vars, "TRANSMUTED_SPELL_active")) return false;
+        AbilityDataUtils.set(vars, "TRANSMUTED_SPELL_active", false);
+        vars.markSyncDirty();
+        caster.displayClientMessage(Component.literal("§5Transmuted Spell: element altered!"), true);
+        return true;
+    }
+
     /**
-     * Räumt alle noch aktiven Metamagic-Flags auf, die in diesem Cast nicht
-     * konsumiert wurden. Betrifft aktuell Careful/Empowered/Extended/
-     * Heightened/Quickened/Seeking/Subtle/Transmuted Spell — deren
-     * mechanische Effekte (Auto-Save, Reroll, Komponenten-Verzicht, etc.)
-     * mangels Saving-Throw-/Combat-System im Mod noch nicht implementiert
-     * sind. Wird trotzdem konsequent aufgeräumt, damit kein Flag über den
-     * gewirkten Zauber hinaus "hängen bleibt".
-     *
-     * TODO: Sobald ein Save-/Component-System existiert, hier echte Effekte
-     * für die restlichen Optionen verdrahten statt nur das Flag zu löschen.
-     *
-     * Aufruf: CastSpellPacket.handle(), direkt nach CastSpellProcedure.execute().
+     * Clears any Empowered/Extended/Transmuted/Distant/Twinned Spell flag that
+     * survived a cast without being consumed (e.g. metamagic picked for a spell
+     * that never dealt damage or set a duration). Prevents a flag from leaking
+     * into the next cast.
      */
     public static void clearRemainingMetamagicFlags(ServerPlayer player) {
         var vars = player.getData(DndModVariables.PLAYER_VARIABLES);
         boolean changed = false;
         for (String key : new String[]{
-                "CAREFUL_SPELL_active", "DISTANT_SPELL_active", "EMPOWERED_SPELL_active",
-                "EXTENDED_SPELL_active", "HEIGHTENED_SPELL_active", "QUICKENED_SPELL_active",
-                "SEEKING_SPELL_active", "SUBTLE_SPELL_active", "TRANSMUTED_SPELL_active",
-                "TWINNED_SPELL_active"
+                "DISTANT_SPELL_active", "EMPOWERED_SPELL_active", "EXTENDED_SPELL_active",
+                "TRANSMUTED_SPELL_active", "TWINNED_SPELL_active"
         }) {
             if (AbilityDataUtils.getBool(vars, key)) {
                 AbilityDataUtils.set(vars, key, false);
@@ -92,9 +113,7 @@ public class SpellCasterHelper {
         if (changed) vars.markSyncDirty();
     }
 
-    // ══════════════════════════════════════════════════════════════════
-    //  TARGETING-EINSTIEGSPUNKTE (Metamagic wird hier angewendet)
-    // ══════════════════════════════════════════════════════════════════
+    //  Targeting
 
     public static void loadSpellForTargeting(ServerPlayer player, String spellName, double range) {
         range = applyDistantSpell(player, range);

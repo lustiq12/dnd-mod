@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
  */
 public class ChoiceRegistry {
 
-    // ── Subklassen: exakt wie in ClassRegistry.SUBCLASSES ────────────────────
+    // Subclasses
     private static final Map<String, List<String>> SUBCLASSES = new LinkedHashMap<>();
     static {
         SUBCLASSES.put("barbarian", List.of(
@@ -58,14 +58,12 @@ public class ChoiceRegistry {
                 "Evoker", "Illusionist"));
     }
 
-    // ── Metamagic (alle Optionen nach 2024 PHB) ───────────────────────────────
+    // Metamagic
     private static final List<String> ALL_METAMAGIC = List.of(
-            "Careful Spell", "Distant Spell", "Empowered Spell", "Extended Spell",
-            "Heightened Spell", "Quickened Spell", "Seeking Spell", "Subtle Spell",
+            "Distant Spell", "Empowered Spell", "Extended Spell",
             "Transmuted Spell", "Twinned Spell"
     );
 
-    // ─────────────────────────────────────────────────────────────────────────
 
     public static List<String> getOptions(String choiceId) {
         Player player = Minecraft.getInstance().player;
@@ -79,11 +77,8 @@ public class ChoiceRegistry {
             case "SUBCLASS" -> SUBCLASSES.getOrDefault(vars.PlayerClass,
                     List.of("No subclasses defined for: " + vars.PlayerClass));
 
-            // GenericChoicePopup handled intern (3-Stufen-Ablauf), kein List nötig.
             case "ABILITY_SCORE_IMPROVEMENT_OR_FEAT" -> List.of();
 
-            // METAMAGIC: bereits gewählte Options ausfiltern.
-            // Trenner = Semikolon (Komma ist AbilityData-Top-Level-Trenner).
             case "METAMAGIC" -> {
                 String chosen = AbilityDataUtils.get(vars, "METAMAGIC_chosen", "");
                 if (chosen.isBlank()) yield new ArrayList<>(ALL_METAMAGIC);
@@ -108,8 +103,7 @@ public class ChoiceRegistry {
                         .map(String::trim).collect(Collectors.toSet());
                 yield all.stream().filter(o -> !chosenSet.contains(o)).collect(Collectors.toList());
             }
-
-            // Klassen-spezifische Choices
+            
             case "HOLY_ORDER"        -> List.of("Protector", "Scholar", "Thaumaturge");
             case "PRIMAL_ORDER"      -> List.of("Magician", "Warden");
             case "RANGER_COMPANION"  -> List.of("Beast of the Land", "Beast of the Sea", "Beast of the Sky");
