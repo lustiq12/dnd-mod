@@ -15,7 +15,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.KeyMapping;
 
-import net.luderspieler.dnd.network.PrepareSpellsMessage;
+import net.luderspieler.dnd.network.OpenDebugGUIMessage;
 import net.luderspieler.dnd.network.CharacterSheetMessage;
 import net.luderspieler.dnd.network.CastSpellMessage;
 import net.luderspieler.dnd.network.AbilitiesMessage;
@@ -31,19 +31,6 @@ public class DndModKeyMappings {
 			if (isDownOld != isDown && isDown) {
 				ClientPacketDistributor.sendToServer(new CastSpellMessage(0, 0));
 				CastSpellMessage.pressAction(Minecraft.getInstance().player, 0, 0);
-			}
-			isDownOld = isDown;
-		}
-	};
-	public static final KeyMapping PREPARE_SPELLS = new KeyMapping("key.dnd.prepare_spells", GLFW.GLFW_KEY_G, "key.categories.gameplay") {
-		private boolean isDownOld = false;
-
-		@Override
-		public void setDown(boolean isDown) {
-			super.setDown(isDown);
-			if (isDownOld != isDown && isDown) {
-				ClientPacketDistributor.sendToServer(new PrepareSpellsMessage(0, 0));
-				PrepareSpellsMessage.pressAction(Minecraft.getInstance().player, 0, 0);
 			}
 			isDownOld = isDown;
 		}
@@ -74,13 +61,26 @@ public class DndModKeyMappings {
 			isDownOld = isDown;
 		}
 	};
+	public static final KeyMapping OPEN_DEBUG_GUI = new KeyMapping("key.dnd.open_debug_gui", GLFW.GLFW_KEY_END, "key.categories.creative") {
+		private boolean isDownOld = false;
+
+		@Override
+		public void setDown(boolean isDown) {
+			super.setDown(isDown);
+			if (isDownOld != isDown && isDown) {
+				ClientPacketDistributor.sendToServer(new OpenDebugGUIMessage(0, 0));
+				OpenDebugGUIMessage.pressAction(Minecraft.getInstance().player, 0, 0);
+			}
+			isDownOld = isDown;
+		}
+	};
 
 	@SubscribeEvent
 	public static void registerKeyMappings(RegisterKeyMappingsEvent event) {
 		event.register(CAST_SPELL);
-		event.register(PREPARE_SPELLS);
 		event.register(CHARACTER_SHEET);
 		event.register(ABILITIES);
+		event.register(OPEN_DEBUG_GUI);
 	}
 
 	@EventBusSubscriber(Dist.CLIENT)
@@ -89,9 +89,9 @@ public class DndModKeyMappings {
 		public static void onClientTick(ClientTickEvent.Post event) {
 			if (Minecraft.getInstance().screen == null) {
 				CAST_SPELL.consumeClick();
-				PREPARE_SPELLS.consumeClick();
 				CHARACTER_SHEET.consumeClick();
 				ABILITIES.consumeClick();
+				OPEN_DEBUG_GUI.consumeClick();
 			}
 		}
 	}
