@@ -1,8 +1,8 @@
 package net.luderspieler.dnd.rests;
 
 import net.luderspieler.dnd.character.AbilitysAndFeats.management.Ability;
-import net.luderspieler.dnd.aUtils.AbilityDataUtils;
-import net.luderspieler.dnd.aUtils.AbilityUtils;
+import net.luderspieler.dnd.Utils.AbilityDataUtils;
+import net.luderspieler.dnd.Utils.AbilityUtils;
 import net.luderspieler.dnd.character.definition.ClassDefinition;
 import net.luderspieler.dnd.character.registrys.ClassRegistry;
 import net.luderspieler.dnd.network.DndModVariables;

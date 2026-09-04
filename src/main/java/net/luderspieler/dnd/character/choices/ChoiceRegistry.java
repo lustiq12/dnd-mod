@@ -1,6 +1,6 @@
 package net.luderspieler.dnd.character.choices;
 
-import net.luderspieler.dnd.aUtils.AbilityDataUtils;
+import net.luderspieler.dnd.Utils.AbilityDataUtils;
 import net.luderspieler.dnd.network.DndModVariables;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;

@@ -1,8 +1,8 @@
 package net.luderspieler.dnd.character.network;
 
 import net.luderspieler.dnd.character.AbilitysAndFeats.management.Ability;
-import net.luderspieler.dnd.aUtils.AbilityDataUtils;
-import net.luderspieler.dnd.aUtils.AbilityUtils;
+import net.luderspieler.dnd.Utils.AbilityDataUtils;
+import net.luderspieler.dnd.Utils.AbilityUtils;
 import net.luderspieler.dnd.character.AttributeHandler;
 import net.luderspieler.dnd.character.choices.ChoiceUpdateSystem;
 import net.luderspieler.dnd.character.definition.RaceDefinition;
@@ -23,10 +23,9 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-import java.util.LinkedHashSet;
 import java.util.Map;
 
-import static net.luderspieler.dnd.aUtils.ProficiencyUtils.addProficiency;
+import static net.luderspieler.dnd.Utils.ProficiencyUtils.addProficiency;
 
 public record CharacterCreationPacket(
         String raceId, String subraceId, String classId,

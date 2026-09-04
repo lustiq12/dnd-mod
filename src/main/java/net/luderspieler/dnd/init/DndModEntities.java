@@ -69,6 +69,10 @@ public class DndModEntities {
 			EntityType.Builder.<GoblinHenchmanEntity>of(GoblinHenchmanEntity::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3)
 
 					.sized(0.6f, 1.8f));
+	public static final DeferredHolder<EntityType<?>, EntityType<DwarvenSmithEntity>> DWARVEN_SMITH = register("dwarven_smith",
+			EntityType.Builder.<DwarvenSmithEntity>of(DwarvenSmithEntity::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3)
+
+					.sized(1f, 1.8f));
 
 	// Start of user code block custom entities
 	// End of user code block custom entities
@@ -89,6 +93,7 @@ public class DndModEntities {
 		TemplateMobEntity.init(event);
 		ReusableMobEntity.init(event);
 		GoblinHenchmanEntity.init(event);
+		DwarvenSmithEntity.init(event);
 	}
 
 	@SubscribeEvent
@@ -104,5 +109,6 @@ public class DndModEntities {
 		event.put(TEMPLATE_MOB.get(), TemplateMobEntity.createAttributes().build());
 		event.put(REUSABLE_MOB.get(), ReusableMobEntity.createAttributes().build());
 		event.put(GOBLIN_HENCHMAN.get(), GoblinHenchmanEntity.createAttributes().build());
+		event.put(DWARVEN_SMITH.get(), DwarvenSmithEntity.createAttributes().build());
 	}
 }

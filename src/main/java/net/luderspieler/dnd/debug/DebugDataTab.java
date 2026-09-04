@@ -1,7 +1,7 @@
 package net.luderspieler.dnd.debug;
 
-import net.luderspieler.dnd.aUtils.AbilityDataUtils;
-import net.luderspieler.dnd.aUtils.GeneralDataUtils;
+import net.luderspieler.dnd.Utils.AbilityDataUtils;
+import net.luderspieler.dnd.Utils.GeneralDataUtils;
 import net.luderspieler.dnd.generalConfigs;
 import net.luderspieler.dnd.network.DndModVariables;
 import net.minecraft.client.gui.Font;

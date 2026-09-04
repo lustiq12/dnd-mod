@@ -1,7 +1,11 @@
 package net.luderspieler.dnd.spells;
 
+import net.luderspieler.dnd.init.DndModDamageTypes;
 import net.luderspieler.dnd.init.DndModMobEffects;
+import net.luderspieler.dnd.network.DndModVariables;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.BlockParticleOption;
+import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
@@ -12,12 +16,15 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.Arrow;
 import net.minecraft.world.entity.projectile.LargeFireball;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
@@ -32,14 +39,14 @@ public class SpellCasters {
             "BLIGHT", "HOLD_PERSON", "BESTOW_CURSE","THUNDERWAVE", "FIRE_BOLT",
             "FIREBALL", "FALSE_LIFE", "FEATHER_FALL", "MAGE_ARMOR", "MIND_SPIKE",
             "MENDING", "CHILL_TOUCH", "WATER_BREATHING", "LEVITATE", "LIGHT",
-            "RAY_OF_FROST", "LIGHTNING_BOLT","GREATER_INVISIBILITY","HEAL"
+            "RAY_OF_FROST", "LIGHTNING_BOLT","GREATER_INVISIBILITY","HEAL", "THORN_WHIP"
     );
 
     // --- Cantrips ---
     public static void castAcidSplash(ServerPlayer p) { /* Implement Logic */ }
     public static void castChillTouch(ServerPlayer caster, LivingEntity target) {
         Level level = target.level();
-        target.hurt(caster.damageSources().source(DamageTypes.FREEZE, caster), 10.0F);
+        target.hurt(caster.damageSources().source(DndModDamageTypes.COLD, caster), 10.0F);
         level.playSound(null, target.getX(), target.getY(), target.getZ(),
                 SoundEvents.PLAYER_HURT_FREEZE, SoundSource.PLAYERS, 1.0F, 1.0F);
         caster.playSound(SoundEvents.PLAYER_HURT_FREEZE, 1.0F, 1.0F);
@@ -150,6 +157,121 @@ public class SpellCasters {
     public static void castThaumaturgy(ServerPlayer p) { /* Implement Logic */ }
     public static void castTrueStrike(ServerPlayer p) { /* Implement Logic */ }
     public static void castViciousMockery(ServerPlayer p) { /* Implement Logic */ }
+    public static void castThornWhip(ServerPlayer caster, LivingEntity target) {
+        if (target == null) return;
+
+        target.hurt(caster.damageSources().source(DndModDamageTypes.PIERCING, caster), 6.0F);
+
+        // 1. Zug-Vektor berechnen
+        Vec3 pullVec = new Vec3(
+                caster.getX() - target.getX(),
+                (caster.getY() + 1) - target.getY(),
+                caster.getZ() - target.getZ()
+        ).normalize().scale(1.0); // Stärke der Zugkraft
+
+        target.push(pullVec.x, pullVec.y, pullVec.z);
+        target.hurtMarked = true;
+
+        // 2. Partikel mit Vektor-Geschwindigkeit spawnen
+        spawnThornWhipParticles(caster, target, pullVec);
+    }
+
+
+    private static void spawnThornWhipParticles(ServerPlayer caster, LivingEntity target, Vec3 velocity) {
+        if (!(caster.level() instanceof ServerLevel level)) return;
+
+        Vec3 start = caster.position().add(0, caster.getEyeHeight() * 0.6, 0);
+        Vec3 targetCenter = target.position().add(0, target.getBbHeight() * 0.5, 0);
+
+        // Aufwärtsvektor verstärken, damit Partikel nicht runterfallen
+        // Passt die Y-Geschwindigkeit an die Flugbahn des Targets an
+        double upBoost = 0.40;
+        Vec3 particleVel = new Vec3(velocity.x, velocity.y + upBoost, velocity.z);
+
+        double dirtSpeed = 0.33;
+        double leafSpeed = 1.5;
+
+        BlockParticleOption leafParticle = new BlockParticleOption(ParticleTypes.BLOCK, Blocks.OAK_LEAVES.defaultBlockState());
+        ItemParticleOption dirtParticle = new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(Items.DIRT));
+
+        // --- 1. Verbindungspeitsche ---
+        Vec3 line = targetCenter.subtract(start);
+        double distance = line.length();
+        Vec3 direction = line.normalize();
+        int lineSteps = (int) (distance * 12);
+
+        for (int i = 0; i < lineSteps; i++) {
+            double progress = (double) i / lineSteps;
+            double sag = Math.sin(progress * Math.PI) * 0.3;
+            Vec3 point = start.add(direction.scale(progress * distance)).subtract(0, sag, 0);
+
+            for (int b = 0; b < 2; b++) {
+                double jX = (level.random.nextDouble() - 0.5) * 0.15;
+                double jY = (level.random.nextDouble() - 0.5) * 0.15;
+                double jZ = (level.random.nextDouble() - 0.5) * 0.15;
+
+                // Blätter fliegen mit Aufwärts-Impuls
+                level.sendParticles(
+                        leafParticle,
+                        point.x + jX, point.y + jY, point.z + jZ,
+                        0,
+                        particleVel.x, particleVel.y, particleVel.z,
+                        leafSpeed
+                );
+            }
+
+            // Dirt fliegt mit Aufwärts-Impuls
+            level.sendParticles(
+                    dirtParticle,
+                    point.x, point.y, point.z,
+                    0,
+                    particleVel.x, particleVel.y, particleVel.z,
+                    dirtSpeed
+            );
+        }
+
+        // --- 2. Schlinge um das Target ---
+        int spiralSteps = 90;
+        double turns = 3.0;
+        double radius = target.getBbWidth() * 0.75;
+        double height = target.getBbHeight();
+
+        for (int i = 0; i <= spiralSteps; i++) {
+            double progress = (double) i / spiralSteps;
+            double angle = progress * turns * 2.0 * Math.PI;
+
+            double xOffset = Math.cos(angle) * radius;
+            double zOffset = Math.sin(angle) * radius;
+            double yPos = target.getY() + (progress * height);
+
+            Vec3 spiralPoint = new Vec3(target.getX() + xOffset, yPos, target.getZ() + zOffset);
+
+            for (int p = 0; p < 3; p++) {
+                double jX = (level.random.nextDouble() - 0.5) * 0.12;
+                double jY = (level.random.nextDouble() - 0.5) * 0.12;
+                double jZ = (level.random.nextDouble() - 0.5) * 0.12;
+
+                // Blätter um das Entity
+                level.sendParticles(
+                        leafParticle,
+                        spiralPoint.x + jX, spiralPoint.y + jY, spiralPoint.z + jZ,
+                        0,
+                        particleVel.x, particleVel.y, particleVel.z,
+                        leafSpeed
+                );
+
+                // Dirt um das Entity
+                level.sendParticles(
+                        dirtParticle,
+                        spiralPoint.x + jX, spiralPoint.y + jY, spiralPoint.z + jZ,
+                        0,
+                        particleVel.x, particleVel.y, particleVel.z,
+                        dirtSpeed
+                );
+            }
+        }
+    }
+
 
     // --- Grade 1 ---
     public static void castAlarm(ServerPlayer p) { /* Implement Logic */ }
@@ -204,7 +326,7 @@ public class SpellCasters {
     public static void castIdentify(ServerPlayer p) { /* Implement Logic */ }
     public static void castIllusoryScript(ServerPlayer p) { /* Implement Logic */ }
     public static void castInflictWounds(ServerPlayer caster, LivingEntity target) {
-        target.hurt(caster.damageSources().source(DamageTypes.WITHER, caster), 18.5F);
+        target.hurt(caster.damageSources().source(DndModDamageTypes.NECROTIC, caster), 18.5F);
         // Nekrotische Partikel
         ((net.minecraft.server.level.ServerLevel)target.level()).sendParticles(
                 net.minecraft.core.particles.ParticleTypes.SMOKE, target.getX(), target.getY() + 1, target.getZ(), 10, 0.2, 0.2, 0.2, 0.05);
@@ -233,7 +355,7 @@ public class SpellCasters {
         for (LivingEntity target : entities) {
             if (target != p) { // Den Zauberer selbst schützen
 
-                target.hurt(p.damageSources().source(DamageTypes.MAGIC, p), 5.5F);
+                target.hurt(p.damageSources().source(DndModDamageTypes.FORCE, p), 5.5F);
 
                 ((net.minecraft.server.level.ServerLevel)p.level()).sendParticles(
                         ParticleTypes.CLOUD,
@@ -296,7 +418,7 @@ public class SpellCasters {
     public static void castMagicMouth(ServerPlayer p) { /* Logic */ }
     public static void castMagicWeapon(ServerPlayer p) { /* Logic */ }
     public static void castMindSpike(ServerPlayer caster, LivingEntity target) {
-        target.hurt(caster.damageSources().source(DamageTypes.MAGIC), 16.0F);
+        target.hurt(caster.damageSources().source(DndModDamageTypes.PSYCHIC), 16.0F);
     }
     public static void castMirrorImage(ServerPlayer p) { /* Logic */ }
     public static void castMistyStep(ServerPlayer p) { /* Logic */ }
@@ -452,7 +574,7 @@ public class SpellCasters {
     public static void castBanishment(ServerPlayer p) { /* Logic */ }
     public static void castBlackTentacles(ServerPlayer p) { /* Logic */ }
     public static void castBlight(ServerPlayer caster, LivingEntity target) {
-        target.hurt(caster.damageSources().source(DamageTypes.MAGIC, caster), 38.0F);
+        target.hurt(caster.damageSources().source(DndModDamageTypes.NECROTIC, caster), 38.0F);
     }
     public static void castCharmMonster(ServerPlayer p) { /* Logic */ }
     public static void castCompulsion(ServerPlayer p) { /* Logic */ }

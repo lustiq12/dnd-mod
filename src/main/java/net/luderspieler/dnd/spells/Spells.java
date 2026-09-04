@@ -29,6 +29,7 @@ public class Spells {
         STARRY_WISP,
         THAUMATURGY,
         TRUE_STRIKE,
+        THORN_WHIP,
         VICIOUS_MOCKERY
     }
 

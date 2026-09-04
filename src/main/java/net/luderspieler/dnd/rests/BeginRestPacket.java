@@ -1,6 +1,6 @@
 package net.luderspieler.dnd.rests;
 
-import net.luderspieler.dnd.aUtils.AbilityDataUtils;
+import net.luderspieler.dnd.Utils.AbilityDataUtils;
 import net.luderspieler.dnd.network.DndModVariables;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;

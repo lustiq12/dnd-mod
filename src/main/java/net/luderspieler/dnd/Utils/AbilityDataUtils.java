@@ -1,4 +1,4 @@
-package net.luderspieler.dnd.aUtils;
+package net.luderspieler.dnd.Utils;
 
 import net.luderspieler.dnd.network.DndModVariables;
 

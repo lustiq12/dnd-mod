@@ -1,6 +1,6 @@
 package net.luderspieler.dnd.debug;
 
-import net.luderspieler.dnd.aUtils.AbilityDataUtils;
+import net.luderspieler.dnd.Utils.AbilityDataUtils;
 import net.luderspieler.dnd.generalConfigs;
 import net.luderspieler.dnd.network.DndModVariables;
 import net.luderspieler.dnd.resources.ResourceManager;

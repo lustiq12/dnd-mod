@@ -1,6 +1,6 @@
 package net.luderspieler.dnd.debug;
 
-import net.luderspieler.dnd.aUtils.ProficiencyUtils;
+import net.luderspieler.dnd.Utils.ProficiencyUtils;
 import net.luderspieler.dnd.generalConfigs;
 import net.luderspieler.dnd.network.DndModVariables;
 import net.minecraft.client.gui.Font;

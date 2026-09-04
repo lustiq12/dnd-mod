@@ -73,5 +73,7 @@
   "death.attack.slashing": "%1$s died",
   "death.attack.slashing.item": "%1$s was killed by %2$s using %3$s",
   "gui.dnd.choice_needed.label_choice_needed_press_r": "Choice Needed - Press R",
-  "key.dnd.open_debug_gui": "Open Debug GUI"
+  "key.dnd.open_debug_gui": "Open Debug GUI",
+  "entity.dnd.dwarven_smith": "Dwarven Smith",
+  "item.dnd.dwarven_smith_spawn_egg": "Dwarven Smith Spawn Egg"
 }

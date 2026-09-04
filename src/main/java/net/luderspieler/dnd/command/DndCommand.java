@@ -12,7 +12,7 @@ import net.luderspieler.dnd.character.definition.ClassDefinition;
 import net.luderspieler.dnd.character.network.CharacterCreationPacket;
 import net.luderspieler.dnd.character.registrys.ClassRegistry;
 import net.luderspieler.dnd.character.AbilitysAndFeats.management.Ability;
-import net.luderspieler.dnd.aUtils.AbilityUtils;
+import net.luderspieler.dnd.Utils.AbilityUtils;
 import net.luderspieler.dnd.network.DndModVariables;
 import net.luderspieler.dnd.spells.SpellCasters;
 import net.luderspieler.dnd.spells.Spells;

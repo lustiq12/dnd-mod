@@ -1,7 +1,7 @@
 package net.luderspieler.dnd.character.AbilitysAndFeats.management;
 
-import net.luderspieler.dnd.aUtils.AbilityDataUtils;
-import net.luderspieler.dnd.aUtils.AbilityUtils;
+import net.luderspieler.dnd.Utils.AbilityDataUtils;
+import net.luderspieler.dnd.Utils.AbilityUtils;
 import net.luderspieler.dnd.network.DndModVariables;
 import net.minecraft.server.level.ServerPlayer;
 

@@ -1,6 +1,6 @@
 package net.luderspieler.dnd.character;
 
-import net.luderspieler.dnd.aUtils.AbilityUtils;
+import net.luderspieler.dnd.Utils.AbilityUtils;
 import net.luderspieler.dnd.character.choices.ChoiceUpdateSystem;
 import net.luderspieler.dnd.character.network.CharacterCreationPacket;
 import net.luderspieler.dnd.network.DndModVariables;

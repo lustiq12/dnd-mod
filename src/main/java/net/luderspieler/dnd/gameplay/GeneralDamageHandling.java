@@ -1,7 +1,7 @@
-package net.luderspieler.dnd.agameplay;
+package net.luderspieler.dnd.gameplay;
 
 import net.luderspieler.dnd.character.AbilitysAndFeats.management.Ability;
-import net.luderspieler.dnd.aUtils.AbilityUtils;
+import net.luderspieler.dnd.Utils.AbilityUtils;
 import net.luderspieler.dnd.init.DndModDamageTypes;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.ItemTags;

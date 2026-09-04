@@ -1,6 +1,6 @@
 package net.luderspieler.dnd.debug;
 
-import net.luderspieler.dnd.aUtils.AbilityDataUtils;
+import net.luderspieler.dnd.Utils.AbilityDataUtils;
 import net.luderspieler.dnd.character.AbilitysAndFeats.management.Ability;
 import net.luderspieler.dnd.character.AbilitysAndFeats.management.AbilityCategory;
 import net.luderspieler.dnd.character.AbilitysAndFeats.management.AbilityDefinitionRegistry;

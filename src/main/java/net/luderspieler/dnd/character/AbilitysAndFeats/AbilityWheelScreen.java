@@ -2,7 +2,7 @@ package net.luderspieler.dnd.character.AbilitysAndFeats;
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.luderspieler.dnd.character.AbilitysAndFeats.management.Ability;
-import net.luderspieler.dnd.aUtils.AbilityDataUtils;
+import net.luderspieler.dnd.Utils.AbilityDataUtils;
 import net.luderspieler.dnd.character.AbilitysAndFeats.management.AbilityDefinitionRegistry;
 import net.luderspieler.dnd.character.AbilitysAndFeats.management.AbilityCategory;
 import net.luderspieler.dnd.generalConfigs;

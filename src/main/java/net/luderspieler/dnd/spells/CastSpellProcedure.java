@@ -44,6 +44,7 @@ public class CastSpellProcedure {
             case "THAUMATURGY" -> castThaumaturgy(player);
             case "TRUE_STRIKE" -> castTrueStrike(player);
             case "VICIOUS_MOCKERY" -> castViciousMockery(player);
+            case "THORN_WHIP" -> SpellCasterHelper.startTargeting(player, 9.0, 1,"THORN_WHIP");
 
             // ── Grade 1 ─────────────────────────────────────────
             case "ALARM" -> castAlarm(player);

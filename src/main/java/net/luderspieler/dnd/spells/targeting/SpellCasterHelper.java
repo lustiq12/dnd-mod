@@ -1,6 +1,6 @@
 package net.luderspieler.dnd.spells.targeting;
 
-import net.luderspieler.dnd.aUtils.AbilityDataUtils;
+import net.luderspieler.dnd.Utils.AbilityDataUtils;
 import net.luderspieler.dnd.network.DndModVariables;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
@@ -303,7 +303,9 @@ public class SpellCasterHelper {
     private static void drawVisualTrail(ServerPlayer caster, Vec3 targetPos) {
         if (caster.level() instanceof ServerLevel level) {
             level.sendParticles(ParticleTypes.ELECTRIC_SPARK, targetPos.x, targetPos.y, targetPos.z, 50, 0.2, 0.2, 0.2, 0.05);
-            level.sendParticles(ParticleTypes.ENCHANT, caster.getX(), caster.getY(), caster.getZ(), 5, 0.5, 0.3, 0.5, 0.05);
+
+            if (caster.getXRot() < 20)
+                level.sendParticles(ParticleTypes.ENCHANT, caster.getX(), caster.getY(), caster.getZ(), 5, 0.5, 0.3, 0.5, 0.05);
         }
     }
 }

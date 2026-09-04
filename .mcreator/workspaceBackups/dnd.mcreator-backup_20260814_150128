@@ -116,18 +116,6 @@
       }
     },
     {
-      "name": "PrepareSpells",
-      "type": "keybind",
-      "compiles": true,
-      "locked_code": true,
-      "registry_name": "prepare_spells",
-      "metadata": {
-        "files": [
-          "src/main/java/net/luderspieler/dnd/network/PrepareSpellsMessage.java"
-        ]
-      }
-    },
-    {
       "name": "ScareCrowIdleCooldown",
       "type": "procedure",
       "compiles": true,
@@ -1624,6 +1612,18 @@
           "src/main/java/net/luderspieler/dnd/client/screens/ChoiceNeededOverlay.java"
         ]
       }
+    },
+    {
+      "name": "OpenDebugGUI",
+      "type": "keybind",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "open_debug_gui",
+      "metadata": {
+        "files": [
+          "src/main/java/net/luderspieler/dnd/network/OpenDebugGUIMessage.java"
+        ]
+      }
     }
   ],
   "variable_elements": [
@@ -2017,7 +2017,6 @@
       "entity.dnd.stirge": "Stirge",
       "item.dnd.stirge_spawn_egg": "Stirge Spawn Egg",
       "key.dnd.cast_spell": "Cast Spell",
-      "key.dnd.prepare_spells": "Cast Spell",
       "entity.dnd.scarecrow": "Scarecrow",
       "item.dnd.scarecrow_spawn_egg": "Scarecrow Spawn Egg",
       "item.dnd.harpy_spawn_egg": "Harpy Spawn Egg",
@@ -2088,7 +2087,8 @@
       "death.attack.slashing.player": "%1$s died whilst trying to escape %2$s",
       "death.attack.slashing": "%1$s died",
       "death.attack.slashing.item": "%1$s was killed by %2$s using %3$s",
-      "gui.dnd.choice_needed.label_choice_needed_press_g": "Choice Needed - Press \"G\""
+      "gui.dnd.choice_needed.label_choice_needed_press_r": "Choice Needed - Press R",
+      "key.dnd.open_debug_gui": "Open Debug GUI"
     }
   },
   "metadata": {

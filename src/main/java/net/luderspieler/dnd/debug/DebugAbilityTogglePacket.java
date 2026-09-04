@@ -1,7 +1,7 @@
 package net.luderspieler.dnd.debug;
 
 import net.luderspieler.dnd.DndMod;
-import net.luderspieler.dnd.aUtils.AbilityUtils;
+import net.luderspieler.dnd.Utils.AbilityUtils;
 import net.luderspieler.dnd.character.AbilitysAndFeats.management.Ability;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;

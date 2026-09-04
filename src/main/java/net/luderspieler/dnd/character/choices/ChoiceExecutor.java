@@ -1,15 +1,13 @@
 package net.luderspieler.dnd.character.choices;
 
 import net.luderspieler.dnd.character.AbilitysAndFeats.management.Ability;
-import net.luderspieler.dnd.aUtils.AbilityDataUtils;
-import net.luderspieler.dnd.aUtils.AbilityUtils;
+import net.luderspieler.dnd.Utils.AbilityDataUtils;
+import net.luderspieler.dnd.Utils.AbilityUtils;
 import net.luderspieler.dnd.character.feats.FeatRegistry;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 
-import java.util.LinkedHashSet;
-
-import static net.luderspieler.dnd.aUtils.ProficiencyUtils.addProficiency;
+import static net.luderspieler.dnd.Utils.ProficiencyUtils.addProficiency;
 import static net.luderspieler.dnd.character.network.CharacterCreationPacket.applyAttrs;
 
 public class ChoiceExecutor {

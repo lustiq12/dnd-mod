@@ -1,4 +1,4 @@
-package net.luderspieler.dnd.aUtils;
+package net.luderspieler.dnd.Utils;
 
 import net.luderspieler.dnd.character.AbilitysAndFeats.AbilityMethods_OneTime;
 import net.luderspieler.dnd.character.AbilitysAndFeats.management.*;

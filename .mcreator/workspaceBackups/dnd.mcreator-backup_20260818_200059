@@ -1617,7 +1617,7 @@
       "name": "OpenDebugGUI",
       "type": "keybind",
       "compiles": true,
-      "locked_code": false,
+      "locked_code": true,
       "registry_name": "open_debug_gui",
       "metadata": {
         "files": [

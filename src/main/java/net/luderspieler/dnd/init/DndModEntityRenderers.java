@@ -28,5 +28,6 @@ public class DndModEntityRenderers {
 		event.registerEntityRenderer(DndModEntities.TEMPLATE_MOB.get(), TemplateMobRenderer::new);
 		event.registerEntityRenderer(DndModEntities.REUSABLE_MOB.get(), ReusableMobRenderer::new);
 		event.registerEntityRenderer(DndModEntities.GOBLIN_HENCHMAN.get(), GoblinHenchmanRenderer::new);
+		event.registerEntityRenderer(DndModEntities.DWARVEN_SMITH.get(), DwarvenSmithRenderer::new);
 	}
 }
