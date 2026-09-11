@@ -5,9 +5,12 @@ package net.luderspieler.dnd.init;
 
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.DeferredItem;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.BlockItem;
 
 import net.luderspieler.dnd.item.SpearItem;
 import net.luderspieler.dnd.DndMod;
@@ -27,6 +30,7 @@ public class DndModItems {
 	public static final DeferredItem<Item> GORISTRO_SPAWN_EGG;
 	public static final DeferredItem<Item> GOBLIN_HENCHMAN_SPAWN_EGG;
 	public static final DeferredItem<Item> DWARVEN_SMITH_SPAWN_EGG;
+	public static final DeferredItem<Item> SCARECROW_BLOCK;
 	static {
 		STIRGE_SPAWN_EGG = register("stirge_spawn_egg", properties -> new SpawnEggItem(DndModEntities.STIRGE.get(), properties));
 		SCARECROW_SPAWN_EGG = register("scarecrow_spawn_egg", properties -> new SpawnEggItem(DndModEntities.SCARECROW.get(), properties));
@@ -39,11 +43,20 @@ public class DndModItems {
 		GORISTRO_SPAWN_EGG = register("goristro_spawn_egg", properties -> new SpawnEggItem(DndModEntities.GORISTRO.get(), properties));
 		GOBLIN_HENCHMAN_SPAWN_EGG = register("goblin_henchman_spawn_egg", properties -> new SpawnEggItem(DndModEntities.GOBLIN_HENCHMAN.get(), properties));
 		DWARVEN_SMITH_SPAWN_EGG = register("dwarven_smith_spawn_egg", properties -> new SpawnEggItem(DndModEntities.DWARVEN_SMITH.get(), properties));
+		SCARECROW_BLOCK = block(DndModBlocks.SCARECROW_BLOCK);
 	}
 
 	// Start of user code block custom items
 	// End of user code block custom items
 	private static <I extends Item> DeferredItem<I> register(String name, Function<Item.Properties, ? extends I> supplier) {
 		return REGISTRY.registerItem(name, supplier, new Item.Properties());
+	}
+
+	private static DeferredItem<Item> block(DeferredHolder<Block, Block> block) {
+		return block(block, new Item.Properties());
+	}
+
+	private static DeferredItem<Item> block(DeferredHolder<Block, Block> block, Item.Properties properties) {
+		return REGISTRY.registerItem(block.getId().getPath(), prop -> new BlockItem(block.get(), prop), properties);
 	}
 }

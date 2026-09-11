@@ -1676,24 +1676,6 @@
         ]
       },
       "path": "~/NPC"
-    },
-    {
-      "name": "ScarecrowBlock",
-      "type": "block",
-      "compiles": true,
-      "locked_code": false,
-      "registry_name": "scarecrow_block",
-      "metadata": {
-        "files": [
-          "src/main/resources/assets/dnd/blockstates/scarecrow_block.json",
-          "src/main/resources/data/dnd/loot_table/blocks/scarecrow_block.json",
-          "src/main/resources/assets/dnd/models/item/scarecrow_block.json",
-          "src/main/resources/assets/dnd/items/scarecrow_block.json",
-          "src/main/resources/assets/dnd/models/block/scarecrow_block.json",
-          "src/main/java/net/luderspieler/dnd/block/ScarecrowBlockBlock.java"
-        ]
-      },
-      "path": "~/Blocks"
     }
   ],
   "variable_elements": [
@@ -2160,15 +2142,13 @@
       "gui.dnd.choice_needed.label_choice_needed_press_r": "Choice Needed - Press R",
       "key.dnd.open_debug_gui": "Open Debug GUI",
       "entity.dnd.dwarven_smith": "Dwarven Smith",
-      "item.dnd.dwarven_smith_spawn_egg": "Dwarven Smith Spawn Egg",
-      "item.dnd.scarecrow_block": "Scarecrow"
+      "item.dnd.dwarven_smith_spawn_egg": "Dwarven Smith Spawn Egg"
     }
   },
   "metadata": {
     "files": [
       "src/main/java/net/luderspieler/dnd/init/DndModKeyMappings.java",
       "src/main/java/net/luderspieler/dnd/init/DndModMobEffects.java",
-      "src/main/java/net/luderspieler/dnd/init/DndModBlocks.java",
       "src/main/java/net/luderspieler/dnd/init/DndModItems.java",
       "src/main/java/net/luderspieler/dnd/init/DndModEntities.java",
       "src/main/java/net/luderspieler/dnd/init/DndModEntityRenderers.java",
@@ -2260,10 +2240,6 @@
       },
       {
         "name": "NPC",
-        "children": []
-      },
-      {
-        "name": "Blocks",
         "children": []
       }
     ]

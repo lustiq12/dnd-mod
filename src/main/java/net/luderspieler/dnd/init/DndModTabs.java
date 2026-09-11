@@ -38,6 +38,8 @@ public class DndModTabs {
 			tabData.accept(DndModItems.GORISTRO_SPAWN_EGG.get());
 			tabData.accept(DndModItems.GOBLIN_HENCHMAN_SPAWN_EGG.get());
 			tabData.accept(DndModItems.DWARVEN_SMITH_SPAWN_EGG.get());
+		} else if (tabData.getTabKey() == CreativeModeTabs.BUILDING_BLOCKS) {
+			tabData.accept(DndModBlocks.SCARECROW_BLOCK.get().asItem());
 		}
 	}
 }

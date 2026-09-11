@@ -1,5 +1,6 @@
 package net.luderspieler.dnd;
 
+import net.luderspieler.dnd.npc.NpcPresets;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -25,11 +26,7 @@ import net.luderspieler.dnd.spells.BlockUpdater;
 import net.luderspieler.dnd.rests.SleepingIntereferer;
 import net.luderspieler.dnd.resources.ResourceHudOverlay;
 import net.luderspieler.dnd.network.DndModVariables;
-import net.luderspieler.dnd.init.DndModTabs;
-import net.luderspieler.dnd.init.DndModSounds;
-import net.luderspieler.dnd.init.DndModMobEffects;
-import net.luderspieler.dnd.init.DndModItems;
-import net.luderspieler.dnd.init.DndModEntities;
+import net.luderspieler.dnd.init.*;
 import net.luderspieler.dnd.character.ProficiencyCheckProcedure;
 import net.luderspieler.dnd.character.LevelEvents;
 import net.luderspieler.dnd.character.CharacterCreationEventHandler;
@@ -63,6 +60,7 @@ public class DndMod {
 		NeoForge.EVENT_BUS.register(this);
 		modEventBus.addListener(this::registerNetworking);
 		DndModSounds.REGISTRY.register(modEventBus);
+		DndModBlocks.REGISTRY.register(modEventBus);
 		DndModItems.REGISTRY.register(modEventBus);
 		DndModEntities.REGISTRY.register(modEventBus);
 		DndModTabs.REGISTRY.register(modEventBus);
@@ -79,6 +77,8 @@ public class DndMod {
 		NeoForge.EVENT_BUS.register(new BlockUpdater());
 		NeoForge.EVENT_BUS.register(new AbilityMethods_SelfTriggered());
 		NeoForge.EVENT_BUS.register(new ResourceHudOverlay());
+		DndModMenus.REGISTRY.register(modEventBus);
+		NpcPresets.registerAll();
 		// End of user code block mod init
 	}
 

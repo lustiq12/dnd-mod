@@ -75,5 +75,6 @@
   "gui.dnd.choice_needed.label_choice_needed_press_r": "Choice Needed - Press R",
   "key.dnd.open_debug_gui": "Open Debug GUI",
   "entity.dnd.dwarven_smith": "Dwarven Smith",
-  "item.dnd.dwarven_smith_spawn_egg": "Dwarven Smith Spawn Egg"
+  "item.dnd.dwarven_smith_spawn_egg": "Dwarven Smith Spawn Egg",
+  "item.dnd.scarecrow_block": "Scarecrow"
 }

@@ -1624,6 +1624,58 @@
           "src/main/java/net/luderspieler/dnd/network/OpenDebugGUIMessage.java"
         ]
       }
+    },
+    {
+      "name": "DwarvenSmith",
+      "type": "livingentity",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "dwarven_smith",
+      "metadata": {
+        "files": [
+          "src/main/java/net/luderspieler/dnd/client/renderer/DwarvenSmithRenderer.java",
+          "src/main/resources/assets/dnd/items/dwarven_smith_spawn_egg.json",
+          "src/main/java/net/luderspieler/dnd/entity/DwarvenSmithEntity.java",
+          "src/main/resources/data/dnd/neoforge/biome_modifier/dwarven_smith_biome_modifier.json",
+          "src/main/resources/assets/dnd/models/item/dwarven_smith_spawn_egg.json"
+        ]
+      },
+      "path": "~/NPC"
+    },
+    {
+      "name": "NpcRightclickHandling",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "npc_rightclick_handling",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          },
+          {
+            "name": "sourceentity",
+            "type": "entity"
+          },
+          {
+            "name": "x",
+            "type": "number"
+          },
+          {
+            "name": "y",
+            "type": "number"
+          },
+          {
+            "name": "z",
+            "type": "number"
+          }
+        ],
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/NpcRightclickHandlingProcedure.java"
+        ]
+      },
+      "path": "~/NPC"
     }
   ],
   "variable_elements": [
@@ -2088,7 +2140,9 @@
       "death.attack.slashing": "%1$s died",
       "death.attack.slashing.item": "%1$s was killed by %2$s using %3$s",
       "gui.dnd.choice_needed.label_choice_needed_press_r": "Choice Needed - Press R",
-      "key.dnd.open_debug_gui": "Open Debug GUI"
+      "key.dnd.open_debug_gui": "Open Debug GUI",
+      "entity.dnd.dwarven_smith": "Dwarven Smith",
+      "item.dnd.dwarven_smith_spawn_egg": "Dwarven Smith Spawn Egg"
     }
   },
   "metadata": {
@@ -2182,6 +2236,10 @@
       },
       {
         "name": "Damage Types",
+        "children": []
+      },
+      {
+        "name": "NPC",
         "children": []
       }
     ]

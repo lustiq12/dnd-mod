@@ -6,6 +6,10 @@ import net.luderspieler.dnd.character.network.KeepCharacterPacket;
 import net.luderspieler.dnd.character.network.OpenCreationGuiPacket;
 import net.luderspieler.dnd.character.choices.ExecuteChoicePacket;
 import net.luderspieler.dnd.network.AirClickPacket;
+import net.luderspieler.dnd.npc.network.ChooseNpcDialogOptionPacket;
+import net.luderspieler.dnd.npc.network.CloseNpcDialogPacket;
+import net.luderspieler.dnd.npc.network.EndNpcDialogPacket;
+import net.luderspieler.dnd.npc.network.OpenNpcDialogPacket;
 import net.luderspieler.dnd.rests.ApplyLongRestPacket;
 import net.luderspieler.dnd.rests.BeginRestPacket;
 import net.luderspieler.dnd.rests.OpenLongRestManagementPacket;
@@ -65,6 +69,15 @@ public class DndModNetworkRegistry {
                 ActivateAbilityPacket.TYPE,
                 ActivateAbilityPacket.CODEC,
                 ActivateAbilityPacket::handle);
+        reg.playToServer(
+                ChooseNpcDialogOptionPacket.TYPE,
+                ChooseNpcDialogOptionPacket.CODEC,
+                ChooseNpcDialogOptionPacket::handle);
+
+        reg.playToServer(
+                CloseNpcDialogPacket.TYPE,
+                CloseNpcDialogPacket.CODEC,
+                CloseNpcDialogPacket::handle);
 
         // Long Rest — Client → Server
         reg.playToServer(
@@ -88,5 +101,14 @@ public class DndModNetworkRegistry {
                 OpenLongRestManagementPacket.TYPE,
                 OpenLongRestManagementPacket.CODEC,
                 OpenLongRestManagementPacket::handle);
+        reg.playToClient(
+                OpenNpcDialogPacket.TYPE,
+                OpenNpcDialogPacket.CODEC,
+                OpenNpcDialogPacket::handle);
+
+        reg.playToClient(
+                EndNpcDialogPacket.TYPE,
+                EndNpcDialogPacket.CODEC,
+                EndNpcDialogPacket::handle);
     }
 }
