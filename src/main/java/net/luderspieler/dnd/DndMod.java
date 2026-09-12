@@ -1,6 +1,8 @@
 package net.luderspieler.dnd;
 
 import net.luderspieler.dnd.npc.NpcPresets;
+import net.luderspieler.dnd.npc.screens.NpcTradeScreen;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -79,10 +81,16 @@ public class DndMod {
 		NeoForge.EVENT_BUS.register(new ResourceHudOverlay());
 		DndModMenus.REGISTRY.register(modEventBus);
 		NpcPresets.registerAll();
+		if (FMLEnvironment.dist.isClient()) {
+			modEventBus.addListener(this::registerScreens);
+		}
 		// End of user code block mod init
 	}
 
 	// Start of user code block mod methods
+	private void registerScreens(RegisterMenuScreensEvent event) {
+		event.register(DndModMenus.NPC_TRADE_MENU.get(), NpcTradeScreen::new);
+	}
 	// End of user code block mod methods
 	private static boolean networkingRegistered = false;
 	private static final Map<CustomPacketPayload.Type<?>, NetworkMessage<?>> MESSAGES = new HashMap<>();

@@ -27,8 +27,8 @@ import java.util.List;
 public class NpcDialogScreen extends Screen {
 
     private static final int BUBBLE_W = 220;
-    private static final int BUBBLE_H = 70;
-    private static final int BUST_SIZE = 40;
+    private static final int BUBBLE_H = 200;
+    private static final int BUST_SIZE = 100;
     private static final int BUST_SCALE = 30;
 
     private final int entityId;
@@ -72,13 +72,18 @@ public class NpcDialogScreen extends Screen {
         NpcDialogNode node = currentNode();
         if (node == null) return;
 
-        int bubbleX = this.width - BUBBLE_W - 20;
-        int bubbleY = this.height - BUBBLE_H - 20;
+        // Dynamische Positionierung analog zu renderPlayerBubble
+        int busX = this.width - BUST_SIZE - 20;
+        int bubbleX = busX - BUBBLE_W - 10;
+        int bubbleY = this.height - BUBBLE_H - 40;
+
         List<NpcDialogOption> options = node.options();
 
         for (int i = 0; i < options.size(); i++) {
             final int optionIndex = i;
             int rowY = bubbleY + 10 + i * 14;
+
+            // Button sitzt bei bubbleX + 6 (Breite 12), der Text startet genau dahinter bei bubbleX + 22
             this.addRenderableWidget(Button.builder(Component.literal(">"), b -> chooseOption(optionIndex))
                     .bounds(bubbleX + 6, rowY, 12, 12).build());
         }
@@ -124,10 +129,12 @@ public class NpcDialogScreen extends Screen {
     }
 
     private void renderPlayerBubble(GuiGraphics g, NpcDialogNode node) {
-        int bubbleX = this.width - BUBBLE_W - 20;
-        int bubbleY = this.height - BUBBLE_H - 20;
         int busX = this.width - BUST_SIZE - 20;
-        int busY = bubbleY + BUBBLE_H - BUST_SIZE;
+        int busY = this.height - BUST_SIZE - 40; // Anpassen, falls nötig
+
+        // Setzt die Bubble genau 10px links neben die Büste (analog zu NPC)
+        int bubbleX = busX - BUBBLE_W - 10;
+        int bubbleY = this.height - BUBBLE_H - 40;
 
         g.fill(bubbleX, bubbleY, bubbleX + BUBBLE_W, bubbleY + BUBBLE_H, generalConfigs.COLOR_PANEL_BG);
         generalConfigs.renderGreenEdge(g, bubbleX, bubbleY, BUBBLE_W, BUBBLE_H);
@@ -150,10 +157,10 @@ public class NpcDialogScreen extends Screen {
     private static void renderBust(GuiGraphics g, int busX, int busY, LivingEntity living) {
         InventoryScreen.renderEntityInInventoryFollowsAngle(
                 g,
-                busX, busY, busX + BUST_SIZE, busY + BUST_SIZE,
+                busX, busY, busX + BUST_SIZE, busY + (int)(BUST_SIZE*1.5),
                 BUST_SCALE,
                 -living.getBbHeight() / (2.0f * living.getScale()),
-                0f, 0f,
+                -1f, -1f,
                 living
         );
     }
