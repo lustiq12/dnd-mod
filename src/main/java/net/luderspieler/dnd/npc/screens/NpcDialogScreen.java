@@ -95,6 +95,16 @@ public class NpcDialogScreen extends Screen {
 
     @Override
     public void render(GuiGraphics g, int mouseX, int mouseY, float partial) {
+        // Falls die SynchedEntityData beim allerersten Klick noch unterwegs sind,
+        // wird die Config hier automatisch geladen, sobald das Paket ankommt.
+        if (this.config == null) {
+            loadConfig();
+            if (this.config != null) {
+                this.clearWidgets();
+                rebuildOptionButtons();
+            }
+        }
+
         g.fill(0, 0, this.width, this.height, generalConfigs.COLOR_SCREEN_OVERLAY);
 
         NpcDialogNode node = currentNode();

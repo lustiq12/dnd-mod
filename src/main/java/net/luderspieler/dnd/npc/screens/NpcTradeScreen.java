@@ -9,6 +9,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
@@ -32,9 +33,9 @@ public class NpcTradeScreen extends AbstractContainerScreen<NpcTradeMenu> {
         g.fill(x, y, x + this.imageWidth, y + this.imageHeight, generalConfigs.COLOR_PANEL_BG);
         generalConfigs.renderGreenEdge(g, x, y, this.imageWidth, this.imageHeight);
 
-        for (int i = 0; i < 3; i++) {
-            var slot = this.menu.slots.get(i);
-            g.fill(x + slot.x - 1, y + slot.y - 1, x + slot.x + 17, y + slot.y + 17, generalConfigs.COLOR_HOVER_BG);
+        // Nutzt 16x16 exakt für den Slot -> lässt 2px Lücke bei 18px Raster
+        for (Slot slot : this.menu.slots) {
+            g.fill(x + slot.x, y + slot.y, x + slot.x + 16, y + slot.y + 16, generalConfigs.COLOR_HOVER_BG);
         }
     }
 
@@ -53,20 +54,50 @@ public class NpcTradeScreen extends AbstractContainerScreen<NpcTradeMenu> {
     private void renderOfferList(GuiGraphics g, int mouseX, int mouseY) {
         int x = offerListX();
         int y = offerListY();
+        int listWidth = 145; // Breiteres Feld für vollständige Trade-Darstellung
         List<NpcTradeEntry> trades = this.menu.getTrades();
 
         for (int i = 0; i < trades.size(); i++) {
             int rowY = y + i * OFFER_ROW_H;
             boolean selected = i == this.menu.getSelectedTradeIndex();
-            boolean hovered = mouseX >= x && mouseX < x + OFFER_LIST_W && mouseY >= rowY && mouseY < rowY + OFFER_ROW_H;
+            boolean hovered = mouseX >= x && mouseX < x + listWidth && mouseY >= rowY && mouseY < rowY + OFFER_ROW_H;
 
-            if (selected) g.fill(x, rowY, x + OFFER_LIST_W, rowY + OFFER_ROW_H, 0x5500BB44);
-            else if (hovered) g.fill(x, rowY, x + OFFER_LIST_W, rowY + OFFER_ROW_H, generalConfigs.COLOR_HOVER_BG);
+            if (selected) g.fill(x, rowY, x + listWidth, rowY + OFFER_ROW_H, 0x5500BB44);
+            else if (hovered) g.fill(x, rowY, x + listWidth, rowY + OFFER_ROW_H, generalConfigs.COLOR_HOVER_BG);
 
             NpcTradeEntry trade = trades.get(i);
+            int renderX = x + 2;
+
+            // Input 1
+            Item inItem1 = BuiltInRegistries.ITEM.getValue(ResourceLocation.parse(trade.inputItem()));
+            g.renderItem(new ItemStack(inItem1, trade.inputCount()), renderX, rowY + 1);
+            renderX += 18;
+            String countStr1 = trade.inputCount() + "x";
+            g.drawString(this.font, countStr1, renderX, rowY + 5, generalConfigs.TEXT_WHITE, false);
+            renderX += this.font.width(countStr1) + 4;
+
+            // Optional Input 2
+            if (trade.hasSecondInput()) {
+                g.drawString(this.font, "+", renderX, rowY + 5, generalConfigs.TEXT_WHITE, false);
+                renderX += this.font.width("+") + 4;
+
+                Item inItem2 = BuiltInRegistries.ITEM.getValue(ResourceLocation.parse(trade.secondInputItem()));
+                g.renderItem(new ItemStack(inItem2, trade.secondInputCount()), renderX, rowY + 1);
+                renderX += 18;
+                String countStr2 = trade.secondInputCount() + "x";
+                g.drawString(this.font, countStr2, renderX, rowY + 5, generalConfigs.TEXT_WHITE, false);
+                renderX += this.font.width(countStr2) + 4;
+            }
+
+            // Pfeil ->
+            g.drawString(this.font, "->", renderX, rowY + 5, generalConfigs.COLOR_ACCENT_GOLD, false);
+            renderX += this.font.width("->") + 4;
+
+            // Result Item
             Item resultItem = BuiltInRegistries.ITEM.getValue(ResourceLocation.parse(trade.resultItem()));
-            g.renderItem(new ItemStack(resultItem, trade.resultCount()), x + 2, rowY + 1);
-            g.drawString(this.font, trade.resultCount() + "x", x + 22, rowY + 5, generalConfigs.TEXT_WHITE, false);
+            g.renderItem(new ItemStack(resultItem, trade.resultCount()), renderX, rowY + 1);
+            renderX += 18;
+            g.drawString(this.font, trade.resultCount() + "x", renderX, rowY + 5, generalConfigs.TEXT_WHITE, false);
         }
     }
 
@@ -79,7 +110,8 @@ public class NpcTradeScreen extends AbstractContainerScreen<NpcTradeMenu> {
         for (int i = 0; i < trades.size(); i++) {
             int rowY = y + i * OFFER_ROW_H;
             if (mouseX >= x && mouseX < x + OFFER_LIST_W && mouseY >= rowY && mouseY < rowY + OFFER_ROW_H) {
-                this.minecraft.gameMode.handleInventoryButtonClick(this.menu.containerId, i);
+                this.menu.clickMenuButton(this.minecraft.player, i); // Aktualisiert die Auswahl sofort lokal auf dem Client
+                this.minecraft.gameMode.handleInventoryButtonClick(this.menu.containerId, i); // Sendet das Event an den Server
                 return true;
             }
         }

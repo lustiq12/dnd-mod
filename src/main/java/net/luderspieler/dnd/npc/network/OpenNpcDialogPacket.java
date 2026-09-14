@@ -40,7 +40,6 @@ public record OpenNpcDialogPacket(int entityId, String nodeId) implements Custom
                 screen.updateNode(pkt.nodeId());
             } else {
                 mc.setScreen(new NpcDialogScreen(pkt.entityId(), pkt.nodeId()));
-                mc.player.displayClientMessage(Component.literal("handle packet"), false);
             }
         });
     }
