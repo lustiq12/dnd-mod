@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "dnd:block/scarecrow_block"
+    }
+  }
+}

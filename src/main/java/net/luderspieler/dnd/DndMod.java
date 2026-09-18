@@ -1,8 +1,5 @@
 package net.luderspieler.dnd;
 
-import net.luderspieler.dnd.npc.NpcPresets;
-import net.luderspieler.dnd.npc.screens.NpcTradeScreen;
-import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -11,6 +8,7 @@ import net.neoforged.neoforge.network.handling.IPayloadHandler;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.fml.util.thread.SidedThreadGroups;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.fml.common.Mod;
@@ -27,6 +25,8 @@ import net.luderspieler.dnd.spells.SpellEvents;
 import net.luderspieler.dnd.spells.BlockUpdater;
 import net.luderspieler.dnd.rests.SleepingIntereferer;
 import net.luderspieler.dnd.resources.ResourceHudOverlay;
+import net.luderspieler.dnd.npc.screens.NpcTradeScreen;
+import net.luderspieler.dnd.npc.NpcPresets;
 import net.luderspieler.dnd.network.DndModVariables;
 import net.luderspieler.dnd.init.*;
 import net.luderspieler.dnd.character.ProficiencyCheckProcedure;
@@ -91,6 +91,7 @@ public class DndMod {
 	private void registerScreens(RegisterMenuScreensEvent event) {
 		event.register(DndModMenus.NPC_TRADE_MENU.get(), NpcTradeScreen::new);
 	}
+
 	// End of user code block mod methods
 	private static boolean networkingRegistered = false;
 	private static final Map<CustomPacketPayload.Type<?>, NetworkMessage<?>> MESSAGES = new HashMap<>();

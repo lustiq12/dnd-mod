@@ -1,0 +1,6 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "dnd:item/reusable_mob_spawn_egg"
+  }
+}
