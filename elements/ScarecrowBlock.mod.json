@@ -24,16 +24,43 @@
     "isItemTinted": false,
     "hasTransparency": true,
     "connectedSides": false,
-    "transparencyType": "SOLID",
+    "transparencyType": "CUTOUT",
     "disableOffset": false,
     "boundingBoxes": [
       {
-        "mx": 0.0,
+        "mx": 4.0,
+        "my": 21.9,
+        "mz": 4.0,
+        "Mx": 12.0,
+        "My": 29.9,
+        "Mz": 12.0,
+        "subtract": false
+      },
+      {
+        "mx": 3.5,
+        "my": 27.0,
+        "mz": 3.5,
+        "Mx": 12.5,
+        "My": 32.0,
+        "Mz": 12.5,
+        "subtract": false
+      },
+      {
+        "mx": 3.75,
+        "my": 11.75,
+        "mz": 5.75,
+        "Mx": 12.25,
+        "My": 22.25,
+        "Mz": 10.25,
+        "subtract": false
+      },
+      {
+        "mx": 7.0,
         "my": 0.0,
-        "mz": 0.0,
-        "Mx": 16.0,
-        "My": 16.0,
-        "Mz": 16.0,
+        "mz": 7.0,
+        "Mx": 9.0,
+        "My": 12.0,
+        "Mz": 9.0,
         "subtract": false
       }
     ],
@@ -42,7 +69,7 @@
     "specialInformation": {
       "fixedValue": []
     },
-    "hardness": 1.0,
+    "hardness": 1.5,
     "resistance": 10.0,
     "hasGravity": false,
     "isWaterloggable": false,
@@ -97,7 +124,7 @@
     "isNotColidable": false,
     "isCustomSoundType": false,
     "soundOnStep": {
-      "value": "GROUND"
+      "value": "WOOD"
     },
     "breakSound": {
       "value": ""

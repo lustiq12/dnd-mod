@@ -12,7 +12,7 @@ import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.BlockItem;
 
-import net.luderspieler.dnd.item.SpearItem;
+import net.luderspieler.dnd.item.*;
 import net.luderspieler.dnd.DndMod;
 
 import java.util.function.Function;
@@ -31,6 +31,11 @@ public class DndModItems {
 	public static final DeferredItem<Item> GOBLIN_HENCHMAN_SPAWN_EGG;
 	public static final DeferredItem<Item> DWARVEN_SMITH_SPAWN_EGG;
 	public static final DeferredItem<Item> SCARECROW_BLOCK;
+	public static final DeferredItem<Item> COPPER_COIN;
+	public static final DeferredItem<Item> SILVER_COIN;
+	public static final DeferredItem<Item> GOLD_COIN;
+	public static final DeferredItem<Item> PLATINUM_COIN;
+	public static final DeferredItem<Item> COIN_BAG;
 	static {
 		STIRGE_SPAWN_EGG = register("stirge_spawn_egg", properties -> new SpawnEggItem(DndModEntities.STIRGE.get(), properties));
 		SCARECROW_SPAWN_EGG = register("scarecrow_spawn_egg", properties -> new SpawnEggItem(DndModEntities.SCARECROW.get(), properties));
@@ -44,6 +49,11 @@ public class DndModItems {
 		GOBLIN_HENCHMAN_SPAWN_EGG = register("goblin_henchman_spawn_egg", properties -> new SpawnEggItem(DndModEntities.GOBLIN_HENCHMAN.get(), properties));
 		DWARVEN_SMITH_SPAWN_EGG = register("dwarven_smith_spawn_egg", properties -> new SpawnEggItem(DndModEntities.DWARVEN_SMITH.get(), properties));
 		SCARECROW_BLOCK = block(DndModBlocks.SCARECROW_BLOCK);
+		COPPER_COIN = register("copper_coin", CopperCoinItem::new);
+		SILVER_COIN = register("silver_coin", SilverCoinItem::new);
+		GOLD_COIN = register("gold_coin", GoldCoinItem::new);
+		PLATINUM_COIN = register("platinum_coin", PlatinumCoinItem::new);
+		COIN_BAG = register("coin_bag", CoinBagItem::new);
 	}
 
 	// Start of user code block custom items

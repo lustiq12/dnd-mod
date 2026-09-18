@@ -57,6 +57,9 @@
     "creativeTabs": [
       {
         "value": "MISC"
+      },
+      {
+        "value": "CUSTOM:DnDMobs"
       }
     ],
     "isBoss": false,

@@ -11,8 +11,15 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.core.BlockPos;
 
 public class ScarecrowBlockBlock extends Block {
+	private static final VoxelShape SHAPE = Shapes.or(box(4, 21.9, 4, 12, 29.9, 12), box(3.5, 27, 3.5, 12.5, 32, 12.5), box(3.75, 11.75, 5.75, 12.25, 22.25, 10.25), box(7, 0, 7, 9, 12, 9));
+
 	public ScarecrowBlockBlock(BlockBehaviour.Properties properties) {
-		super(properties.sound(SoundType.GRAVEL).strength(1f, 10f).noOcclusion().isRedstoneConductor((bs, br, bp) -> false));
+		super(properties.sound(SoundType.WOOD).strength(1.5f, 10f).noOcclusion().isRedstoneConductor((bs, br, bp) -> false));
+	}
+
+	@Override
+	public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
+		return SHAPE;
 	}
 
 	@Override

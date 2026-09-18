@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " a ",
+    "bcb",
+    " b "
+  ],
+  "key": {
+    "a": "minecraft:string",
+    "b": "minecraft:leather",
+    "c": "dnd:copper_coin"
+  },
+  "result": {
+    "id": "dnd:coin_bag",
+    "count": 1
+  }
+}

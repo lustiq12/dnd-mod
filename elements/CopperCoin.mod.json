@@ -3,39 +3,35 @@
   "_type": "item",
   "definition": {
     "renderType": 0,
-    "texture": "spear",
-    "customModelName": "Ranged item",
+    "texture": "coppercoin",
+    "customModelName": "Normal",
     "guiTexture": "",
     "customProperties": {},
     "states": [],
     "animations": [],
-    "name": "Spear",
+    "name": "Copper Coin",
     "rarity": "COMMON",
     "creativeTabs": [
       {
-        "value": "CUSTOM:DndEquipment"
+        "value": "CUSTOM:DnDOtherItems"
       }
     ],
-    "stackSize": 1,
-    "enchantability": 14,
-    "useDuration": 72000,
+    "stackSize": 64,
+    "enchantability": 0,
+    "useDuration": 0,
     "toolType": 1.0,
-    "damageCount": 250,
+    "damageCount": 0,
     "recipeRemainder": {
       "value": ""
     },
     "destroyAnyBlock": false,
     "immuneToFire": false,
     "isPiglinCurrency": false,
-    "repairItems": [
-      {
-        "value": "Items.IRON_INGOT"
-      }
-    ],
+    "repairItems": [],
     "stayInGridWhenCrafting": false,
     "damageOnCrafting": false,
-    "enableMeleeDamage": true,
-    "damageVsEntity": 6.0,
+    "enableMeleeDamage": false,
+    "damageVsEntity": 4.0,
     "attackSpeed": 1.2,
     "specialInformation": {
       "fixedValue": []
@@ -48,9 +44,9 @@
     },
     "inventorySize": 9,
     "inventoryStackSize": 99,
-    "enableRanged": true,
+    "enableRanged": false,
     "shootConstantly": false,
-    "rangedItemChargesPower": true,
+    "rangedItemChargesPower": false,
     "projectile": {
       "value": "CUSTOM:SpearProjectile"
     },
@@ -63,7 +59,7 @@
     },
     "isMeat": false,
     "isAlwaysEdible": false,
-    "animation": "spear",
+    "animation": "none",
     "isMusicDisc": false,
     "musicDiscMusic": {
       "value": ""

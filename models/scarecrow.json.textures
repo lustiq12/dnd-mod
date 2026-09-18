@@ -3,7 +3,7 @@
     "default": {
       "name": "default",
       "map": {
-        "2": "scarecrow"
+        "1": "scarecrow"
       }
     }
   }

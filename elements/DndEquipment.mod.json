@@ -2,10 +2,10 @@
   "_fv": 85,
   "_type": "tab",
   "definition": {
-    "name": "D&D Weapons",
+    "name": "D&D Equipment",
     "icon": {
       "value": "CUSTOM:Spear"
     },
-    "showSearch": false
+    "showSearch": true
   }
 }
