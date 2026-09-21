@@ -3,7 +3,7 @@
   "_type": "item",
   "definition": {
     "renderType": 0,
-    "texture": "minecraft:brown_bundle",
+    "texture": "coin_bag",
     "customModelName": "Normal",
     "guiTexture": "",
     "customProperties": {},

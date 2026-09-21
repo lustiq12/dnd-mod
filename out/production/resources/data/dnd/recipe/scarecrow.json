@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    " a ",
+    "bcb",
+    " b "
+  ],
+  "key": {
+    "a": "minecraft:carved_pumpkin",
+    "b": "minecraft:stick",
+    "c": "minecraft:hay_block"
+  },
+  "result": {
+    "id": "dnd:scarecrow_block",
+    "count": 1
+  }
+}

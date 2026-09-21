@@ -1,7 +1,19 @@
 {
   "variants": {
-    "": {
+    "facing=north": {
       "model": "dnd:block/scarecrow_block"
+    },
+    "facing=east": {
+      "model": "dnd:block/scarecrow_block",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "dnd:block/scarecrow_block",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "dnd:block/scarecrow_block",
+      "y": 270
     }
   }
 }

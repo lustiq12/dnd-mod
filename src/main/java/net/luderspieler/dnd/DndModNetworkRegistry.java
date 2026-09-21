@@ -6,6 +6,7 @@ import net.luderspieler.dnd.character.network.KeepCharacterPacket;
 import net.luderspieler.dnd.character.network.OpenCreationGuiPacket;
 import net.luderspieler.dnd.character.choices.ExecuteChoicePacket;
 import net.luderspieler.dnd.network.AirClickPacket;
+import net.luderspieler.dnd.network.CoinBagScrollPacket;
 import net.luderspieler.dnd.npc.network.ChooseNpcDialogOptionPacket;
 import net.luderspieler.dnd.npc.network.CloseNpcDialogPacket;
 import net.luderspieler.dnd.npc.network.EndNpcDialogPacket;
@@ -89,6 +90,11 @@ public class DndModNetworkRegistry {
                 ApplyLongRestPacket.TYPE,
                 ApplyLongRestPacket.CODEC,
                 ApplyLongRestPacket::handle);
+
+        reg.playToServer(
+                CoinBagScrollPacket.TYPE,
+                CoinBagScrollPacket.CODEC,
+                CoinBagScrollPacket::handle);
 
         // ── Server → Client ───────────────────────────────────────────────────
         reg.playToClient(

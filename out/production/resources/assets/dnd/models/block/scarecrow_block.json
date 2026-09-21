@@ -3,7 +3,7 @@
   "textures": {
     "all": "dnd:block/scarecrow",
     "particle": "dnd:block/scarecrow",
-    "2": "dnd:block/scarecrow"
+    "1": "dnd:block/scarecrow"
   },
-  "render_type": "solid"
+  "render_type": "cutout"
 }
