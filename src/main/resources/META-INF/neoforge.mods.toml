@@ -32,6 +32,12 @@ description="D&D in minecraft."
     ordering="AFTER"
     side="BOTH"
 
+[[dependencies.dnd]]
+    modId="curios"
+    type="required"
+    versionRange="[0,)"
+    ordering="NONE"
+    side="BOTH"
 
 
 

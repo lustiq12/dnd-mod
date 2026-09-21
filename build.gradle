@@ -8,6 +8,18 @@ base.archivesName = "dnd"
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 
+// Curios Repository
+repositories {
+    maven {
+        url = "https://www.cursemaven.com"
+    }
+}
+
+//  Curios Dependencies
+dependencies {
+    implementation "curse.maven:curios-309927:7642207"
+}
+
 neoForge {
     version = "21.8.31"
 

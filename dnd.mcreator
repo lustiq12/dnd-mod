@@ -2233,12 +2233,8 @@
     "ITEMS:mod:shields": [
       "Items.SHIELD"
     ],
-    "ITEMS:minecraft:enchantable/durability": [
-      "~CUSTOM:Spear"
-    ],
-    "ITEMS:dnd:spear_repair_items": [
-      "~Items.IRON_INGOT"
-    ]
+    "ITEMS:minecraft:enchantable/durability": [],
+    "ITEMS:dnd:spear_repair_items": []
   },
   "tab_element_order": {},
   "language_map": {
@@ -2457,7 +2453,9 @@
     "websiteURL": "https://mcreator.net",
     "license": "All Rights Reserved",
     "serverSideOnly": false,
-    "requiredMods": [],
+    "requiredMods": [
+      "curios"
+    ],
     "dependencies": [],
     "dependants": [],
     "mcreatorDependencies": [],
