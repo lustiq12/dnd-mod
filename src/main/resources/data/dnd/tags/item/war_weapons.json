@@ -1,11 +1,14 @@
 {
   "replace": false,
   "values": [
+    "minecraft:iron_sword",
+    "minecraft:iron_axe",
     "minecraft:diamond_sword",
-    "minecraft:netherite_axe",
     "minecraft:diamond_axe",
     "minecraft:netherite_sword",
-    "minecraft:iron_axe",
-    "minecraft:iron_sword"
+    "minecraft:netherite_axe",
+    "minecraft:trident",
+    "minecraft:mace",
+    "minecraft:crossbow"
   ]
 }

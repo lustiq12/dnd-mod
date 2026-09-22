@@ -1,5 +1,6 @@
 package net.luderspieler.dnd;
 
+import net.luderspieler.dnd.gameplay.ToolTipModifier;
 import net.luderspieler.dnd.item.CoinBagHelper;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
@@ -74,6 +75,7 @@ public class DndMod {
 		NeoForge.EVENT_BUS.register(new CharacterCreationEventHandler());
 		NeoForge.EVENT_BUS.register(new LevelEvents());
 		NeoForge.EVENT_BUS.register(new ProficiencyCheckProcedure());
+		NeoForge.EVENT_BUS.register(new ToolTipModifier());
 		NeoForge.EVENT_BUS.register(new AbilityPassiveTriggers());
 		NeoForge.EVENT_BUS.register(new SleepingIntereferer());
 		NeoForge.EVENT_BUS.register(new SpellEvents());
