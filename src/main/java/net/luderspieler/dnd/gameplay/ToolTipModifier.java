@@ -9,6 +9,10 @@ import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 
 import static net.luderspieler.dnd.character.ProficiencyCheckProcedure.isProficient;
 
+/**
+ * Displays a little info text when hovering over items you are not proficient with.
+ */
+
 public class ToolTipModifier {
 
     @SubscribeEvent
