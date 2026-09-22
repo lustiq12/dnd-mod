@@ -1,5 +1,6 @@
 package net.luderspieler.dnd;
 
+import net.luderspieler.dnd.item.CoinBagHelper;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -79,6 +80,7 @@ public class DndMod {
 		NeoForge.EVENT_BUS.register(new BlockUpdater());
 		NeoForge.EVENT_BUS.register(new AbilityMethods_SelfTriggered());
 		NeoForge.EVENT_BUS.register(new ResourceHudOverlay());
+		NeoForge.EVENT_BUS.register(new CoinBagHelper());
 		DndModMenus.REGISTRY.register(modEventBus);
 		NpcPresets.registerAll();
 		if (FMLEnvironment.dist.isClient()) {
