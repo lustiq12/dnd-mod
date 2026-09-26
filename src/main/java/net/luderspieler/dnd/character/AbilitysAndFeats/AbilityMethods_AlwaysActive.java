@@ -3,6 +3,7 @@ package net.luderspieler.dnd.character.AbilitysAndFeats;
 import net.luderspieler.dnd.character.AbilitysAndFeats.management.Ability;
 import net.luderspieler.dnd.Utils.AbilityDataUtils;
 import net.luderspieler.dnd.Utils.AbilityUtils;
+import net.luderspieler.dnd.character.AttributeHandler;
 import net.luderspieler.dnd.character.network.CharacterCreationPacket;
 import net.luderspieler.dnd.init.DndModMobEffects;
 import net.luderspieler.dnd.network.DndModVariables;
@@ -101,7 +102,7 @@ public class AbilityMethods_AlwaysActive {
         if (current != expected) {
             AbilityDataUtils.set(vars, "ToughBonus", expected);
             vars.markSyncDirty();
-            CharacterCreationPacket.applyAttrs(player);
+            AttributeHandler.applyAttrs(player);
         }
     }
 

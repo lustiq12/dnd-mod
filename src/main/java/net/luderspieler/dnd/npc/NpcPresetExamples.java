@@ -28,9 +28,9 @@ public class NpcPresetExamples {
                 "greeting",
                 Map.of("greeting", greeting, "farewell", farewell),
                 List.of(
-                        new NpcTradeEntry("minecraft:emerald", 5, "", 0, "minecraft:iron_ingot", 3),
-                        new NpcTradeEntry("minecraft:emerald", 8, "", 0, "minecraft:diamond", 1),
-                        new NpcTradeEntry("minecraft:iron_ingot", 4, "minecraft:coal", 2, "minecraft:iron_sword", 1)
+                        new NpcTradeEntry(new int[]{0,0,0,5,0}, null, 0, null, "minecraft:iron_ingot", 3),
+                        new NpcTradeEntry(new int[]{0,0,0,8,0}, null, 0, null, "minecraft:diamond", 1),
+                        new NpcTradeEntry(null, "minecraft:iron_ingot", 4, new int[]{0,1,0,0,0}, null, 0)
                 ),
                 2, 3,
                 List.of("The forge never sleeps.", "Mind the sparks.")

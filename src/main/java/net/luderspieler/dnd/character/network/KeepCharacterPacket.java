@@ -2,6 +2,7 @@ package net.luderspieler.dnd.character.network;
 
 import net.luderspieler.dnd.character.AbilitysAndFeats.AbilityMethods_OneTime;
 import net.luderspieler.dnd.character.AbilitysAndFeats.management.AbilityResetRegistry;
+import net.luderspieler.dnd.character.AttributeHandler;
 import net.luderspieler.dnd.network.DndModVariables;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -35,7 +36,7 @@ public record KeepCharacterPacket() implements CustomPacketPayload {
             vars.markSyncDirty();
 
             // 1. Alle Stat-basierten Attribute neu berechnen (HP, Speed, etc.)
-            CharacterCreationPacket.applyAttrs(player);
+            AttributeHandler.applyAttrs(player);
 
             // 2. Entity-Level Ability-Effekte reaktivieren
             //    (Night Vision für Darkvision, Unarmored Defense AC, Speed-Mods)

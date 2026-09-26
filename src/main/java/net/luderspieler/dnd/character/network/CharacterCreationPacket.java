@@ -26,6 +26,7 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 import java.util.Map;
 
 import static net.luderspieler.dnd.Utils.ProficiencyUtils.addProficiency;
+import static net.luderspieler.dnd.character.AttributeHandler.applyAttrs;
 
 public record CharacterCreationPacket(
         String raceId, String subraceId, String classId,
@@ -179,117 +180,5 @@ public record CharacterCreationPacket(
         }
 
         return sb.toString();
-    }
-
-    public static void applyAttrs(ServerPlayer player) {
-
-        DndModVariables.PlayerVariables vars = player.getData(DndModVariables.PLAYER_VARIABLES);
-
-        int level = (int) vars.PlayerLevel;
-
-        // Nutzt den EFFEKTIVEN Wert (Basis + <Stat>Bonus aus Tränken/Buffs/
-        // zukünftigen Items) — nicht den reinen Basiswert. Wer einen
-        // <Stat>Bonus ändert, muss applyAttrs() danach erneut aufrufen,
-        // damit es hier einfließt (siehe AttributeHandler-Doc).
-        int strM = AttributeHandler.getAttributeBonus(player, "strength");
-        int dexM = AttributeHandler.getAttributeBonus(player, "dexterity");
-        int conM = AttributeHandler.getAttributeBonus(player, "constitution");
-        int intM = AttributeHandler.getAttributeBonus(player, "intelligence");
-        int wisM = AttributeHandler.getAttributeBonus(player, "wisdom");
-        int chaM = AttributeHandler.getAttributeBonus(player, "charisma");
-
-        ClassDefinition cls = ClassRegistry.getClass(vars.PlayerClass);
-
-        if (cls == null) {
-            throw new IllegalStateException("Fehler: Spieler " + player.getName().getString() + " hat keine gültige Dnd-Klasse definiert! (Klassen-ID: " + vars.PlayerClass + ")");
-        }
-        // No x2 here as you stated the values are already doubled
-        int hpPerLvl = cls.getClassHealth();
-
-        double abilitySpeedBonus = 0.0;
-
-        if (AbilityUtils.hasAbility(player, Ability.SPEED_BONUS_5)) {
-            abilitySpeedBonus += 0.015; // +5ft — Wood Elf, Goliath
-        }
-        if (AbilityUtils.hasAbility(player, Ability.ROVING)) {
-            abilitySpeedBonus += 0.030; // +10ft — Ranger lvl 6
-        }
-        if (abilitySpeedBonus != 0) {
-            updateMod(player, Attributes.MOVEMENT_SPEED, "dnd:speed_ability_constant", abilitySpeedBonus);
-        } else {
-            // Entfernen falls keine Speed-Ability mehr vorhanden
-            var speedInst = player.getAttribute(Attributes.MOVEMENT_SPEED);
-            if (speedInst != null) {
-                speedInst.removeModifier(
-                        net.minecraft.resources.ResourceLocation.parse("dnd:speed_ability_constant"));
-            }
-        }
-
-
-        // --- STRENGTH ---
-        updateMod(player, Attributes.ATTACK_DAMAGE, "dnd:str_dmg", strM * 1.5);
-        updateMod(player, Attributes.BLOCK_BREAK_SPEED, "dnd:str_mining", Math.max(-0.5, strM * 0.15));
-        updateMod(player, Attributes.ATTACK_KNOCKBACK, "dnd:str_kb", Math.max(0, strM * 0.3));
-        updateMod(player, Attributes.KNOCKBACK_RESISTANCE, "dnd:str_kb_res", Math.max(0, strM * 0.1));
-
-        // --- DEXTERITY ---
-        updateMod(player, Attributes.ATTACK_SPEED, "dnd:dex_ats", dexM * 0.15);
-        updateMod(player, Attributes.SNEAKING_SPEED, "dnd:dex_sneak", dexM * 0.05);
-        updateMod(player, Attributes.JUMP_STRENGTH, "dnd:dex_jump", dexM * 0.03);
-        updateMod(player, net.neoforged.neoforge.common.NeoForgeMod.SWIM_SPEED, "dnd:dex_swim", dexM * 0.1);
-
-        // --- HEALTH (CONSTITUTION) ---
-        double levelHpBonus = (hpPerLvl * level) - 20.0;
-        double constitutionHpBonus = (conM * 2.0) * level;
-        int featToughBonus = AbilityDataUtils.getInt(vars, "FeatToughBonus", 0) != 0 ? level * 4 : 0;
-        int toughBonus = AbilityDataUtils.getInt(vars, "ToughBonus", 0) * 2;
-        int draconicHpBonus = AbilityUtils.hasAbility(player, Ability.DRACONIC_RESILIENCE) ? level * 2 : 0;
-
-        // Hard-cap check to prevent total health from dropping below 1 heart (2 HP)
-        double totalBonusSum = levelHpBonus + constitutionHpBonus + featToughBonus + toughBonus + draconicHpBonus;
-        if (totalBonusSum <= -20.0) {
-            levelHpBonus += (-18.0 - totalBonusSum);
-        }
-
-        updateMod(player, Attributes.MAX_HEALTH, "dnd:level_hp", levelHpBonus);
-        updateMod(player, Attributes.MAX_HEALTH, "dnd:con_hp", constitutionHpBonus);
-        updateMod(player, Attributes.MAX_HEALTH, "dnd:feat_tough_hp", featToughBonus);
-        updateMod(player, Attributes.MAX_HEALTH, "dnd:tough_hp", toughBonus);
-        updateMod(player, Attributes.MAX_HEALTH, "dnd:draconic_hp", draconicHpBonus);
-
-
-        // --- CONSTITUTION ---
-        updateMod(player, Attributes.OXYGEN_BONUS, "dnd:con_oxy", conM * 20.0);
-        updateMod(player, Attributes.SAFE_FALL_DISTANCE, "dnd:con_fall_dist", conM * 1.5);
-        updateMod(player, Attributes.BURNING_TIME, "dnd:con_burn", conM * -0.1);
-
-        // --- INTELLIGENCE ---
-        updateMod(player, Attributes.MINING_EFFICIENCY, "dnd:int_eff", intM * 2.0);
-        updateMod(player, Attributes.BLOCK_INTERACTION_RANGE, "dnd:int_reach", intM * 0.2);
-        updateMod(player, Attributes.SUBMERGED_MINING_SPEED, "dnd:int_sub_mining", intM * 0.2);
-
-        // --- WISDOM ---
-        updateMod(player, Attributes.ENTITY_INTERACTION_RANGE, "dnd:wis_ent_reach", wisM * 0.3);
-        updateMod(player, Attributes.STEP_HEIGHT, "dnd:wis_step", (wisM >= 2) ? 0.5 : 0.0);
-        updateMod(player, Attributes.FALL_DAMAGE_MULTIPLIER, "dnd:wis_fall_dmg", wisM * -0.06);
-
-        // --- CHARISMA ---
-        updateMod(player, Attributes.LUCK, "dnd:cha_luck", (double) chaM);
-        updateMod(player, Attributes.TEMPT_RANGE, "dnd:cha_tempt", chaM * 3.0);
-        updateMod(player, net.neoforged.neoforge.common.NeoForgeMod.NAMETAG_DISTANCE, "dnd:cha_name", chaM * 2.0);
-
-        player.setHealth(player.getMaxHealth());
-    }
-
-    private static void updateMod(ServerPlayer player, net.minecraft.core.Holder<net.minecraft.world.entity.ai.attributes.Attribute> attr, String idStr, double val) {
-        var inst = player.getAttribute(attr);
-        if (inst != null) {
-            ResourceLocation loc = ResourceLocation.fromNamespaceAndPath("dnd", idStr.replace("dnd:", ""));
-
-            inst.removeModifier(loc);
-            if (val != 0) {
-                inst.addPermanentModifier(new AttributeModifier(loc, val, AttributeModifier.Operation.ADD_VALUE));
-            }
-        }
     }
 }

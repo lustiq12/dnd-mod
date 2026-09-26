@@ -308,108 +308,28 @@ public final class NpcPresets {
         // --------------------------------------------------------
 
         List<NpcTradeEntry> trades = List.of(
-                // Materials
-                new NpcTradeEntry(
-                        "minecraft:emerald",
-                        4,
-                        "",
-                        0,
-                        "minecraft:iron_ingot",
-                        8
-                ),
+                // Buy: coins for raw materials
+                new NpcTradeEntry(new int[]{0,0,0,4,0}, null, 0, null, "minecraft:iron_ingot", 8),
+                new NpcTradeEntry(new int[]{0,0,0,7,0}, null, 0, null, "minecraft:iron_block", 1),
+                new NpcTradeEntry(new int[]{0,0,0,3,0}, null, 0, null, "minecraft:coal", 16),
+                new NpcTradeEntry(new int[]{0,0,0,12,0}, null, 0, null, "minecraft:diamond", 1),
 
-                new NpcTradeEntry(
-                        "minecraft:emerald",
-                        7,
-                        "",
-                        0,
-                        "minecraft:iron_block",
-                        1
-                ),
+                // Buy: coins for weapons
+                new NpcTradeEntry(new int[]{0,0,0,14,0}, null, 0, null, "minecraft:iron_sword", 1),
+                new NpcTradeEntry(new int[]{0,0,0,23,0}, null, 0, null, "minecraft:iron_axe", 1),
+                new NpcTradeEntry(new int[]{0,0,0,24,0}, null, 0, null, "minecraft:diamond_sword", 1),
 
-                new NpcTradeEntry(
-                        "minecraft:emerald",
-                        3,
-                        "",
-                        0,
-                        "minecraft:coal",
-                        16
-                ),
+                // Buy: coins for armor
+                new NpcTradeEntry(new int[]{0,0,0,18,0}, null, 0, null, "minecraft:iron_chestplate", 1),
+                new NpcTradeEntry(new int[]{0,0,0,22,0}, null, 0, null, "minecraft:iron_leggings", 1),
 
-                new NpcTradeEntry(
-                        "minecraft:emerald",
-                        12,
-                        "",
-                        0,
-                        "minecraft:diamond",
-                        1
-                ),
+                // Buy: rare and special
+                new NpcTradeEntry(new int[]{0,0,0,0,2}, null, 0, null, "minecraft:netherite_scrap", 1),
+                new NpcTradeEntry(new int[]{0,0,0,0,3}, null, 0, null, "minecraft:anvil", 1),
 
-                // Weapons
-                new NpcTradeEntry(
-                        "minecraft:emerald",
-                        14,
-                        "",
-                        0,
-                        "minecraft:iron_sword",
-                        1
-                ),
-
-                new NpcTradeEntry(
-                        "minecraft:emerald",
-                        18,
-                        "minecraft:iron_ingot",
-                        5,
-                        "minecraft:iron_axe",
-                        1
-                ),
-
-                new NpcTradeEntry(
-                        "minecraft:emerald",
-                        24,
-                        "",
-                        0,
-                        "minecraft:diamond_sword",
-                        1
-                ),
-
-                // Armor
-                new NpcTradeEntry(
-                        "minecraft:emerald",
-                        18,
-                        "",
-                        0,
-                        "minecraft:iron_chestplate",
-                        1
-                ),
-
-                new NpcTradeEntry(
-                        "minecraft:emerald",
-                        22,
-                        "",
-                        0,
-                        "minecraft:iron_leggings",
-                        1
-                ),
-
-                // Rare / special
-                new NpcTradeEntry(
-                        "minecraft:emerald",
-                        32,
-                        "minecraft:diamond",
-                        2,
-                        "minecraft:netherite_scrap",
-                        1
-                ),
-
-                new NpcTradeEntry(
-                        "minecraft:emerald",
-                        40,
-                        "",
-                        0,
-                        "minecraft:anvil",
-                        1
-                )
+                // Sell: materials for coins
+                new NpcTradeEntry(null, "minecraft:iron_ingot", 4, new int[]{0,0,0,3,0}, null, 0),
+                new NpcTradeEntry(null, "minecraft:leather", 4, new int[]{0,2,0,0,0}, null, 0)
         );
 
         // --------------------------------------------------------

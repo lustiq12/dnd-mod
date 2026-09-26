@@ -3,11 +3,13 @@ package net.luderspieler.dnd.item;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.TriState;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -241,5 +243,59 @@ public class CoinBagHelper {
         if (path.contains("platinum")) return CoinType.PLATINUM;
 
         return null;
+    }
+
+    /** Order matches CoinType.values(): [copper, silver, electrum, gold, platinum]. */
+    public static int coinsToCopperValue(int[] coins) {
+        if (coins == null) return 0;
+        CoinType[] types = CoinType.values();
+        int total = 0;
+        for (int i = 0; i < coins.length && i < types.length; i++) {
+            total += coins[i] * types[i].getCopperValue();
+        }
+        return total;
+    }
+
+    public static boolean hasCoinBagEquipped(Player player) {
+        return !findCoinBags(player).isEmpty();
+    }
+
+    public static boolean canAffordCopperValue(Player player, int copperCost) {
+        if (copperCost <= 0) return true;
+        List<ItemStack> bags = findCoinBags(player);
+        if (bags.isEmpty()) return false;
+        return getTotalCopperValue(bags) >= copperCost;
+    }
+
+    /** Pays an arbitrary copper-value cost from the player's equipped coin bags, returning change to the first bag. */
+    public static boolean payCopperValue(Player player, int copperCost) {
+        if (copperCost <= 0) return true;
+        List<ItemStack> bags = findCoinBags(player);
+        if (bags.isEmpty()) return false;
+        int totalAvailable = getTotalCopperValue(bags);
+        if (totalAvailable < copperCost) return false;
+
+        clearAllCoins(bags);
+        depositCopperValue(bags.get(0), totalAvailable - copperCost);
+        return true;
+    }
+
+    /** Deposits a per-denomination coin amount into the player's first equipped coin bag. */
+    public static boolean depositCoins(Player player, int[] coins) {
+        if (coins == null) return true;
+        List<ItemStack> bags = findCoinBags(player);
+        if (bags.isEmpty()) return false;
+
+        ItemStack bag = bags.get(0);
+        CoinType[] types = CoinType.values();
+        for (int i = 0; i < coins.length && i < types.length; i++) {
+            if (coins[i] > 0) addCoins(bag, types[i], coins[i]);
+        }
+        return true;
+    }
+
+    public static Item getCoinItem(CoinType type) {
+        ResourceLocation id = ResourceLocation.fromNamespaceAndPath("dnd", type.getTagKey());
+        return BuiltInRegistries.ITEM.getOptional(id).orElse(null);
     }
 }

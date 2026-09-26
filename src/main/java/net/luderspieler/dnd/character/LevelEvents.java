@@ -72,7 +72,7 @@ public class LevelEvents {
         AbilityUtils.updateSubclassAbilitiesForLevel(player, targetLevel);
 
         // 4. HP, Geschwindigkeit und alle Attribut-Modifier neu berechnen
-        CharacterCreationPacket.applyAttrs(player);
+        AttributeHandler.applyAttrs(player);
 
         // 5. ASI/Feat/Subclass-Choices aktualisieren
         ChoiceUpdateSystem.updateChoices(player);

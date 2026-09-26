@@ -1,6 +1,7 @@
 package net.luderspieler.dnd.character.AbilitysAndFeats;
 
 import net.luderspieler.dnd.character.AbilitysAndFeats.management.Ability;
+import net.luderspieler.dnd.character.AttributeHandler;
 import net.luderspieler.dnd.character.network.CharacterCreationPacket;
 import net.luderspieler.dnd.network.DndModVariables;
 import net.minecraft.server.level.ServerPlayer;
@@ -26,7 +27,7 @@ public class AbilityMethods_OneTime {
 
         if (statsChanged) {
             vars.markSyncDirty();
-            CharacterCreationPacket.applyAttrs(player);
+            AttributeHandler.applyAttrs(player);
         }
         return statsChanged;
     }

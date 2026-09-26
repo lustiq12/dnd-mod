@@ -8,7 +8,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 
 import static net.luderspieler.dnd.Utils.ProficiencyUtils.addProficiency;
-import static net.luderspieler.dnd.character.network.CharacterCreationPacket.applyAttrs;
+import static net.luderspieler.dnd.character.AttributeHandler.applyAttrs;
 
 public class ChoiceExecutor {
 

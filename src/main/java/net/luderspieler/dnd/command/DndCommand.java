@@ -6,6 +6,7 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
+import net.luderspieler.dnd.character.AttributeHandler;
 import net.luderspieler.dnd.character.LevelEvents;
 import net.luderspieler.dnd.character.choices.ChoiceUpdateSystem;
 import net.luderspieler.dnd.character.definition.ClassDefinition;
@@ -325,7 +326,7 @@ public class DndCommand {
         AbilityUtils.updateSubclassAbilitiesForLevel(player, level);
 
         ChoiceUpdateSystem.updateChoices(player);
-        CharacterCreationPacket.applyAttrs(player);
+        AttributeHandler.applyAttrs(player);
 
         source.sendSuccess(
                 () -> Component.literal("§aLevel set to " + level + " — stats, abilities and choices updated."),

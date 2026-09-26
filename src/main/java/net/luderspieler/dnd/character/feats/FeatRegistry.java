@@ -1,6 +1,7 @@
 package net.luderspieler.dnd.character.feats;
 
 import net.luderspieler.dnd.Utils.AbilityDataUtils;
+import net.luderspieler.dnd.character.AttributeHandler;
 import net.luderspieler.dnd.character.network.CharacterCreationPacket;
 import net.luderspieler.dnd.network.DndModVariables;
 import net.minecraft.server.level.ServerPlayer;
@@ -190,7 +191,7 @@ public class FeatRegistry {
         }
 
         vars.markSyncDirty();
-        CharacterCreationPacket.applyAttrs(player);
+        AttributeHandler.applyAttrs(player);
     }
 
     /** Gibt true zurück wenn der Spieler diesen Feat bereits besitzt. */
