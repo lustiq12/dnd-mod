@@ -1,7 +1,5 @@
 package net.luderspieler.dnd;
 
-import net.luderspieler.dnd.gameplay.ToolTipModifier;
-import net.luderspieler.dnd.item.CoinBagHelper;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -30,7 +28,10 @@ import net.luderspieler.dnd.resources.ResourceHudOverlay;
 import net.luderspieler.dnd.npc.screens.NpcTradeScreen;
 import net.luderspieler.dnd.npc.NpcPresets;
 import net.luderspieler.dnd.network.DndModVariables;
+import net.luderspieler.dnd.item.RingHelper;
+import net.luderspieler.dnd.item.CoinBagHelper;
 import net.luderspieler.dnd.init.*;
+import net.luderspieler.dnd.gameplay.ToolTipModifier;
 import net.luderspieler.dnd.character.ProficiencyCheckProcedure;
 import net.luderspieler.dnd.character.LevelEvents;
 import net.luderspieler.dnd.character.CharacterCreationEventHandler;
@@ -76,6 +77,7 @@ public class DndMod {
 		NeoForge.EVENT_BUS.register(new LevelEvents());
 		NeoForge.EVENT_BUS.register(new ProficiencyCheckProcedure());
 		NeoForge.EVENT_BUS.register(new ToolTipModifier());
+		NeoForge.EVENT_BUS.register(new RingHelper());
 		NeoForge.EVENT_BUS.register(new AbilityPassiveTriggers());
 		NeoForge.EVENT_BUS.register(new SleepingIntereferer());
 		NeoForge.EVENT_BUS.register(new SpellEvents());

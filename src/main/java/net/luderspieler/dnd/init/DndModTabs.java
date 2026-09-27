@@ -9,7 +9,6 @@ import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.bus.api.SubscribeEvent;
 
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.CreativeModeTab;
@@ -22,7 +21,7 @@ import net.luderspieler.dnd.DndMod;
 public class DndModTabs {
 	public static final DeferredRegister<CreativeModeTab> REGISTRY = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, DndMod.MODID);
 	public static final DeferredHolder<CreativeModeTab, CreativeModeTab> DN_D_MOBS = REGISTRY.register("dn_d_mobs",
-			() -> CreativeModeTab.builder().title(Component.translatable("item_group.dnd.dn_d_mobs")).icon(() -> new ItemStack(Blocks.AIR)).displayItems((parameters, tabData) -> {
+			() -> CreativeModeTab.builder().title(Component.translatable("item_group.dnd.dn_d_mobs")).icon(() -> new ItemStack(DndModItems.MOBS_TAB_ICON.get())).displayItems((parameters, tabData) -> {
 				tabData.accept(DndModItems.STIRGE_SPAWN_EGG.get());
 				tabData.accept(DndModItems.SCARECROW_SPAWN_EGG.get());
 				tabData.accept(DndModItems.HARPY_SPAWN_EGG.get());
@@ -38,13 +37,18 @@ public class DndModTabs {
 				tabData.accept(DndModItems.SPEAR.get());
 			}).withSearchBar().withTabsBefore(DN_D_MOBS.getId()).build());
 	public static final DeferredHolder<CreativeModeTab, CreativeModeTab> DN_D_OTHER_ITEMS = REGISTRY.register("dn_d_other_items",
-			() -> CreativeModeTab.builder().title(Component.translatable("item_group.dnd.dn_d_other_items")).icon(() -> new ItemStack(Blocks.AIR)).displayItems((parameters, tabData) -> {
+			() -> CreativeModeTab.builder().title(Component.translatable("item_group.dnd.dn_d_other_items")).icon(() -> new ItemStack(DndModItems.COIN_BAG.get())).displayItems((parameters, tabData) -> {
 				tabData.accept(DndModItems.COPPER_COIN.get());
 				tabData.accept(DndModItems.SILVER_COIN.get());
 				tabData.accept(DndModItems.GOLD_COIN.get());
 				tabData.accept(DndModItems.PLATINUM_COIN.get());
 				tabData.accept(DndModItems.COIN_BAG.get());
 			}).withSearchBar().withTabsBefore(DND_EQUIPMENT.getId()).build());
+	public static final DeferredHolder<CreativeModeTab, CreativeModeTab> DN_D_MAGIC_ITEMS = REGISTRY.register("dn_d_magic_items",
+			() -> CreativeModeTab.builder().title(Component.translatable("item_group.dnd.dn_d_magic_items")).icon(() -> new ItemStack(DndModItems.RING_OF_SWIMMING.get())).displayItems((parameters, tabData) -> {
+				tabData.accept(DndModItems.RING_OF_PROTECTION.get());
+				tabData.accept(DndModItems.RING_OF_SWIMMING.get());
+			}).withSearchBar().withTabsBefore(DN_D_OTHER_ITEMS.getId()).build());
 
 	@SubscribeEvent
 	public static void buildTabContentsVanilla(BuildCreativeModeTabContentsEvent tabData) {

@@ -4,7 +4,7 @@
   "definition": {
     "name": "D&D Magic Items",
     "icon": {
-      "value": "Blocks.AIR"
+      "value": "CUSTOM:RingOfSwimming"
     },
     "showSearch": true
   }

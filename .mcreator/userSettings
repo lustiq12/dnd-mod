@@ -13,7 +13,14 @@
       "[, D\u0026D, Resources (Gradle)]",
       "[, D\u0026D, Resources (Gradle), C:\\Users\\julia\\MCreatorWorkspaces\\dungerramityd\\src\\main\\resources\\assets]",
       "[, D\u0026D, Resources (Gradle), C:\\Users\\julia\\MCreatorWorkspaces\\dungerramityd\\src\\main\\resources\\assets, C:\\Users\\julia\\MCreatorWorkspaces\\dungerramityd\\src\\main\\resources\\assets\\dnd]",
-      "[, D\u0026D, Resources (Gradle), C:\\Users\\julia\\MCreatorWorkspaces\\dungerramityd\\src\\main\\resources\\assets, C:\\Users\\julia\\MCreatorWorkspaces\\dungerramityd\\src\\main\\resources\\assets\\dnd, C:\\Users\\julia\\MCreatorWorkspaces\\dungerramityd\\src\\main\\resources\\assets\\dnd\\items]"
+      "[, D\u0026D, Resources (Gradle), C:\\Users\\julia\\MCreatorWorkspaces\\dungerramityd\\src\\main\\resources\\assets, C:\\Users\\julia\\MCreatorWorkspaces\\dungerramityd\\src\\main\\resources\\assets\\dnd, C:\\Users\\julia\\MCreatorWorkspaces\\dungerramityd\\src\\main\\resources\\assets\\dnd\\items]",
+      "[, D\u0026D, Resources (Gradle), C:\\Users\\julia\\MCreatorWorkspaces\\dungerramityd\\src\\main\\resources\\data]",
+      "[, D\u0026D, Resources (Gradle), C:\\Users\\julia\\MCreatorWorkspaces\\dungerramityd\\src\\main\\resources\\data, C:\\Users\\julia\\MCreatorWorkspaces\\dungerramityd\\src\\main\\resources\\data\\curios]",
+      "[, D\u0026D, Resources (Gradle), C:\\Users\\julia\\MCreatorWorkspaces\\dungerramityd\\src\\main\\resources\\data, C:\\Users\\julia\\MCreatorWorkspaces\\dungerramityd\\src\\main\\resources\\data\\curios, C:\\Users\\julia\\MCreatorWorkspaces\\dungerramityd\\src\\main\\resources\\data\\curios\\tags]",
+      "[, D\u0026D, Resources (Gradle), C:\\Users\\julia\\MCreatorWorkspaces\\dungerramityd\\src\\main\\resources\\data, C:\\Users\\julia\\MCreatorWorkspaces\\dungerramityd\\src\\main\\resources\\data\\curios, C:\\Users\\julia\\MCreatorWorkspaces\\dungerramityd\\src\\main\\resources\\data\\curios\\tags, C:\\Users\\julia\\MCreatorWorkspaces\\dungerramityd\\src\\main\\resources\\data\\curios\\tags\\item]",
+      "[, D\u0026D, Resources (Gradle), C:\\Users\\julia\\MCreatorWorkspaces\\dungerramityd\\src\\main\\resources\\data, C:\\Users\\julia\\MCreatorWorkspaces\\dungerramityd\\src\\main\\resources\\data\\dnd]",
+      "[, D\u0026D, Resources (Gradle), C:\\Users\\julia\\MCreatorWorkspaces\\dungerramityd\\src\\main\\resources\\data, C:\\Users\\julia\\MCreatorWorkspaces\\dungerramityd\\src\\main\\resources\\data\\dnd, C:\\Users\\julia\\MCreatorWorkspaces\\dungerramityd\\src\\main\\resources\\data\\dnd\\tags]",
+      "[, D\u0026D, Resources (Gradle), C:\\Users\\julia\\MCreatorWorkspaces\\dungerramityd\\src\\main\\resources\\data, C:\\Users\\julia\\MCreatorWorkspaces\\dungerramityd\\src\\main\\resources\\data\\dnd, C:\\Users\\julia\\MCreatorWorkspaces\\dungerramityd\\src\\main\\resources\\data\\dnd\\tags, C:\\Users\\julia\\MCreatorWorkspaces\\dungerramityd\\src\\main\\resources\\data\\dnd\\tags\\item]"
     ]
   },
   "leftDockState": {
@@ -23,8 +30,9 @@
     }
   },
   "bottomDockState": {
+    "expandedDock": "console",
     "dockSizes": {
-      "console": 374,
+      "console": 711,
       "code_viewer": 471,
       "debugger": 27
     }

@@ -4,7 +4,7 @@
   "definition": {
     "name": "D&D Blocks",
     "icon": {
-      "value": "Blocks.AIR"
+      "value": "Blocks.CHISELED_TUFF_BRICKS"
     },
     "showSearch": true
   }

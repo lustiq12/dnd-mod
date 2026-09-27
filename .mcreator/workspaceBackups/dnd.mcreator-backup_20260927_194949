@@ -1853,6 +1853,36 @@
         ]
       },
       "path": "~/Recipes"
+    },
+    {
+      "name": "RingOfProtection",
+      "type": "item",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "ring_of_protection",
+      "metadata": {
+        "files": [
+          "src/main/java/net/luderspieler/dnd/item/RingOfProtectionItem.java",
+          "src/main/resources/assets/dnd/models/item/ring_of_protection.json",
+          "src/main/resources/assets/dnd/items/ring_of_protection.json"
+        ]
+      },
+      "path": "~/items"
+    },
+    {
+      "name": "RingOfSwimming",
+      "type": "item",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "ring_of_swimming",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/dnd/models/item/ring_of_swimming.json",
+          "src/main/java/net/luderspieler/dnd/item/RingOfSwimmingItem.java",
+          "src/main/resources/assets/dnd/items/ring_of_swimming.json"
+        ]
+      },
+      "path": "~/items"
     }
   ],
   "variable_elements": [
@@ -2233,12 +2263,8 @@
     "ITEMS:mod:shields": [
       "Items.SHIELD"
     ],
-    "ITEMS:minecraft:enchantable/durability": [
-      "~CUSTOM:Spear"
-    ],
-    "ITEMS:dnd:spear_repair_items": [
-      "~Items.IRON_INGOT"
-    ]
+    "ITEMS:minecraft:enchantable/durability": [],
+    "ITEMS:dnd:spear_repair_items": []
   },
   "tab_element_order": {},
   "language_map": {
@@ -2329,7 +2355,11 @@
       "item.dnd.silver_coin": "Copper Coin",
       "item.dnd.gold_coin": "Copper Coin",
       "item.dnd.platinum_coin": "Copper Coin",
-      "item.dnd.coin_bag": "Coin Bag"
+      "item.dnd.coin_bag": "Coin Bag",
+      "item.dnd.ring_of_protection": "Ring Of Protection",
+      "item.dnd.ring_of_swimming": "Ring Of Protection",
+      "item.dnd.ring_of_protection.description_0": "Reduces the taken Damage by 10%",
+      "item.dnd.ring_of_swimming.description_0": "Increases swimming speed"
     }
   },
   "metadata": {
@@ -2457,7 +2487,9 @@
     "websiteURL": "https://mcreator.net",
     "license": "All Rights Reserved",
     "serverSideOnly": false,
-    "requiredMods": [],
+    "requiredMods": [
+      "curios"
+    ],
     "dependencies": [],
     "dependants": [],
     "mcreatorDependencies": [],
