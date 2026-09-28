@@ -166,6 +166,13 @@ public class SpellWheelScreen extends Screen {
                 int lx = cx + (int) (currentLabelRadius * Math.cos(mid));
                 int ly = cy + (int) (currentLabelRadius * Math.sin(mid));
                 drawCenteredShadow(g, formatSpellId(currentSpells.get(i)), lx, ly, hovered ? generalConfigs.TEXT_HOVER : generalConfigs.TEXT_WHITE);
+
+                String spellId = currentSpells.get(i);
+                SpellChoices.Choice choice = SpellChoices.get(spellId);
+                if (choice != null) {
+                    drawCenteredShadow(g, choice.label() + ": " + SpellChoices.getSelectedDisplay(spellId), lx, ly + 10,
+                            hovered ? generalConfigs.TEXT_HOVER : generalConfigs.COLOR_ACCENT_GOLD);
+                }
             }
         }
 
@@ -231,6 +238,19 @@ public class SpellWheelScreen extends Screen {
         return super.keyPressed(key, b, c);
     }
 
+    @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+        if (stage == Stage.SPELL_SELECT && scrollY != 0
+                && hoveredSpell >= 0 && hoveredSpell < currentSpells.size()) {
+            String spellId = currentSpells.get(hoveredSpell);
+            if (SpellChoices.has(spellId)) {
+                SpellChoices.cycle(spellId, scrollY < 0);
+                return true;
+            }
+        }
+        return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
+    }
+
     // ══════════════════════════════════════════════════════
     // DATA HELPERS
     // ══════════════════════════════════════════════════════
@@ -279,7 +299,7 @@ public class SpellWheelScreen extends Screen {
     }
 
     private void castSpell(String spellId, int level) {
-        CastSpellPacket.send(spellId, level);
+        CastSpellPacket.send(spellId, level, SpellChoices.getSelectedId(spellId));
         this.onClose();
     }
 

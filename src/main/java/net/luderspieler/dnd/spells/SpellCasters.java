@@ -162,17 +162,17 @@ public class SpellCasters {
 
         target.hurt(caster.damageSources().source(DndModDamageTypes.PIERCING, caster), 6.0F);
 
-        // 1. Zug-Vektor berechnen
         Vec3 pullVec = new Vec3(
                 caster.getX() - target.getX(),
                 (caster.getY() + 1) - target.getY(),
                 caster.getZ() - target.getZ()
-        ).normalize().scale(1.0); // Stärke der Zugkraft
+        ).normalize().scale(1.0);
 
-        target.push(pullVec.x, pullVec.y, pullVec.z);
-        target.hurtMarked = true;
+        if (!"NO_PULL".equals(SpellChoices.getActive(caster))) {
+            target.push(pullVec.x, pullVec.y, pullVec.z);
+            target.hurtMarked = true;
+        }
 
-        // 2. Partikel mit Vektor-Geschwindigkeit spawnen
         spawnThornWhipParticles(caster, target, pullVec);
     }
 
@@ -183,8 +183,6 @@ public class SpellCasters {
         Vec3 start = caster.position().add(0, caster.getEyeHeight() * 0.6, 0);
         Vec3 targetCenter = target.position().add(0, target.getBbHeight() * 0.5, 0);
 
-        // Aufwärtsvektor verstärken, damit Partikel nicht runterfallen
-        // Passt die Y-Geschwindigkeit an die Flugbahn des Targets an
         double upBoost = 0.40;
         Vec3 particleVel = new Vec3(velocity.x, velocity.y + upBoost, velocity.z);
 
@@ -194,7 +192,6 @@ public class SpellCasters {
         BlockParticleOption leafParticle = new BlockParticleOption(ParticleTypes.BLOCK, Blocks.OAK_LEAVES.defaultBlockState());
         ItemParticleOption dirtParticle = new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(Items.DIRT));
 
-        // --- 1. Verbindungspeitsche ---
         Vec3 line = targetCenter.subtract(start);
         double distance = line.length();
         Vec3 direction = line.normalize();
@@ -210,7 +207,6 @@ public class SpellCasters {
                 double jY = (level.random.nextDouble() - 0.5) * 0.15;
                 double jZ = (level.random.nextDouble() - 0.5) * 0.15;
 
-                // Blätter fliegen mit Aufwärts-Impuls
                 level.sendParticles(
                         leafParticle,
                         point.x + jX, point.y + jY, point.z + jZ,
@@ -220,7 +216,6 @@ public class SpellCasters {
                 );
             }
 
-            // Dirt fliegt mit Aufwärts-Impuls
             level.sendParticles(
                     dirtParticle,
                     point.x, point.y, point.z,
@@ -230,7 +225,6 @@ public class SpellCasters {
             );
         }
 
-        // --- 2. Schlinge um das Target ---
         int spiralSteps = 90;
         double turns = 3.0;
         double radius = target.getBbWidth() * 0.75;
@@ -251,7 +245,6 @@ public class SpellCasters {
                 double jY = (level.random.nextDouble() - 0.5) * 0.12;
                 double jZ = (level.random.nextDouble() - 0.5) * 0.12;
 
-                // Blätter um das Entity
                 level.sendParticles(
                         leafParticle,
                         spiralPoint.x + jX, spiralPoint.y + jY, spiralPoint.z + jZ,
@@ -260,7 +253,6 @@ public class SpellCasters {
                         leafSpeed
                 );
 
-                // Dirt um das Entity
                 level.sendParticles(
                         dirtParticle,
                         spiralPoint.x + jX, spiralPoint.y + jY, spiralPoint.z + jZ,

@@ -1,5 +1,6 @@
 package net.luderspieler.dnd.spells;
 
+import net.luderspieler.dnd.Utils.GeneralDataUtils;
 import net.luderspieler.dnd.network.DndModVariables;
 import net.luderspieler.dnd.spells.targeting.SpellCasterHelper;
 import net.minecraft.network.FriendlyByteBuf;
@@ -12,7 +13,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-public record CastSpellPacket(String spellId, int level) implements CustomPacketPayload {
+public record CastSpellPacket(String spellId, int level, String choice) implements CustomPacketPayload {
 
     public static final Type<CastSpellPacket> TYPE =
             new Type<>(ResourceLocation.parse("dnd:cast_spell"));
@@ -21,16 +22,19 @@ public record CastSpellPacket(String spellId, int level) implements CustomPacket
             StreamCodec.composite(
                     ByteBufCodecs.STRING_UTF8, CastSpellPacket::spellId,
                     ByteBufCodecs.INT,         CastSpellPacket::level,
+                    ByteBufCodecs.STRING_UTF8, CastSpellPacket::choice,
                     CastSpellPacket::new
             );
 
     @Override
     public Type<? extends CustomPacketPayload> type() { return TYPE; }
 
-    // In CastSpellPacket.java
     public static void send(String spell, int grade) {
-        // Hier fehlte das zweite Argument (int) im Konstruktor
-        ClientPacketDistributor.sendToServer(new CastSpellPacket(spell, grade));
+        send(spell, grade, "");
+    }
+
+    public static void send(String spell, int grade, String choice) {
+        ClientPacketDistributor.sendToServer(new CastSpellPacket(spell, grade, choice));
     }
 
     /** Server-side handler */
@@ -68,6 +72,12 @@ public record CastSpellPacket(String spellId, int level) implements CustomPacket
                 vars.Spellslots = new String(arr);
                 vars.markSyncDirty();
             }
+
+            // Store the validated spell option for the cast methods to read
+            String choice = SpellChoices.resolve(pkt.spellId(), pkt.choice());
+            if (choice.isEmpty()) GeneralDataUtils.remove(vars, SpellChoices.DATA_KEY);
+            else GeneralDataUtils.set(vars, SpellChoices.DATA_KEY, choice);
+            vars.markSyncDirty();
 
             // 3. Ausführung - erst NACH erfolgreicher Validierung
             CastSpellProcedure.execute(player, pkt.spellId(), level);
