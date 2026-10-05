@@ -1,5 +1,6 @@
 package net.luderspieler.dnd.resources;
 
+import net.luderspieler.dnd.config.DndClientConfig;
 import net.luderspieler.dnd.generalConfigs;
 import net.luderspieler.dnd.network.DndModVariables;
 import net.minecraft.client.Minecraft;
@@ -41,6 +42,8 @@ public class ResourceHudOverlay {
 
     @SubscribeEvent
     public void onRenderGui(RenderGuiEvent.Post event) {
+        if (!DndClientConfig.RESOURCE_OVERLAY_ENABLED.get()) return;
+
         Minecraft mc = Minecraft.getInstance();
         if (mc.player == null || mc.screen != null) return;
 
@@ -54,6 +57,40 @@ public class ResourceHudOverlay {
         GuiGraphics g    = event.getGuiGraphics();
         Font        font = mc.font;
 
+        int nameColWPre = 0;
+        for (ResourceManager.ResourcePool pool : pools) {
+            nameColWPre = Math.max(nameColWPre, font.width(pool.displayName));
+        }
+        nameColWPre += ICON_SIZE + ICON_TEXT_GAP + 4;
+        int valueColWPre  = Math.max(BAR_WIDTH, PIP_SWITCH_THRESHOLD * (PIP_SIZE + PIP_GAP));
+        int numberColWPre = font.width("999/999") + 4;
+        int panelWPre     = nameColWPre + valueColWPre + numberColWPre + 4;
+        int panelHPre     = pools.size() * ROW_HEIGHT + 4;
+
+        float scale = DndClientConfig.RESOURCE_OVERLAY_SCALE.get().floatValue();
+        int offsetX = DndClientConfig.RESOURCE_OVERLAY_OFFSET_X.get();
+        int offsetY = DndClientConfig.RESOURCE_OVERLAY_OFFSET_Y.get();
+        DndClientConfig.Anchor anchor = DndClientConfig.RESOURCE_OVERLAY_ANCHOR.get();
+
+        int screenW = mc.getWindow().getGuiScaledWidth();
+        int screenH = mc.getWindow().getGuiScaledHeight();
+        int scaledPanelW = (int) (panelWPre * scale);
+        int scaledPanelH = (int) (panelHPre * scale);
+
+        int startX = switch (anchor) {
+            case TOP_LEFT, BOTTOM_LEFT -> offsetX;
+            case TOP_CENTER, BOTTOM_CENTER -> (screenW - scaledPanelW) / 2 + offsetX;
+            case TOP_RIGHT, BOTTOM_RIGHT -> screenW - scaledPanelW - offsetX;
+        };
+        int startY = switch (anchor) {
+            case TOP_LEFT, TOP_CENTER, TOP_RIGHT -> offsetY;
+            case BOTTOM_LEFT, BOTTOM_CENTER, BOTTOM_RIGHT -> screenH - scaledPanelH - offsetY;
+        };
+
+        g.pose().pushMatrix();
+        g.pose().translate(startX, startY);
+        g.pose().scale(scale, scale);
+
         // ── Name-Spalte: Breite nach längstem aktiven Pool-Name ───────
         int nameColW = 0;
         for (ResourceManager.ResourcePool pool : pools) {
@@ -66,15 +103,12 @@ public class ResourceHudOverlay {
         int numberColW = font.width("999/999") + 4;
         int panelW     = nameColW + valueColW + numberColW + 4;
         int panelH     = pools.size() * ROW_HEIGHT + 4;
-        int startX     = MARGIN_LEFT;
-        int startY     = MARGIN_TOP;
 
-        g.fill(startX - 2, startY - 2, startX + panelW, startY + panelH,
-                generalConfigs.HUD_BACKGROUND);
+        g.fill(-2, -2, panelW, panelH, generalConfigs.HUD_BACKGROUND);
 
         for (int i = 0; i < pools.size(); i++) {
             ResourceManager.ResourcePool pool = pools.get(i);
-            int rowY    = startY + i * ROW_HEIGHT;
+            int rowY    = i * ROW_HEIGHT;
             int current = ResourceManager.getCurrent(player, pool);
             int max     = ResourceManager.getMaxCached(player, pool);
 
@@ -86,16 +120,16 @@ public class ResourceHudOverlay {
             // ── Icon ──────────────────────────────────────────────────
             int iconAlpha = current > 0 ? 0xFF000000 : 0x66000000;
             int iconCol   = iconAlpha | (pool.color & 0x00FFFFFF);
-            int iconX     = startX;
+            int iconX     = 0;
             int iconY     = rowY + (ROW_HEIGHT - ICON_SIZE) / 2;
             g.fill(iconX, iconY, iconX + ICON_SIZE, iconY + ICON_SIZE, iconCol);
 
             // ── Name ──────────────────────────────────────────────────
-            int nameX = startX + ICON_SIZE + ICON_TEXT_GAP;
+            int nameX = ICON_SIZE + ICON_TEXT_GAP;
             g.drawString(font, pool.displayName, nameX, rowY + (ROW_HEIGHT - 8) / 2, textCol, false);
 
             // ── Wert: Pips oder Bar ────────────────────────────────────
-            int valueX = startX + nameColW;
+            int valueX = nameColW;
             boolean useBar = pool.displayMode == ResourceManager.ResourcePool.DisplayMode.BAR
                     || max > PIP_SWITCH_THRESHOLD;
             if (useBar) {
@@ -105,10 +139,12 @@ public class ResourceHudOverlay {
             }
 
             // ── Zahl rechts ───────────────────────────────────────────
-            int numberX = startX + nameColW + valueColW + 4;
+            int numberX = nameColW + valueColW + 4;
             String label = current + "/" + max;
             g.drawString(font, label, numberX, rowY + (ROW_HEIGHT - 8) / 2, textCol, false);
         }
+
+        g.pose().popMatrix();
     }
 
     // ── RENDER-HELPERS ─────────────────────────────────────────────────

@@ -1,5 +1,8 @@
 package net.luderspieler.dnd;
 
+import net.luderspieler.dnd.config.DndClientConfig;
+import net.neoforged.fml.ModLoadingContext;
+import net.neoforged.fml.config.ModConfig;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -89,6 +92,13 @@ public class DndMod {
 		NpcPresets.registerAll();
 		if (FMLEnvironment.dist.isClient()) {
 			modEventBus.addListener(this::registerScreens);
+		}
+		NpcPresets.registerAll();
+		ModLoadingContext.get().getActiveContainer().registerConfig(ModConfig.Type.CLIENT, DndClientConfig.SPEC);
+		if (FMLEnvironment.dist.isClient()) {
+			ModLoadingContext.get().getActiveContainer().registerExtensionPoint(
+					net.neoforged.neoforge.client.gui.IConfigScreenFactory.class,
+					net.neoforged.neoforge.client.gui.ConfigurationScreen::new);
 		}
 		// End of user code block mod init
 	}
