@@ -25,12 +25,13 @@ import java.util.List;
 public class SpellWheelScreen extends Screen {
 
     // ── Layout ──
-    private static final int OUTER_RADIUS = 90;
+    private static final int OUTER_RADIUS = 105;
     private static final int INNER_RADIUS = 40;
-    private static final int HUB_RADIUS = 18;
+    private static final int HUB_RADIUS = 35;
     private static final int LABEL_RADIUS_OUTER = 68;
     private static final int LABEL_RADIUS_INNER = 62;
     private static final float HOVER_EXPAND = 6f;
+    private static final int OUTLINE_WIDTH = 2;
 
     // ── State ──
     private enum Stage { LEVEL_SELECT, SPELL_SELECT }
@@ -84,8 +85,9 @@ public class SpellWheelScreen extends Screen {
         float scale = 1.5f;
 
         int currentOuterRadius = (int) (OUTER_RADIUS * scale);
-        int currentHubRadius = (int) (HUB_RADIUS * scale);
-        int currentLabelRadius = (int) (LABEL_RADIUS_OUTER * scale);
+        int currentHubRadius = HUB_RADIUS;
+
+        int currentLabelRadius = currentHubRadius + (currentOuterRadius - currentHubRadius) / 2;
 
         double mouseAngle = Math.atan2(mouseY - cy, mouseX - cx);
         double sliceAngle = (2 * Math.PI) / segments;
@@ -106,11 +108,10 @@ public class SpellWheelScreen extends Screen {
 
             int outerR = hovered ? currentOuterRadius + (int) HOVER_EXPAND : currentOuterRadius;
 
-            // Farbe direkt aus Config berechnen
             int color = (i == 0) ? (hovered ? generalConfigs.WHEEL_CANTRIP_HOVER : generalConfigs.WHEEL_CANTRIP)
                     : (hovered ? generalConfigs.WHEEL_SEGMENT_HOVER : generalConfigs.WHEEL_SEGMENT_IDLE);
 
-            drawSegment(g, cx, cy, currentHubRadius, outerR, start, end, color, generalConfigs.WHEEL_OUTLINE);
+            drawSegment(g, cx, cy, currentHubRadius, outerR, start, end, color, generalConfigs.WHEEL_OUTLINE, hovered);
 
             double mid = (start + end) / 2;
             int lx = cx + (int) (currentLabelRadius * Math.cos(mid));
@@ -120,7 +121,15 @@ public class SpellWheelScreen extends Screen {
             String label = (i == 0) ? "Cantrip" : "Grade " + i + slotInfo;
 
             boolean hasContent = hasSpellsAtLevel(i);
-            int textColor = hasContent ? (hovered ? generalConfigs.TEXT_HOVER : generalConfigs.TEXT_WHITE) : generalConfigs.TEXT_GRAY;
+            boolean depleted = i > 0 && isGradeDepleted(i);
+            int textColor;
+            if (depleted) {
+                textColor = generalConfigs.TEXT_SLOT_DEPLETED;
+            } else if (hasContent) {
+                textColor = hovered ? generalConfigs.TEXT_HOVER : generalConfigs.TEXT_WHITE;
+            } else {
+                textColor = generalConfigs.TEXT_DARK_GRAY;
+            }
 
             drawCenteredShadow(g, label, lx, ly, textColor);
         }
@@ -135,9 +144,11 @@ public class SpellWheelScreen extends Screen {
         int segments = currentSpells.isEmpty() ? 1 : currentSpells.size();
 
         float scale = (segments >= 12) ? 3.0f : (segments >= 6 ? 2.0f : 1.0f);
+
         int currentOuterRadius = (int) (OUTER_RADIUS * scale);
-        int currentHubRadius = (int) (HUB_RADIUS * scale);
-        int currentLabelRadius = (int) (LABEL_RADIUS_INNER * scale);
+        int currentHubRadius = HUB_RADIUS;
+
+        int currentLabelRadius = currentHubRadius + (currentOuterRadius - currentHubRadius) / 2;
 
         double mouseAngle = Math.atan2(mouseY - cy, mouseX - cx);
         double sliceAngle = (2 * Math.PI) / segments;
@@ -151,8 +162,8 @@ public class SpellWheelScreen extends Screen {
         }
 
         if (currentSpells.isEmpty()) {
-            drawSegment(g, cx, cy, currentHubRadius, currentOuterRadius, -Math.PI / 2, Math.PI * 1.5, generalConfigs.WHEEL_SEGMENT_IDLE, generalConfigs.WHEEL_OUTLINE);
-            drawCenteredShadow(g, "No spells prepared", cx, cy + 16, generalConfigs.TEXT_GRAY);
+            drawSegment(g, cx, cy, currentHubRadius, currentOuterRadius, -Math.PI / 2, Math.PI * 1.5, generalConfigs.WHEEL_SEGMENT_IDLE, generalConfigs.WHEEL_OUTLINE, false);
+            drawCenteredShadow(g, "No spells prepared", cx, cy - 50, generalConfigs.TEXT_GRAY);
         } else {
             for (int i = 0; i < segments; i++) {
                 double start = -Math.PI / 2 + i * sliceAngle;
@@ -160,7 +171,7 @@ public class SpellWheelScreen extends Screen {
                 boolean hovered = i == hoveredSpell;
                 int outerR = hovered ? currentOuterRadius + (int) HOVER_EXPAND : currentOuterRadius;
                 int color = hovered ? generalConfigs.WHEEL_SEGMENT_HOVER : generalConfigs.WHEEL_SEGMENT_IDLE;
-                drawSegment(g, cx, cy, currentHubRadius, outerR, start, end, color, generalConfigs.WHEEL_OUTLINE);
+                drawSegment(g, cx, cy, currentHubRadius, outerR, start, end, color, generalConfigs.WHEEL_OUTLINE, hovered);
 
                 double mid = (start + end) / 2;
                 int lx = cx + (int) (currentLabelRadius * Math.cos(mid));
@@ -319,60 +330,85 @@ public class SpellWheelScreen extends Screen {
     // DRAWING PRIMITIVES
     // ══════════════════════════════════════════════════════
 
+    private void drawCircle(GuiGraphics g, int ox, int oy, int radius, int fillColor, int outlineColor) {
+        int hubColor = generalConfigs.WHEEL_SEGMENT_IDLE;
+        // Ein einziger sauberer Pass ohne Überlappungen
+        fillSector(g, ox, oy, 0, radius, 0, Math.PI * 2, hubColor, 0);
+    }
+
     private void drawSegment(GuiGraphics g, int ox, int oy,
                              int innerR, int outerR,
                              double startAngle, double endAngle,
-                             int fillColor, int outlineColor) {
-        int steps = 32;
-        double range = endAngle - startAngle;
+                             int fillColor, int outlineColor, boolean hovered) {
 
-        int a = (fillColor >> 24) & 0xFF;
-        int r = (fillColor >> 16) & 0xFF;
-        int gr = (fillColor >> 8) & 0xFF;
-        int b = fillColor & 0xFF;
-
-        VertexConsumer buffer = net.minecraft.client.Minecraft.getInstance().renderBuffers().bufferSource().getBuffer(RenderType.debugQuads());
-        org.joml.Matrix3x2f matrix = g.pose();
-
-        for (int i = 0; i < steps; i++) {
-            double a1 = startAngle + range * i / steps;
-            double a2 = startAngle + range * (i + 1) / steps;
-
-            float ix1 = ox + (float) (innerR * Math.cos(a1));
-            float iy1 = oy + (float) (innerR * Math.sin(a1));
-            float ox1 = ox + (float) (outerR * Math.cos(a1));
-            float oy1 = oy + (float) (outerR * Math.sin(a1));
-            float ix2 = ox + (float) (innerR * Math.cos(a2));
-            float iy2 = oy + (float) (innerR * Math.sin(a2));
-            float ox2 = ox + (float) (outerR * Math.cos(a2));
-            float oy2 = oy + (float) (outerR * Math.sin(a2));
-
-            addRawVertex(buffer, matrix, ix1, iy1, r, gr, b, a);
-            addRawVertex(buffer, matrix, ox1, oy1, r, gr, b, a);
-            addRawVertex(buffer, matrix, ox2, oy2, r, gr, b, a);
-            addRawVertex(buffer, matrix, ix2, iy2, r, gr, b, a);
-        }
-
-        net.minecraft.client.Minecraft.getInstance().renderBuffers().bufferSource().endBatch();
+        int rOut = hovered ? outerR + (int) HOVER_EXPAND : outerR;
+        // OUTLINE_WIDTH übergibt die Breite des Spalts in Pixeln (2)
+        fillSector(g, ox, oy, innerR + 2, rOut, startAngle, endAngle, fillColor, OUTLINE_WIDTH);
     }
 
-    private void addRawVertex(VertexConsumer buffer, org.joml.Matrix3x2f matrix, float x, float y, int r, int g, int b, int a) {
-        float tx = matrix.m00() * x + matrix.m10() * y + matrix.m20();
-        float ty = matrix.m01() * x + matrix.m11() * y + matrix.m21();
-        buffer.addVertex(tx, ty, 0.0f).setColor(r, g, b, a);
-    }
+    private void fillSector(GuiGraphics g, int ox, int oy, int innerR, int outerR,
+                            double startAngle, double endAngle, int color, int gapPx) {
+        if (outerR <= innerR) return;
 
-    private void drawArc(GuiGraphics g, int ox, int oy, int r,
-                         double startAngle, double endAngle, int color) {
-        int steps = 32;
-        double range = endAngle - startAngle;
-        for (int i = 0; i < steps; i++) {
-            double a1 = startAngle + range * i / steps;
-            double a2 = startAngle + range * (i + 1) / steps;
-            drawLine(g,
-                    ox + (int) (r * Math.cos(a1)), oy + (int) (r * Math.sin(a1)),
-                    ox + (int) (r * Math.cos(a2)), oy + (int) (r * Math.sin(a2)),
-                    color);
+        double start = startAngle;
+        double end = endAngle;
+        while (end < start) end += Math.PI * 2;
+
+        boolean fullCircle = end - start >= Math.PI * 2 - 1.0e-6;
+
+        // Vorberechnungen für den exakten Pixel-Abstand zu den Linien
+        double sinStart = Math.sin(start);
+        double cosStart = Math.cos(start);
+        double sinEnd = Math.sin(end);
+        double cosEnd = Math.cos(end);
+
+        // Die Hälfte des Spaltes (z.B. 1px bei einem gewünschten Spalt von 2px),
+        // da benachbarte Stücke ebenfalls um 1px zurückweichen.
+        double halfGap = gapPx / 2.0;
+
+        int left = ox - outerR - 1;
+        int right = ox + outerR + 1;
+        int top = oy - outerR - 1;
+        int bottom = oy + outerR + 1;
+
+        for (int y = top; y <= bottom; y++) {
+            double dy = y + 0.5 - oy;
+            int spanStart = Integer.MIN_VALUE;
+
+            for (int x = left; x <= right; x++) {
+                double dx = x + 0.5 - ox;
+                double distSq = dx * dx + dy * dy;
+
+                boolean inside = distSq >= (double) innerR * innerR && distSq <= (double) outerR * outerR;
+
+                if (inside && !fullCircle) {
+                    double ang = Math.atan2(dy, dx);
+                    while (ang < start) ang += Math.PI * 2;
+
+                    if (ang > end) {
+                        inside = false;
+                    } else if (halfGap > 0) {
+                        // Berechnet die echte, senkrechte Distanz in Pixeln zur Start- und End-Trennlinie
+                        double distToStart = Math.abs(dx * sinStart - dy * cosStart);
+                        double distToEnd = Math.abs(dx * sinEnd - dy * cosEnd);
+
+                        // Wenn der Pixel zu nah an einer der beiden Trennlinien liegt -> ausblenden
+                        if (distToStart < halfGap || distToEnd < halfGap) {
+                            inside = false;
+                        }
+                    }
+                }
+
+                if (inside) {
+                    if (spanStart == Integer.MIN_VALUE) spanStart = x;
+                } else if (spanStart != Integer.MIN_VALUE) {
+                    g.fill(spanStart, y, x, y + 1, color);
+                    spanStart = Integer.MIN_VALUE;
+                }
+            }
+            if (spanStart != Integer.MIN_VALUE) {
+                g.fill(spanStart, y, right + 1, y + 1, color);
+            }
         }
     }
 
@@ -402,9 +438,6 @@ public class SpellWheelScreen extends Screen {
         }
     }
 
-    private void drawCircle(GuiGraphics g, int ox, int oy, int r, int fillColor, int outlineColor) {
-        drawSegment(g, ox, oy, 0, r, -Math.PI / 2, Math.PI * 1.5, fillColor, outlineColor);
-    }
 
     private void drawCenteredShadow(GuiGraphics g, String text, int x, int y, int color) {
         int w = this.font.width(text);
@@ -415,40 +448,41 @@ public class SpellWheelScreen extends Screen {
         g.drawString(this.font, text, tx, ty, color, false);
     }
 
-    private String getSlotInfo(int grade) {
-        // Cantrips (Grad 0) haben keine Slots
-        if (grade <= 0) return "";
+    private record SlotStatus(int current, int max) {}
+
+    private SlotStatus computeSlotStatus(int grade) {
+        if (grade <= 0) return new SlotStatus(0, 0);
 
         Player player = Minecraft.getInstance().player;
-        if (player == null) return "";
+        if (player == null) return new SlotStatus(0, 0);
 
         DndModVariables.PlayerVariables vars = player.getData(DndModVariables.PLAYER_VARIABLES);
         ClassDefinition classDef = ClassRegistry.getClass(vars.PlayerClass.replace("\"", ""));
+        if (classDef == null || classDef.getSpellSlots() == null) return new SlotStatus(0, 0);
 
-        if (classDef == null || classDef.getSpellSlots() == null) return "";
-
-        int[][] allSlots = classDef.getSpellSlots(); // int[21][9]
+        int[][] allSlots = classDef.getSpellSlots();
         int levelIdx = (int) vars.PlayerLevel;
         if (levelIdx >= allSlots.length) levelIdx = allSlots.length - 1;
         if (levelIdx < 0) levelIdx = 0;
 
         int maxSlots = 0;
-        // FIX: Da Index 0 in der Tabelle Grad 1 ist, nutzen wir grade - 1
-        if (grade - 1 < allSlots[levelIdx].length) {
-            maxSlots = allSlots[levelIdx][grade - 1];
-        }
-
-        // Wenn die Klasse auf diesem Level keine Slots für diesen Grad hat, nichts anzeigen
-        if (maxSlots <= 0) return "";
+        if (grade - 1 < allSlots[levelIdx].length) maxSlots = allSlots[levelIdx][grade - 1];
+        if (maxSlots <= 0) return new SlotStatus(0, 0);
 
         int currentSlots = 0;
         String rawSlots = vars.Spellslots != null ? vars.Spellslots.replace("\"", "") : "000000000";
+        if (rawSlots.length() >= grade) currentSlots = Character.getNumericValue(rawSlots.charAt(grade - 1));
 
-        // FIX: Auch im 9-stelligen String ist Grad 1 an Index 0 (grade - 1)
-        if (rawSlots.length() >= grade) {
-            currentSlots = Character.getNumericValue(rawSlots.charAt(grade - 1));
-        }
+        return new SlotStatus(currentSlots, maxSlots);
+    }
 
-        return " " + currentSlots + "/" + maxSlots;
+    private String getSlotInfo(int grade) {
+        SlotStatus status = computeSlotStatus(grade);
+        return status.max() <= 0 ? "" : " " + status.current() + "/" + status.max();
+    }
+
+    private boolean isGradeDepleted(int grade) {
+        SlotStatus status = computeSlotStatus(grade);
+        return status.max() > 0 && status.current() <= 0;
     }
 }

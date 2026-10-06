@@ -1,6 +1,5 @@
 package net.luderspieler.dnd.character.AbilitysAndFeats;
 
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.luderspieler.dnd.character.AbilitysAndFeats.management.Ability;
 import net.luderspieler.dnd.Utils.AbilityDataUtils;
 import net.luderspieler.dnd.character.AbilitysAndFeats.management.AbilityDefinitionRegistry;
@@ -11,7 +10,6 @@ import net.luderspieler.dnd.resources.ResourceManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 
@@ -20,29 +18,24 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Radiales Ability-Wheel mit mehreren Stages.
+ * Radial ability wheel with multiple stages.
  *
- * ABILITY_SELECT  – Haupt-Wheel: alle PLAYER_TRIGGERED-Abilities
- * FOCUS_SPEND     – Sub-Wheel: Focus-Point-Ausgaben (Monk)
- * SORCERY_SPEND   – Sub-Wheel: Sorcery-Point → Spell-Slot (Sorcerer)
- * METAMAGIC_SELECT– Sub-wheel: select a Metamagic option (Sorcerer)
+ * ABILITY_SELECT   – main wheel: all PLAYER_TRIGGERED abilities
+ * FOCUS_SPEND      – sub-wheel: Focus Point spends (Monk)
+ * SORCERY_SPEND    – sub-wheel: Sorcery Points <-> spell slots (Sorcerer)
+ * METAMAGIC_SELECT – sub-wheel: select a Metamagic option (Sorcerer)
  *
- * Alle Aktionen werden via ActivateAbilityPacket gesendet (kein separates
- * UseResourceActionPacket mehr).
+ * All actions are sent via ActivateAbilityPacket.
  */
 public class AbilityWheelScreen extends Screen {
 
-    // ── Stages ───────────────────────────────────────────────────────
     private enum Stage { ABILITY_SELECT, FOCUS_SPEND, SORCERY_SPEND, METAMAGIC_SELECT }
 
-    /**
-     * A selectable action within a sub-wheel.
-     * @param minLevel Minimum level required for this option (level gating).
-     */
+    /** A selectable action within a sub-wheel. minLevel gates the option by player level. */
     private record SubAction(String name, String detail, int cost, int minLevel,
                              ResourceManager.ResourcePool pool, String actionKey) {}
 
-    // ── Focus-Point-Aktionen (Monk, 2024 PHB) ────────────────────────
+    // ── Focus Point actions (Monk, 2024 PHB) ─────────────────────────
     private static final List<SubAction> FOCUS_ACTIONS = List.of(
             new SubAction("Flurry of Blows",  "2 extra Unarmed Strikes (Bonus Action)", 1, 1,
                     ResourceManager.ResourcePool.FOCUS_POINTS, "FLURRY_OF_BLOWS"),
@@ -52,8 +45,7 @@ public class AbilityWheelScreen extends Screen {
                     ResourceManager.ResourcePool.FOCUS_POINTS, "STEP_OF_THE_WIND")
     );
 
-    // ── Sorcery-Point-Aktionen (Sorcerer, 2024 PHB) ──────────────────
-    // SP → Slot (Font of Magic, Hin-Richtung)
+    // ── Sorcery Point actions (Sorcerer, 2024 PHB) — SP to slot ──────
     private static final List<SubAction> SORCERY_ACTIONS = List.of(
             new SubAction("Spell Slot 1", "2 SP → 1st-level slot", 2, 2,
                     ResourceManager.ResourcePool.SORCERY_POINTS, "SLOT_1"),
@@ -67,9 +59,7 @@ public class AbilityWheelScreen extends Screen {
                     ResourceManager.ResourcePool.SORCERY_POINTS, "SLOT_5")
     );
 
-    // Slot → SP (Font of Magic, reverse direction).
-    // This list is built dynamically in getSlotToSpActions() (only shows slots > 0).
-    // Grades 6-9 cannot be converted per the 2024 PHB.
+    /** Slot to SP (reverse direction); built dynamically since it depends on current slots. Grades 6-9 can't convert. */
     private List<SubAction> getSlotToSpActions(net.minecraft.world.entity.player.Player player) {
         var vars = player.getData(net.luderspieler.dnd.network.DndModVariables.PLAYER_VARIABLES);
         String slots = vars.Spellslots != null ? vars.Spellslots : "000000000";
@@ -77,11 +67,11 @@ public class AbilityWheelScreen extends Screen {
         String[] labels = {"1st", "2nd", "3rd", "4th", "5th"};
         for (int i = 0; i < 5; i++) {
             int count = (slots.length() > i) ? (slots.charAt(i) - '0') : 0;
-            if (count < 1) continue; // no slot of this grade available
+            if (count < 1) continue;
             list.add(new SubAction(
                     "Slot Lv." + (i + 1) + " → SP",
                     (i + 1) + " SP  (has " + count + " " + labels[i] + ")",
-                    0, // cost isn't used for SP-gating here; slot availability is checked server-side
+                    0,
                     2,
                     ResourceManager.ResourcePool.SORCERY_POINTS,
                     "SLOT_TO_SP_" + (i + 1)
@@ -90,7 +80,6 @@ public class AbilityWheelScreen extends Screen {
         return list;
     }
 
-    // ── Metamagic-Konstanten ─────────────────────────────────────────
     private static final Map<String, Integer> METAMAGIC_SP_COSTS = Map.of(
             "Distant Spell",    1,
             "Empowered Spell",  1,
@@ -112,6 +101,7 @@ public class AbilityWheelScreen extends Screen {
     private static final int   INNER_RADIUS  = 30;
     private static final int   LABEL_RADIUS  = 65;
     private static final float HOVER_EXPAND  = 6f;
+    private static final int   OUTLINE_WIDTH = 2;
 
     // ── State ─────────────────────────────────────────────────────────
     private Stage stage          = Stage.ABILITY_SELECT;
@@ -146,7 +136,7 @@ public class AbilityWheelScreen extends Screen {
                     "Focus Points", generalConfigs.WHEEL_FP_IDLE, generalConfigs.WHEEL_FP_HOVER);
 
             case SORCERY_SPEND  -> {
-                // Combine SP→Slot (static list) and Slot→SP (dynamic, based on available slots)
+                // Combine SP->Slot (static list) and Slot->SP (dynamic, based on available slots)
                 Player p = Minecraft.getInstance().player;
                 List<SubAction> fontActions = new java.util.ArrayList<>(SORCERY_ACTIONS);
                 if (p != null) fontActions.addAll(getSlotToSpActions(p));
@@ -174,7 +164,7 @@ public class AbilityWheelScreen extends Screen {
         super.render(g, mouseX, mouseY, partial);
     }
 
-    // ── Haupt-Wheel ──────────────────────────────────────────────────
+    // ── Main wheel ───────────────────────────────────────────────────
 
     private void renderMainWheel(GuiGraphics g, int mouseX, int mouseY) {
         List<Ability> abilities = getClientAbilities();
@@ -210,7 +200,6 @@ public class AbilityWheelScreen extends Screen {
             boolean depleted = isDepleted(ability, clientVars);
             double  start    = -Math.PI / 2 + i * sliceAngle;
             double  end      = start + sliceAngle;
-            int     curOuter = hovered ? outerR + (int) HOVER_EXPAND : outerR;
 
             int color;
             if (depleted) {
@@ -221,21 +210,21 @@ public class AbilityWheelScreen extends Screen {
                         : generalConfigs.WHEEL_SEGMENT_IDLE;
             }
 
-            drawSegment(g, cx, cy, hubR, curOuter, start, end, color, generalConfigs.WHEEL_OUTLINE);
+            drawSegment(g, cx, cy, hubR, outerR, start, end, color, generalConfigs.WHEEL_OUTLINE, hovered);
 
             double mid   = (start + end) / 2;
             int    lx    = cx + (int) (labelR * Math.cos(mid));
             int    ly    = cy + (int) (labelR * Math.sin(mid));
             String name  = formatAbilityName(ability);
             String uses  = getUsesString(ability, clientVars);
-            int textCol  = depleted ? 0xFF885555
+            int textCol  = depleted ? generalConfigs.TEXT_SLOT_DEPLETED
                     : hovered  ? generalConfigs.TEXT_HOVER
-                      : generalConfigs.TEXT_WHITE;
+                    : generalConfigs.TEXT_WHITE;
 
             drawCentered(g, name, lx, ly - (uses.isEmpty() ? 0 : 4), textCol);
             if (!uses.isEmpty())
                 drawCentered(g, uses, lx, ly + 6,
-                        depleted ? 0xFF663333 : generalConfigs.TEXT_GRAY);
+                        depleted ? generalConfigs.TEXT_SLOT_DEPLETED : generalConfigs.TEXT_GRAY);
         }
 
         drawCircle(g, cx, cy, hubR, generalConfigs.WHEEL_HUB, generalConfigs.WHEEL_OUTLINE);
@@ -247,7 +236,7 @@ public class AbilityWheelScreen extends Screen {
         }
     }
 
-    // ── Sub-Wheel (Focus / Sorcery / Metamagic) ───────────────────────
+    // ── Sub-wheel (Focus / Sorcery / Metamagic) ───────────────────────
 
     private void renderSubWheel(GuiGraphics g, int mouseX, int mouseY,
                                 List<SubAction> actions,
@@ -284,9 +273,8 @@ public class AbilityWheelScreen extends Screen {
             boolean   hasLvl  = playerLevel >= action.minLevel();
             boolean   canUse  = hasRes && hasLvl;
 
-            double start    = -Math.PI / 2 + i * sliceAngle;
-            double end      = start + sliceAngle;
-            int    curOuter = hovered ? outerR + (int) HOVER_EXPAND : outerR;
+            double start = -Math.PI / 2 + i * sliceAngle;
+            double end   = start + sliceAngle;
 
             int color;
             if (canUse) {
@@ -299,32 +287,30 @@ public class AbilityWheelScreen extends Screen {
                         : generalConfigs.WHEEL_SEGMENT_LOCKED;
             }
 
-            drawSegment(g, cx, cy, hubR, curOuter, start, end, color, generalConfigs.WHEEL_OUTLINE);
+            drawSegment(g, cx, cy, hubR, outerR, start, end, color, generalConfigs.WHEEL_OUTLINE, hovered);
 
             double mid   = (start + end) / 2;
             int    lx    = cx + (int) (labelR * Math.cos(mid));
             int    ly    = cy + (int) (labelR * Math.sin(mid));
             int    textC = canUse ? (hovered ? generalConfigs.TEXT_HOVER : generalConfigs.TEXT_WHITE)
-                    : 0xFF886644;
+                    : generalConfigs.TEXT_SLOT_DEPLETED;
 
             drawCentered(g, action.name(), lx, ly - 6, textC);
             String costStr = action.cost() + " " + pool.displayName;
             drawCentered(g, costStr, lx, ly + 3,
-                    canUse ? generalConfigs.TEXT_GRAY : 0xFF554433);
+                    canUse ? generalConfigs.TEXT_GRAY : generalConfigs.TEXT_SLOT_DEPLETED);
             if (!hasLvl)
-                drawCentered(g, "Lvl " + action.minLevel(), lx, ly + 12, 0xFF888844);
+                drawCentered(g, "Lvl " + action.minLevel(), lx, ly + 12, generalConfigs.TEXT_SLOT_DEPLETED);
         }
 
-        // Hub
         drawCircle(g, cx, cy, hubR, generalConfigs.WHEEL_HUB, generalConfigs.WHEEL_OUTLINE);
         drawCentered(g, current + "/" + max, cx, cy - 5, generalConfigs.TEXT_WHITE);
         drawCentered(g, "← Back",           cx, cy + 4, generalConfigs.TEXT_GRAY);
 
-        // Tooltip
         if (hoveredSubAction >= 0 && hoveredSubAction < count) {
-            SubAction a     = actions.get(hoveredSubAction);
-            boolean   hasR  = current >= a.cost();
-            boolean   hasL  = playerLevel >= a.minLevel();
+            SubAction a    = actions.get(hoveredSubAction);
+            boolean   hasR = current >= a.cost();
+            boolean   hasL = playerLevel >= a.minLevel();
             String    tip;
             if (!hasL) tip = a.detail() + "  [requires Level " + a.minLevel() + "]";
             else if (!hasR) tip = a.detail() + "  [not enough " + pool.displayName + "]";
@@ -333,7 +319,6 @@ public class AbilityWheelScreen extends Screen {
                     generalConfigs.COLOR_ACCENT_GOLD);
         }
 
-        // Pool-Label oben
         g.drawCenteredString(this.font, poolLabel + "  (" + current + "/" + max + ")",
                 cx, cy - outerR - 20, generalConfigs.TEXT_WHITE);
     }
@@ -378,22 +363,17 @@ public class AbilityWheelScreen extends Screen {
 
         if (hoveredSegment >= 0 && hoveredSegment < abilities.size()) {
             Ability chosen = abilities.get(hoveredSegment);
-            // Open sub-wheels
             if      (chosen == Ability.FOCUS_POINTS) stage = Stage.FOCUS_SPEND;
             else if (chosen == Ability.FONT_OF_MAGIC) stage = Stage.SORCERY_SPEND;
             else if (chosen == Ability.METAMAGIC)     stage = Stage.METAMAGIC_SELECT;
             else {
-                // Normale Ability → Packet senden
                 ActivateAbilityPacket.send(chosen);
                 this.onClose();
             }
         }
     }
 
-    /**
-     * Klick im Sub-Wheel: validiert client-seitig und sendet ActivateAbilityPacket
-     * mit der Sub-Aktion. Kein UseResourceActionPacket mehr.
-     */
+    /** Validates client-side and sends ActivateAbilityPacket with the sub-action. */
     private void handleSubWheelClick(double dist, List<SubAction> actions,
                                      Ability targetAbility) {
         float scale = getScale(actions.size());
@@ -409,10 +389,7 @@ public class AbilityWheelScreen extends Screen {
             int current     = ResourceManager.getCurrent(player, action.pool());
             int playerLevel = (int) player.getData(DndModVariables.PLAYER_VARIABLES).PlayerLevel;
 
-            if (current < action.cost() || playerLevel < action.minLevel()) {
-                // Zu wenig Ressource oder Level zu niedrig — Screen bleibt offen
-                return;
-            }
+            if (current < action.cost() || playerLevel < action.minLevel()) return;
 
             ActivateAbilityPacket.send(targetAbility, action.actionKey());
             this.onClose();
@@ -431,13 +408,10 @@ public class AbilityWheelScreen extends Screen {
     }
 
     // ══════════════════════════════════════════════════════════════════
-    //  DATEN-HELPERS
+    //  DATA HELPERS
     // ══════════════════════════════════════════════════════════════════
 
-    /**
-     * Liest die Metamagic-Optionen des Spielers aus AbilityData["METAMAGIC_chosen"]
-     * and builds the SubAction list for the sub-wheel from it.
-     */
+    /** Reads AbilityData["METAMAGIC_chosen"] and builds the sub-wheel action list from it. */
     private List<SubAction> getMetamagicActions(Player player) {
         String raw = AbilityDataUtils.get(
                 player.getData(DndModVariables.PLAYER_VARIABLES),
@@ -445,13 +419,12 @@ public class AbilityWheelScreen extends Screen {
         if (raw.isBlank()) return List.of();
 
         List<SubAction> list = new ArrayList<>();
-        // METAMAGIC_chosen nutzt SEMIKOLON als Trenner (Komma ist in
-        // AbilityData reserves commas for top-level key=value pairs).
+        // Semicolon-separated: AbilityData reserves commas for top-level key=value pairs.
         for (String n : raw.split(";")) {
             n = n.trim();
             if (n.isBlank()) continue;
             int    cost   = METAMAGIC_SP_COSTS.getOrDefault(n, 1);
-            String key    = n.toUpperCase().replace(" ", "_"); // "Careful Spell" → "CAREFUL_SPELL"
+            String key    = n.toUpperCase().replace(" ", "_");
             String detail = METAMAGIC_DETAILS.getOrDefault(n, cost + " SP");
             list.add(new SubAction(n, detail, cost, 3,
                     ResourceManager.ResourcePool.SORCERY_POINTS, key));
@@ -544,48 +517,81 @@ public class AbilityWheelScreen extends Screen {
     }
 
     // ══════════════════════════════════════════════════════════════════
-    //  RENDER-PRIMITIVEN
+    //  DRAWING PRIMITIVES
     // ══════════════════════════════════════════════════════════════════
+
+    private void drawCircle(GuiGraphics g, int ox, int oy, int radius, int fillColor, int outlineColor) {
+        int hubColor = generalConfigs.WHEEL_SEGMENT_IDLE;
+        fillSector(g, ox, oy, 0, radius, 0, Math.PI * 2, hubColor, 0);
+    }
 
     private void drawSegment(GuiGraphics g, int ox, int oy,
                              int innerR, int outerR,
                              double startAngle, double endAngle,
-                             int fillColor, int outlineColor) {
-        int    steps = 32;
-        double range = endAngle - startAngle;
-        int    a     = (fillColor >> 24) & 0xFF;
-        int    r     = (fillColor >> 16) & 0xFF;
-        int    gr    = (fillColor >>  8) & 0xFF;
-        int    b     = fillColor & 0xFF;
+                             int fillColor, int outlineColor, boolean hovered) {
+        int rOut = hovered ? outerR + (int) HOVER_EXPAND : outerR;
+        fillSector(g, ox, oy, innerR + 2, rOut, startAngle, endAngle, fillColor, OUTLINE_WIDTH);
+    }
 
-        VertexConsumer buffer = Minecraft.getInstance().renderBuffers()
-                .bufferSource().getBuffer(RenderType.debugQuads());
-        org.joml.Matrix3x2f matrix = g.pose();
+    /** Scanline pie-slice fill via GuiGraphics.fill spans; gapPx carves a slit between adjacent slices. */
+    private void fillSector(GuiGraphics g, int ox, int oy, int innerR, int outerR,
+                            double startAngle, double endAngle, int color, int gapPx) {
+        if (outerR <= innerR) return;
 
-        for (int i = 0; i < steps; i++) {
-            double a1 = startAngle + range * i / steps;
-            double a2 = startAngle + range * (i + 1) / steps;
-            float ix1 = ox + (float)(innerR * Math.cos(a1)), iy1 = oy + (float)(innerR * Math.sin(a1));
-            float ox1 = ox + (float)(outerR * Math.cos(a1)), oy1 = oy + (float)(outerR * Math.sin(a1));
-            float ix2 = ox + (float)(innerR * Math.cos(a2)), iy2 = oy + (float)(innerR * Math.sin(a2));
-            float ox2 = ox + (float)(outerR * Math.cos(a2)), oy2 = oy + (float)(outerR * Math.sin(a2));
-            addVertex(buffer, matrix, ix1, iy1, r, gr, b, a);
-            addVertex(buffer, matrix, ox1, oy1, r, gr, b, a);
-            addVertex(buffer, matrix, ox2, oy2, r, gr, b, a);
-            addVertex(buffer, matrix, ix2, iy2, r, gr, b, a);
+        double start = startAngle;
+        double end = endAngle;
+        while (end < start) end += Math.PI * 2;
+
+        boolean fullCircle = end - start >= Math.PI * 2 - 1.0e-6;
+
+        double sinStart = Math.sin(start);
+        double cosStart = Math.cos(start);
+        double sinEnd = Math.sin(end);
+        double cosEnd = Math.cos(end);
+
+        double halfGap = gapPx / 2.0;
+
+        int left = ox - outerR - 1;
+        int right = ox + outerR + 1;
+        int top = oy - outerR - 1;
+        int bottom = oy + outerR + 1;
+
+        for (int y = top; y <= bottom; y++) {
+            double dy = y + 0.5 - oy;
+            int spanStart = Integer.MIN_VALUE;
+
+            for (int x = left; x <= right; x++) {
+                double dx = x + 0.5 - ox;
+                double distSq = dx * dx + dy * dy;
+
+                boolean inside = distSq >= (double) innerR * innerR && distSq <= (double) outerR * outerR;
+
+                if (inside && !fullCircle) {
+                    double ang = Math.atan2(dy, dx);
+                    while (ang < start) ang += Math.PI * 2;
+
+                    if (ang > end) {
+                        inside = false;
+                    } else if (halfGap > 0) {
+                        double distToStart = Math.abs(dx * sinStart - dy * cosStart);
+                        double distToEnd = Math.abs(dx * sinEnd - dy * cosEnd);
+                        if (distToStart < halfGap || distToEnd < halfGap) {
+                            inside = false;
+                        }
+                    }
+                }
+
+                if (inside) {
+                    if (spanStart == Integer.MIN_VALUE) spanStart = x;
+                } else if (spanStart != Integer.MIN_VALUE) {
+                    g.fill(spanStart, y, x, y + 1, color);
+                    spanStart = Integer.MIN_VALUE;
+                }
+            }
+            if (spanStart != Integer.MIN_VALUE) {
+                g.fill(spanStart, y, right + 1, y + 1, color);
+            }
         }
-        Minecraft.getInstance().renderBuffers().bufferSource().endBatch();
-    }
-
-    private void drawCircle(GuiGraphics g, int ox, int oy, int r, int fill, int outline) {
-        drawSegment(g, ox, oy, 0, r, -Math.PI / 2, Math.PI * 1.5, fill, outline);
-    }
-
-    private void addVertex(VertexConsumer buf, org.joml.Matrix3x2f m,
-                           float x, float y, int r, int gr, int b, int a) {
-        float tx = m.m00() * x + m.m10() * y + m.m20();
-        float ty = m.m01() * x + m.m11() * y + m.m21();
-        buf.addVertex(tx, ty, 0f).setColor(r, gr, b, a);
     }
 
     private void drawCentered(GuiGraphics g, String text, int x, int y, int color) {

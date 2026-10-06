@@ -25,38 +25,35 @@ public class generalConfigs {
     public static final int COLOR_ROW_FULL     = 0x44FF5555;
     public static final int COLOR_HOVER_BG     = 0x3355FF55;
 
-    // ── Spell / Ability Wheel — Basisfarben ───────────────────────────
-    public static final int WHEEL_SEGMENT_IDLE  = 0xAA222233;
-    public static final int WHEEL_SEGMENT_HOVER = 0xCC334466;
-    public static final int WHEEL_SEGMENT_SEL   = 0xEE444455;
-    public static final int WHEEL_OUTLINE       = 0xFF111111;
+    // ── Spell / Ability Wheel — uniform plain-gray segments ────────────
+    private static final int WHEEL_SEGMENT_PLAIN = 0x30808080;
+
+    public static final int WHEEL_SEGMENT_IDLE  = WHEEL_SEGMENT_PLAIN;
+    public static final int WHEEL_SEGMENT_HOVER = WHEEL_SEGMENT_PLAIN;
+    public static final int WHEEL_OUTLINE       = 0xFF4A4A4A;
     public static final int WHEEL_HUB           = 0xFF1A1A2E;
-    public static final int WHEEL_CANTRIP       = 0xAAFFAA00;
-    public static final int WHEEL_CANTRIP_HOVER = 0xCCFFCC33;
+    public static final int WHEEL_CANTRIP       = WHEEL_SEGMENT_PLAIN;
+    public static final int WHEEL_CANTRIP_HOVER = WHEEL_SEGMENT_PLAIN;
 
-    // ── Wheel — Zustandsfarben ────────────────────────────────────────
-    /** Segment ist verbraucht (keine Ladungen). */
-    public static final int WHEEL_SEGMENT_DEPLETED     = 0xAA221111;
-    public static final int WHEEL_SEGMENT_DEPL_HOVER   = 0xCC331111;
-    /** Segment ist gesperrt (nicht genug Ressource). */
-    public static final int WHEEL_SEGMENT_LOCKED       = 0xAA332211;
-    public static final int WHEEL_SEGMENT_LOCKED_HOVER = 0xCC443322;
-    /** Segment ist level-gesperrt. */
-    public static final int WHEEL_SEGMENT_LEVEL        = 0xAA222211;
-    public static final int WHEEL_SEGMENT_LEVEL_HOVER  = 0xCC444422;
+    // ── Wheel — state colors (fill is always WHEEL_SEGMENT_PLAIN) ──────
+    public static final int WHEEL_SEGMENT_DEPLETED     = WHEEL_SEGMENT_PLAIN;
+    public static final int WHEEL_SEGMENT_DEPL_HOVER   = WHEEL_SEGMENT_PLAIN;
+    public static final int WHEEL_SEGMENT_LOCKED       = WHEEL_SEGMENT_PLAIN;
+    public static final int WHEEL_SEGMENT_LOCKED_HOVER = WHEEL_SEGMENT_PLAIN;
+    public static final int WHEEL_SEGMENT_LEVEL        = WHEEL_SEGMENT_PLAIN;
+    public static final int WHEEL_SEGMENT_LEVEL_HOVER  = WHEEL_SEGMENT_PLAIN;
 
-    // ── Wheel — Ressourcen-Poolfarben ─────────────────────────────────
-    /** Focus-Points-Blau (Monk). */
-    public static final int WHEEL_FP_IDLE  = 0xAA1122AA;
-    public static final int WHEEL_FP_HOVER = 0xCC2244CC;
-    /** Sorcery-Points-Lila (Sorcerer). */
-    public static final int WHEEL_SP_IDLE  = 0xAA441177;
-    public static final int WHEEL_SP_HOVER = 0xCC6622AA;
+    // ── Wheel — resource pool colors (fill is always WHEEL_SEGMENT_PLAIN) ──
+    public static final int WHEEL_FP_IDLE  = WHEEL_SEGMENT_PLAIN;
+    public static final int WHEEL_FP_HOVER = WHEEL_SEGMENT_PLAIN;
+    public static final int WHEEL_SP_IDLE  = WHEEL_SEGMENT_PLAIN;
+    public static final int WHEEL_SP_HOVER = WHEEL_SEGMENT_PLAIN;
 
     // ── Text ──────────────────────────────────────────────────────────
     public static final int TEXT_WHITE        = 0xFFFFFFFF;
     public static final int TEXT_GRAY         = 0xFFAAAAAA;
     public static final int TEXT_DARK_GRAY    = 0xFF888888;
+    public static final int TEXT_SLOT_DEPLETED  = 0xFFB08080;
     public static final int TEXT_HOVER        = 0xFFFFFF55;
     public static final int COLOR_ACCENT_GOLD = 0xFFFFD700;
     public static final int COLOR_TEXT_SHADOW = 0xFF000000;
