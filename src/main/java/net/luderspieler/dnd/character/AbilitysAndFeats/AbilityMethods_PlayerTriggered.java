@@ -3,13 +3,24 @@ package net.luderspieler.dnd.character.AbilitysAndFeats;
 import net.luderspieler.dnd.character.AbilitysAndFeats.management.Ability;
 import net.luderspieler.dnd.Utils.AbilityDataUtils;
 import net.luderspieler.dnd.Utils.AbilityUtils;
+import net.luderspieler.dnd.init.DndModDamageTypes;
 import net.luderspieler.dnd.init.DndModMobEffects;
 import net.luderspieler.dnd.network.DndModVariables;
+import net.luderspieler.dnd.spells.AreaTargeting;
+import net.minecraft.core.particles.DustParticleOptions;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.LivingEntity;
 
 import java.util.Arrays;
 import java.util.Set;
@@ -209,19 +220,65 @@ public class AbilityMethods_PlayerTriggered {
     }
 
     /**
-     * BREATH_WEAPON (Dragonborn) — Aktive Nutzung, ProficiencyBonus-mal pro Long Rest.
-     * Schadenstyp abhängig von DRACONIC_ANCESTRY (in AbilityData gespeichert).
+     * BREATH_WEAPON (Dragonborn) — 15 ft cone, damage type and particles come from the
+     * Draconic Ancestry choice. Fails with a message if no ancestry was chosen.
+     * Damage dice: d10 at level 1, 2d10 at 5, 3d10 at 11, 4d10 at 17 (doubled for hearts).
      */
     private static boolean activateBreathWeapon(ServerPlayer player) {
         var vars = player.getData(DndModVariables.PLAYER_VARIABLES);
+        String type = AbilityDataUtils.get(vars, "DraconicAncestryDamageType", "");
+        ResourceKey<DamageType> damageType = breathDamageType(type);
+        ParticleOptions particle = breathParticle(type);
+        if (damageType == null || particle == null) {
+            player.displayClientMessage(Component.literal("§cNo Draconic Ancestry chosen!"), true);
+            return false;
+        }
+
         int maxUses = (int) vars.ProficiencyBonus;
         if (!hasUse(player, "BREATH_WEAPON_uses", maxUses)) return false;
         consumeUse(player, "BREATH_WEAPON_uses", maxUses);
-        // TODO: AoE-Angriff basierend auf Ancestral-Element aus AbilityData
-        // Schaden skaliert mit Character-Level:
-        //   Level 1-4:   2d6, Level 5-10: 3d6, Level 11-16: 4d6, Level 17+: 5d6
-        // Form: Kegel (15ft) oder Linie (30ft × 5ft) je nach Drachen-Typ
+
+        final double length = 5.0;
+        final double angle = 53.0;
+
+        int level = (int) vars.PlayerLevel;
+        int dice = level >= 17 ? 4 : level >= 11 ? 3 : level >= 5 ? 2 : 1;
+        int roll = 0;
+        for (int i = 0; i < dice; i++) roll += 1 + player.getRandom().nextInt(10);
+
+        for (LivingEntity target : AreaTargeting.entitiesInCone(player, length, angle)) {
+            target.hurt(player.damageSources().source(damageType, player), roll * 2.0F);
+        }
+
+        if (player.level() instanceof ServerLevel serverLevel) {
+            AreaTargeting.spawnConeParticles(serverLevel, player.getEyePosition(), player.getViewVector(1.0F),
+                    length, angle, particle, 120, 0.4);
+            serverLevel.playSound(null, player.getX(), player.getY(), player.getZ(),
+                    SoundEvents.ENDER_DRAGON_SHOOT, SoundSource.PLAYERS, 1.0F, 1.2F);
+        }
         return true;
+    }
+
+    private static ResourceKey<DamageType> breathDamageType(String type) {
+        return switch (type) {
+            case "ACID"      -> DndModDamageTypes.ACID;
+            case "COLD"      -> DndModDamageTypes.COLD;
+            case "FIRE"      -> DndModDamageTypes.FIRE;
+            case "LIGHTNING" -> DndModDamageTypes.LIGHTNING;
+            case "POISON"    -> DndModDamageTypes.POISON;
+            default          -> null;
+        };
+    }
+
+    private static ParticleOptions breathParticle(String type) {
+        return switch (type) {
+            case "ACID"      -> ParticleTypes.ITEM_SLIME;
+            case "COLD"      -> ParticleTypes.SNOWFLAKE;
+            case "FIRE"      -> ParticleTypes.FLAME;
+            case "LIGHTNING" -> ParticleTypes.ELECTRIC_SPARK;
+            case "POISON"    -> new DustParticleOptions(0x3B7A1E, 1.4F);
+            default          -> null;
+        };
     }
 
     // ══════════════════════════════════════════════════════════════════
