@@ -75,9 +75,12 @@ public final class AreaTargeting {
         return perpSqr <= reach * reach;
     }
 
-    /** Spawns particles spread through a cone, denser towards the far end. */
-    public static void spawnConeParticles(ServerLevel level, Vec3 origin, Vec3 dir, double length, double fullAngle,
-                                          ParticleOptions particle, int count, double speed) {
+    /**
+     * Every particle starts at the origin and flies in its own direction inside the cone,
+     * with a slightly different speed, so the cone spreads out instead of moving as a whole.
+     */
+    public static void spawnConeParticles(ServerLevel level, Vec3 origin, Vec3 dir, double fullAngle,
+                                          ParticleOptions particle, int count, double minSpeed, double maxSpeed) {
         Vec3 d = dir.normalize();
         // Any vector not parallel to d gives a stable orthonormal basis
         Vec3 up = Math.abs(d.y) > 0.99 ? new Vec3(1, 0, 0) : new Vec3(0, 1, 0);
@@ -86,14 +89,12 @@ public final class AreaTargeting {
         double tanHalf = Math.tan(Math.toRadians(fullAngle / 2.0));
 
         for (int i = 0; i < count; i++) {
-            double t = Math.sqrt(level.random.nextDouble()) * length;
-            double r = t * tanHalf * Math.sqrt(level.random.nextDouble());
+            double r = tanHalf * Math.sqrt(level.random.nextDouble());
             double a = level.random.nextDouble() * Math.PI * 2.0;
-            Vec3 pos = origin.add(d.scale(t))
-                    .add(right.scale(Math.cos(a) * r))
-                    .add(realUp.scale(Math.sin(a) * r));
+            Vec3 v = d.add(right.scale(Math.cos(a) * r)).add(realUp.scale(Math.sin(a) * r)).normalize();
+            double speed = minSpeed + level.random.nextDouble() * (maxSpeed - minSpeed);
             // Count 0 makes the offset arguments act as the velocity direction
-            level.sendParticles(particle, pos.x, pos.y, pos.z, 0, d.x, d.y, d.z, speed);
+            level.sendParticles(particle, origin.x, origin.y, origin.z, 0, v.x, v.y, v.z, speed);
         }
     }
 

@@ -21,6 +21,7 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.Arrays;
 import java.util.Set;
@@ -222,7 +223,7 @@ public class AbilityMethods_PlayerTriggered {
     /**
      * BREATH_WEAPON (Dragonborn) — 15 ft cone, damage type and particles come from the
      * Draconic Ancestry choice. Fails with a message if no ancestry was chosen.
-     * Damage dice: d10 at level 1, 2d10 at 5, 3d10 at 11, 4d10 at 17 (doubled for hearts).
+     * Damage dice: d10 at level 1, 2d10 at 5, 3d10 at 11, 4d10 at 17 (always max, no roll).
      */
     private static boolean activateBreathWeapon(ServerPlayer player) {
         var vars = player.getData(DndModVariables.PLAYER_VARIABLES);
@@ -243,16 +244,17 @@ public class AbilityMethods_PlayerTriggered {
 
         int level = (int) vars.PlayerLevel;
         int dice = level >= 17 ? 4 : level >= 11 ? 3 : level >= 5 ? 2 : 1;
-        int roll = 0;
-        for (int i = 0; i < dice; i++) roll += 1 + player.getRandom().nextInt(10);
+        // Balancing: player damage is the max roll, doubled for hearts, saving-throw damage x 2/3
+        float damage = dice * 10 * 2.0F * (2.0F / 3.0F);
 
         for (LivingEntity target : AreaTargeting.entitiesInCone(player, length, angle)) {
-            target.hurt(player.damageSources().source(damageType, player), roll * 2.0F);
+            target.hurt(player.damageSources().source(damageType, player), damage);
         }
 
         if (player.level() instanceof ServerLevel serverLevel) {
-            AreaTargeting.spawnConeParticles(serverLevel, player.getEyePosition(), player.getViewVector(1.0F),
-                    length, angle, particle, 120, 0.4);
+            Vec3 look = player.getViewVector(1.0F);
+            Vec3 mouth = player.getEyePosition().add(look.scale(0.5)).subtract(0, 0.15, 0);
+            AreaTargeting.spawnConeParticles(serverLevel, mouth, look, angle, particle, 150, 0.25, 0.6);
             serverLevel.playSound(null, player.getX(), player.getY(), player.getZ(),
                     SoundEvents.ENDER_DRAGON_SHOOT, SoundSource.PLAYERS, 1.0F, 1.2F);
         }
