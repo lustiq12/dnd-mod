@@ -151,8 +151,11 @@ public class DebugResourcesTab implements DebugTab {
         }
         if (hoveredMax >= 0) {
             ResourceManager.ResourcePool pool = visiblePools.get(hoveredMax);
-            DebugResourceAdjustPacket.send(uuid, pool.name(), 0, true);
-            AbilityDataUtils.set(vars, pool.dataKey, readMax(pool));
+            int current = readCurrent(pool);
+            int max = readMax(pool);
+            
+            int targetAmount = (current == max) ? 9999 : 0;
+            DebugResourceAdjustPacket.send(uuid, pool.name(), targetAmount, true);
             return true;
         }
         return false;

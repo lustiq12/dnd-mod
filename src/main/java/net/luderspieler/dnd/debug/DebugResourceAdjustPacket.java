@@ -1,6 +1,8 @@
 package net.luderspieler.dnd.debug;
 
 import net.luderspieler.dnd.DndMod;
+import net.luderspieler.dnd.Utils.AbilityDataUtils;
+import net.luderspieler.dnd.network.DndModVariables;
 import net.luderspieler.dnd.resources.ResourceManager;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -52,7 +54,13 @@ public record DebugResourceAdjustPacket(String targetUuid, String poolName, int 
             }
 
             if (message.toMax()) {
-                ResourceManager.restoreToMax(target, pool);
+                if (message.amount() > 0) {
+                    DndModVariables.PlayerVariables vars = target.getData(DndModVariables.PLAYER_VARIABLES);
+                    AbilityDataUtils.set(vars, pool.dataKey, message.amount());
+                    vars.markSyncDirty();
+                } else {
+                    ResourceManager.restoreToMax(target, pool);
+                }
             } else if (message.amount() > 0) {
                 ResourceManager.restore(target, pool, message.amount());
             } else if (message.amount() < 0) {
