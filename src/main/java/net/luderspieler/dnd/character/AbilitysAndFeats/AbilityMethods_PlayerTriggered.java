@@ -14,6 +14,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageType;
@@ -254,11 +255,26 @@ public class AbilityMethods_PlayerTriggered {
         if (player.level() instanceof ServerLevel serverLevel) {
             Vec3 look = player.getViewVector(1.0F);
             Vec3 mouth = player.getEyePosition().add(look.scale(0.5)).subtract(0, 0.15, 0);
-            AreaTargeting.spawnConeParticles(serverLevel, mouth, look, angle, particle, 150, 0.25, 0.6);
+            // Dust and item particles ignore the velocity passed to sendParticles
+            if (type.equals("ACID") || type.equals("POISON")) {
+                AreaTargeting.spawnConeParticlesStepped(serverLevel, mouth, look, length, angle, particle, 40, 8);
+            } else {
+                AreaTargeting.spawnConeParticles(serverLevel, mouth, look, angle, particle, 150, 0.25, 0.6);
+            }
             serverLevel.playSound(null, player.getX(), player.getY(), player.getZ(),
-                    SoundEvents.ENDER_DRAGON_SHOOT, SoundSource.PLAYERS, 1.0F, 1.2F);
+                    breathSound(type), SoundSource.PLAYERS, 1.0F, 1.0F);
         }
         return true;
+    }
+
+    private static SoundEvent breathSound(String type) {
+        return switch (type) {
+            case "ACID"      -> SoundEvents.FIRE_EXTINGUISH;
+            case "COLD"      -> SoundEvents.PLAYER_HURT_FREEZE;
+            case "FIRE"      -> SoundEvents.BLAZE_SHOOT;
+            case "LIGHTNING" -> SoundEvents.LIGHTNING_BOLT_IMPACT;
+            default          -> SoundEvents.SLIME_SQUISH;
+        };
     }
 
     private static ResourceKey<DamageType> breathDamageType(String type) {
