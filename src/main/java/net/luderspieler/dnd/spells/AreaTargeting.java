@@ -1,5 +1,6 @@
 package net.luderspieler.dnd.spells;
 
+import net.luderspieler.dnd.DndMod;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -95,6 +96,41 @@ public final class AreaTargeting {
             double speed = minSpeed + level.random.nextDouble() * (maxSpeed - minSpeed);
             // Count 0 makes the offset arguments act as the velocity direction
             level.sendParticles(particle, origin.x, origin.y, origin.z, 0, v.x, v.y, v.z, speed);
+        }
+    }
+
+    /**
+     * Same cone shape as {@link #spawnConeParticles}, for particle types that ignore the velocity
+     * they are given (dust, item particles). Each particle is re-spawned one tick later
+     * further along its own direction, so it still appears to travel outwards.
+     */
+    public static void spawnConeParticlesStepped(ServerLevel level, Vec3 origin, Vec3 dir, double length, double fullAngle,
+                                                 ParticleOptions particle, int count, int steps) {
+        Vec3 d = dir.normalize();
+        Vec3 up = Math.abs(d.y) > 0.99 ? new Vec3(1, 0, 0) : new Vec3(0, 1, 0);
+        Vec3 right = d.cross(up).normalize();
+        Vec3 realUp = right.cross(d).normalize();
+        double tanHalf = Math.tan(Math.toRadians(fullAngle / 2.0));
+
+        Vec3[] dirs = new Vec3[count];
+        double[] reach = new double[count];
+        for (int i = 0; i < count; i++) {
+            double r = tanHalf * Math.sqrt(level.random.nextDouble());
+            double a = level.random.nextDouble() * Math.PI * 2.0;
+            dirs[i] = d.add(right.scale(Math.cos(a) * r)).add(realUp.scale(Math.sin(a) * r)).normalize();
+            reach[i] = 0.5 + level.random.nextDouble() * 0.5;
+        }
+
+        for (int step = 1; step <= steps; step++) {
+            final double progress = (double) step / steps;
+            Runnable spawn = () -> {
+                for (int i = 0; i < count; i++) {
+                    Vec3 pos = origin.add(dirs[i].scale(length * reach[i] * progress));
+                    level.sendParticles(particle, pos.x, pos.y, pos.z, 1, 0, 0, 0, 0);
+                }
+            };
+            if (step == 1) spawn.run();
+            else DndMod.queueServerWork(step - 1, spawn);
         }
     }
 
