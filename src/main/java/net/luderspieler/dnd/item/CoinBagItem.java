@@ -55,17 +55,6 @@ public class CoinBagItem extends Item {
         return null;
     }
 
-    private static String formatCoinName(String coinKey) {
-        switch (coinKey) {
-            case "copper_coin": return "Copper Coin";
-            case "silver_coin": return "Silver Coin";
-            case "electrum_coin": return "Electrum Coin";
-            case "gold_coin": return "Gold Coin";
-            case "platinum_coin": return "Platinum Coin";
-            default: return coinKey;
-        }
-    }
-
     private static Item getItem(String coinKey) {
         ResourceLocation id = ResourceLocation.fromNamespaceAndPath("dnd", coinKey);
         Optional<Holder.Reference<Item>> holderOpt = BuiltInRegistries.ITEM.get(id);
@@ -189,11 +178,10 @@ public class CoinBagItem extends Item {
                 boolean isSelected = (i == selectedIndex);
 
                 String prefix = isSelected ? "> " : "  ";
-                String displayName = formatCoinName(coinKey);
                 ChatFormatting color = isSelected ? ChatFormatting.YELLOW : ChatFormatting.GOLD;
 
                 tooltipComponents.accept(Component.literal(prefix + "• ")
-                        .append(Component.literal(displayName))
+                        .append(Component.translatable("item.dnd." + coinKey))
                         .append(Component.literal(" x" + amount))
                         .withStyle(color));
             }
