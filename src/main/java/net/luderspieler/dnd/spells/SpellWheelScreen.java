@@ -18,13 +18,12 @@ import java.util.List;
 /**
  * Two-stage spell wheel:
  * Stage 1: outer ring with 10 segments (0=Cantrip, 1-9=Spell Level)
- * Stage 2: inner ring populated from PreparedCantrips / PreparedSpellsLVL1..9
- * segment count = number of prepared spells at chosen level
- * Selecting a spell in stage 2 fires CastSpellProcedure.execute(player, spellId, level)
+ * Stage 2: ring populated from PreparedCantrips / PreparedSpellsLVL1..9,
+ * one segment per prepared spell at the chosen level.
+ * Selecting a spell in stage 2 sends a CastSpellPacket to the server.
  */
 public class SpellWheelScreen extends Screen {
 
-    // ── Layout ──
     private static final int OUTER_RADIUS = 105;
     private static final int INNER_RADIUS = 40;
     private static final int HUB_RADIUS = 35;
@@ -33,16 +32,15 @@ public class SpellWheelScreen extends Screen {
     private static final float HOVER_EXPAND = 6f;
     private static final int OUTLINE_WIDTH = 2;
 
-    // ── State ──
     private enum Stage { LEVEL_SELECT, SPELL_SELECT }
     private Stage stage = Stage.LEVEL_SELECT;
 
-    private int selectedLevel = -1; // 0-9
+    private int selectedLevel = -1;
     private int hoveredSegment = -1;
 
-    private List<String> currentSpells = new ArrayList<>(); // parsed spell ids
+    private List<String> currentSpells = new ArrayList<>();
     private int hoveredSpell = -1;
-    private int cx, cy; // screen center
+    private int cx, cy;
 
     public SpellWheelScreen() {
         super(Component.empty());
@@ -60,13 +58,8 @@ public class SpellWheelScreen extends Screen {
         cy = this.height / 2;
     }
 
-    // ══════════════════════════════════════════════════════
-    // RENDER
-    // ══════════════════════════════════════════════════════
-
     @Override
     public void render(GuiGraphics g, int mouseX, int mouseY, float partial) {
-        // dim background slightly (Nutzt jetzt Config)
         g.fill(0, 0, this.width, this.height, generalConfigs.COLOR_SCREEN_OVERLAY);
 
         if (stage == Stage.LEVEL_SELECT) {
@@ -77,8 +70,6 @@ public class SpellWheelScreen extends Screen {
 
         super.render(g, mouseX, mouseY, partial);
     }
-
-    // ── STAGE 1: Level selector ──────────────────────────
 
     private void renderLevelWheel(GuiGraphics g, int mouseX, int mouseY) {
         int segments = 10;
@@ -138,8 +129,6 @@ public class SpellWheelScreen extends Screen {
         drawCenteredShadow(g, "Spells", cx, cy - 4, generalConfigs.TEXT_WHITE);
     }
 
-    // ── STAGE 2: Spell selector ──────────────────────────
-
     private void renderSpellWheel(GuiGraphics g, int mouseX, int mouseY) {
         int segments = currentSpells.isEmpty() ? 1 : currentSpells.size();
 
@@ -193,10 +182,6 @@ public class SpellWheelScreen extends Screen {
         drawCenteredShadow(g, levelLabel, cx, cy - 8, generalConfigs.TEXT_WHITE);
         drawCenteredShadow(g, "Back", cx, cy + 8, generalConfigs.TEXT_WHITE);
     }
-
-    // ══════════════════════════════════════════════════════
-    // INPUT
-    // ══════════════════════════════════════════════════════
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
@@ -262,10 +247,6 @@ public class SpellWheelScreen extends Screen {
         return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
     }
 
-    // ══════════════════════════════════════════════════════
-    // DATA HELPERS
-    // ══════════════════════════════════════════════════════
-
     private void loadSpellsForLevel(int level) {
         selectedLevel = level;
         currentSpells.clear();
@@ -326,13 +307,8 @@ public class SpellWheelScreen extends Screen {
         return sb.toString();
     }
 
-    // ══════════════════════════════════════════════════════
-    // DRAWING PRIMITIVES
-    // ══════════════════════════════════════════════════════
-
     private void drawCircle(GuiGraphics g, int ox, int oy, int radius, int fillColor, int outlineColor) {
         int hubColor = generalConfigs.WHEEL_SEGMENT_IDLE;
-        // Ein einziger sauberer Pass ohne Überlappungen
         fillSector(g, ox, oy, 0, radius, 0, Math.PI * 2, hubColor, 0);
     }
 
@@ -342,10 +318,13 @@ public class SpellWheelScreen extends Screen {
                              int fillColor, int outlineColor, boolean hovered) {
 
         int rOut = hovered ? outerR + (int) HOVER_EXPAND : outerR;
-        // OUTLINE_WIDTH übergibt die Breite des Spalts in Pixeln (2)
         fillSector(g, ox, oy, innerR + 2, rOut, startAngle, endAngle, fillColor, OUTLINE_WIDTH);
     }
 
+    /**
+     * Scanline pie-slice fill. gapPx is the total slit width in pixels between
+     * adjacent slices; each slice recedes by half of it from its edge lines.
+     */
     private void fillSector(GuiGraphics g, int ox, int oy, int innerR, int outerR,
                             double startAngle, double endAngle, int color, int gapPx) {
         if (outerR <= innerR) return;
@@ -356,14 +335,11 @@ public class SpellWheelScreen extends Screen {
 
         boolean fullCircle = end - start >= Math.PI * 2 - 1.0e-6;
 
-        // Vorberechnungen für den exakten Pixel-Abstand zu den Linien
         double sinStart = Math.sin(start);
         double cosStart = Math.cos(start);
         double sinEnd = Math.sin(end);
         double cosEnd = Math.cos(end);
 
-        // Die Hälfte des Spaltes (z.B. 1px bei einem gewünschten Spalt von 2px),
-        // da benachbarte Stücke ebenfalls um 1px zurückweichen.
         double halfGap = gapPx / 2.0;
 
         int left = ox - outerR - 1;
@@ -388,11 +364,9 @@ public class SpellWheelScreen extends Screen {
                     if (ang > end) {
                         inside = false;
                     } else if (halfGap > 0) {
-                        // Berechnet die echte, senkrechte Distanz in Pixeln zur Start- und End-Trennlinie
                         double distToStart = Math.abs(dx * sinStart - dy * cosStart);
                         double distToEnd = Math.abs(dx * sinEnd - dy * cosEnd);
 
-                        // Wenn der Pixel zu nah an einer der beiden Trennlinien liegt -> ausblenden
                         if (distToStart < halfGap || distToEnd < halfGap) {
                             inside = false;
                         }
@@ -438,12 +412,10 @@ public class SpellWheelScreen extends Screen {
         }
     }
 
-
     private void drawCenteredShadow(GuiGraphics g, String text, int x, int y, int color) {
         int w = this.font.width(text);
         int tx = x - w / 2;
         int ty = y - this.font.lineHeight / 2;
-        // Nutzt jetzt die Schattenfarbe aus der Config
         g.drawString(this.font, text, tx + 1, ty + 1, generalConfigs.COLOR_TEXT_SHADOW, false);
         g.drawString(this.font, text, tx, ty, color, false);
     }

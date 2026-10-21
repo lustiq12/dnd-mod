@@ -97,9 +97,8 @@ public class AbilityWheelScreen extends Screen {
     );
 
     // ── Layout ───────────────────────────────────────────────────────
-    private static final int   OUTER_RADIUS  = 90;
-    private static final int   INNER_RADIUS  = 30;
-    private static final int   LABEL_RADIUS  = 65;
+    private static final int   OUTER_RADIUS  = 105;
+    private static final int   HUB_RADIUS    = 35;
     private static final float HOVER_EXPAND  = 6f;
     private static final int   OUTLINE_WIDTH = 2;
 
@@ -149,7 +148,7 @@ public class AbilityWheelScreen extends Screen {
                 Player p = Minecraft.getInstance().player;
                 List<SubAction> meta = p != null ? getMetamagicActions(p) : List.of();
                 if (meta.isEmpty()) {
-                    int hubR = (int) (INNER_RADIUS * 1.5f);
+                    int hubR = HUB_RADIUS;
                     drawCircle(g, cx, cy, hubR, generalConfigs.WHEEL_HUB, generalConfigs.WHEEL_OUTLINE);
                     drawCentered(g, "No Metamagic", cx, cy - 4, generalConfigs.TEXT_GRAY);
                     drawCentered(g, "chosen yet",   cx, cy + 6, generalConfigs.TEXT_GRAY);
@@ -170,12 +169,14 @@ public class AbilityWheelScreen extends Screen {
         List<Ability> abilities = getClientAbilities();
         float scale  = getScale(abilities.size());
         int   outerR = (int) (OUTER_RADIUS * scale);
-        int   hubR   = (int) (INNER_RADIUS * scale);
-        int   labelR = (int) (LABEL_RADIUS * scale);
+        int   hubR   = HUB_RADIUS;
+        int   labelR = hubR + (outerR - hubR) / 2;
 
         if (abilities.isEmpty()) {
-            drawCircle(g, cx, cy, hubR + 10, generalConfigs.WHEEL_HUB, generalConfigs.WHEEL_OUTLINE);
-            drawCentered(g, "No abilities", cx, cy - 4, generalConfigs.TEXT_GRAY);
+            drawSegment(g, cx, cy, hubR, outerR, -Math.PI / 2, Math.PI * 1.5,
+                    generalConfigs.WHEEL_SEGMENT_IDLE, generalConfigs.WHEEL_OUTLINE, false);
+            drawCircle(g, cx, cy, hubR, generalConfigs.WHEEL_HUB, generalConfigs.WHEEL_OUTLINE);
+            drawCentered(g, "No abilities", cx, cy - 50, generalConfigs.TEXT_GRAY);
             return;
         }
 
@@ -232,7 +233,7 @@ public class AbilityWheelScreen extends Screen {
 
         if (hoveredSegment >= 0 && hoveredSegment < count) {
             g.drawCenteredString(this.font, abilities.get(hoveredSegment).getDisplayName(),
-                    cx, cy + outerR + 20, generalConfigs.COLOR_ACCENT_GOLD);
+                    cx, Math.min(cy + outerR + 20, this.height - 12), generalConfigs.COLOR_ACCENT_GOLD);
         }
     }
 
@@ -252,8 +253,8 @@ public class AbilityWheelScreen extends Screen {
 
         float  scale      = getScale(actions.size());
         int    outerR     = (int) (OUTER_RADIUS * scale);
-        int    hubR       = (int) (INNER_RADIUS * scale);
-        int    labelR     = (int) (LABEL_RADIUS * scale);
+        int    hubR       = HUB_RADIUS;
+        int    labelR     = hubR + (outerR - hubR) / 2;
         int    count      = actions.size();
         double sliceAngle = (2 * Math.PI) / count;
         double mouseAngle = Math.atan2(mouseY - cy, mouseX - cx);
@@ -315,12 +316,12 @@ public class AbilityWheelScreen extends Screen {
             if (!hasL) tip = a.detail() + "  [requires Level " + a.minLevel() + "]";
             else if (!hasR) tip = a.detail() + "  [not enough " + pool.displayName + "]";
             else            tip = a.detail();
-            g.drawCenteredString(this.font, tip, cx, cy + outerR + 20,
+            g.drawCenteredString(this.font, tip, cx, Math.min(cy + outerR + 20, this.height - 12),
                     generalConfigs.COLOR_ACCENT_GOLD);
         }
 
         g.drawCenteredString(this.font, poolLabel + "  (" + current + "/" + max + ")",
-                cx, cy - outerR - 20, generalConfigs.TEXT_WHITE);
+                cx, Math.max(cy - outerR - 20, 12), generalConfigs.TEXT_WHITE);
     }
 
     // ══════════════════════════════════════════════════════════════════
@@ -357,7 +358,7 @@ public class AbilityWheelScreen extends Screen {
 
     private void handleMainWheelClick(double dist) {
         List<Ability> abilities = getClientAbilities();
-        int hubR = (int) (INNER_RADIUS * getScale(abilities.size()));
+        int hubR = HUB_RADIUS;
 
         if (dist <= hubR) { this.onClose(); return; }
 
@@ -376,8 +377,7 @@ public class AbilityWheelScreen extends Screen {
     /** Validates client-side and sends ActivateAbilityPacket with the sub-action. */
     private void handleSubWheelClick(double dist, List<SubAction> actions,
                                      Ability targetAbility) {
-        float scale = getScale(actions.size());
-        int   hubR  = (int) (INNER_RADIUS * scale);
+        int hubR = HUB_RADIUS;
 
         if (dist <= hubR) { navigateBack(); return; }
 
@@ -492,7 +492,7 @@ public class AbilityWheelScreen extends Screen {
     }
 
     private float getScale(int segmentCount) {
-        return segmentCount >= 12 ? 3.0f : segmentCount >= 6 ? 2.0f : 1.5f;
+        return segmentCount >= 12 ? 3.0f : segmentCount >= 6 ? 2.0f : 1.0f;
     }
 
     private String formatAbilityName(Ability ability) {
