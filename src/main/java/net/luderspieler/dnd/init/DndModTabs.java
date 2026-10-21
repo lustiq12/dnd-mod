@@ -43,6 +43,7 @@ public class DndModTabs {
 				tabData.accept(DndModItems.GOLD_COIN.get());
 				tabData.accept(DndModItems.PLATINUM_COIN.get());
 				tabData.accept(DndModItems.COIN_BAG.get());
+				tabData.accept(DndModItems.ELECTRUM_COIN.get());
 			}).withSearchBar().withTabsBefore(DND_EQUIPMENT.getId()).build());
 	public static final DeferredHolder<CreativeModeTab, CreativeModeTab> DN_D_MAGIC_ITEMS = REGISTRY.register("dn_d_magic_items",
 			() -> CreativeModeTab.builder().title(Component.translatable("item_group.dnd.dn_d_magic_items")).icon(() -> new ItemStack(DndModItems.RING_OF_SWIMMING.get())).displayItems((parameters, tabData) -> {

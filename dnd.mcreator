@@ -1898,6 +1898,21 @@
         ]
       },
       "path": "~/Technical"
+    },
+    {
+      "name": "ElectrumCoin",
+      "type": "item",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "electrum_coin",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/dnd/items/electrum_coin.json",
+          "src/main/java/net/luderspieler/dnd/item/ElectrumCoinItem.java",
+          "src/main/resources/assets/dnd/models/item/electrum_coin.json"
+        ]
+      },
+      "path": "~/items"
     }
   ],
   "variable_elements": [
@@ -2375,7 +2390,8 @@
       "item.dnd.ring_of_swimming": "Ring Of Swimming",
       "item.dnd.ring_of_protection.description_0": "Reduces the taken Damage by 10%",
       "item.dnd.ring_of_swimming.description_0": "Increases swimming speed",
-      "item.dnd.mobs_tab_icon": "Mobs Tab Icon"
+      "item.dnd.mobs_tab_icon": "Mobs Tab Icon",
+      "item.dnd.electrum_coin": "Electrum Coin"
     }
   },
   "metadata": {

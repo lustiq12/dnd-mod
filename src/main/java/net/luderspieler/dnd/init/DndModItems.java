@@ -39,6 +39,7 @@ public class DndModItems {
 	public static final DeferredItem<Item> RING_OF_PROTECTION;
 	public static final DeferredItem<Item> RING_OF_SWIMMING;
 	public static final DeferredItem<Item> MOBS_TAB_ICON;
+	public static final DeferredItem<Item> ELECTRUM_COIN;
 	static {
 		STIRGE_SPAWN_EGG = register("stirge_spawn_egg", properties -> new SpawnEggItem(DndModEntities.STIRGE.get(), properties));
 		SCARECROW_SPAWN_EGG = register("scarecrow_spawn_egg", properties -> new SpawnEggItem(DndModEntities.SCARECROW.get(), properties));
@@ -60,6 +61,7 @@ public class DndModItems {
 		RING_OF_PROTECTION = register("ring_of_protection", RingOfProtectionItem::new);
 		RING_OF_SWIMMING = register("ring_of_swimming", RingOfSwimmingItem::new);
 		MOBS_TAB_ICON = register("mobs_tab_icon", MobsTabIconItem::new);
+		ELECTRUM_COIN = register("electrum_coin", ElectrumCoinItem::new);
 	}
 
 	// Start of user code block custom items

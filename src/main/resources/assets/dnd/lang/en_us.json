@@ -90,5 +90,6 @@
   "item.dnd.ring_of_swimming": "Ring Of Swimming",
   "item.dnd.ring_of_protection.description_0": "Reduces the taken Damage by 10%",
   "item.dnd.ring_of_swimming.description_0": "Increases swimming speed",
-  "item.dnd.mobs_tab_icon": "Mobs Tab Icon"
+  "item.dnd.mobs_tab_icon": "Mobs Tab Icon",
+  "item.dnd.electrum_coin": "Electrum Coin"
 }

@@ -1883,6 +1883,36 @@
         ]
       },
       "path": "~/items"
+    },
+    {
+      "name": "MobsTabIcon",
+      "type": "item",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "mobs_tab_icon",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/dnd/items/mobs_tab_icon.json",
+          "src/main/java/net/luderspieler/dnd/item/MobsTabIconItem.java",
+          "src/main/resources/assets/dnd/models/item/mobs_tab_icon.json"
+        ]
+      },
+      "path": "~/Technical"
+    },
+    {
+      "name": "ElectrumCoin",
+      "type": "item",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "electrum_coin",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/dnd/items/electrum_coin.json",
+          "src/main/java/net/luderspieler/dnd/item/ElectrumCoinItem.java",
+          "src/main/resources/assets/dnd/models/item/electrum_coin.json"
+        ]
+      },
+      "path": "~/items"
     }
   ],
   "variable_elements": [
@@ -2352,14 +2382,16 @@
       "item_group.dnd.dn_d_mobs": "D\u0026D Mobs",
       "item_group.dnd.dnd_equipment": "D\u0026D Equipment",
       "item.dnd.copper_coin": "Copper Coin",
-      "item.dnd.silver_coin": "Copper Coin",
-      "item.dnd.gold_coin": "Copper Coin",
-      "item.dnd.platinum_coin": "Copper Coin",
+      "item.dnd.silver_coin": "Silver Coin",
+      "item.dnd.gold_coin": "Gold Coin",
+      "item.dnd.platinum_coin": "Platinum Coin",
       "item.dnd.coin_bag": "Coin Bag",
       "item.dnd.ring_of_protection": "Ring Of Protection",
       "item.dnd.ring_of_swimming": "Ring Of Swimming",
       "item.dnd.ring_of_protection.description_0": "Reduces the taken Damage by 10%",
-      "item.dnd.ring_of_swimming.description_0": "Increases swimming speed"
+      "item.dnd.ring_of_swimming.description_0": "Increases swimming speed",
+      "item.dnd.mobs_tab_icon": "Mobs Tab Icon",
+      "item.dnd.electrum_coin": "Silver Coin"
     }
   },
   "metadata": {
@@ -2474,6 +2506,10 @@
       },
       {
         "name": "Tabs",
+        "children": []
+      },
+      {
+        "name": "Technical",
         "children": []
       }
     ]
