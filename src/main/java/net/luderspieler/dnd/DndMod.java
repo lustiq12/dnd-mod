@@ -1,8 +1,5 @@
 package net.luderspieler.dnd;
 
-import net.luderspieler.dnd.config.DndClientConfig;
-import net.neoforged.fml.ModLoadingContext;
-import net.neoforged.fml.config.ModConfig;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -14,7 +11,9 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.fml.util.thread.SidedThreadGroups;
 import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.bus.api.IEventBus;
 
@@ -35,6 +34,7 @@ import net.luderspieler.dnd.item.RingHelper;
 import net.luderspieler.dnd.item.CoinBagHelper;
 import net.luderspieler.dnd.init.*;
 import net.luderspieler.dnd.gameplay.ToolTipModifier;
+import net.luderspieler.dnd.config.DndClientConfig;
 import net.luderspieler.dnd.character.ProficiencyCheckProcedure;
 import net.luderspieler.dnd.character.LevelEvents;
 import net.luderspieler.dnd.character.CharacterCreationEventHandler;
@@ -96,9 +96,7 @@ public class DndMod {
 		NpcPresets.registerAll();
 		ModLoadingContext.get().getActiveContainer().registerConfig(ModConfig.Type.CLIENT, DndClientConfig.SPEC);
 		if (FMLEnvironment.dist.isClient()) {
-			ModLoadingContext.get().getActiveContainer().registerExtensionPoint(
-					net.neoforged.neoforge.client.gui.IConfigScreenFactory.class,
-					net.neoforged.neoforge.client.gui.ConfigurationScreen::new);
+			ModLoadingContext.get().getActiveContainer().registerExtensionPoint(net.neoforged.neoforge.client.gui.IConfigScreenFactory.class, net.neoforged.neoforge.client.gui.ConfigurationScreen::new);
 		}
 		// End of user code block mod init
 	}
