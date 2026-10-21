@@ -1873,7 +1873,7 @@
       "name": "RingOfSwimming",
       "type": "item",
       "compiles": true,
-      "locked_code": false,
+      "locked_code": true,
       "registry_name": "ring_of_swimming",
       "metadata": {
         "files": [
@@ -1883,6 +1883,21 @@
         ]
       },
       "path": "~/items"
+    },
+    {
+      "name": "MobsTabIcon",
+      "type": "item",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "mobs_tab_icon",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/dnd/items/mobs_tab_icon.json",
+          "src/main/java/net/luderspieler/dnd/item/MobsTabIconItem.java",
+          "src/main/resources/assets/dnd/models/item/mobs_tab_icon.json"
+        ]
+      },
+      "path": "~/Technical"
     }
   ],
   "variable_elements": [
@@ -2357,9 +2372,10 @@
       "item.dnd.platinum_coin": "Copper Coin",
       "item.dnd.coin_bag": "Coin Bag",
       "item.dnd.ring_of_protection": "Ring Of Protection",
-      "item.dnd.ring_of_swimming": "Ring Of Protection",
+      "item.dnd.ring_of_swimming": "Ring Of Swimming",
       "item.dnd.ring_of_protection.description_0": "Reduces the taken Damage by 10%",
-      "item.dnd.ring_of_swimming.description_0": "Increases swimming speed"
+      "item.dnd.ring_of_swimming.description_0": "Increases swimming speed",
+      "item.dnd.mobs_tab_icon": "Mobs Tab Icon"
     }
   },
   "metadata": {
@@ -2474,6 +2490,10 @@
       },
       {
         "name": "Tabs",
+        "children": []
+      },
+      {
+        "name": "Technical",
         "children": []
       }
     ]
