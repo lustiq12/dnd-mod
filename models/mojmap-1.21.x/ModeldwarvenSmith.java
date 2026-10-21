@@ -1,4 +1,4 @@
-// Made with Blockbench 5.1.5
+// Made with Blockbench 5.2.2
 // Exported for Minecraft version 1.17 or later with Mojang mappings
 // Paste this class into your mod and generate all required imports
 
@@ -88,7 +88,7 @@ public class ModeldwarvenSmith<T extends Entity> extends EntityModel<T> {
 				.addOrReplaceChild("cube_r1",
 						CubeListBuilder.create().texOffs(-16, 0).addBox(-8.0F, 0.0F, -8.0F, 16.0F, 0.0F, 16.0F,
 								new CubeDeformation(0.0F)),
-						PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, 0.7854F, 0.0F));
+						PartPose.offsetAndRotation(0.0F, -0.1F, 0.0F, 0.0F, 0.7854F, 0.0F));
 
 		return LayerDefinition.create(meshdefinition, 128, 128);
 	}

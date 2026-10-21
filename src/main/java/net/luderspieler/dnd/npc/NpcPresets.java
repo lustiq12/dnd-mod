@@ -213,7 +213,7 @@ public final class NpcPresets {
 
         NpcDialogNode about = new NpcDialogNode(
                 "about",
-                "Borin Stonehand. Third generation smith. My family has worked this forge longer than most kingdoms last.",
+                "Third generation smith. My family has worked this forge longer than most kingdoms last.",
                 List.of(
                         new NpcDialogOption(
                                 "Tell me about your family.",

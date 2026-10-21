@@ -12,7 +12,7 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.EntityModel;
 
-// Made with Blockbench 5.1.5
+// Made with Blockbench 5.2.2
 // Exported for Minecraft version 1.17 or later with Mojang mappings
 // Paste this class into your mod and generate all required imports
 public class ModeldwarvenSmith extends EntityModel<LivingEntityRenderState> {
@@ -69,7 +69,7 @@ public class ModeldwarvenSmith extends EntityModel<LivingEntityRenderState> {
 				.addBox(-7.0F, -12.0F, -5.0F, 14.0F, 5.0F, 10.0F, new CubeDeformation(0.0F)).texOffs(64, 99).addBox(-4.0F, -7.0F, -2.0F, 8.0F, 5.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 24.0F, -13.0F));
 		PartDefinition bone2 = bone.addOrReplaceChild("bone2", CubeListBuilder.create(), PartPose.offset(-2.0F, -12.0F, 0.0F));
 		PartDefinition cube_r1 = bone2.addOrReplaceChild("cube_r1", CubeListBuilder.create().texOffs(-16, 0).addBox(-8.0F, 0.0F, -8.0F, 16.0F, 0.0F, 16.0F, new CubeDeformation(0.0F)),
-				PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, 0.7854F, 0.0F));
+				PartPose.offsetAndRotation(0.0F, -0.1F, 0.0F, 0.0F, 0.7854F, 0.0F));
 		return LayerDefinition.create(meshdefinition, 128, 128);
 	}
 
