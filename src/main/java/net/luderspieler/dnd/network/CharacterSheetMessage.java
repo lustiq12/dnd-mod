@@ -41,16 +41,21 @@ public record CharacterSheetMessage(int eventType, int pressedms) implements Cus
 	}
 
 	public static void pressAction(Player entity, int type, int pressedms) {
+		if (entity == null) return;
+
 		Level world = entity.level();
 		double x = entity.getX();
 		double y = entity.getY();
 		double z = entity.getZ();
+
 		// security measure to prevent arbitrary chunk generation
 		if (!world.getChunkSource().hasChunk(SectionPos.blockToSectionCoord(x), SectionPos.blockToSectionCoord(z)))
 			return;
-		if (type == 0) {
 
-			net.minecraft.client.Minecraft.getInstance().setScreen(new CharacterSheetScreen());
+		if (type == 0) {
+			if (world.isClientSide) {
+				net.minecraft.client.Minecraft.getInstance().setScreen(new CharacterSheetScreen());
+			}
 		}
 	}
 

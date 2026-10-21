@@ -41,18 +41,22 @@ public record CastSpellMessage(int eventType, int pressedms) implements CustomPa
 	}
 
 	public static void pressAction(Player entity, int type, int pressedms) {
+		if (entity == null) return;
+
 		Level world = entity.level();
 		double x = entity.getX();
 		double y = entity.getY();
 		double z = entity.getZ();
-		// security measure to prevent arbitrary chunk generation
+
+		// Security measure to prevent arbitrary chunk generation
 		if (!world.getChunkSource().hasChunk(SectionPos.blockToSectionCoord(x), SectionPos.blockToSectionCoord(z)))
 			return;
+
 		if (type == 0) {
-			if (entity instanceof Player player) {
-				DndModVariables.PlayerVariables vars = player.getData(DndModVariables.PLAYER_VARIABLES);
-				if (vars.CanUseMagic) {
-					var mc = net.minecraft.client.Minecraft.getInstance();
+			DndModVariables.PlayerVariables vars = entity.getData(DndModVariables.PLAYER_VARIABLES);
+			if (vars != null && vars.CanUseMagic) {
+				if (world.isClientSide()) {
+					net.minecraft.client.Minecraft mc = net.minecraft.client.Minecraft.getInstance();
 					mc.setScreen(new SpellWheelScreen());
 				}
 			}
