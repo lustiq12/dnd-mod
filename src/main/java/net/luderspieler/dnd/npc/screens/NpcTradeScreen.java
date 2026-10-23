@@ -7,6 +7,7 @@ import net.luderspieler.dnd.npc.NpcTradeMenu;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -23,6 +24,7 @@ public class NpcTradeScreen extends AbstractContainerScreen<NpcTradeMenu> {
     private static final int OFFER_LIST_W = 160;
     private static final CoinBagHelper.CoinType[] COIN_TYPES = CoinBagHelper.CoinType.values();
     private static final String[] COIN_SUFFIX = {"cp", "sp", "ep", "gp", "pp"};
+    private static final ResourceLocation COIN_BAG_ICON = ResourceLocation.parse("dnd:textures/screens/coin_bag_icon.png");
 
     private Button confirmButton;
 
@@ -56,6 +58,12 @@ public class NpcTradeScreen extends AbstractContainerScreen<NpcTradeMenu> {
         for (Slot slot : this.menu.slots) {
             g.fill(x + slot.x, y + slot.y, x + slot.x + 16, y + slot.y + 16, generalConfigs.COLOR_HOVER_BG);
         }
+
+        // The cost slot stays empty when paying from the coin bag, so show the bag there instead
+        if (this.menu.isPayingFromCoinBag()) {
+            Slot costSlot = this.menu.slots.get(0);
+            g.blit(RenderPipelines.GUI_TEXTURED, COIN_BAG_ICON, x + costSlot.x, y + costSlot.y, 0, 0, 16, 16, 16, 16);
+        }
     }
 
     @Override
@@ -64,11 +72,22 @@ public class NpcTradeScreen extends AbstractContainerScreen<NpcTradeMenu> {
 
         NpcTradeEntry selected = this.menu.getSelectedTrade();
         confirmButton.visible = selected != null;
-        if (selected == null) return;
+        if (selected != null) {
+            confirmButton.active = this.menu.canCompleteSelectedTrade();
+        }
 
-        confirmButton.active = this.menu.canCompleteSelectedTrade();
-        if (!confirmButton.active && selected.isCoinResult() && !CoinBagHelper.hasCoinBagEquipped(this.minecraft.player)) {
-            g.drawString(this.font, "Needs a coin bag on your belt", 8, 20, generalConfigs.COLOR_STATUS_DANGER, false);
+        boolean hasBag = CoinBagHelper.hasCoinBagEquipped(this.minecraft.player);
+
+        if (selected != null && selected.isCoinResult() && !hasBag) {
+            g.drawString(this.font, "Needs a coin bag on your belt", 8, 17, generalConfigs.COLOR_STATUS_DANGER, false);
+        } else if (this.menu.needsCoinBagForSelectedCost()) {
+            g.drawString(this.font, "Mixed coins need a coin bag", 8, 17, generalConfigs.COLOR_STATUS_DANGER, false);
+        } else if (this.menu.isPayingFromCoinBag()) {
+            g.drawString(this.font, "Paying from your coin bag", 8, 17, generalConfigs.COLOR_STATUS_SUCCESS, false);
+            g.drawString(this.font, "Change is returned", 8, 26, generalConfigs.TEXT_GRAY, false);
+        } else if (!hasBag) {
+            g.drawString(this.font, "Tip: a coin bag pays any price", 8, 17, generalConfigs.COLOR_ACCENT_GOLD, false);
+            g.drawString(this.font, "with any coins, change returned", 8, 26, generalConfigs.TEXT_GRAY, false);
         }
     }
 

@@ -20,6 +20,9 @@ public class NpcTradeMenu extends AbstractContainerMenu {
 
     public static final int CONFIRM_BUTTON_ID = 999;
 
+    /** A coin price made of exactly one denomination, payable with loose coins. */
+    private record CoinCost(CoinBagHelper.CoinType type, int count) {}
+
     private final int npcEntityId;
     private final Player player;
     private final List<NpcTradeEntry> trades;
@@ -36,7 +39,7 @@ public class NpcTradeMenu extends AbstractContainerMenu {
         this.player = playerInventory.player;
         this.trades = resolveTrades(this.player, npcEntityId);
 
-        // Cost slot: holds the offered item for item-cost trades; stays empty for coin-cost trades.
+        // Cost slot: holds the offered items for loose-coin and item-cost trades; stays empty when paying from the coin bag.
         this.addSlot(new Slot(tradeContainer, 0, 92, 34));
 
         for (int row = 0; row < 3; row++) {
@@ -74,13 +77,46 @@ public class NpcTradeMenu extends AbstractContainerMenu {
         return trade != null && costMet(trade) && canReceiveResult(trade);
     }
 
+    /** True when the selected trade is a coin trade that is paid from an equipped coin bag. */
+    public boolean isPayingFromCoinBag() {
+        NpcTradeEntry trade = getSelectedTrade();
+        return trade != null && trade.isCoinCost() && CoinBagHelper.hasCoinBagEquipped(player);
+    }
+
+    /** True when the selected coin price mixes denominations and therefore needs a coin bag. */
+    public boolean needsCoinBagForSelectedCost() {
+        NpcTradeEntry trade = getSelectedTrade();
+        return trade != null && trade.isCoinCost() && !CoinBagHelper.hasCoinBagEquipped(player) && singleCoinCost(trade) == null;
+    }
+
+    private static CoinCost singleCoinCost(NpcTradeEntry trade) {
+        if (!trade.isCoinCost()) return null;
+        CoinBagHelper.CoinType[] types = CoinBagHelper.CoinType.values();
+        CoinCost found = null;
+        for (int i = 0; i < trade.costCoins().length && i < types.length; i++) {
+            if (trade.costCoins()[i] <= 0) continue;
+            if (found != null) return null;
+            found = new CoinCost(types[i], trade.costCoins()[i]);
+        }
+        return found;
+    }
+
+    private boolean slotHolds(Item item, int count) {
+        ItemStack offered = tradeContainer.getItem(0);
+        return item != null && !offered.isEmpty() && offered.is(item) && offered.getCount() >= count;
+    }
+
     private boolean costMet(NpcTradeEntry trade) {
         if (trade.isCoinCost()) {
-            return CoinBagHelper.canAffordCopperValue(player, CoinBagHelper.coinsToCopperValue(trade.costCoins()));
+            // A coin bag pays any price with any coins; loose coins must match the exact denomination.
+            if (CoinBagHelper.hasCoinBagEquipped(player)) {
+                return CoinBagHelper.canAffordCopperValue(player, CoinBagHelper.coinsToCopperValue(trade.costCoins()));
+            }
+            CoinCost cost = singleCoinCost(trade);
+            return cost != null && slotHolds(CoinBagHelper.getCoinItem(cost.type()), cost.count());
         }
-        ItemStack offered = tradeContainer.getItem(0);
         Item expected = BuiltInRegistries.ITEM.getValue(ResourceLocation.parse(trade.costItem()));
-        return !offered.isEmpty() && offered.is(expected) && offered.getCount() >= trade.costItemCount();
+        return slotHolds(expected, trade.costItemCount());
     }
 
     private boolean canReceiveResult(NpcTradeEntry trade) {
@@ -89,13 +125,16 @@ public class NpcTradeMenu extends AbstractContainerMenu {
 
     @Override
     public boolean clickMenuButton(Player player, int id) {
+        // The screen calls this on the client only to track the selection. Moving items and paying
+        // must run on the server alone, otherwise the client duplicates items until the next resync.
         if (id == CONFIRM_BUTTON_ID) {
-            executeSelectedTrade(player);
+            if (!player.level().isClientSide()) executeSelectedTrade(player);
             return true;
         }
 
         if (id < 0 || id >= trades.size()) return false;
         selectedTradeIndex = id;
+        if (player.level().isClientSide()) return true;
 
         ItemStack currentlyOffered = tradeContainer.getItem(0);
         if (!currentlyOffered.isEmpty()) {
@@ -104,37 +143,38 @@ public class NpcTradeMenu extends AbstractContainerMenu {
         }
 
         NpcTradeEntry trade = getSelectedTrade();
-        if (trade != null && !trade.isCoinCost()) {
-            fillCostSlot(trade.costItem(), trade.costItemCount());
+        if (trade == null) return true;
+
+        if (!trade.isCoinCost()) {
+            fillCostSlot(BuiltInRegistries.ITEM.getValue(ResourceLocation.parse(trade.costItem())));
+        } else if (!CoinBagHelper.hasCoinBagEquipped(player)) {
+            CoinCost cost = singleCoinCost(trade);
+            if (cost != null) fillCostSlot(CoinBagHelper.getCoinItem(cost.type()));
         }
         return true;
     }
 
-    private void fillCostSlot(String itemId, int requiredCount) {
-        if (itemId == null || itemId.isBlank() || requiredCount <= 0) return;
-        Item expectedItem = BuiltInRegistries.ITEM.getValue(ResourceLocation.parse(itemId));
-        if (expectedItem == null) return;
+    /** Moves as many matching items as fit into one stack (up to the max stack size) from the inventory into the cost slot. */
+    private void fillCostSlot(Item item) {
+        if (item == null) return;
+        int cap = item.getDefaultInstance().getMaxStackSize();
 
         int gathered = 0;
         ItemStack filledStack = ItemStack.EMPTY;
 
-        for (int i = 1; i < this.slots.size(); i++) {
+        for (int i = 1; i < this.slots.size() && gathered < cap; i++) {
             Slot slot = this.slots.get(i);
             ItemStack stack = slot.getItem();
-            if (!stack.isEmpty() && stack.is(expectedItem)) {
-                int needed = requiredCount - gathered;
-                int take = Math.min(needed, stack.getCount());
+            if (stack.isEmpty() || !stack.is(item)) continue;
 
-                ItemStack split = slot.remove(take);
-                if (filledStack.isEmpty()) {
-                    filledStack = split;
-                } else {
-                    filledStack.grow(take);
-                }
-                gathered += take;
-
-                if (gathered >= requiredCount) break;
+            int take = Math.min(cap - gathered, stack.getCount());
+            ItemStack split = slot.remove(take);
+            if (filledStack.isEmpty()) {
+                filledStack = split;
+            } else {
+                filledStack.grow(take);
             }
+            gathered += take;
         }
 
         if (!filledStack.isEmpty()) {
@@ -148,9 +188,13 @@ public class NpcTradeMenu extends AbstractContainerMenu {
         if (!costMet(trade) || !canReceiveResult(trade)) return;
 
         if (trade.isCoinCost()) {
-            CoinBagHelper.payCopperValue(executingPlayer, CoinBagHelper.coinsToCopperValue(trade.costCoins()));
+            if (CoinBagHelper.hasCoinBagEquipped(executingPlayer)) {
+                CoinBagHelper.payCopperValue(executingPlayer, CoinBagHelper.coinsToCopperValue(trade.costCoins()));
+            } else {
+                tradeContainer.removeItem(0, singleCoinCost(trade).count());
+            }
         } else {
-            tradeContainer.getItem(0).shrink(trade.costItemCount());
+            tradeContainer.removeItem(0, trade.costItemCount());
         }
 
         if (trade.isCoinResult()) {
