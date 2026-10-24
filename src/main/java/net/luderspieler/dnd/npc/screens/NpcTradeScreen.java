@@ -78,9 +78,17 @@ public class NpcTradeScreen extends AbstractContainerScreen<NpcTradeMenu> {
 
         boolean hasBag = CoinBagHelper.hasCoinBagEquipped(this.minecraft.player);
 
-        if (selected != null && selected.isCoinResult() && !hasBag) {
-            g.drawString(this.font, "Needs a coin bag on your belt", 8, 17, generalConfigs.COLOR_STATUS_DANGER, false);
-        } else if (this.menu.needsCoinBagForSelectedCost()) {
+        if (hasBag) {
+            for (int i = COIN_TYPES.length - 1, row = 0; i >= 0; i--, row++) {
+                int rowY = 7 + row * 15;
+                Item coinItem = CoinBagHelper.getCoinItem(COIN_TYPES[i]);
+                if (coinItem != null) g.renderItem(new ItemStack(coinItem), 139, rowY);
+                int amount = CoinBagHelper.getTotalCoins(this.minecraft.player, COIN_TYPES[i]);
+                g.drawString(this.font, String.valueOf(amount), 157, rowY + 4, generalConfigs.TEXT_WHITE, false);
+            }
+        }
+
+        if (this.menu.needsCoinBagForSelectedCost()) {
             g.drawString(this.font, "Mixed coins need a coin bag", 8, 17, generalConfigs.COLOR_STATUS_DANGER, false);
         } else if (this.menu.isPayingFromCoinBag()) {
             g.drawString(this.font, "Paying from your coin bag", 8, 17, generalConfigs.COLOR_STATUS_SUCCESS, false);

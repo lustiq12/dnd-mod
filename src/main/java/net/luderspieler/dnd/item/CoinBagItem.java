@@ -195,6 +195,7 @@ public class CoinBagItem extends Item {
             tooltipComponents.accept(Component.literal("• Scroll to select coin type").withStyle(ChatFormatting.GRAY));
             tooltipComponents.accept(Component.literal("• Deposit: Right-click bag on coins or coins on bag").withStyle(ChatFormatting.GRAY));
             tooltipComponents.accept(Component.literal("• Withdraw: Right-click bag on an empty slot").withStyle(ChatFormatting.GRAY));
+            tooltipComponents.accept(Component.literal("• Trading: pays any price with any coins and returns change").withStyle(ChatFormatting.GRAY));
         } else {
             tooltipComponents.accept(Component.literal("[Shift] for more info").withStyle(ChatFormatting.DARK_GRAY));
         }

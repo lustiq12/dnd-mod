@@ -275,9 +275,66 @@ public class CoinBagHelper {
         int totalAvailable = getTotalCopperValue(bags);
         if (totalAvailable < copperCost) return false;
 
-        clearAllCoins(bags);
-        depositCopperValue(bags.get(0), totalAvailable - copperCost);
+        // Use exact coins first, largest denomination first without overshooting the price
+        CoinType[] types = CoinType.values();
+        int remaining = copperCost;
+        for (int i = types.length - 1; i >= 0 && remaining > 0; i--) {
+            int take = Math.min(getTotalCoins(bags, types[i]), remaining / types[i].getCopperValue());
+            if (take > 0) {
+                removeCoinsAcrossBags(bags, types[i], take);
+                remaining -= take * types[i].getCopperValue();
+            }
+        }
+
+        // Only if no exact fit exists: break the smallest coin left (always worth more than the rest), the rest comes back as change
+        if (remaining > 0) {
+            for (CoinType type : types) {
+                if (getTotalCoins(bags, type) > 0) {
+                    removeCoinsAcrossBags(bags, type, 1);
+                    depositCopperValue(bags.get(0), type.getCopperValue() - remaining);
+                    break;
+                }
+            }
+        }
+
+        syncBags(player);
         return true;
+    }
+
+    public static int getTotalCoins(Player player, CoinType type) {
+        return getTotalCoins(findCoinBags(player), type);
+    }
+
+    private static int getTotalCoins(List<ItemStack> bags, CoinType type) {
+        int total = 0;
+        for (ItemStack bag : bags) total += getCoins(bag, type);
+        return total;
+    }
+
+    private static void removeCoinsAcrossBags(List<ItemStack> bags, CoinType type, int amount) {
+        for (ItemStack bag : bags) {
+            if (amount <= 0) return;
+            int take = Math.min(getCoins(bag, type), amount);
+            if (take > 0) {
+                removeCoinsFromBag(bag, type, take);
+                amount -= take;
+            }
+        }
+    }
+
+    /** Pushes changed bag data to the client; mirrors the pickup handler's Curios sync. */
+    private static void syncBags(Player player) {
+        if (player.level().isClientSide()) return;
+        CuriosApi.getCuriosInventory(player).ifPresent(handler ->
+                handler.findCurios("belt").forEach(slotResult -> {
+                    if (isCoinBag(slotResult.stack())) {
+                        handler.setEquippedCurio(
+                                slotResult.slotContext().identifier(),
+                                slotResult.slotContext().index(),
+                                slotResult.stack()
+                        );
+                    }
+                }));
     }
 
     /** Deposits a per-denomination coin amount into the player's first equipped coin bag. */
@@ -291,6 +348,7 @@ public class CoinBagHelper {
         for (int i = 0; i < coins.length && i < types.length; i++) {
             if (coins[i] > 0) addCoins(bag, types[i], coins[i]);
         }
+        syncBags(player);
         return true;
     }
 

@@ -40,7 +40,12 @@ public class NpcTradeMenu extends AbstractContainerMenu {
         this.trades = resolveTrades(this.player, npcEntityId);
 
         // Cost slot: holds the offered items for loose-coin and item-cost trades; stays empty when paying from the coin bag.
-        this.addSlot(new Slot(tradeContainer, 0, 92, 34));
+        this.addSlot(new Slot(tradeContainer, 0, 92, 34) {
+            @Override
+            public boolean mayPlace(ItemStack stack) {
+                return !isPayingFromCoinBag();
+            }
+        });
 
         for (int row = 0; row < 3; row++) {
             for (int col = 0; col < 9; col++) {
@@ -120,7 +125,7 @@ public class NpcTradeMenu extends AbstractContainerMenu {
     }
 
     private boolean canReceiveResult(NpcTradeEntry trade) {
-        return !trade.isCoinResult() || CoinBagHelper.hasCoinBagEquipped(player);
+        return true;
     }
 
     @Override
@@ -133,13 +138,14 @@ public class NpcTradeMenu extends AbstractContainerMenu {
         }
 
         if (id < 0 || id >= trades.size()) return false;
+        if (id == selectedTradeIndex && !tradeContainer.getItem(0).isEmpty()) return true;
         selectedTradeIndex = id;
         if (player.level().isClientSide()) return true;
 
-        ItemStack currentlyOffered = tradeContainer.getItem(0);
+        // Detach the stack from the container first so the inventory never shares the same instance
+        ItemStack currentlyOffered = tradeContainer.removeItemNoUpdate(0);
         if (!currentlyOffered.isEmpty()) {
             player.getInventory().placeItemBackInInventory(currentlyOffered);
-            tradeContainer.setItem(0, ItemStack.EMPTY);
         }
 
         NpcTradeEntry trade = getSelectedTrade();
@@ -151,6 +157,7 @@ public class NpcTradeMenu extends AbstractContainerMenu {
             CoinCost cost = singleCoinCost(trade);
             if (cost != null) fillCostSlot(CoinBagHelper.getCoinItem(cost.type()));
         }
+        broadcastChanges();
         return true;
     }
 
@@ -198,7 +205,18 @@ public class NpcTradeMenu extends AbstractContainerMenu {
         }
 
         if (trade.isCoinResult()) {
-            CoinBagHelper.depositCoins(executingPlayer, trade.resultCoins());
+            if (CoinBagHelper.hasCoinBagEquipped(executingPlayer)) {
+                CoinBagHelper.depositCoins(executingPlayer, trade.resultCoins());
+            } else {
+                // Without a bag the coins go into the inventory as items
+                CoinBagHelper.CoinType[] types = CoinBagHelper.CoinType.values();
+                for (int i = 0; i < trade.resultCoins().length && i < types.length; i++) {
+                    Item coinItem = CoinBagHelper.getCoinItem(types[i]);
+                    if (coinItem != null && trade.resultCoins()[i] > 0) {
+                        executingPlayer.getInventory().placeItemBackInInventory(new ItemStack(coinItem, trade.resultCoins()[i]));
+                    }
+                }
+            }
         } else {
             Item resultItem = BuiltInRegistries.ITEM.getValue(ResourceLocation.parse(trade.resultItem()));
             executingPlayer.getInventory().placeItemBackInInventory(new ItemStack(resultItem, trade.resultItemCount()));
