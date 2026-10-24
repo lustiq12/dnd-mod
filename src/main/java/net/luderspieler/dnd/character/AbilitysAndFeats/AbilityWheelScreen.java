@@ -492,7 +492,9 @@ public class AbilityWheelScreen extends Screen {
     }
 
     private float getScale(int segmentCount) {
-        return segmentCount >= 12 ? 3.0f : segmentCount >= 6 ? 2.0f : 1.0f;
+        float base = segmentCount >= 12 ? 3.0f : segmentCount >= 6 ? 2.0f : 1.0f;
+        int maxOuter = Math.max(60, Math.min(this.width, this.height) / 2 - 32);
+        return Math.min(base, maxOuter / (float) OUTER_RADIUS);
     }
 
     private String formatAbilityName(Ability ability) {

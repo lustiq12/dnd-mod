@@ -19,9 +19,10 @@ public class ClassListScreen extends Screen {
     private static final int BUTTON_WIDTH  = 120;
     private static final int BUTTON_HEIGHT = 20;
     private static final int ICON_SIZE     = 16;
-    private static final int COLS          = 4;
+    private static final int MAX_COLS      = 4;
     private static final int H_GAP         = 10;
     private static final int V_GAP         = 10;
+    private static final int MARGIN        = 10;
 
     private final boolean isNewCharacter;
 
@@ -30,24 +31,29 @@ public class ClassListScreen extends Screen {
         this.isNewCharacter = isNewCharacter;
     }
 
+    /** Column count that fits the current screen width, so the grid never leaves the screen. */
+    private int cols() {
+        int fit = (this.width - 2 * MARGIN + H_GAP) / (BUTTON_WIDTH + H_GAP);
+        return Math.max(1, Math.min(MAX_COLS, fit));
+    }
+
     @Override
     protected void init() {
         super.init();
         List<ClassDefinition> classes = ClassRegistry.CLASSES;
 
-        // Horizontale Zentrierung
-        int totalW = COLS * BUTTON_WIDTH + (COLS - 1) * H_GAP;
+        int cols = cols();
+        int totalW = cols * BUTTON_WIDTH + (cols - 1) * H_GAP;
         int startX = (this.width - totalW) / 2;
 
-        // Vertikale Zentrierung des gesamten Blocks
-        int rows = (int) Math.ceil((double) classes.size() / COLS);
+        int rows = (int) Math.ceil((double) classes.size() / cols);
         int totalH = rows * BUTTON_HEIGHT + (rows - 1) * V_GAP;
         int startY = (this.height - totalH) / 2;
 
         for (int i = 0; i < classes.size(); i++) {
             ClassDefinition cls = classes.get(i);
-            int col = i % COLS;
-            int row = i / COLS;
+            int col = i % cols;
+            int row = i / cols;
             int bx = startX + col * (BUTTON_WIDTH + H_GAP);
             int by = startY + row * (BUTTON_HEIGHT + V_GAP);
 
@@ -57,7 +63,6 @@ public class ClassListScreen extends Screen {
             ).bounds(bx, by, BUTTON_WIDTH, BUTTON_HEIGHT).build());
         }
 
-        // ── BACK Button (Zentriert am unteren Rand) ──
         this.addRenderableWidget(Button.builder(
                 Component.literal("Back"),
                 btn -> {
@@ -78,15 +83,16 @@ public class ClassListScreen extends Screen {
         g.drawCenteredString(this.font, this.title, this.width / 2, 20, generalConfigs.COLOR_ACCENT_GOLD);
 
         List<ClassDefinition> classes = ClassRegistry.CLASSES;
-        int totalW = COLS * BUTTON_WIDTH + (COLS - 1) * H_GAP;
+        int cols = cols();
+        int totalW = cols * BUTTON_WIDTH + (cols - 1) * H_GAP;
         int startX = (this.width - totalW) / 2;
-        int rows = (int) Math.ceil((double) classes.size() / COLS);
+        int rows = (int) Math.ceil((double) classes.size() / cols);
         int startY = (this.height - (rows * BUTTON_HEIGHT + (rows - 1) * V_GAP)) / 2;
 
         for (int i = 0; i < classes.size(); i++) {
             ClassDefinition cls = classes.get(i);
-            int col = i % COLS;
-            int row = i / COLS;
+            int col = i % cols;
+            int row = i / cols;
             int bx = startX + col * (BUTTON_WIDTH + H_GAP);
             int by = startY + row * (BUTTON_HEIGHT + V_GAP);
             g.blit(RenderPipelines.GUI_TEXTURED, cls.getIcon(), bx + 2, by + 2, 0, 0, ICON_SIZE, ICON_SIZE, ICON_SIZE, ICON_SIZE);

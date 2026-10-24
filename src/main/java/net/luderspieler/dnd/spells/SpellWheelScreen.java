@@ -73,7 +73,7 @@ public class SpellWheelScreen extends Screen {
 
     private void renderLevelWheel(GuiGraphics g, int mouseX, int mouseY) {
         int segments = 10;
-        float scale = 1.5f;
+        float scale = Math.min(1.5f, Math.max(60, Math.min(this.width, this.height) / 2 - 32) / (float) OUTER_RADIUS);
 
         int currentOuterRadius = (int) (OUTER_RADIUS * scale);
         int currentHubRadius = HUB_RADIUS;
@@ -131,8 +131,7 @@ public class SpellWheelScreen extends Screen {
 
     private void renderSpellWheel(GuiGraphics g, int mouseX, int mouseY) {
         int segments = currentSpells.isEmpty() ? 1 : currentSpells.size();
-
-        float scale = (segments >= 12) ? 3.0f : (segments >= 6 ? 2.0f : 1.0f);
+        float scale = Math.min((segments >= 12) ? 3.0f : (segments >= 6 ? 2.0f : 1.0f), Math.max(60, Math.min(this.width, this.height) / 2 - 32) / (float) OUTER_RADIUS);
 
         int currentOuterRadius = (int) (OUTER_RADIUS * scale);
         int currentHubRadius = HUB_RADIUS;
