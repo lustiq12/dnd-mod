@@ -20,8 +20,13 @@ public class RaceDetailScreen extends Screen {
     private static final int SUBRACE_BTN_W = 160;
     private static final int SUBRACE_BTN_H = 20;
     private static final int SUBRACE_GAP   = 4;
-    private final int imageWidth  = 400;
-    private final int imageHeight = 230;
+    private static final int MAX_WIDTH     = 400;
+    private static final int MAX_HEIGHT    = 230;
+    private static final int SCREEN_MARGIN = 5;
+
+    // Panel size is clamped to the screen in updateSize()
+    private int imageWidth  = MAX_WIDTH;
+    private int imageHeight = MAX_HEIGHT;
 
     private final RaceDefinition race;
     private final boolean isNewCharacter;
@@ -34,17 +39,40 @@ public class RaceDetailScreen extends Screen {
         this.subraces = RaceRegistry.getSubracesFor(race.getId());
     }
 
+    private void updateSize() {
+        this.imageWidth  = Math.min(MAX_WIDTH,  this.width  - 2 * SCREEN_MARGIN);
+        this.imageHeight = Math.min(MAX_HEIGHT, this.height - 2 * SCREEN_MARGIN);
+    }
+
+    // Right column geometry: the original fixed values at full size, proportional on narrow panels
+    private int rightOffset() {
+        return imageWidth >= MAX_WIDTH ? 220 : imageWidth / 2 + 5;
+    }
+
+    private int rightWidth() {
+        return imageWidth >= MAX_WIDTH ? SUBRACE_BTN_W : imageWidth - rightOffset() - 8;
+    }
+
+    private int leftWidth() {
+        return imageWidth >= MAX_WIDTH ? 190 : rightOffset() - 10 - 8;
+    }
+
+    /** Row height of one trait line, shared by init() (button placement) and render() (text placement). */
+    private int traitRowHeight(String line) {
+        int wrappedLines = this.font.split(Component.literal("» " + line), rightWidth()).size();
+        return Math.max(20, wrappedLines * 9 + 2);
+    }
+
     @Override
     protected void init() {
         super.init();
+        updateSize();
         int leftPos = (this.width - this.imageWidth) / 2;
         int topPos  = (this.height - this.imageHeight) / 2;
 
-        // FIX 1: Prüfen, ob AUCH wirklich Subraces in der Liste sind.
-        // Falls die Registry leer ist, fallen wir automatisch auf die direkte Auswahl zurück.
         if (race.hasSubtype() && !subraces.isEmpty()) {
             // Show lineage/ancestry buttons
-            int subraceStartX = leftPos + 220;
+            int subraceStartX = leftPos + rightOffset();
             int subraceStartY = topPos + 40;
             int count = Math.min(subraces.size(), 6);
             for (int i = 0; i < count; i++) {
@@ -53,29 +81,21 @@ public class RaceDetailScreen extends Screen {
                 this.addRenderableWidget(Button.builder(
                         Component.literal(subrace.getDisplayName()),
                         btn -> this.minecraft.setScreen(new SubraceDetailScreen(race, subrace, this.isNewCharacter))
-                ).bounds(subraceStartX, by, SUBRACE_BTN_W, SUBRACE_BTN_H).build());
+                ).bounds(subraceStartX, by, rightWidth(), SUBRACE_BTN_H).build());
             }
         } else {
             // No lineage — allow direct selection
-            int btnX = leftPos + 220;
+            int btnX = leftPos + rightOffset();
 
-            // FIX 2: Dynamische Y-Positionsberechnung basierend auf der Textlänge
             int lineY = topPos + 40;
             for (String line : race.getAbilityLines()) {
                 if (lineY + 10 > topPos + imageHeight - 30) break;
-
-                // Wir simulieren den Word-Wrap aus der render()-Methode, um zu sehen, wie viele Zeilen der Text braucht
-                int wrappedLines = this.font.split(Component.literal("» " + line), SUBRACE_BTN_W).size();
-
-                // Jede Zeile im Minecraft-Font ist ca. 9 Pixel hoch.
-                // Wir nehmen das Maximum aus den Standard-20-Pixeln oder der echten Text-Höhe plus kleinem Abstand.
-                lineY += Math.max(20, wrappedLines * 9 + 2);
+                lineY += traitRowHeight(line);
             }
 
-            // Platziere den Button mit 10 Pixeln Abstand unter dem letzten Trait
             int btnY = lineY + 10;
 
-            // Sicherheits-Check: Der Knopf darf nicht über das Panel-Unterteil oder in den Back-Button glitchen
+            // The button must not run into the Back button at the panel bottom
             int maxBtnY = topPos + imageHeight - 28 - SUBRACE_BTN_H - 4;
             if (btnY > maxBtnY) {
                 btnY = maxBtnY;
@@ -88,7 +108,7 @@ public class RaceDetailScreen extends Screen {
                         CharacterCreationState.selectedSubraceId = "";
                         this.minecraft.setScreen(new ClassListScreen(this.isNewCharacter));
                     }
-            ).bounds(btnX, btnY, SUBRACE_BTN_W, SUBRACE_BTN_H).build());
+            ).bounds(btnX, btnY, rightWidth(), SUBRACE_BTN_H).build());
         }
 
         this.addRenderableWidget(Button.builder(
@@ -115,16 +135,17 @@ public class RaceDetailScreen extends Screen {
                 leftPos + 10, topPos + 14, 0, 0, ICON_SIZE, ICON_SIZE, ICON_SIZE, ICON_SIZE);
         g.drawString(this.font, race.getDisplayName(), leftPos + 50, topPos + 22, generalConfigs.TEXT_WHITE);
 
+        int rightX = leftPos + rightOffset();
         if (race.hasSubtype()) {
-            g.drawString(this.font, "Choose a Lineage:", leftPos + 220, topPos + 22, generalConfigs.COLOR_ACCENT_GOLD);
+            g.drawString(this.font, "Choose a Lineage:", rightX, topPos + 22, generalConfigs.COLOR_ACCENT_GOLD);
         } else {
-            g.drawString(this.font, "Species Traits:", leftPos + 220, topPos + 22, generalConfigs.COLOR_ACCENT_GOLD);
+            g.drawString(this.font, "Species Traits:", rightX, topPos + 22, generalConfigs.COLOR_ACCENT_GOLD);
             // Show ability lines on the right side when there are no lineage buttons
             int lineY = topPos + 40;
             for (String line : race.getAbilityLines()) {
                 if (lineY + 10 > topPos + imageHeight - 30) break;
-                g.drawWordWrap(this.font, Component.literal("» " + line), leftPos + 222, lineY, SUBRACE_BTN_W, generalConfigs.TEXT_WHITE);
-                lineY += 20;
+                g.drawWordWrap(this.font, Component.literal("» " + line), rightX + 2, lineY, rightWidth(), generalConfigs.TEXT_WHITE);
+                lineY += traitRowHeight(line);
             }
         }
 
@@ -141,7 +162,7 @@ public class RaceDetailScreen extends Screen {
         attrY += 6;
         g.drawString(this.font, "Traits:", leftPos + 10, attrY, generalConfigs.COLOR_ACCENT_GOLD);
         attrY += 12;
-        g.drawWordWrap(this.font, Component.literal(race.getDescription()), leftPos + 10, attrY, 190, generalConfigs.TEXT_GRAY);
+        g.drawWordWrap(this.font, Component.literal(race.getDescription()), leftPos + 10, attrY, leftWidth(), generalConfigs.TEXT_GRAY);
     }
 
     @Override

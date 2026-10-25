@@ -22,11 +22,15 @@ public class NpcTradeScreen extends AbstractContainerScreen<NpcTradeMenu> {
 
     private static final int OFFER_ROW_H = 18;
     private static final int OFFER_LIST_W = 160;
+    private static final int MIN_OFFER_LIST_W = 90;
+    private static final int SCREEN_MARGIN = 5;
     private static final CoinBagHelper.CoinType[] COIN_TYPES = CoinBagHelper.CoinType.values();
     private static final String[] COIN_SUFFIX = {"cp", "sp", "ep", "gp", "pp"};
     private static final ResourceLocation COIN_BAG_ICON = ResourceLocation.parse("dnd:textures/screens/coin_bag_icon.png");
 
     private Button confirmButton;
+    // Offer list width, shrunk on narrow screens
+    private int offerListW = OFFER_LIST_W;
 
     public NpcTradeScreen(NpcTradeMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);
@@ -37,8 +41,14 @@ public class NpcTradeScreen extends AbstractContainerScreen<NpcTradeMenu> {
     @Override
     protected void init() {
         super.init();
-        int x = (this.width - this.imageWidth) / 2;
-        int y = (this.height - this.imageHeight) / 2;
+
+        // The offer list sits right of the panel. On narrow screens it shrinks and the panel moves left so both stay visible.
+        offerListW = Math.max(MIN_OFFER_LIST_W, Math.min(OFFER_LIST_W, this.width - this.imageWidth - 4 - 2 * SCREEN_MARGIN));
+        int composite = this.imageWidth + 4 + offerListW;
+        this.leftPos = Math.max(2, Math.min(this.leftPos, this.width - SCREEN_MARGIN - composite));
+
+        int x = this.leftPos;
+        int y = this.topPos;
         confirmButton = this.addRenderableWidget(Button.builder(Component.literal("Trade"), b -> confirmTrade())
                 .bounds(x + this.imageWidth / 2 - 30, y + 54, 60, 18).build());
     }
@@ -50,8 +60,8 @@ public class NpcTradeScreen extends AbstractContainerScreen<NpcTradeMenu> {
 
     @Override
     protected void renderBg(GuiGraphics g, float partial, int mouseX, int mouseY) {
-        int x = (this.width - this.imageWidth) / 2;
-        int y = (this.height - this.imageHeight) / 2;
+        int x = this.leftPos;
+        int y = this.topPos;
         g.fill(x, y, x + this.imageWidth, y + this.imageHeight, generalConfigs.COLOR_PANEL_BG);
         generalConfigs.renderGreenEdge(g, x, y, this.imageWidth, this.imageHeight);
 
@@ -111,13 +121,15 @@ public class NpcTradeScreen extends AbstractContainerScreen<NpcTradeMenu> {
         int y = offerListY();
         List<NpcTradeEntry> trades = this.menu.getTrades();
 
+        // Clip rows so content of a narrowed list never bleeds into the panel or off screen
+        g.enableScissor(x, y, x + offerListW, y + trades.size() * OFFER_ROW_H);
         for (int i = 0; i < trades.size(); i++) {
             int rowY = y + i * OFFER_ROW_H;
             boolean selected = i == this.menu.getSelectedTradeIndex();
-            boolean hovered = mouseX >= x && mouseX < x + OFFER_LIST_W && mouseY >= rowY && mouseY < rowY + OFFER_ROW_H;
+            boolean hovered = mouseX >= x && mouseX < x + offerListW && mouseY >= rowY && mouseY < rowY + OFFER_ROW_H;
 
-            if (selected) g.fill(x, rowY, x + OFFER_LIST_W, rowY + OFFER_ROW_H, 0x5500BB44);
-            else if (hovered) g.fill(x, rowY, x + OFFER_LIST_W, rowY + OFFER_ROW_H, generalConfigs.COLOR_HOVER_BG);
+            if (selected) g.fill(x, rowY, x + offerListW, rowY + OFFER_ROW_H, 0x5500BB44);
+            else if (hovered) g.fill(x, rowY, x + offerListW, rowY + OFFER_ROW_H, generalConfigs.COLOR_HOVER_BG);
 
             NpcTradeEntry trade = trades.get(i);
             int renderX = x + 2;
@@ -128,6 +140,7 @@ public class NpcTradeScreen extends AbstractContainerScreen<NpcTradeMenu> {
 
             renderSide(g, trade.isCoinResult(), trade.resultCoins(), trade.resultItem(), trade.resultItemCount(), renderX, rowY);
         }
+        g.disableScissor();
     }
 
     /** Draws either the coin breakdown or a single item icon+count for one side of a trade; returns the x position after it. */
@@ -169,7 +182,7 @@ public class NpcTradeScreen extends AbstractContainerScreen<NpcTradeMenu> {
 
         for (int i = 0; i < trades.size(); i++) {
             int rowY = y + i * OFFER_ROW_H;
-            if (mouseX >= x && mouseX < x + OFFER_LIST_W && mouseY >= rowY && mouseY < rowY + OFFER_ROW_H) {
+            if (mouseX >= x && mouseX < x + offerListW && mouseY >= rowY && mouseY < rowY + OFFER_ROW_H) {
                 this.menu.clickMenuButton(this.minecraft.player, i);
                 this.minecraft.gameMode.handleInventoryButtonClick(this.menu.containerId, i);
                 return true;
@@ -179,10 +192,10 @@ public class NpcTradeScreen extends AbstractContainerScreen<NpcTradeMenu> {
     }
 
     private int offerListX() {
-        return (this.width - this.imageWidth) / 2 + this.imageWidth + 4;
+        return this.leftPos + this.imageWidth + 4;
     }
 
     private int offerListY() {
-        return (this.height - this.imageHeight) / 2;
+        return this.topPos;
     }
 }

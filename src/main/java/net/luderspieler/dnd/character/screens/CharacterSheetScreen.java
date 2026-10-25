@@ -28,11 +28,19 @@ import java.util.Map;
 public class CharacterSheetScreen extends Screen {
 
     private static final int ICON_SIZE = 32;
+    // Space reserved at the bottom for the Back button
+    private static final int FOOTER_H = 36;
+    // Below this width the top-right button would overlap the header, so both buttons move to the bottom row
+    private static final int NARROW_WIDTH = 520;
+
     private Player player;
     private RaceDefinition race;
     private SubraceDefinition subrace;
     private ClassDefinition cls;
     private DndModVariables.PlayerVariables vars;
+
+    private int scroll = 0;
+    private int contentHeight = 0;
 
     // Mapping der Stats auf die D&D Modifier IDs
     private static final Map<Holder<Attribute>, ResourceLocation[]> DND_MODIFIERS = Map.of(
@@ -48,6 +56,10 @@ public class CharacterSheetScreen extends Screen {
         super(Component.literal("Character Sheet"));
     }
 
+    private int maxScroll() {
+        return Math.max(0, contentHeight - (this.height - FOOTER_H));
+    }
+
     @Override
     protected void init() {
         super.init();
@@ -61,14 +73,23 @@ public class CharacterSheetScreen extends Screen {
 
         int centerX = this.width / 2;
 
-        // Button oben rechts
-        this.addRenderableWidget(Button.builder(Component.literal("Character Advancement"),
-                        btn -> Minecraft.getInstance().setScreen(new LevelingChoiceScreen(this))) // 'this' übergeben!
-                .bounds(this.width - 170, 10, 160, 20).build());
+        if (this.width < NARROW_WIDTH) {
+            this.addRenderableWidget(Button.builder(Component.literal("Character Advancement"),
+                            btn -> Minecraft.getInstance().setScreen(new LevelingChoiceScreen(this)))
+                    .bounds(this.width - 170, this.height - 30, 160, 20).build());
 
-        // Back Button unten Mitte
-        this.addRenderableWidget(Button.builder(Component.literal("Back"), btn -> this.onClose())
-                .bounds(centerX - 40, this.height - 30, 80, 20).build());
+            this.addRenderableWidget(Button.builder(Component.literal("Back"), btn -> this.onClose())
+                    .bounds(10, this.height - 30, 80, 20).build());
+        } else {
+            // Button oben rechts
+            this.addRenderableWidget(Button.builder(Component.literal("Character Advancement"),
+                            btn -> Minecraft.getInstance().setScreen(new LevelingChoiceScreen(this))) // 'this' übergeben!
+                    .bounds(this.width - 170, 10, 160, 20).build());
+
+            // Back Button unten Mitte
+            this.addRenderableWidget(Button.builder(Component.literal("Back"), btn -> this.onClose())
+                    .bounds(centerX - 40, this.height - 30, 80, 20).build());
+        }
     }
 
     @Override
@@ -81,7 +102,11 @@ public class CharacterSheetScreen extends Screen {
         super.render(g, mouseX, mouseY, partial);
 
         int centerX = this.width / 2;
-        int currentY = 20;
+        int originY = 20 - scroll;
+        int currentY = originY;
+
+        // Scrollable content stays above the footer buttons
+        g.enableScissor(0, 0, this.width, this.height - FOOTER_H);
 
         // 2. HEADER (Icons, Name, Klasse - nutzt intern bereits die Config)
         renderCenteredHeader(g, centerX, currentY);
@@ -94,7 +119,20 @@ public class CharacterSheetScreen extends Screen {
         currentY += 15;
 
         // 4. STATS & ATTRIBUTE (Nutzt intern bereits die Config)
-        renderCentralStats(g, centerX, currentY);
+        int endY = renderCentralStats(g, centerX, currentY);
+
+        g.disableScissor();
+
+        contentHeight = endY - originY + 20 + 10;
+        scroll = Math.min(scroll, maxScroll());
+
+        if (maxScroll() > 0) {
+            int trackH = this.height - FOOTER_H - 6;
+            int thumbH = Math.max(10, trackH * trackH / contentHeight);
+            int thumbY = 3 + (trackH - thumbH) * scroll / maxScroll();
+            g.fill(this.width - 4, 3, this.width - 2, 3 + trackH, 0x33FFFFFF);
+            g.fill(this.width - 4, thumbY, this.width - 2, thumbY + thumbH, 0xAAFFFFFF);
+        }
     }
 
     private void renderCenteredHeader(GuiGraphics g, int centerX, int y) {
@@ -158,7 +196,8 @@ public class CharacterSheetScreen extends Screen {
         g.drawCenteredString(this.font, info, centerX, textY + 12, generalConfigs.TEXT_GRAY);
     }
 
-    private void renderCentralStats(GuiGraphics g, int centerX, int y) {
+    /** Draws the stat block and returns the y coordinate below its last line. */
+    private int renderCentralStats(GuiGraphics g, int centerX, int y) {
         // ── D&D ATTRIBUTES ──
         // Statt §l§e (Bold Yellow) nutzen wir COLOR_ACCENT_GOLD
         g.drawCenteredString(this.font, "Attributes", centerX, y, generalConfigs.COLOR_ACCENT_GOLD);
@@ -206,7 +245,7 @@ public class CharacterSheetScreen extends Screen {
         String story = (vars.PlayerStory == null || vars.PlayerStory.isEmpty()) ? "This adventurer's past is shrouded in mystery..." : vars.PlayerStory;
 
         // Statt §o§7 (Italic Gray) nutzen wir TEXT_GRAY
-        renderWrappedText(g, story, centerX, y, 240, generalConfigs.TEXT_GRAY);
+        return renderWrappedText(g, story, centerX, y, 240, generalConfigs.TEXT_GRAY);
     }
 
     // Helper Methode um Text mit Zeilenumbruch zentriert zu rendern
@@ -253,6 +292,12 @@ public class CharacterSheetScreen extends Screen {
     private String formatVal(String label, double val) {
         if (label.contains("Speed")) return String.format("%.0f%%", val * 100);
         return String.format("%.1f", val);
+    }
+
+    @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+        scroll = Math.max(0, Math.min(maxScroll(), scroll - (int) (scrollY * 12)));
+        return true;
     }
 
     @Override

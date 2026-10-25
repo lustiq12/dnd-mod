@@ -30,6 +30,7 @@ public class NpcDialogScreen extends Screen {
     private static final int BUBBLE_H = 200;
     private static final int BUST_SIZE = 100;
     private static final int BUST_SCALE = 30;
+    private static final int OPTION_ROW_H = 14;
 
     private final int entityId;
     private String currentNodeId;
@@ -43,6 +44,19 @@ public class NpcDialogScreen extends Screen {
 
     public int getEntityId() {
         return entityId;
+    }
+
+    /** Player bubble height: normally BUBBLE_H, shrunk on small screens but never smaller than its option rows need. */
+    private int playerBubbleH(NpcDialogNode node) {
+        int needed = 10 + (node == null ? 0 : node.options().size()) * OPTION_ROW_H + 6;
+        int base = Math.min(BUBBLE_H, Math.max(60, (this.height - 100) / 2));
+        return Math.max(needed, base);
+    }
+
+    /** NPC bubble height: normally BUBBLE_H, shrunk so it never overlaps the player bubble below it. */
+    private int npcBubbleH(NpcDialogNode node) {
+        int playerTop = this.height - playerBubbleH(node) - 40;
+        return Math.min(BUBBLE_H, Math.max(40, playerTop - 30));
     }
 
     @Override
@@ -72,18 +86,17 @@ public class NpcDialogScreen extends Screen {
         NpcDialogNode node = currentNode();
         if (node == null) return;
 
-        // Dynamische Positionierung analog zu renderPlayerBubble
         int busX = this.width - BUST_SIZE - 20;
         int bubbleX = busX - BUBBLE_W - 10;
-        int bubbleY = this.height - BUBBLE_H - 40;
+        int bubbleY = this.height - playerBubbleH(node) - 40;
 
         List<NpcDialogOption> options = node.options();
 
         for (int i = 0; i < options.size(); i++) {
             final int optionIndex = i;
-            int rowY = bubbleY + 10 + i * 14;
+            int rowY = bubbleY + 10 + i * OPTION_ROW_H;
 
-            // Button sitzt bei bubbleX + 6 (Breite 12), der Text startet genau dahinter bei bubbleX + 22
+            // Button sits at bubbleX + 6 (width 12), the text starts right behind it at bubbleX + 22
             this.addRenderableWidget(Button.builder(Component.literal(">"), b -> chooseOption(optionIndex))
                     .bounds(bubbleX + 6, rowY, 12, 12).build());
         }
@@ -95,8 +108,7 @@ public class NpcDialogScreen extends Screen {
 
     @Override
     public void render(GuiGraphics g, int mouseX, int mouseY, float partial) {
-        // Falls die SynchedEntityData beim allerersten Klick noch unterwegs sind,
-        // wird die Config hier automatisch geladen, sobald das Paket ankommt.
+        // If the entity data was still in flight on the very first click, the config loads here once it arrives
         if (this.config == null) {
             loadConfig();
             if (this.config != null) {
@@ -128,8 +140,9 @@ public class NpcDialogScreen extends Screen {
 
         int bubbleX = busX + BUST_SIZE + 10;
         int bubbleY = busY;
-        g.fill(bubbleX, bubbleY, bubbleX + BUBBLE_W, bubbleY + BUBBLE_H, generalConfigs.COLOR_PANEL_BG);
-        generalConfigs.renderGreenEdge(g, bubbleX, bubbleY, BUBBLE_W, BUBBLE_H);
+        int bubbleH = npcBubbleH(node);
+        g.fill(bubbleX, bubbleY, bubbleX + BUBBLE_W, bubbleY + bubbleH, generalConfigs.COLOR_PANEL_BG);
+        generalConfigs.renderGreenEdge(g, bubbleX, bubbleY, BUBBLE_W, bubbleH);
 
         String name = config != null ? config.displayName() : "";
         g.drawString(this.font, name, bubbleX + 6, bubbleY + 4, generalConfigs.COLOR_ACCENT_GOLD, false);
@@ -140,19 +153,19 @@ public class NpcDialogScreen extends Screen {
 
     private void renderPlayerBubble(GuiGraphics g, NpcDialogNode node) {
         int busX = this.width - BUST_SIZE - 20;
-        int busY = this.height - BUST_SIZE - 40; // Anpassen, falls nötig
+        int busY = this.height - BUST_SIZE - 40;
 
-        // Setzt die Bubble genau 10px links neben die Büste (analog zu NPC)
         int bubbleX = busX - BUBBLE_W - 10;
-        int bubbleY = this.height - BUBBLE_H - 40;
+        int bubbleH = playerBubbleH(node);
+        int bubbleY = this.height - bubbleH - 40;
 
-        g.fill(bubbleX, bubbleY, bubbleX + BUBBLE_W, bubbleY + BUBBLE_H, generalConfigs.COLOR_PANEL_BG);
-        generalConfigs.renderGreenEdge(g, bubbleX, bubbleY, BUBBLE_W, BUBBLE_H);
+        g.fill(bubbleX, bubbleY, bubbleX + BUBBLE_W, bubbleY + bubbleH, generalConfigs.COLOR_PANEL_BG);
+        generalConfigs.renderGreenEdge(g, bubbleX, bubbleY, BUBBLE_W, bubbleH);
 
         if (node != null) {
             List<NpcDialogOption> options = node.options();
             for (int i = 0; i < options.size(); i++) {
-                int rowY = bubbleY + 10 + i * 14;
+                int rowY = bubbleY + 10 + i * OPTION_ROW_H;
                 g.drawString(this.font, options.get(i).text(), bubbleX + 22, rowY, generalConfigs.TEXT_WHITE, false);
             }
         }

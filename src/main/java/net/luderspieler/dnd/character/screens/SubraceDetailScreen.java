@@ -9,14 +9,17 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 
 public class SubraceDetailScreen extends Screen {
 
     private static final int ICON_SIZE = 32;
-    private final int imageWidth = 400;
-    private final int imageHeight = 230;
-    private final int COL_WIDTH = 180;
+    private static final int MAX_WIDTH = 400;
+    private static final int MAX_HEIGHT = 230;
+    private static final int SCREEN_MARGIN = 5;
+
+    // Panel size is clamped to the screen in updateSize()
+    private int imageWidth = MAX_WIDTH;
+    private int imageHeight = MAX_HEIGHT;
 
     private final RaceDefinition race;
     private final SubraceDefinition subrace;
@@ -29,9 +32,20 @@ public class SubraceDetailScreen extends Screen {
         this.isNewCharacter = isNewCharacter;
     }
 
+    private void updateSize() {
+        this.imageWidth  = Math.min(MAX_WIDTH,  this.width  - 2 * SCREEN_MARGIN);
+        this.imageHeight = Math.min(MAX_HEIGHT, this.height - 2 * SCREEN_MARGIN);
+    }
+
+    // Two equal columns; gives the original 180 wide columns at full size
+    private int colWidth() {
+        return imageWidth / 2 - 20;
+    }
+
     @Override
     protected void init() {
         super.init();
+        updateSize();
         int topPos = (this.height - this.imageHeight) / 2;
         int centerX = this.width / 2;
 
@@ -52,7 +66,6 @@ public class SubraceDetailScreen extends Screen {
 
     @Override
     public void render(GuiGraphics g, int mouseX, int mouseY, float partial) {
-        // 1. Hintergrund-Overlay
         g.fillGradient(0, 0, this.width, this.height,
                 generalConfigs.COLOR_DEATH_OVERLAY_TOP,
                 generalConfigs.COLOR_DEATH_OVERLAY_BOTTOM);
@@ -60,13 +73,11 @@ public class SubraceDetailScreen extends Screen {
         int leftPos = (this.width - this.imageWidth) / 2;
         int topPos = (this.height - this.imageHeight) / 2;
 
-        // 2. Main Panel Background & Edge
         g.fill(leftPos, topPos, leftPos + imageWidth, topPos + imageHeight, generalConfigs.COLOR_PANEL_BG);
         generalConfigs.renderGreenEdge(g, leftPos, topPos, imageWidth, imageHeight);
 
         super.render(g, mouseX, mouseY, partial);
 
-        // 3. ICON
         g.blit(
                 RenderPipelines.GUI_TEXTURED,
                 subrace.getIcon(),
@@ -76,29 +87,26 @@ public class SubraceDetailScreen extends Screen {
                 ICON_SIZE, ICON_SIZE
         );
 
-        // 4. NAME
         g.drawString(this.font, subrace.getDisplayName(), leftPos + 50, topPos + 22, generalConfigs.TEXT_WHITE);
-
-        // 5. PARENT RACE
         g.drawString(this.font, "(" + race.getDisplayName() + ")", leftPos + 50, topPos + 34, generalConfigs.TEXT_DARK_GRAY);
 
-        // 6. DESCRIPTION
         g.drawWordWrap(this.font,
                 Component.literal(subrace.getDescription()),
-                leftPos + 10, topPos + 52, COL_WIDTH, generalConfigs.TEXT_GRAY);
+                leftPos + 10, topPos + 52, colWidth(), generalConfigs.TEXT_GRAY);
 
-        // 7. ABILITIES
-        int rightColX = leftPos + 210;
+        int rightColX = leftPos + imageWidth / 2 + 10;
         int y = topPos + 30;
 
         g.drawString(this.font, "Subrace Traits:", rightColX, y, generalConfigs.COLOR_ACCENT_GOLD);
 
         y += 14;
         for (String line : subrace.getAbilityLines()) {
-            g.drawWordWrap(this.font,
-                    Component.literal("» " + line),
-                    rightColX, y, COL_WIDTH, generalConfigs.TEXT_WHITE);
-            y += 20;
+            // Stop before the Choose/Back buttons instead of drawing over them
+            if (y + 10 > topPos + imageHeight - 30) break;
+            Component text = Component.literal("» " + line);
+            g.drawWordWrap(this.font, text, rightColX, y, colWidth(), generalConfigs.TEXT_WHITE);
+            int wrappedLines = this.font.split(text, colWidth()).size();
+            y += Math.max(20, wrappedLines * 9 + 2);
         }
     }
 
