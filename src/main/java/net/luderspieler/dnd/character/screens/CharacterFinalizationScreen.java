@@ -32,15 +32,10 @@ public class CharacterFinalizationScreen extends Screen {
     private static final int COLUMN_WIDTH = 180;
 
     // ── Header-Layout (feste Y-Offsets vom oberen Rand) ─────────────────────
-    // Icons: zwei 16×16-Slots zentriert oben
     private static final int ICON_Y      = 10;
-    // Name: goldene Überschrift, 1,8-fach skaliert (~16 px Schrifthöhe auf Screen)
     private static final int NAME_Y      = ICON_Y + ICON_SIZE + 4;   // 30
-    // Infoleiste: Race | Class | Lvl 1 in Grau
     private static final int INFO_Y      = NAME_Y + 18;              // 48
-    // Trennlinie
     private static final int SEPARATOR_Y = INFO_Y + 12;              // 60
-    // Anfang des Inhaltsbereichs (unter Trennlinie)
     private static final int CONTENT_TOP = SEPARATOR_Y + 14;         // 74
 
     // ── Linke Spalte: Label-Y und Box-Y ─────────────────────────────────────
@@ -55,6 +50,21 @@ public class CharacterFinalizationScreen extends Screen {
     private static final int LBL_PERS_Y  = BOX_STORY_Y + BOX_STORY_H + 8; // 184
     private static final int BOX_PERS_Y  = LBL_PERS_Y  + 12;              // 196
     private static final int BOX_PERS_H  = 50;
+
+    // ── Compact layout (small screens): header is just text, left and right content become two pages ──
+    private static final int NARROW_WIDTH  = 500;
+    private static final int NARROW_HEIGHT = 300;
+    private static final int N_NAME_Y      = 8;
+    private static final int N_INFO_Y      = 20;
+    private static final int N_SEPARATOR_Y = 32;
+    private static final int N_LBL_NAME_Y  = 38;
+    private static final int N_BOX_NAME_Y  = N_LBL_NAME_Y + 12;
+    private static final int N_LBL_STORY_Y = N_BOX_NAME_Y + BOX_NAME_H + 6;
+    private static final int N_BOX_STORY_Y = N_LBL_STORY_Y + 12;
+    private static final int N_BOX_STORY_H = 40;
+    private static final int N_LBL_PERS_Y  = N_BOX_STORY_Y + N_BOX_STORY_H + 6;
+    private static final int N_BOX_PERS_Y  = N_LBL_PERS_Y + 12;
+    private static final int N_BOX_PERS_H  = 40;
 
     // ── Rechtes Panel: innerer Padding ──────────────────────────────────────
     private static final int PANEL_PAD   = 8;
@@ -73,14 +83,15 @@ public class CharacterFinalizationScreen extends Screen {
     private EditBox storyBox;
     private EditBox personalityBox;
 
+    // Compact layout only: false = text inputs page, true = summary page
+    private boolean summaryPage = false;
+    private Button pageButton;
+
     private final RaceDefinition    race;
     private final SubraceDefinition subrace;
     private final ClassDefinition   cls;
     private int rpW;
 
-    // ============================================================
-    //  Konstruktor – identische Logik wie original
-    // ============================================================
     public CharacterFinalizationScreen(boolean isNewCharacter) {
         super(Component.literal("Character Finalization"));
         this.isNewCharacter = isNewCharacter;
@@ -89,97 +100,127 @@ public class CharacterFinalizationScreen extends Screen {
         this.cls     = ClassRegistry.getClass(CharacterCreationState.selectedClassId);
     }
 
-    // ============================================================
-    //  init() – Widgets platzieren
-    //  Positionen sind auf die render()-Labels abgestimmt.
-    // ============================================================
+    private boolean narrow() {
+        return this.width < NARROW_WIDTH || this.height < NARROW_HEIGHT;
+    }
+
+    private void setInputsVisible(boolean visible) {
+        for (EditBox box : new EditBox[]{nameBox, storyBox, personalityBox}) {
+            box.visible = visible;
+            if (!visible) box.setFocused(false);
+        }
+    }
+
     @Override
     protected void init() {
         int centerX = this.width / 2;
-        int leftX   = centerX - 230;   // Linke Spalte beginnt hier
+        boolean narrow = narrow();
+        int leftX = narrow ? centerX - BOX_WIDTH / 2 : centerX - 230;
+
+        int nameY  = narrow ? N_BOX_NAME_Y : BOX_NAME_Y;
+        int storyY = narrow ? N_BOX_STORY_Y : BOX_STORY_Y;
+        int storyH = narrow ? N_BOX_STORY_H : BOX_STORY_H;
+        int persY  = narrow ? N_BOX_PERS_Y : BOX_PERS_Y;
+        int persH  = narrow ? N_BOX_PERS_H : BOX_PERS_H;
 
         // ── Eingabefelder ─────────────────────────────────────────────────────
         this.nameBox = new EditBox(
-                this.font, leftX, BOX_NAME_Y, BOX_WIDTH, BOX_NAME_H,
+                this.font, leftX, nameY, BOX_WIDTH, BOX_NAME_H,
                 Component.literal("Name"));
         this.addRenderableWidget(this.nameBox);
 
-        // Höhere EditBoxen geben dem Nutzer visuell mehr "Platz" für Story/Pers.
         this.storyBox = new EditBox(
-                this.font, leftX, BOX_STORY_Y, BOX_WIDTH, BOX_STORY_H,
+                this.font, leftX, storyY, BOX_WIDTH, storyH,
                 Component.literal("Story"));
         this.addRenderableWidget(this.storyBox);
 
         this.personalityBox = new EditBox(
-                this.font, leftX, BOX_PERS_Y, BOX_WIDTH, BOX_PERS_H,
+                this.font, leftX, persY, BOX_WIDTH, persH,
                 Component.literal("Personality"));
         this.addRenderableWidget(this.personalityBox);
 
         // ── Buttons – zentriert am unteren Rand ──────────────────────────────
-        int btnY = this.height - 35;
-        this.addRenderableWidget(
-                Button.builder(Component.literal("Back"),
-                                b -> this.minecraft.setScreen(new ClassDetailScreen(cls, isNewCharacter)))
-                        .bounds(centerX - 62, btnY, 55, 20)
-                        .build());
+        Button.OnPress back = b -> this.minecraft.setScreen(new ClassDetailScreen(cls, isNewCharacter));
+        Button.OnPress finish = b -> {
+            // ── Paket senden – identische Logik wie original ──────────
+            ClientPacketDistributor.sendToServer(new CharacterCreationPacket(
+                    CharacterCreationState.selectedRaceId,
+                    CharacterCreationState.selectedSubraceId,
+                    CharacterCreationState.selectedClassId,
+                    nameBox.getValue(),
+                    storyBox.getValue(),
+                    personalityBox.getValue()
+            ));
+            CharacterCreationState.reset();
+            this.onClose();
+        };
 
-        this.addRenderableWidget(
-                Button.builder(Component.literal("Finish"), b -> {
-                            // ── Paket senden – identische Logik wie original ──────────
-                            ClientPacketDistributor.sendToServer(new CharacterCreationPacket(
-                                    CharacterCreationState.selectedRaceId,
-                                    CharacterCreationState.selectedSubraceId,
-                                    CharacterCreationState.selectedClassId,
-                                    nameBox.getValue(),
-                                    storyBox.getValue(),
-                                    personalityBox.getValue()
-                            ));
-                            CharacterCreationState.reset();
-                            this.onClose();
-                        }).bounds(centerX + 8, btnY, 55, 20)
-                        .build());
+        if (narrow) {
+            int btnY = this.height - 30;
+            this.addRenderableWidget(Button.builder(Component.literal("Back"), back)
+                    .bounds(centerX - 103, btnY, 55, 20).build());
+            pageButton = this.addRenderableWidget(Button.builder(pageButtonLabel(), b -> {
+                summaryPage = !summaryPage;
+                pageButton.setMessage(pageButtonLabel());
+                setInputsVisible(!summaryPage);
+            }).bounds(centerX - 40, btnY, 80, 20).build());
+            this.addRenderableWidget(Button.builder(Component.literal("Finish"), finish)
+                    .bounds(centerX + 48, btnY, 55, 20).build());
+            setInputsVisible(!summaryPage);
+        } else {
+            int btnY = this.height - 35;
+            this.addRenderableWidget(
+                    Button.builder(Component.literal("Back"), back)
+                            .bounds(centerX - 62, btnY, 55, 20)
+                            .build());
+
+            this.addRenderableWidget(
+                    Button.builder(Component.literal("Finish"), finish)
+                            .bounds(centerX + 8, btnY, 55, 20)
+                            .build());
+        }
     }
 
-    // ============================================================
-    //  render() – alles zeichnen
-    // ============================================================
+    private Component pageButtonLabel() {
+        return Component.literal(summaryPage ? "Details" : "Summary");
+    }
+
     @Override
     public void render(GuiGraphics g, int mouseX, int mouseY, float partial) {
 
-        // 1. Hintergrund + dunkles Overlay
-        // this.renderBackground(g, mouseX, mouseY, partial); <-- ENTFERNT, da NeoForge das jetzt vorher automatisch macht!
         g.fill(0, 0, this.width, this.height, generalConfigs.COLOR_SCREEN_OVERLAY);
 
+        boolean narrow = narrow();
         int centerX = this.width / 2;
-        int leftX   = centerX - 230;
+        int leftX   = narrow ? centerX - BOX_WIDTH / 2 : centerX - 230;
 
         // ══════════════════════════════════════════════════════════
         //  HEADER
         // ══════════════════════════════════════════════════════════
 
-        // Rassen-Icon-Slot (links vom Zentrum)
-        int raceSlotX = centerX - ICON_SIZE - 3;
-        g.fill(raceSlotX, ICON_Y, raceSlotX + ICON_SIZE, ICON_Y + ICON_SIZE, generalConfigs.TEXT_DARK_GRAY);
-        generalConfigs.renderGreenEdge(g, raceSlotX, ICON_Y, ICON_SIZE, ICON_SIZE);
+        if (!narrow) {
+            // Rassen-Icon-Slot (links vom Zentrum)
+            int raceSlotX = centerX - ICON_SIZE - 3;
+            g.fill(raceSlotX, ICON_Y, raceSlotX + ICON_SIZE, ICON_Y + ICON_SIZE, generalConfigs.TEXT_DARK_GRAY);
+            generalConfigs.renderGreenEdge(g, raceSlotX, ICON_Y, ICON_SIZE, ICON_SIZE);
 
-        // Klassen-Icon-Slot (rechts vom Zentrum)
-        int clsSlotX = centerX + 3;
-        g.fill(clsSlotX, ICON_Y, clsSlotX + ICON_SIZE, ICON_Y + ICON_SIZE, generalConfigs.TEXT_DARK_GRAY);
-        generalConfigs.renderGreenEdge(g, clsSlotX, ICON_Y, ICON_SIZE, ICON_SIZE);
+            // Klassen-Icon-Slot (rechts vom Zentrum)
+            int clsSlotX = centerX + 3;
+            g.fill(clsSlotX, ICON_Y, clsSlotX + ICON_SIZE, ICON_Y + ICON_SIZE, generalConfigs.TEXT_DARK_GRAY);
+            generalConfigs.renderGreenEdge(g, clsSlotX, ICON_Y, ICON_SIZE, ICON_SIZE);
+        }
 
-        // ── Charaktername: zentriert, Gold, mit Schlagschatten ───────────────
+        // ── Charaktername: zentriert, Gold ───────────────────────────────────
         String displayName = (nameBox != null && !nameBox.getValue().isBlank())
                 ? nameBox.getValue() : "— Name —";
-        g.drawCenteredString(this.font, displayName, centerX, NAME_Y,
+        g.drawCenteredString(this.font, displayName, centerX, narrow ? N_NAME_Y : NAME_Y,
                 generalConfigs.COLOR_ACCENT_GOLD);
 
         // ── Infoleiste: Subrace Race | Class | Lvl 1 ─────────────────────────
-        // 1. Strings direkt aus dem CreationState holen und säubern (Unterstriche zu Leerzeichen)
         String rawRace = CharacterCreationState.selectedRaceId.replace("_", " ");
         String rawSubrace = CharacterCreationState.selectedSubraceId.replace("_", " ");
         String rawClass = CharacterCreationState.selectedClassId.replace("_", " ");
 
-// 2. Schnelle Konvertierung in Camel Case / Title Case
         java.util.function.Function<String, String> format = (str) -> {
             if (str == null || str.isBlank()) return "";
             String[] words = str.split("\\s+");
@@ -194,41 +235,53 @@ public class CharacterFinalizationScreen extends Screen {
         String cleanSubrace = format.apply(rawSubrace);
         String cleanClass = format.apply(rawClass);
 
-// 3. Rassen-Teil: "Subrace (Race)" oder nur "Race" (Falls keine Subrace gewählt wurde oder sie leer ist)
         String racePart = (!cleanSubrace.isEmpty())
                 ? cleanSubrace + " (" + (!cleanRace.isEmpty() ? cleanRace : "?") + ")"
                 : (!cleanRace.isEmpty() ? cleanRace : "?");
 
-// 4. Klassen-Teil
         String classPart = !cleanClass.isEmpty() ? cleanClass : "?";
 
-// 5. Finaler Info-Text für den Creation Screen
         String infoText = racePart + " | " + classPart + " | Lvl 1";
-        g.drawCenteredString(this.font, infoText, centerX, INFO_Y, generalConfigs.TEXT_GRAY);
+        g.drawCenteredString(this.font, infoText, centerX, narrow ? N_INFO_Y : INFO_Y, generalConfigs.TEXT_GRAY);
 
         // ── Trennlinie ────────────────────────────────────────────────────────
-        g.hLine(15, this.width - 15, SEPARATOR_Y, generalConfigs.TEXT_GRAY);
+        g.hLine(15, this.width - 15, narrow ? N_SEPARATOR_Y : SEPARATOR_Y, generalConfigs.TEXT_GRAY);
 
-        // ══════════════════════════════════════════════════════════
-        //  LINKE SPALTE – nur Labels (Widgets rendern über super.render)
-        // ══════════════════════════════════════════════════════════
+        if (narrow) {
+            if (!summaryPage) {
+                g.drawString(this.font, "Character Name", leftX, N_LBL_NAME_Y,  generalConfigs.TEXT_WHITE);
+                g.drawString(this.font, "Backstory",      leftX, N_LBL_STORY_Y, generalConfigs.TEXT_WHITE);
+                g.drawString(this.font, "Personality",    leftX, N_LBL_PERS_Y,  generalConfigs.TEXT_WHITE);
+            } else {
+                renderSummary(g, centerX - 110, N_SEPARATOR_Y + 8, mouseX, mouseY);
+            }
+        } else {
+            // ══════════════════════════════════════════════════════════
+            //  LINKE SPALTE – nur Labels (Widgets rendern über die Schleife unten)
+            // ══════════════════════════════════════════════════════════
 
-        g.drawString(this.font, "Character Name", leftX, LBL_NAME_Y,  generalConfigs.TEXT_WHITE);
-        g.drawString(this.font, "Backstory",      leftX, LBL_STORY_Y, generalConfigs.TEXT_WHITE);
-        g.drawString(this.font, "Personality",    leftX, LBL_PERS_Y,  generalConfigs.TEXT_WHITE);
+            g.drawString(this.font, "Character Name", leftX, LBL_NAME_Y,  generalConfigs.TEXT_WHITE);
+            g.drawString(this.font, "Backstory",      leftX, LBL_STORY_Y, generalConfigs.TEXT_WHITE);
+            g.drawString(this.font, "Personality",    leftX, LBL_PERS_Y,  generalConfigs.TEXT_WHITE);
 
-        // ══════════════════════════════════════════════════════════
-        //  RECHTES PANEL – dunkler Hintergrund mit grünem Rahmen
-        // ══════════════════════════════════════════════════════════
+            // ══════════════════════════════════════════════════════════
+            //  RECHTES PANEL
+            // ══════════════════════════════════════════════════════════
 
-        int rpX = centerX + 10;
-        int rpY = SEPARATOR_Y + 5;
-        int rpW = this.width - rpX - 20;
-        int rpH = this.height - rpY - 45;
+            int rpX = centerX + 10;
+            int rpY = SEPARATOR_Y + 5;
 
-        int rx = rpX + PANEL_PAD;   // Panel-Inhalts-X
-        int ry = rpY + 10;          // Panel-Inhalts-Y (Cursor)
+            renderSummary(g, rpX + PANEL_PAD, rpY + 10, mouseX, mouseY);
+        }
 
+        // ── Widgets (EditBoxen, Buttons) über allem ────────────────────────
+        for (net.minecraft.client.gui.components.Renderable renderable : this.renderables) {
+            renderable.render(g, mouseX, mouseY, partial);
+        }
+    }
+
+    /** Final attributes, starting equipment and proficiencies, drawn from the given top-left point. */
+    private void renderSummary(GuiGraphics g, int rx, int ry, int mouseX, int mouseY) {
         // ── Finale Attribute ──────────────────────────────────────────────────
         g.drawString(this.font, "Final Attributes", rx, ry,
                 generalConfigs.COLOR_ACCENT_GOLD, true);
@@ -252,7 +305,7 @@ public class CharacterFinalizationScreen extends Screen {
 
             int modColor = mod > 0 ? generalConfigs.COLOR_STATUS_SUCCESS
                     : mod < 0 ? generalConfigs.COLOR_STATUS_DANGER
-                      :           generalConfigs.TEXT_GRAY;
+                    :           generalConfigs.TEXT_GRAY;
 
             int aw = this.font.width(abbStr);
             int vw = this.font.width(valStr);
@@ -303,11 +356,6 @@ public class CharacterFinalizationScreen extends Screen {
                 line = new StringBuilder();
                 lineCount = 0;
             }
-        }
-
-        // ── Widgets (EditBoxen, Buttons) über allem ────────────────────────
-        for (net.minecraft.client.gui.components.Renderable renderable : this.renderables) {
-            renderable.render(g, mouseX, mouseY, partial);
         }
     }
 
