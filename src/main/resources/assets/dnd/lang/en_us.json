@@ -91,5 +91,7 @@
   "item.dnd.ring_of_protection.description_0": "Reduces the taken Damage by 10%",
   "item.dnd.ring_of_swimming.description_0": "Increases swimming speed",
   "item.dnd.mobs_tab_icon": "Mobs Tab Icon",
-  "item.dnd.electrum_coin": "Electrum Coin"
+  "item.dnd.electrum_coin": "Electrum Coin",
+  "item.dnd.solar_spawn_egg": "Solar Spawn Egg",
+  "entity.dnd.solar": "Solar"
 }

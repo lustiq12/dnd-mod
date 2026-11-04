@@ -1898,6 +1898,136 @@
         ]
       },
       "path": "~/Technical"
+    },
+    {
+      "name": "ElectrumCoin",
+      "type": "item",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "electrum_coin",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/dnd/items/electrum_coin.json",
+          "src/main/java/net/luderspieler/dnd/item/ElectrumCoinItem.java",
+          "src/main/resources/assets/dnd/models/item/electrum_coin.json"
+        ]
+      },
+      "path": "~/items"
+    },
+    {
+      "name": "SolarAttackPlaybackCondition",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "solar_attack_playback_condition",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "return_type": "logic",
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/SolarAttackPlaybackConditionProcedure.java"
+        ]
+      },
+      "path": "~/Monsters/Solar"
+    },
+    {
+      "name": "SolarAnimSync",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "solar_anim_sync",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "damagesource",
+            "type": "damagesource"
+          },
+          {
+            "name": "entity",
+            "type": "entity"
+          },
+          {
+            "name": "immediatesourceentity",
+            "type": "entity"
+          },
+          {
+            "name": "amount",
+            "type": "number"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/SolarAnimSyncProcedure.java"
+        ]
+      },
+      "path": "~/Monsters/Solar"
+    },
+    {
+      "name": "SolarIdleCooldown",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "solar_idle_cooldown",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/SolarIdleCooldownProcedure.java"
+        ]
+      },
+      "path": "~/Monsters/Solar"
+    },
+    {
+      "name": "Solar",
+      "type": "livingentity",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "solar",
+      "metadata": {
+        "files": [
+          "src/main/java/net/luderspieler/dnd/client/renderer/SolarRenderer.java",
+          "src/main/resources/assets/dnd/items/solar_spawn_egg.json",
+          "src/main/resources/data/dnd/neoforge/biome_modifier/solar_biome_modifier.json",
+          "src/main/java/net/luderspieler/dnd/entity/SolarEntity.java",
+          "src/main/resources/assets/dnd/models/item/solar_spawn_egg.json"
+        ]
+      },
+      "path": "~/Monsters"
+    },
+    {
+      "name": "SolarBowPlaybackCondition",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "solar_bow_playback_condition",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "return_type": "logic",
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/SolarBowPlaybackConditionProcedure.java"
+        ]
+      },
+      "path": "~/Monsters/Solar"
     }
   ],
   "variable_elements": [
@@ -2367,15 +2497,18 @@
       "item_group.dnd.dn_d_mobs": "D\u0026D Mobs",
       "item_group.dnd.dnd_equipment": "D\u0026D Equipment",
       "item.dnd.copper_coin": "Copper Coin",
-      "item.dnd.silver_coin": "Copper Coin",
-      "item.dnd.gold_coin": "Copper Coin",
-      "item.dnd.platinum_coin": "Copper Coin",
+      "item.dnd.silver_coin": "Silver Coin",
+      "item.dnd.gold_coin": "Gold Coin",
+      "item.dnd.platinum_coin": "Platinum Coin",
       "item.dnd.coin_bag": "Coin Bag",
       "item.dnd.ring_of_protection": "Ring Of Protection",
       "item.dnd.ring_of_swimming": "Ring Of Swimming",
       "item.dnd.ring_of_protection.description_0": "Reduces the taken Damage by 10%",
       "item.dnd.ring_of_swimming.description_0": "Increases swimming speed",
-      "item.dnd.mobs_tab_icon": "Mobs Tab Icon"
+      "item.dnd.mobs_tab_icon": "Mobs Tab Icon",
+      "item.dnd.electrum_coin": "Electrum Coin",
+      "item.dnd.solar_spawn_egg": "Solar Spawn Egg",
+      "entity.dnd.solar": "Solar"
     }
   },
   "metadata": {

@@ -31,6 +31,7 @@ public class DndModTabs {
 				tabData.accept(DndModItems.GELATINOUS_CUBE_SPAWN_EGG.get());
 				tabData.accept(DndModItems.GORISTRO_SPAWN_EGG.get());
 				tabData.accept(DndModItems.GOBLIN_HENCHMAN_SPAWN_EGG.get());
+				tabData.accept(DndModItems.SOLAR_SPAWN_EGG.get());
 			}).withSearchBar().build());
 	public static final DeferredHolder<CreativeModeTab, CreativeModeTab> DND_EQUIPMENT = REGISTRY.register("dnd_equipment",
 			() -> CreativeModeTab.builder().title(Component.translatable("item_group.dnd.dnd_equipment")).icon(() -> new ItemStack(DndModItems.SPEAR.get())).displayItems((parameters, tabData) -> {
@@ -64,6 +65,7 @@ public class DndModTabs {
 			tabData.accept(DndModItems.GORISTRO_SPAWN_EGG.get());
 			tabData.accept(DndModItems.GOBLIN_HENCHMAN_SPAWN_EGG.get());
 			tabData.accept(DndModItems.DWARVEN_SMITH_SPAWN_EGG.get());
+			tabData.accept(DndModItems.SOLAR_SPAWN_EGG.get());
 		} else if (tabData.getTabKey() == CreativeModeTabs.BUILDING_BLOCKS) {
 			tabData.accept(DndModBlocks.SCARECROW_BLOCK.get().asItem());
 		}
