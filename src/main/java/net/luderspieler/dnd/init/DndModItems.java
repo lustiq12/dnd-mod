@@ -41,6 +41,7 @@ public class DndModItems {
 	public static final DeferredItem<Item> MOBS_TAB_ICON;
 	public static final DeferredItem<Item> ELECTRUM_COIN;
 	public static final DeferredItem<Item> SOLAR_SPAWN_EGG;
+	public static final DeferredItem<Item> SHADY_DWARF_SPAWN_EGG;
 	static {
 		STIRGE_SPAWN_EGG = register("stirge_spawn_egg", properties -> new SpawnEggItem(DndModEntities.STIRGE.get(), properties));
 		SCARECROW_SPAWN_EGG = register("scarecrow_spawn_egg", properties -> new SpawnEggItem(DndModEntities.SCARECROW.get(), properties));
@@ -64,6 +65,7 @@ public class DndModItems {
 		MOBS_TAB_ICON = register("mobs_tab_icon", MobsTabIconItem::new);
 		ELECTRUM_COIN = register("electrum_coin", ElectrumCoinItem::new);
 		SOLAR_SPAWN_EGG = register("solar_spawn_egg", properties -> new SpawnEggItem(DndModEntities.SOLAR.get(), properties));
+		SHADY_DWARF_SPAWN_EGG = register("shady_dwarf_spawn_egg", properties -> new SpawnEggItem(DndModEntities.SHADY_DWARF.get(), properties));
 	}
 
 	// Start of user code block custom items

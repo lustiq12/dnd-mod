@@ -77,6 +77,10 @@ public class DndModEntities {
 			EntityType.Builder.<SolarEntity>of(SolarEntity::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(128).setUpdateInterval(3)
 
 					.sized(0.6f, 1.8f));
+	public static final DeferredHolder<EntityType<?>, EntityType<ShadyDwarfEntity>> SHADY_DWARF = register("shady_dwarf",
+			EntityType.Builder.<ShadyDwarfEntity>of(ShadyDwarfEntity::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3)
+
+					.sized(0.6f, 1.8f));
 
 	// Start of user code block custom entities
 	// End of user code block custom entities
@@ -99,6 +103,7 @@ public class DndModEntities {
 		GoblinHenchmanEntity.init(event);
 		DwarvenSmithEntity.init(event);
 		SolarEntity.init(event);
+		ShadyDwarfEntity.init(event);
 	}
 
 	@SubscribeEvent
@@ -116,5 +121,6 @@ public class DndModEntities {
 		event.put(GOBLIN_HENCHMAN.get(), GoblinHenchmanEntity.createAttributes().build());
 		event.put(DWARVEN_SMITH.get(), DwarvenSmithEntity.createAttributes().build());
 		event.put(SOLAR.get(), SolarEntity.createAttributes().build());
+		event.put(SHADY_DWARF.get(), ShadyDwarfEntity.createAttributes().build());
 	}
 }

@@ -22,6 +22,10 @@ public final class NpcPresets {
                 "DwarvenSmithEntity",
                 dwarvenSmith()
         );
+        NpcPresetRegistry.register(
+                "ShadyDwarfEntity",
+                shadyDwarf()
+        );
     }
 
     // ============================================================
@@ -461,4 +465,259 @@ public final class NpcPresets {
                 )
         );
     }
+    public static NpcPreset shadyDwarf() {
+
+        // --------------------------------------------------------
+        // Greeting
+        // --------------------------------------------------------
+
+        NpcDialogNode greeting = new NpcDialogNode(
+                "greeting",
+                "Psst... Hey, traveler. Keep your voice down. You want something, or are you just admiring my tree stump?",
+                List.of(
+                        new NpcDialogOption(
+                                "Show me what you... 'found'.",
+                                "shop",
+                                false
+                        ),
+                        new NpcDialogOption(
+                                "Tell me something about the creatures around here.",
+                                "rumors",
+                                false
+                        ),
+                        new NpcDialogOption(
+                                "Who even are you?",
+                                "about",
+                                false
+                        ),
+                        new NpcDialogOption(
+                                "I'll be going.",
+                                "farewell",
+                                false
+                        )
+                )
+        );
+
+        // --------------------------------------------------------
+        // Shop
+        // --------------------------------------------------------
+
+        NpcDialogNode shop = new NpcDialogNode(
+                "shop",
+                "Found 'em lying around. Fell off a cart, or... well, let's just say nobody's missing them. Interested?",
+                List.of(
+                        new NpcDialogOption(
+                                "Let's see your goods.",
+                                null,
+                                true
+                        ),
+                        new NpcDialogOption(
+                                "Got any special, hidden wares?",
+                                "special_wares",
+                                false
+                        ),
+                        new NpcDialogOption(
+                                "Back.",
+                                "greeting",
+                                false
+                        )
+                )
+        );
+
+        // --------------------------------------------------------
+        // Special Wares
+        // --------------------------------------------------------
+
+        NpcDialogNode specialWares = new NpcDialogNode(
+                "special_wares",
+                "Heh, you have an eye for the unusual. These aren't standard shop items. Cost a pretty penny, but they save lives.",
+                List.of(
+                        new NpcDialogOption(
+                                "Show me the magical items.",
+                                null,
+                                true
+                        ),
+                        new NpcDialogOption(
+                                "Back.",
+                                "shop",
+                                false
+                        )
+                )
+        );
+
+        // --------------------------------------------------------
+        // Rumors
+        // --------------------------------------------------------
+
+        NpcDialogNode rumors = new NpcDialogNode(
+                "rumors",
+                "Knowledge has its price, friend. But since you look like you're walking into an early grave, ask away.",
+                List.of(
+                        new NpcDialogOption(
+                                "How do I beat [MONSTER_NAME_1]?",
+                                "monster_tip_1",
+                                false
+                        ),
+                        new NpcDialogOption(
+                                "What can you tell me about [DUNGEON_OR_BOSS]?",
+                                "monster_tip_2",
+                                false
+                        ),
+                        new NpcDialogOption(
+                                "Nevermind, tell me about yourself.",
+                                "about",
+                                false
+                        ),
+                        new NpcDialogOption(
+                                "Back.",
+                                "greeting",
+                                false
+                        )
+                )
+        );
+
+        // --------------------------------------------------------
+        // Monster Tip 1
+        // --------------------------------------------------------
+
+        NpcDialogNode monsterTip1 = new NpcDialogNode(
+                "monster_tip1",
+                "/* [PLACEHOLDER: Insert tip on how to defeat monster A here, e.g., fire weakness, blind spots] */ " +
+                        "Hah! That beast? Don't let it corner you in tight spaces. Hit it when its guard drops after its charge.",
+                List.of(
+                        new NpcDialogOption(
+                                "Got another tip?",
+                                "rumors",
+                                false
+                        ),
+                        new NpcDialogOption(
+                                "Thanks. Back to the trade.",
+                                "greeting",
+                                false
+                        )
+                )
+        );
+
+        // --------------------------------------------------------
+        // Monster Tip 2
+        // --------------------------------------------------------
+
+        NpcDialogNode monsterTip2 = new NpcDialogNode(
+                "monster_tip2",
+                "/* [PLACEHOLDER: Insert lore or tips about boss B / dungeon here] */ " +
+                        "That place? Filled with traps and dark shadows. Bring light, and don't trust the loose stones on the floor.",
+                List.of(
+                        new NpcDialogOption(
+                                "Good to know. Back.",
+                                "rumors",
+                                false
+                        ),
+                        new NpcDialogOption(
+                                "Let's see your items.",
+                                "shop",
+                                false
+                        )
+                )
+        );
+
+        // --------------------------------------------------------
+        // About
+        // --------------------------------------------------------
+
+        NpcDialogNode about = new NpcDialogNode(
+                "about",
+                "Me? Just a retired dwarf enjoying the fresh air... and whatever shiny things happen to roll my way. Don't ask questions, you won't get lies.",
+                List.of(
+                        new NpcDialogOption(
+                                "Fair enough. Show me what you've found.",
+                                "shop",
+                                false
+                        ),
+                        new NpcDialogOption(
+                                "Alright, see you.",
+                                "farewell",
+                                false
+                        )
+                )
+        );
+
+        // --------------------------------------------------------
+        // Farewell
+        // --------------------------------------------------------
+
+        NpcDialogNode farewell = new NpcDialogNode(
+                "farewell",
+                "Keep your pockets buttoned and your eyes open. Roads are dangerous at night.",
+                List.of()
+        );
+
+        // --------------------------------------------------------
+        // Dialog node map
+        // --------------------------------------------------------
+
+        Map<String, NpcDialogNode> dialogNodes = Map.ofEntries(
+                Map.entry("greeting", greeting),
+                Map.entry("shop", shop),
+                Map.entry("special_wares", specialWares),
+                Map.entry("rumors", rumors),
+                Map.entry("monster_tip1", monsterTip1),
+                Map.entry("monster_tip2", monsterTip2),
+                Map.entry("about", about),
+                Map.entry("farewell", farewell)
+        );
+
+        // --------------------------------------------------------
+        // Trades
+        // --------------------------------------------------------
+
+        List<NpcTradeEntry> trades = List.of(
+                // Magic items
+                new NpcTradeEntry(new int[]{0, 0, 0, 400, 0}, null, 0, null, "dnd:ring_of_swimming", 1),
+                new NpcTradeEntry(new int[]{0, 0, 0, 4000, 0}, null, 0, null, "dnd:ring_of_protection", 1),
+
+                // Street finds
+                new NpcTradeEntry(new int[]{0, 5, 0, 0, 0}, null, 0, null, "minecraft:string", 3),
+                new NpcTradeEntry(new int[]{0, 8, 0, 0, 0}, null, 0, null, "minecraft:bone", 2),
+                new NpcTradeEntry(new int[]{0, 15, 0, 0, 0}, null, 0, null, "minecraft:rotten_flesh", 5),
+                new NpcTradeEntry(new int[]{0, 25, 0, 0, 0}, null, 0, null, "minecraft:cobweb", 1),
+                new NpcTradeEntry(new int[]{0, 0, 0, 5, 0}, null, 0, null, "minecraft:golden_nugget", 4),
+
+                // Player selling to NPC
+                new NpcTradeEntry(null, "minecraft:gold_nugget", 2, new int[]{0, 10, 0, 0, 0}, null, 0)
+        );
+
+        // --------------------------------------------------------
+        // Final preset
+        // --------------------------------------------------------
+
+        return new NpcPreset(
+                List.of(
+                        "Scurf Stump-Sit",
+                        "Glint Pocket-Deep",
+                        "Mung Roadside",
+                        "Frik Trashfinder",
+                        "Snag Bark-Seat",
+                        "Grimm Mud-Boot",
+                        "Drak Ragpicker"
+                ),
+
+                "greeting",
+
+                dialogNodes,
+
+                trades,
+
+                4,
+                7,
+
+                List.of(
+                        "Pssst... looking for something special?",
+                        "Found this right on the cobblestone...",
+                        "Keep your voice down, the guards'll hear.",
+                        "Nice day for sitting on a log.",
+                        "Everything has a price, stranger."
+                )
+        );
+    }
+
 }

@@ -30,5 +30,6 @@ public class DndModEntityRenderers {
 		event.registerEntityRenderer(DndModEntities.GOBLIN_HENCHMAN.get(), GoblinHenchmanRenderer::new);
 		event.registerEntityRenderer(DndModEntities.DWARVEN_SMITH.get(), DwarvenSmithRenderer::new);
 		event.registerEntityRenderer(DndModEntities.SOLAR.get(), SolarRenderer::new);
+		event.registerEntityRenderer(DndModEntities.SHADY_DWARF.get(), ShadyDwarfRenderer::new);
 	}
 }

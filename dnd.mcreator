@@ -2040,6 +2040,23 @@
         ]
       },
       "path": "~/Monsters/Solar"
+    },
+    {
+      "name": "ShadyDwarf",
+      "type": "livingentity",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "shady_dwarf",
+      "metadata": {
+        "files": [
+          "src/main/java/net/luderspieler/dnd/client/renderer/ShadyDwarfRenderer.java",
+          "src/main/resources/assets/dnd/models/item/shady_dwarf_spawn_egg.json",
+          "src/main/resources/assets/dnd/items/shady_dwarf_spawn_egg.json",
+          "src/main/resources/data/dnd/neoforge/biome_modifier/shady_dwarf_biome_modifier.json",
+          "src/main/java/net/luderspieler/dnd/entity/ShadyDwarfEntity.java"
+        ]
+      },
+      "path": "~/NPC"
     }
   ],
   "variable_elements": [
@@ -2520,7 +2537,9 @@
       "item.dnd.mobs_tab_icon": "Mobs Tab Icon",
       "item.dnd.electrum_coin": "Electrum Coin",
       "item.dnd.solar_spawn_egg": "Solar Spawn Egg",
-      "entity.dnd.solar": "Solar"
+      "entity.dnd.solar": "Solar",
+      "item.dnd.shady_dwarf_spawn_egg": "Shady Dwarf Spawn Egg",
+      "entity.dnd.shady_dwarf": "Shady Dwarf"
     }
   },
   "metadata": {

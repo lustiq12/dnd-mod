@@ -93,5 +93,7 @@
   "item.dnd.mobs_tab_icon": "Mobs Tab Icon",
   "item.dnd.electrum_coin": "Electrum Coin",
   "item.dnd.solar_spawn_egg": "Solar Spawn Egg",
-  "entity.dnd.solar": "Solar"
+  "entity.dnd.solar": "Solar",
+  "item.dnd.shady_dwarf_spawn_egg": "Shady Dwarf Spawn Egg",
+  "entity.dnd.shady_dwarf": "Shady Dwarf"
 }
