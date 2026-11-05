@@ -55,7 +55,7 @@ public class SolarEntity extends Monster {
 	protected void defineSynchedData(SynchedEntityData.Builder builder) {
 		super.defineSynchedData(builder);
 		builder.define(DATA_cooldown, 0);
-		builder.define(DATA_anim, "");
+		builder.define(DATA_anim, "idle");
 	}
 
 	@Override

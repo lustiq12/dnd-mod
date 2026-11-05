@@ -173,7 +173,7 @@
       {
         "name": "anim",
         "type": "string",
-        "value": ""
+        "value": "idle"
       }
     ],
     "onMobTickUpdate": {

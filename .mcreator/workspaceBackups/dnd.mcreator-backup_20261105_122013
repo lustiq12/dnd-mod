@@ -1932,7 +1932,7 @@
           "src/main/java/net/luderspieler/dnd/procedures/SolarAttackPlaybackConditionProcedure.java"
         ]
       },
-      "path": "~/Monsters/GoblinHenchman"
+      "path": "~/Monsters/Solar"
     },
     {
       "name": "SolarAnimSync",
@@ -1967,7 +1967,96 @@
           "src/main/java/net/luderspieler/dnd/procedures/SolarAnimSyncProcedure.java"
         ]
       },
-      "path": "~/Monsters/GoblinHenchman"
+      "path": "~/Monsters/Solar"
+    },
+    {
+      "name": "SolarIdleCooldown",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "solar_idle_cooldown",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          },
+          {
+            "name": "x",
+            "type": "number"
+          },
+          {
+            "name": "y",
+            "type": "number"
+          },
+          {
+            "name": "z",
+            "type": "number"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/SolarIdleCooldownProcedure.java"
+        ]
+      },
+      "path": "~/Monsters/Solar"
+    },
+    {
+      "name": "Solar",
+      "type": "livingentity",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "solar",
+      "metadata": {
+        "files": [
+          "src/main/java/net/luderspieler/dnd/client/renderer/SolarRenderer.java",
+          "src/main/resources/assets/dnd/items/solar_spawn_egg.json",
+          "src/main/resources/data/dnd/neoforge/biome_modifier/solar_biome_modifier.json",
+          "src/main/java/net/luderspieler/dnd/entity/SolarEntity.java",
+          "src/main/resources/assets/dnd/models/item/solar_spawn_egg.json"
+        ]
+      },
+      "path": "~/Monsters"
+    },
+    {
+      "name": "SolarBowPlaybackCondition",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "solar_bow_playback_condition",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "return_type": "logic",
+        "files": [
+          "src/main/java/net/luderspieler/dnd/procedures/SolarBowPlaybackConditionProcedure.java"
+        ]
+      },
+      "path": "~/Monsters/Solar"
+    },
+    {
+      "name": "ShadyDwarf",
+      "type": "livingentity",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "shady_dwarf",
+      "metadata": {
+        "files": [
+          "src/main/java/net/luderspieler/dnd/client/renderer/ShadyDwarfRenderer.java",
+          "src/main/resources/assets/dnd/models/item/shady_dwarf_spawn_egg.json",
+          "src/main/resources/assets/dnd/items/shady_dwarf_spawn_egg.json",
+          "src/main/resources/data/dnd/neoforge/biome_modifier/shady_dwarf_biome_modifier.json",
+          "src/main/java/net/luderspieler/dnd/entity/ShadyDwarfEntity.java"
+        ]
+      },
+      "path": "~/NPC"
     }
   ],
   "variable_elements": [
@@ -2446,7 +2535,11 @@
       "item.dnd.ring_of_protection.description_0": "Reduces the taken Damage by 10%",
       "item.dnd.ring_of_swimming.description_0": "Increases swimming speed",
       "item.dnd.mobs_tab_icon": "Mobs Tab Icon",
-      "item.dnd.electrum_coin": "Electrum Coin"
+      "item.dnd.electrum_coin": "Electrum Coin",
+      "item.dnd.solar_spawn_egg": "Solar Spawn Egg",
+      "entity.dnd.solar": "Solar",
+      "item.dnd.shady_dwarf_spawn_egg": "Shady Dwarf Spawn Egg",
+      "entity.dnd.shady_dwarf": "Shady Dwarf"
     }
   },
   "metadata": {

@@ -5,6 +5,8 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.damagesource.DamageSource;
 
@@ -15,6 +17,8 @@ public class SolarIdleCooldownProcedure {
 	public static void execute(LevelAccessor world, double x, double y, double z, Entity entity) {
 		if (entity == null)
 			return;
+		if (entity instanceof LivingEntity _entity && !_entity.level().isClientSide())
+			_entity.addEffect(new MobEffectInstance(MobEffects.GLOWING, 60, 1, true, false));
 		if ((entity instanceof SolarEntity _datEntI ? _datEntI.getEntityData().get(SolarEntity.DATA_cooldown) : 0) > 0) {
 			if (entity instanceof SolarEntity _datEntSetI)
 				_datEntSetI.getEntityData().set(SolarEntity.DATA_cooldown, (int) ((entity instanceof SolarEntity _datEntI ? _datEntI.getEntityData().get(SolarEntity.DATA_cooldown) : 0) - 1));
